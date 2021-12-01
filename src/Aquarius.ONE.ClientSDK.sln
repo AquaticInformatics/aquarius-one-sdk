@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31912.275
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquarius.ONE.ClientSDK", "Aquarius.ONE.ClientSDK\Aquarius.ONE.ClientSDK.csproj", "{EA330B04-C4D8-4EA3-812A-26E4ADBCBCAC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquarius.ONE.Test.ConsoleApp", "Aquarius.ONE.Test.ConsoleApp\Aquarius.ONE.Test.ConsoleApp.csproj", "{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EA330B04-C4D8-4EA3-812A-26E4ADBCBCAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EA330B04-C4D8-4EA3-812A-26E4ADBCBCAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EA330B04-C4D8-4EA3-812A-26E4ADBCBCAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EA330B04-C4D8-4EA3-812A-26E4ADBCBCAC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {783B044F-C52C-412A-82E7-B2E5ABA8D511}
+	EndGlobalSection
+EndGlobal
