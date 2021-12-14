@@ -9,6 +9,9 @@
     <Company>Aquatic Informatics</Company>
     <Description>Aquatic Informatics Aquarius Client SDK for the Standard 2.0 Framework.</Description>
     <Copyright>Aquatic Informatics</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <PackageProjectUrl>https://github.com/AquaticInformatics/aquarius-one-sdk</PackageProjectUrl>
   </PropertyGroup>
 
   <ItemGroup>
