@@ -35,7 +35,8 @@ namespace ONE.Enterprise.Authentication
                 if (_client == null)
                 {
                     _client = new HttpClient();
-                    _client.BaseAddress = _environment.BaseUri;
+                    if (_environment != null)
+                        _client.BaseAddress = _environment.BaseUri;
                     _client.Timeout = TimeSpan.FromMinutes(10);
                     _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 

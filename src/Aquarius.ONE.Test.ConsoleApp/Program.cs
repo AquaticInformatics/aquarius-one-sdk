@@ -8,7 +8,7 @@ using CommandLine;
 using Aquarius.ONE.Test.ConsoleApp.Commands;
 
 namespace Aquarius.ONE.Test.ConsoleApp
-{
+{ 
     class Program
     {
         static async Task<int> Main(string[] args)
@@ -36,7 +36,24 @@ namespace Aquarius.ONE.Test.ConsoleApp
                
                 return 1;
             }
-            var retValue = await Parser.Default.ParseArguments<LoginCommand, UserInfoCommand>(args).WithParsedAsync<ICommand>(t => t.Execute(clientSDK));
+            try
+            {
+                clientSDK.LogRestfulCalls = true;
+
+                CommandHelper.LoadConfig(clientSDK);
+
+                var retValue = await Parser.Default.ParseArguments<
+                    LoginCommand,
+                    UserInfoCommand,
+                    DataCommand,
+                    RolesCommand
+                    >(args).WithParsedAsync<ICommand>(t => t.Execute(clientSDK));
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                return 1;
+            }
 
            return 0;
 

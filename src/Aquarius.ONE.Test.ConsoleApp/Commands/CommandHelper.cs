@@ -28,8 +28,10 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         public static void LoadConfig(ClientSDK clientSDK)
         {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            string accessToken = configuration.AppSettings.Settings["AccessToken"].Value;
-            
+            string accessToken = "";
+            if (configuration.AppSettings.Settings["AccessToken"] != null)
+                accessToken = configuration.AppSettings.Settings["AccessToken"].Value;
+
             if (configuration.AppSettings.Settings["Environment"] != null)
                 SetEnvironment(clientSDK, configuration.AppSettings.Settings["Environment"].Value);
             else
@@ -44,7 +46,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
             }
             clientSDK.Authentication.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", accessToken);
-            
+
 
         }
         public static void SetEnvironment(ClientSDK clientSDK, string environment)

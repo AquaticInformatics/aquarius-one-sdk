@@ -54,14 +54,14 @@ namespace ONE.Common.Configuration
             }
         }
 
-        public async Task<List<TimeSeriesData>> SaveData(string telemetryTwinRefId, List<TimeSeriesData> timeSeriesData)
+        public async Task<List<TimeSeriesData>> SaveData(string telemetryTwinRefId, TimeSeriesDatas timeSeriesDatas)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             var endpoint = $"timeseries/data/v1/{telemetryTwinRefId}/timeSeriesData";
 
-            var json = JsonConvert.SerializeObject(timeSeriesData);
+            var json = JsonConvert.SerializeObject(timeSeriesDatas, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
             try
             {
