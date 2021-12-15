@@ -43,10 +43,12 @@ namespace Aquarius.ONE.Test.ConsoleApp
                 CommandHelper.LoadConfig(clientSDK);
 
                 var retValue = await Parser.Default.ParseArguments<
-                    LoginCommand,
-                    UserInfoCommand,
                     DataCommand,
-                    RolesCommand
+                    LoginCommand,
+                    ParameterCommand,
+                    RolesCommand,
+                    UnitCommand,
+                    UserInfoCommand
                     >(args).WithParsedAsync<ICommand>(t => t.Execute(clientSDK));
             }
             catch (Exception ex)
