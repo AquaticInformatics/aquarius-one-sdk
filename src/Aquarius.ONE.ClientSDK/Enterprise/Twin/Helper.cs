@@ -150,6 +150,18 @@ namespace ONE.Enterprise.Twin
             }
             return propertyValue;
         }
+        public static DigitalTwin GetByDataProperty(List<DigitalTwin> digitalTwins, string path, string propertyName, string value)
+        {
+            foreach (DigitalTwin digitalTwin in digitalTwins)
+            {
+                string prop = GetTwinDataProperty(digitalTwin, path, propertyName);
+                if (prop != null && prop.ToUpper() == value.ToUpper())
+                {
+                    return digitalTwin;
+                }
+            }
+            return null;
+        }
         public static string GetTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
         {
             if (digitalTwin != null && !string.IsNullOrEmpty(digitalTwin.TwinData))
