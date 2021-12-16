@@ -46,6 +46,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
                     DataCommand,
                     LoginCommand,
                     ParameterCommand,
+                    QuantityTypesCommand,
                     RolesCommand,
                     UnitCommand,
                     UserInfoCommand
