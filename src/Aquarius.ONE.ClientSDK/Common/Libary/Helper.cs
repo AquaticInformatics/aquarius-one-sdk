@@ -18,6 +18,8 @@ namespace ONE.Common.Library
         }
         public List<QuantityType> QuantityTypes { get; set; }
         public List<Parameter> Parameters { get; set; }
+        public List<ParameterAgencyCode> ParameterAgencyCodes { get; set; }
+        public List<ParameterAgencyCodeType> ParameterAgencyCodeTypes { get; set;}
         public List<Unit> Units { get; set; }
         public List<I18NKey> I18Nkeys { get; set; }
         public async Task<bool> LoadAsync()
@@ -25,8 +27,39 @@ namespace ONE.Common.Library
             QuantityTypes = await _clientSDK.Library.GetQuantityTypesAsync();
             Parameters = await _clientSDK.Library.GetParametersAsync();
             Units = await _clientSDK.Library.GetUnitsAsync();
+            ParameterAgencyCodeTypes = await _clientSDK.Library.GetParameterAgencyCodeTypesAsync();
+            ParameterAgencyCodes = await _clientSDK.Library.GetParameterAgencyCodesAsync();
+
             I18Nkeys = await _clientSDK.Library.Geti18nKeysAsync("en-US", "FOUNDATION_LIBRARY");
             return true;
+        }
+        public ParameterAgencyCodeType GetParameterAgencyCodeType(string id)
+        {
+            if (ParameterAgencyCodeTypes == null || string.IsNullOrEmpty(id))
+                return null;
+            var matches = ParameterAgencyCodeTypes.Where(p => p.Id != null && String.Equals(p.Id.ToUpper(), id.ToUpper(), StringComparison.CurrentCulture));
+            if (matches.Count() > 0)
+            {
+                return matches.First();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public ParameterAgencyCode GetParameterAgencyCode(string id)
+        {
+            if (ParameterAgencyCodes == null || string.IsNullOrEmpty(id))
+                return null;
+            var matches = ParameterAgencyCodes.Where(p => p.Id != null && String.Equals(p.Id.ToUpper(), id.ToUpper(), StringComparison.CurrentCulture));
+            if (matches.Count() > 0)
+            {
+                return matches.First();
+            }
+            else
+            {
+                return null;
+            }
         }
         public QuantityType GetQuantityType(string quantityTypeId)
         {
@@ -42,7 +75,6 @@ namespace ONE.Common.Library
                 return null;
             }
         }
-        
         public QuantityType GetQuantityTypeByName(string name)
         {
             if (QuantityTypes == null || string.IsNullOrEmpty(name))
