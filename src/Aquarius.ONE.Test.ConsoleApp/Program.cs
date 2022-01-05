@@ -42,6 +42,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
                 var retValue = await Parser.Default.ParseArguments<
                     DataCommand,
                     GetRowsCommand,
+                    I18nCommand,
                     LoginCommand,
                     ParameterCommand,
                     QuantityTypesCommand,
