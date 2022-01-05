@@ -1,14 +1,11 @@
-﻿using ONE;
-using ONE.Utilities;
+﻿using Aquarius.ONE.Test.ConsoleApp.Commands;
+using CommandLine;
+using ONE;
 using System;
 using System.Threading.Tasks;
-using System.Configuration;
-using System.Collections.Specialized;
-using CommandLine;
-using Aquarius.ONE.Test.ConsoleApp.Commands;
 
 namespace Aquarius.ONE.Test.ConsoleApp
-{ 
+{
     class Program
     {
         static async Task<int> Main(string[] args)
@@ -44,6 +41,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
 
                 var retValue = await Parser.Default.ParseArguments<
                     DataCommand,
+                    GetRowsCommand,
                     LoginCommand,
                     ParameterCommand,
                     QuantityTypesCommand,

@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "quantitytypes"
+      "commandLineArgs": "rows -r 40281 -g b98aa91f-172e-4643-ad4c-d3f6bcf38caf -t 4"
     }
   }
 }

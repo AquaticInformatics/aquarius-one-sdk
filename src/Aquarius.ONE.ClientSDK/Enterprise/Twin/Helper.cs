@@ -140,6 +140,12 @@ namespace ONE.Enterprise.Twin
             long.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out long propertyValue);
             return propertyValue;
         }
+        public static double GetDoubleTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
+        {
+            string value = GetTwinDataProperty(digitalTwin, path, propertyName);
+            double.TryParse(value, out double propertyValue);
+            return propertyValue;
+        }
         public static float? GetFloatTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
         {
             float? propertyValue = null;
