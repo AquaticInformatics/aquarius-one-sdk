@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace ONE.Common.Library
 {
-    public class Helper
+    public class Cache
     {
         ClientSDK _clientSDK;
-        public Helper(ClientSDK clientSDK)
+        public Cache(ClientSDK clientSDK)
         {
             _clientSDK = clientSDK;
         }

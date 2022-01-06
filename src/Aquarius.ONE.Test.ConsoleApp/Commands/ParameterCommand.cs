@@ -22,14 +22,14 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             if (!string.IsNullOrEmpty(Guid) || !string.IsNullOrEmpty(Name) || Id > 0)
             {
 
-                await clientSDK.LibraryHelper.LoadAsync();
+                await clientSDK.CacheHelper.LibaryCache.LoadAsync();
                 Parameter parameter = null;
                 if (!string.IsNullOrEmpty(Guid))
-                    parameter = clientSDK.LibraryHelper.GetParameter(Guid);
+                    parameter = clientSDK.CacheHelper.LibaryCache.GetParameter(Guid);
                 else if (!string.IsNullOrEmpty(Name))
-                    parameter = clientSDK.LibraryHelper.GetParameterByName(Name);
+                    parameter = clientSDK.CacheHelper.LibaryCache.GetParameterByName(Name);
                 else if (Id > 0)
-                    parameter = clientSDK.LibraryHelper.GetParameter(Id);
+                    parameter = clientSDK.CacheHelper.LibaryCache.GetParameter(Id);
                 if (parameter == null)
                     return 0;
                 else
