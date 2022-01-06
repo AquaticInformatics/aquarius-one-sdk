@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace ONE.Enterprise.Operations
+namespace ONE.Operations
 {
     public class OperationCache
     {

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace ONE.Enterprise.Operations
+namespace ONE.Operations
 {
     public class OperationsCache
     {
