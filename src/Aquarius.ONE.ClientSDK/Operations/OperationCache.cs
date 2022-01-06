@@ -1,6 +1,9 @@
 ﻿using Common.Core.Protobuf.Models;
+using Common.Library.Protobuf.Models;
 using Enterprise.Twin.Protobuf.Models;
+using ONE.Common.Library;
 using ONE.Enterprise.Twin;
+using ONE.Utilities;
 using Operations.Spreadsheet.Protobuf.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +14,19 @@ namespace ONE.Operations
 {
     public class OperationCache
     {
+        public OperationCache(ClientSDK clientSDK, DigitalTwin digitalTwin)
+        {
+            ClientSDK = clientSDK;
+            DigitalTwin = digitalTwin;
+            DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
+            ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
+            ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+            FifteenMinuteRows = new Dictionary<uint, Row>();
+            HourlyRows = new Dictionary<uint, Row>();
+            FourHourRows = new Dictionary<uint, Row>();
+            DailyRows = new Dictionary<uint, Row>();
+            MeasurementCache = new Dictionary<string, List<Measurement>>();
+        }
         public ClientSDK ClientSDK { get; set; }
         public string Id {
             get
@@ -118,19 +134,7 @@ namespace ONE.Operations
             return null;
         }
         
-        public OperationCache(ClientSDK clientSDK, DigitalTwin digitalTwin)
-        {
-            ClientSDK = clientSDK;
-            DigitalTwin = digitalTwin;
-            DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
-            ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
-            ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
-            FifteenMinuteRows = new Dictionary<uint, Row>();
-            HourlyRows = new Dictionary<uint, Row>();
-            FourHourRows = new Dictionary<uint, Row>();
-            DailyRows = new Dictionary<uint, Row>();
-            MeasurementCache = new Dictionary<string, List<Measurement>>();
-        }
+        
         public bool IsInitialized { get; set; }
         public async Task<bool> InitializeAsync()
         {
@@ -386,6 +390,282 @@ namespace ONE.Operations
                 AddChildren(childDigitalTwinItem, digitalTwins);
             }
         }
+        public string GetColumnGuidByIndex(string index)
+        {
+            if (!IsInitialized)
+                return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+
+            int.TryParse(index, out int idx);
+            if (ColumnTwins == null || idx > ColumnTwins.Count - 1 || idx < 0 || ColumnTwins.Count == 0)
+                return EnumErrors.ERR_INDEX_OUT_OF_RANGE.ToString();
+            else
+                return ColumnTwins[idx].TwinReferenceId;
+        }
+        
+        public string GetWimsVarType(Column column)
+        {
+            var workSheetType = GetWorksheetType(column);
+            switch (workSheetType)
+            {
+                case EnumWorksheet.WorksheetFifteenMinute:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "W";
+                        if (!column.IsNumeric)
+                            return "Q";
+                        return "F";
+                    }
+                case EnumWorksheet.WorksheetHour:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "N";
+                        if (!column.IsNumeric)
+                            return "B";
+                        return "H";
+                    }
+                case EnumWorksheet.WorksheetFourHour:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "G";
+                        if (!column.IsNumeric)
+                            return "E";
+                        return "4";
+                    }
+                case EnumWorksheet.WorksheetDaily:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "C";
+                        if (!column.IsNumeric)
+                            return "T";
+                        return "P";
+                    }
+            }
+            return "";
+        }
+        public string GetWimsType(Column column)
+        {
+            var workSheetType = GetWorksheetType(column);
+            switch (workSheetType)
+            {
+                case EnumWorksheet.WorksheetFifteenMinute:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "15 Minute Calc";
+                        if (!column.IsNumeric)
+                            return "15 Minute Text";
+                        return "Daily Detail variable tracked every 15 minutes";
+                    }
+                case EnumWorksheet.WorksheetHour:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "Hourly Calc";
+                        if (!column.IsNumeric)
+                            return "Hourly Text";
+                        return "Daily Detail variable tracked every hour";
+                    }
+                case EnumWorksheet.WorksheetFourHour:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "4 hour calc.";
+                        if (!column.IsNumeric)
+                            return "4 hour text variable";
+                        return "Daily Detail variable tracked every 4 hours";
+                    }
+                case EnumWorksheet.WorksheetDaily:
+                    {
+                        if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
+                            return "Daily calculated variable";
+                        if (!column.IsNumeric)
+                            return "Daily text variable";
+                        return "Daily variable / parameter";
+                    }
+            }
+            return "";
+        }
+        public string Info(string columnIdentifier, string field)
+        {
+            if (!IsInitialized)
+                return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+
+            Column column = GetColumnByIdentifier(columnIdentifier);
+            if (column == null)
+                return EnumErrors.ERR_INVALID_PARAMETER_GUID.ToString();
+            var columnTwin = GetColumnTwinByGuid(column.ColumnId);
+
+            var library = ClientSDK.CacheHelper.LibaryCache;
+            Parameter parameter = library.GetParameter(column.ParameterId);
+
+            Unit unit = library.GetUnit((long)column.DisplayUnitId);
+            string path = GetTelemetryPath(column.ColumnId, false);
+            string[] anscestors = path.Split('\\');
+
+            if (column == null)
+                return EnumErrors.ERR_INVALID_PARAMETER_IDENTIFIER.ToString();
+            switch (field.ToUpper())
+            {
+                case "OPERATION":
+
+                    return Name;
+                case "NAME":
+                    return column.Name;
+                case "LOCATION:VARNAME":
+                    return $"{path} {column.Name}";
+                case "LOCATION.VARNAME":
+                    if (anscestors.Length > 0)
+                        return $"{anscestors[anscestors.Length - 1]}.{column.Name}";
+                    return column.Name;
+                case "NAME.UNITS":
+                    return $"{column.Name}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
+                case "SHORTNAME":
+                    return I18NKeyHelper.GetValue("SHORT", parameter.I18NKey);
+                case "SHORTNAME.UNITS":
+                    return $"{I18NKeyHelper.GetValue("SHORT", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
+                case "VARTYPE":
+                    return GetWimsVarType(column);
+                case "TYPE":
+                    return GetWimsType(column);
+                case "PARAMETERTYPE":
+                    return I18NKeyHelper.GetValue("LONG", parameter.I18NKey);
+                case "PARAMETERTYPE.UNITS":
+                    return $"{I18NKeyHelper.GetValue("LONG", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
+                case "UNITS":
+                    return I18NKeyHelper.GetValue("SHORT", unit.I18NKey);
+                case "XREF":
+                    if (column.DataSourceBinding != null)
+                        return $"{column.DataSourceBinding.BindingId} ({column.DataSourceBinding.EnumSamplingStatistic})";
+                    else
+                        return "";
+                case "SCADATAG":
+                    if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceImport && !column.DataSourceBinding.BindingId.Contains("@@"))
+                        return column.DataSourceBinding.BindingId;
+                    else
+                        return "";
+                case "LIMS_LOC":
+                    if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceImport && column.DataSourceBinding.BindingId.Contains("@@"))
+                        return column.DataSourceBinding.BindingId.Substring(0, column.DataSourceBinding.BindingId.IndexOf('@'));
+                    else
+                        return "";
+                case "LIMS_TEST":
+                    if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceImport && column.DataSourceBinding.BindingId.Contains("@@"))
+                        return column.DataSourceBinding.BindingId.Substring(column.DataSourceBinding.BindingId.IndexOf('@') + 2);
+                    else
+                        return "";
+                case "STATISTIC":
+                    if (column.DataSourceBinding != null)
+                        return column.DataSourceBinding.EnumSamplingStatistic.ToString();
+                    else
+                        return "";
+                case "STORETCODE":
+                    if (column.ParameterAgencyCodeIds != null && column.ParameterAgencyCodeIds.Count > 0)
+                        foreach (var parameterAgencyCodeId in column.ParameterAgencyCodeIds)
+                        {
+                            var parameterAgencyCode = library.GetParameterAgencyCode(parameterAgencyCodeId);
+                            if (parameterAgencyCode != null)
+                            {
+                                if (parameterAgencyCode.ParameterAgencyCodeTypeId == "96db9876-5e8a-4133-b206-7575b9de824c")
+                                    return parameterAgencyCode.Code;
+                            }
+                        }
+                    return "";
+                case "STORETCODEDESC":
+                    if (column.ParameterAgencyCodeIds != null && column.ParameterAgencyCodeIds.Count > 0)
+                        foreach (var parameterAgencyCodeId in column.ParameterAgencyCodeIds)
+                        {
+                            var parameterAgencyCode = library.GetParameterAgencyCode(parameterAgencyCodeId);
+                            if (parameterAgencyCode != null)
+                            {
+                                if (parameterAgencyCode.ParameterAgencyCodeTypeId == "96db9876-5e8a-4133-b206-7575b9de824c")
+                                    return parameterAgencyCode.Name;
+                            }
+                        }
+                    return "";
+                case "STORETCODE-DESC":
+                    if (column.ParameterAgencyCodeIds != null && column.ParameterAgencyCodeIds.Count > 0)
+                        foreach (var parameterAgencyCodeId in column.ParameterAgencyCodeIds)
+                        {
+                            var parameterAgencyCode = library.GetParameterAgencyCode(parameterAgencyCodeId);
+                            if (parameterAgencyCode != null)
+                            {
+                                if (parameterAgencyCode.ParameterAgencyCodeTypeId == "96db9876-5e8a-4133-b206-7575b9de824c")
+                                    return parameterAgencyCode.Code + "-" + parameterAgencyCode.Name;
+                            }
+                        }
+                    return "";
+                case "ENTRYMIN":
+                    if (column.Limits != null && column.Limits.Count > 0)
+                    {
+                        foreach (var limit in column.Limits)
+                        {
+                            if (limit.EnumLimit == EnumLimit.LimitLownear)
+                                if (limit.HighValue != null)
+                                    return limit.HighValue.ToString();
+                        }
+                    }
+                    return "";
+                case "ENTRYMAX":
+                    if (column.Limits != null && column.Limits.Count > 0)
+                    {
+                        foreach (var limit in column.Limits)
+                        {
+                            if (limit.EnumLimit == EnumLimit.LimitHighnear)
+                                if (limit.LowValue != null)
+                                    return limit.LowValue.ToString();
+                        }
+                    }
+                    return "";
+                case "PATH":
+                    return path;
+                case "LOCATION":
+                    if (anscestors.Length > 0)
+                        return anscestors[anscestors.Length - 1];
+                    return "";
+                case "PARENT":
+                    if (anscestors.Length > 1)
+                        return anscestors[anscestors.Length - 2];
+                    return "";
+                case "GRANDPARENT":
+                    if (anscestors.Length > 2)
+                        return anscestors[anscestors.Length - 3];
+                    return "";
+                case "FREQUENCY":
+                    return GetWorksheetTypeName(columnTwin);
+                case "VARIABLEID":
+                    return Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
+                case "VARNUM":
+                    return Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
+                case "DATATABLE":
+                case "AREA.LOCATION.VARNAME":
+                    return EnumErrors.ERR_DEPRECATED.ToString();
+
+            }
+            if (field.ToUpper().StartsWith("LOCATION.LEVEL"))
+            {
+                int.TryParse(field.Substring(14), out int level);
+                if (anscestors.Length >= level)
+                {
+                    return anscestors[level - 1];
+                }
+                return "";
+            }
+            if (field.ToUpper().StartsWith("VARIABLE."))
+            {
+                string key = field.Substring(9);
+                return Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, "wims\\variable", key);
+            }
+            return EnumErrors.ERR_NOT_IMPLEMENTED.ToString();
+        }
+       
+        public string GetWorksheetTypeName(string guid)
+        {
+            if (!IsInitialized)
+                return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+
+            var column = GetColumnTwinByGuid(guid);
+            if (column == null)
+                return EnumErrors.ERR_INVALID_PARAMETER_GUID.ToString();
+            return GetWorksheetTypeName(column);
+        }
+        
 
     }
 }
