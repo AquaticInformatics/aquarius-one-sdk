@@ -513,8 +513,7 @@ namespace ONE.Enterprise.Core
             var requestId = Guid.NewGuid();
             var endpoint = $"enterprise/core/v1/ProductOffering";
 
-            productOffering.UpdateMask = new Google.Protobuf.WellKnownTypes.FieldMask { Paths = { "description", "name", "i18NKeyName", "SprintNumber", "JsonSchema", "UIDefinition", } };
-            //productOffering.UpdateMask = new Google.Protobuf.WellKnownTypes.FieldMask { Paths = { "description", "name" } };
+            productOffering.UpdateMask = new Google.Protobuf.WellKnownTypes.FieldMask { Paths = { "description", "name", "i18NKeyName", "SprintNumber", "JsonSchema", "UIDefinition", "PropertyBag"} };
 
             try
             {
