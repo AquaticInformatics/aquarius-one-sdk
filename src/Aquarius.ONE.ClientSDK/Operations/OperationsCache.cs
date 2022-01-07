@@ -15,6 +15,7 @@ namespace ONE.Operations
         public OperationsCache(ClientSDK clientSDK)
         {
             _clientSDK = clientSDK;
+            Operations = new List<OperationCache>();
         }
         private OperationCache _defaultOperation;
         public OperationCache DefaultOperation
@@ -25,7 +26,6 @@ namespace ONE.Operations
             }
             set
             {
-                //ValueFunctions = new ValueFunctions(ReportStartDate, Operations, value);
                 _defaultOperation = value;
             }
         }

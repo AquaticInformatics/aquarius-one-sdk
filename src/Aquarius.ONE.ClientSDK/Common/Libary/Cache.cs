@@ -1,4 +1,5 @@
 ﻿using Common.Library.Protobuf.Models;
+using Newtonsoft.Json;
 using ONE;
 using ONE.Common.Library;
 using System;
@@ -182,6 +183,17 @@ namespace ONE.Common.Library
             }
             return null;
 
+        }
+        public override string ToString()
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return base.ToString();
+            }
         }
     }
 }
