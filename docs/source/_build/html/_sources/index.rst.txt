@@ -20,5 +20,7 @@ Contents
    clientsdk
    enterprise-authentication
    enterprise-core
+   enterprise-report
+   enterprise-twin
    common-configuration
    common-library
