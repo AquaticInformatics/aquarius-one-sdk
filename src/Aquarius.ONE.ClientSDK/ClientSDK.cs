@@ -19,7 +19,7 @@ namespace ONE
         public SpreadsheetApi Spreadsheet { get; set; }
         public DataApi Data { get; set; }
         public UserHelper UserHelper { get; set; }
-        public Common.Library.Helper LibraryHelper { get; set; }
+        public CacheHelper CacheHelper { get; set; }
         public PoEditorApi PoEditor { get; set; }
 
         private RestHelper _restHelper { get; set; }
@@ -61,7 +61,7 @@ namespace ONE
             Core.Event += Logger.Logger_Event;
 
             UserHelper = new UserHelper(Core);
-            LibraryHelper = new Common.Library.Helper(this);
+            CacheHelper = new CacheHelper(this);
 
             Configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper);
             Configuration.Event += Logger.Logger_Event;

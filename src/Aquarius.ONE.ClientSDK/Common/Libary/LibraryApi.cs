@@ -722,7 +722,7 @@ namespace ONE.Common.Library
                     case EnumPlatformEnvironment.AqiIntegration:
                     case EnumPlatformEnvironment.AqiStage:
                     case EnumPlatformEnvironment.AqiUSProduction:
-                        return "FOUNDATION_LIBRARY";
+                        return "AQI_FOUNDATION_LIBRARY";
                     default:
                         return "FOUNDATION_LIBRARY";
                 }
@@ -735,7 +735,7 @@ namespace ONE.Common.Library
         public async Task<List<I18NKey>> Geti18nKeysAsync(string language, string modules)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-
+            modules = modules.ToUpper().Replace("FOUNDATION_LIBRARY", "AQI_FOUNDATION_LIBRARY");
             List<I18NKey> translations = new List<I18NKey>();
             var requestId = Guid.NewGuid();
             //_authentication.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

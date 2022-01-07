@@ -1,4 +1,5 @@
 ﻿using Operations.Spreadsheet.Protobuf.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -91,6 +92,74 @@ namespace ONE.Operations.Spreadsheet
                 }
             }
             return null;
+        }
+        public static DateTime GetDate(object dateAsObject)
+        {
+            if (dateAsObject == null)
+                return DateTime.MinValue;
+            DateTime.TryParse(dateAsObject.ToString(), out DateTime date);
+            if (date == DateTime.MinValue)
+            {
+                double.TryParse(dateAsObject.ToString(), out double oaDate);
+                if (oaDate > 0)
+                {
+                    try
+                    {
+                        date = DateTime.FromOADate(oaDate);
+                    }
+                    catch
+                    {
+                        return DateTime.MinValue;
+                    }
+
+                }
+            }
+            return date;
+        }
+        public static object GetDoubleValue(string value)
+        {
+            if (value == null)
+                return null;
+            if (value.StartsWith("ERR_"))
+                return value;
+            double.TryParse(value, out double result);
+            return result;
+        }
+        public static bool IsNumeric(string value)
+        {
+            if (string.IsNullOrEmpty(value))
+                return false;
+            return value.Replace(".", "").Replace("-", "").All(char.IsNumber);
+        }
+        public static Double? TryParseDouble(string value)
+        {
+            if (string.IsNullOrEmpty(value) || !IsNumeric(value))
+                return null;
+            double temp;
+            return Double.TryParse(value, out temp) ? temp : (Double?)null;
+        }
+        public static Double? TryParseDouble(object value)
+        {
+            if (value != null)
+                return TryParseDouble(value.ToString());
+            return null;
+        }
+        public static Object[,] ConvertToArray(object value)
+        {
+            if (value is string)
+            {
+                object[,] arr = new object[1, 1];
+                arr[0, 0] = value;
+                return arr;
+            }
+            return (Object[,])value;
+        }
+        public static DateTime LastDOMValue(DateTime date)
+        {
+            return new DateTime(date.Year,
+                                  date.Month,
+                                  DateTime.DaysInMonth(date.Year,
+                                                       date.Month));
         }
     }
   

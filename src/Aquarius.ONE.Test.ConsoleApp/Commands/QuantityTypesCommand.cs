@@ -19,12 +19,12 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         {
             if (!string.IsNullOrEmpty(Guid) || !string.IsNullOrEmpty(Name))
             {
-                await clientSDK.LibraryHelper.LoadAsync();
+                await clientSDK.CacheHelper.LibaryCache.LoadAsync();
                 QuantityType quantityType = null;
                 if (!string.IsNullOrEmpty(Guid))
-                    quantityType = clientSDK.LibraryHelper.GetQuantityType(Guid);
+                    quantityType = clientSDK.CacheHelper.LibaryCache.GetQuantityType(Guid);
                 else if (!string.IsNullOrEmpty(Name))
-                    quantityType = clientSDK.LibraryHelper.GetQuantityTypeByName(Name);
+                    quantityType = clientSDK.CacheHelper.LibaryCache.GetQuantityTypeByName(Name);
                 if (quantityType == null)
                     return 0;
                 else

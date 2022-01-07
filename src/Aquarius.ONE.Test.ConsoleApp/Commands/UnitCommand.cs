@@ -22,14 +22,14 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             if (!string.IsNullOrEmpty(Guid) || !string.IsNullOrEmpty(Name) || Id > 0)
             {
                 
-                await clientSDK.LibraryHelper.LoadAsync();
+                await clientSDK.CacheHelper.LibaryCache.LoadAsync();
                 Unit unit = null;
                 if (!string.IsNullOrEmpty(Guid))
-                    unit = clientSDK.LibraryHelper.GetUnit(Guid);
+                    unit = clientSDK.CacheHelper.LibaryCache.GetUnit(Guid);
                 else if (!string.IsNullOrEmpty(Name))
-                    unit = clientSDK.LibraryHelper.GetUnitByName(Name);
+                    unit = clientSDK.CacheHelper.LibaryCache.GetUnitByName(Name);
                 else if (Id > 0)
-                    unit = clientSDK.LibraryHelper.GetUnit(Id);
+                    unit = clientSDK.CacheHelper.LibaryCache.GetUnit(Id);
                 if (unit == null)
                     return 0;
                 else
