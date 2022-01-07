@@ -214,8 +214,6 @@ namespace ONE.Utilities
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
                 var response = await _authentication.Client.SendAsync(request).ConfigureAwait(true);
 
-                //var response = await _authentication.Client.PatchAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(true);
-
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 error.ElapsedMs = elapsedMs;
@@ -231,6 +229,7 @@ namespace ONE.Utilities
                 return new ServiceResponse
                 {
                     ResponseMessage = response,
+                    Result = response.IsSuccessStatusCode ? await response.Content.ReadAsStringAsync().ConfigureAwait(_continueOnCapturedContext) : null,
                     ElapsedMs = elapsedMs
                 };
             }

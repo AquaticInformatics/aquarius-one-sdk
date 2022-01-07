@@ -512,7 +512,9 @@ namespace ONE.Enterprise.Core
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
             var endpoint = $"enterprise/core/v1/ProductOffering";
-            productOffering.UpdateMask = new Google.Protobuf.WellKnownTypes.FieldMask { Paths = { "description", "name" } };
+
+            productOffering.UpdateMask = new Google.Protobuf.WellKnownTypes.FieldMask { Paths = { "description", "name", "i18NKeyName", "SprintNumber", "JsonSchema", "UIDefinition", "PropertyBag"} };
+
             try
             {
                 string updatedData = JsonConvert.SerializeObject(productOffering);
