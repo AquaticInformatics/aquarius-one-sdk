@@ -1,7 +1,7 @@
-API
-===
+ClientSDK
+====
 
 .. autosummary::
    :toctree: generated
 
-   lumache
+hello  

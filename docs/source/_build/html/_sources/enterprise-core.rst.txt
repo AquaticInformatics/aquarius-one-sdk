@@ -1,5 +1,5 @@
-API
-===
+Enterprise Core
+====
 
 .. autosummary::
    :toctree: generated

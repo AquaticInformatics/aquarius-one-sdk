@@ -6,8 +6,8 @@ project = 'Aquarius.ONE.SDK'
 copyright = '2022, Aquatic Informatics'
 author = 'Aquatic Informatics'
 
-release = '0.1'
-version = '0.1.0'
+release = '9.2'
+version = '9.2.0'
 
 # -- General configuration
 

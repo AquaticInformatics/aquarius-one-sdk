@@ -17,4 +17,8 @@ Contents
 .. toctree::
 
    usage
-   api
+   clientsdk
+   enterprise-authentication
+   enterprise-core
+   common-configuration
+   common-library
