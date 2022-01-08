@@ -51,7 +51,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#authenticated">Authenticated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#roles-roles-based-access-control">Roles (Roles-based access control)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#resources-resource-based-access-control">Resources (Resource-based access control)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#resources-feature-based-access-control">Resources (Feature-based access control)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#features-feature-based-access-control">Features (Feature-based access control)</a></li>
 </ul>
 </li>
 </ul>
@@ -138,9 +138,19 @@
 </section>
 <section id="resources-resource-based-access-control">
 <h2>Resources (Resource-based access control)<a class="headerlink" href="#resources-resource-based-access-control" title="Permalink to this headline"></a></h2>
+<p>The authority to use an API is also based on your “rights” to the entity that you are referencing.
+For examply you can ask for a list of tenants (customers) or locations (digital twins), but will only return those in which you have rights to see.</p>
 </section>
-<section id="resources-feature-based-access-control">
-<h2>Resources (Feature-based access control)<a class="headerlink" href="#resources-feature-based-access-control" title="Permalink to this headline"></a></h2>
+<section id="features-feature-based-access-control">
+<h2>Features (Feature-based access control)<a class="headerlink" href="#features-feature-based-access-control" title="Permalink to this headline"></a></h2>
+<p>In addition to knowing whether the user is authenticated, belongs to a specific role and has access to the resource,
+the user may also need to have a feature to be authorized for the API.</p>
+<p>An example of this is that the user may need to have an SPREADSHEET feature in order to access some of the spreadsheet capabilities.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Typically, features are reserved for client-side authorization, not server side.
+A list of features that the user has can be retrieved and the capabilites can be retricted in the application.</p>
+</div>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />

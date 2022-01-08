@@ -42,11 +42,13 @@
               <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clientsdk.html">ClientSDK</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/environments.html">Deployment Environments</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
@@ -111,7 +113,17 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="usage.html#getting-started-quickly">Getting started quickly</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="getting-started.html#typical-sdk-call-order">Typical SDK Call Order</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#instantiate-sdk">Instantiate SDK</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#set-environment">Set Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#login">Login</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#get-user-information">Get User Information</a></li>
+<li class="toctree-l3"><a class="reference internal" href="getting-started.html#do-fun-stuff">Do fun stuff</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="clientsdk.html">ClientSDK</a></li>
@@ -124,7 +136,20 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#authenticated">Authenticated</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#roles-roles-based-access-control">Roles (Roles-based access control)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#resources-resource-based-access-control">Resources (Resource-based access control)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#resources-feature-based-access-control">Resources (Feature-based access control)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#features-feature-based-access-control">Features (Feature-based access control)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/environments.html">Deployment Environments</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts/environments.html#source-code-control">Source Code Control</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/environments.html#gitflow">GitFlow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/environments.html#continuous-integration-continuous-deployment-ci-cd">Continuous Integration / Continuous Deployment (CI / CD)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/environments.html#environments">Environments</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concepts/environments.html#feature">Feature</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/environments.html#integration">Integration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/environments.html#stage">Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/environments.html#us-production">US Production</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -177,28 +202,7 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#user-apis">User APIS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#createuserasync">CreateUserAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#getusersasync">GetUsersAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#getuserasync">GetUserAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#deleteuserasync">DeleteUserAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#safedeleteuserasync">SafeDeleteUserAsync</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#tenant-apis">Tenant APIS</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#createtenantasync">CreateTenantAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#gettenantsasync">GetTenantsAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#gettenantasync">GetTenantAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#updatetenantasync">UpdateTenantAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#addtenantproductofferingasync">AddTenantProductOfferingAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#removetenantproductofferingasync">RemoveTenantProductOfferingAsync</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#product-apis">Product APIS</a></li>
-<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#feature-apis">Feature APIS</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">

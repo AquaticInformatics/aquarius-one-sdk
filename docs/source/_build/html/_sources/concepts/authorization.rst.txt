@@ -30,11 +30,20 @@ Users may have one or more of the following roles:
 
 Resources (Resource-based access control)
 ----
+The authority to use an API is also based on your "rights" to the entity that you are referencing.  
+For examply you can ask for a list of tenants (customers) or locations (digital twins), but will only return those in which you have rights to see.
 
 
-
-Resources (Feature-based access control)
+Features (Feature-based access control)
 ----
+In addition to knowing whether the user is authenticated, belongs to a specific role and has access to the resource, 
+the user may also need to have a feature to be authorized for the API.
+
+An example of this is that the user may need to have an SPREADSHEET feature in order to access some of the spreadsheet capabilities.  
+
+.. Note::
+   Typically, features are reserved for client-side authorization, not server side.  
+   A list of features that the user has can be retrieved and the capabilites can be retricted in the application.
 
 
 

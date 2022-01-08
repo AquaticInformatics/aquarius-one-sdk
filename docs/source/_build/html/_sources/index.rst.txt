@@ -18,12 +18,14 @@ Contents
    :caption: Introduction
 
    usage
+   getting-started
    clientsdk
 
 .. toctree::
    :caption: Core Concepts
 
    concepts/authorization
+   concepts/environments
 
 .. toctree::
    :caption: Authentication and Authorization
