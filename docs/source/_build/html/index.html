@@ -39,15 +39,35 @@
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <ul>
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="clientsdk.html">ClientSDK</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-authentication.html">Enterprise Authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-core.html">Enterprise Core</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-report.html">Enterprise Report</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-twin.html">Digital Twins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common-configuration.html">Common Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common-library.html">Common Library</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Common Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/library.html">Common Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Enterprise Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utilities/cache.html">Client Caching</a></li>
 </ul>
 
         </div>
@@ -87,6 +107,7 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <section id="contents">
 <h2>Contents<a class="headerlink" href="#contents" title="Permalink to this headline"></a></h2>
 <div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="usage.html#installation">Installation</a></li>
@@ -94,12 +115,96 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="clientsdk.html">ClientSDK</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-authentication.html">Enterprise Authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-core.html">Enterprise Core</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-report.html">Enterprise Report</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise-twin.html">Digital Twins</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common-configuration.html">Common Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common-library.html">Common Library</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="concepts/authorization.html">Authorization: Roles &amp; Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#authenticated">Authenticated</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#roles-roles-based-access-control">Roles (Roles-based access control)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#resources-resource-based-access-control">Resources (Resource-based access control)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/authorization.html#resources-feature-based-access-control">Resources (Feature-based access control)</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#users">Users</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createuserasync">CreateUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getusersasync">GetUsersAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getuserasync">GetUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deleteuserasync">DeleteUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#safedeleteuserasync">SafeDeleteUserAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#tenants">Tenants</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createtenantasync">CreateTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#gettenantsasync">GetTenantsAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#gettenantasync">GetTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#updatetenantasync">UpdateTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deletetenantasync">DeleteTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#addtenantproductofferingasync">AddTenantProductOfferingAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#removetenantproductofferingasync">RemoveTenantProductOfferingAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#product-offerings">Product Offerings</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createproductofferingasync">CreateProductOfferingAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getproductofferingasync">GetProductOfferingAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#updateproductofferingasync">UpdateProductOfferingAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deleteproductofferingasync">DeleteProductOfferingAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#features">Features</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Common Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/library.html">Common Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Enterprise Report</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#user-apis">User APIS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#createuserasync">CreateUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#getusersasync">GetUsersAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#getuserasync">GetUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#deleteuserasync">DeleteUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#safedeleteuserasync">SafeDeleteUserAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#tenant-apis">Tenant APIS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#createtenantasync">CreateTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#gettenantsasync">GetTenantsAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#gettenantasync">GetTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#updatetenantasync">UpdateTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#addtenantproductofferingasync">AddTenantProductOfferingAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="timeseries/data.html#removetenantproductofferingasync">RemoveTenantProductOfferingAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#product-apis">Product APIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="timeseries/data.html#feature-apis">Feature APIS</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="utilities/cache.html">Client Caching</a></li>
 </ul>
 </div>
 </section>

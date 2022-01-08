@@ -15,12 +15,37 @@ Contents
 --------
 
 .. toctree::
+   :caption: Introduction
 
    usage
    clientsdk
-   enterprise-authentication
-   enterprise-core
-   enterprise-report
-   enterprise-twin
-   common-configuration
-   common-library
+
+.. toctree::
+   :caption: Core Concepts
+
+   concepts/authorization
+
+.. toctree::
+   :caption: Authentication and Authorization
+
+   enterprise/authentication
+   enterprise/core
+   enterprise/twin
+
+.. toctree::
+   :caption: Common Services
+   
+   common/configuration
+   common/library
+   enterprise/report
+
+.. toctree::
+   :caption: Data Services
+
+   operation/spreadsheet
+   timeseries/data
+
+.. toctree::
+   :caption: Utilities
+
+   utilities/cache

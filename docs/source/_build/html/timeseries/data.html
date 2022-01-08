@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TimeSeries Data &mdash; Aquarius.ONE.SDK 9.2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Client Caching" href="../utilities/cache.html" />
+    <link rel="prev" title="Operation spreadsheet" href="../operation/spreadsheet.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
+          </a>
+              <div class="version">
+                9.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clientsdk.html">ClientSDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Enterprise Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Enterprise Core</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Common Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Common Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Enterprise Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Operation spreadsheet</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TimeSeries Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#user-apis">User APIS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createuserasync">CreateUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getusersasync">GetUsersAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getuserasync">GetUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteuserasync">DeleteUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#safedeleteuserasync">SafeDeleteUserAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tenant-apis">Tenant APIS</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createtenantasync">CreateTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gettenantsasync">GetTenantsAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gettenantasync">GetTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updatetenantasync">UpdateTenantAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#addtenantproductofferingasync">AddTenantProductOfferingAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#removetenantproductofferingasync">RemoveTenantProductOfferingAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#product-apis">Product APIS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#feature-apis">Feature APIS</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../utilities/cache.html">Client Caching</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aquarius.ONE.SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>TimeSeries Data</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/timeseries/data.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="timeseries-data">
+<h1>TimeSeries Data<a class="headerlink" href="#timeseries-data" title="Permalink to this headline"></a></h1>
+<p>Enterprise Core manages:</p>
+<ul class="simple">
+<li><p>Users</p></li>
+<li><p>Tenants</p></li>
+<li><p>Products</p></li>
+<li><p>Features</p></li>
+</ul>
+<section id="user-apis">
+<h2>User APIS<a class="headerlink" href="#user-apis" title="Permalink to this headline"></a></h2>
+<section id="createuserasync">
+<h3>CreateUserAsync<a class="headerlink" href="#createuserasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.CreateUserAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">CreateUserAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">firstName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">lastName</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">email</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">tenantId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.CreateUserAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>firstName</strong> (<em>string</em>) – The first name of the user.</p></li>
+<li><p><strong>lastName</strong> (<em>string</em>) – The last name of the user.</p></li>
+<li><p><strong>email</strong> (<em>string</em>) – The email address of the user.  The invitation email will be sent to this address automatically.</p></li>
+<li><p><strong>tenantId</strong> (<em>string</em>) – The GUID of the tenant that will own the user.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>User Object that matches the User Protocol Buffer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;User&gt;</p>
+</dd>
+</dl>
+<p>Creates a new user.  The user will automatically be sent an email for creating their username and password, finishing the user creation.</p>
+<p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&amp;operation=createuser">RESTful API Documentation</a></p>
+</dd></dl>
+
+<div class="highlight-C# notranslate"><div class="highlight"><pre><span></span><span class="n">User</span><span class="w"> </span><span class="n">user</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">_clientSDK</span><span class="p">.</span><span class="n">Core</span><span class="p">.</span><span class="n">CreateUserAsync</span><span class="p">(</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;Fred&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;Flinstone&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;fred@flinstone.me&quot;</span><span class="p">,</span><span class="w"></span>
+<span class="w">   </span><span class="s">&quot;38c00913-55c6-4635-8f68-c86acc27c419&quot;</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="getusersasync">
+<h3>GetUsersAsync<a class="headerlink" href="#getusersasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.GetUsersAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">GetUsersAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EnumUserExpand</span> <span class="pre">userExpand</span> <span class="pre">=</span> <span class="pre">EnumUserExpand.none</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.GetUsersAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>userExpand</strong> (<em>EnumUserExpand</em>) – Additional information to retrieve with the user.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;User&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<p>:note</p>
+<blockquote>
+<div><p>none = 0,
+role = 1,</p>
+<blockquote>
+<div><p>tenant = 2,
+feature = 3,
+userprovile = 4,
+role_tenant = 5,
+role_feature = 6,
+role_userprofile = 7,
+tenant_feature = 8,
+tenant_userprofile = 9,
+tenant_feature_userprofile = 10,
+role_tenant_feature_userProvile = 11</p>
+</div></blockquote>
+</div></blockquote>
+</section>
+<section id="getuserasync">
+<h3>GetUserAsync<a class="headerlink" href="#getuserasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.GetUserAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">GetUserAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">userId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumUserExpand</span> <span class="pre">userExpand</span> <span class="pre">=</span> <span class="pre">EnumUserExpand.none</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.GetUserAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;User&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteuserasync">
+<h3>DeleteUserAsync<a class="headerlink" href="#deleteuserasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.DeleteUserAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">DeleteUserAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">userId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.DeleteUserAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="safedeleteuserasync">
+<h3>SafeDeleteUserAsync<a class="headerlink" href="#safedeleteuserasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.SafeDeleteUserAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">SafeDeleteUserAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">userId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.SafeDeleteUserAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="tenant-apis">
+<h2>Tenant APIS<a class="headerlink" href="#tenant-apis" title="Permalink to this headline"></a></h2>
+<section id="createtenantasync">
+<h3>CreateTenantAsync<a class="headerlink" href="#createtenantasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.CreateTenantAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">CreateTenantAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">culture</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.CreateTenantAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Tenant&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="gettenantsasync">
+<h3>GetTenantsAsync<a class="headerlink" href="#gettenantsasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.GetTenantsAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">GetTenantsAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.GetTenantsAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;Tenant&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="gettenantasync">
+<h3>GetTenantAsync<a class="headerlink" href="#gettenantasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.GetTenantAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">GetTenantAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">tenantId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.GetTenantAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Tenant&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updatetenantasync">
+<h3>UpdateTenantAsync<a class="headerlink" href="#updatetenantasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.UpdateTenantAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">UpdateTenantAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Tenant</span> <span class="pre">tenant</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.UpdateTenantAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="addtenantproductofferingasync">
+<h3>AddTenantProductOfferingAsync<a class="headerlink" href="#addtenantproductofferingasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.AddTenantProductOfferingAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">AddTenantProductOfferingAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">tenantId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">productOfferingId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.AddTenantProductOfferingAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="removetenantproductofferingasync">
+<h3>RemoveTenantProductOfferingAsync<a class="headerlink" href="#removetenantproductofferingasync" title="Permalink to this headline"></a></h3>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Core.RemoveTenantProductOfferingAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">RemoveTenantProductOfferingAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">tenantId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">productOfferingId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.RemoveTenantProductOfferingAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="product-apis">
+<h2>Product APIS<a class="headerlink" href="#product-apis" title="Permalink to this headline"></a></h2>
+</section>
+<section id="feature-apis">
+<h2>Feature APIS<a class="headerlink" href="#feature-apis" title="Permalink to this headline"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../operation/spreadsheet.html" class="btn btn-neutral float-left" title="Operation spreadsheet" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../utilities/cache.html" class="btn btn-neutral float-right" title="Client Caching" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Aquatic Informatics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
