@@ -1,9 +1,12 @@
-Template for the Read the Docs tutorial
+Aquarius ONE SDK
 =======================================
 
-This GitHub template includes fictional Python library
-with some basic Sphinx docs.
+This GitHub project provides an SDK for interacting with the Aquarius ONE Platform.
 
-Read the tutorial here:
+Discover more about Aquatic Informatics here:
 
-https://docs.readthedocs.io/en/stable/tutorial/
+https://aquaticinformatics.com/
+
+Read the SDK documentation here:
+
+https://aquarius-one-sdk.readthedocs.io/en/latest/
