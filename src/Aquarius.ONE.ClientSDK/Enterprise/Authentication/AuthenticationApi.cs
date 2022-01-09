@@ -114,7 +114,7 @@ namespace ONE.Enterprise.Authentication
 
             return IsAuthenticated;
         }
-        public async Task<string> GetUserInfo()
+        public async Task<string> GetUserInfoAync()
         {
             try
             {
@@ -129,11 +129,11 @@ namespace ONE.Enterprise.Authentication
                     dynamic error = new JObject();
                     error.Client = (JObject)JToken.FromObject(Client);
                     error.Response = (JObject)JToken.FromObject(response);
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfo Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Failed" });
 
                     return null;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfo Success" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Success" });
 
                 return await response.Content.ReadAsStringAsync();
 

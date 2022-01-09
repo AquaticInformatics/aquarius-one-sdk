@@ -50,7 +50,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
 </ul>
@@ -104,10 +104,12 @@
  | <a href="#D"><strong>D</strong></a>
  | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
  | <a href="#U"><strong>U</strong></a>
  
 </div>
@@ -119,7 +121,11 @@
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="clientsdk.html#Authentication">Authentication (built-in class)</a>
+
+      <ul>
+        <li><a href="enterprise/authentication.html#ClientSDK.Authentication">(class in ClientSDK)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -132,10 +138,14 @@
 </li>
       <li><a href="clientsdk.html#ContinueOnCapturedContext">ContinueOnCapturedContext</a>
 </li>
+      <li><a href="clientsdk.html#Core">Core (built-in class)</a>
+
+      <ul>
+        <li><a href="enterprise/core.html#ClientSDK.Core">(class in ClientSDK)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="clientsdk.html#Core">Core (built-in class)</a>
-</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.CreateProductOfferingAsync">CreateProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.CreateTenantAsync">CreateTenantAsync() (in module ClientSDK.Core)</a>
@@ -184,15 +194,27 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingsAsync">GetProductOfferingsAsync() (in module ClientSDK.Core)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantAsync">GetTenantAsync() (in module ClientSDK.Core)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantsAsync">GetTenantsAsync() (in module ClientSDK.Core)</a>
+</li>
+      <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.GetTokenAsync">GetTokenAsync() (in module ONE.Utilities.PlatformEnvironment)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetUserAsync">GetUserAsync() (in module ClientSDK.Core)</a>
 </li>
+      <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.GetUserInfoAync">GetUserInfoAync() (in module ONE.Utilities.PlatformEnvironment)</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetUsersAsync">GetUsersAsync() (in module ClientSDK.Core)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="enterprise/authentication.html#ClientSDK.Authentication.IsAuthenticated">IsAuthenticated (in module ClientSDK.Authentication)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -202,9 +224,13 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="clientsdk.html#Library">Library (built-in class)</a>
 </li>
+      <li><a href="clientsdk.html#Logger">Logger</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="clientsdk.html#Logger">Logger</a>
+      <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.LoginResourceOwnerAsync">LoginResourceOwnerAsync() (in module ONE.Utilities.PlatformEnvironment)</a>
+</li>
+      <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.Logout">Logout() (in module ONE.Utilities.PlatformEnvironment)</a>
 </li>
       <li><a href="clientsdk.html#LogRestfulCalls">LogRestfulCalls</a>
 </li>
@@ -214,10 +240,12 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/environment.html#ONE.Utilities.PlatformEnvironment">PlatformEnvironment (class in ONE.Utilities)</a>
+      <li><a href="enterprise/authentication.html#ClientSDK.Authentication.Password">Password (in module ClientSDK.Authentication)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/environment.html#ONE.Utilities.PlatformEnvironment">PlatformEnvironment (class in ONE.Utilities)</a>
+</li>
       <li><a href="clientsdk.html#PoEditor">PoEditor (built-in class)</a>
 </li>
   </ul></td>
@@ -247,14 +275,26 @@
   </ul></td>
 </tr></table>
 
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="enterprise/authentication.html#ClientSDK.Authentication.Token">Token (in module ClientSDK.Authentication)</a>
+</li>
+  </ul></td>
+</tr></table>
+
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/core.html#ClientSDK.Core.UpdateProductOfferingAsync">UpdateProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
+      <li><a href="enterprise/core.html#ClientSDK.Core.UpdateTenantAsync">UpdateTenantAsync() (in module ClientSDK.Core)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enterprise/core.html#ClientSDK.Core.UpdateTenantAsync">UpdateTenantAsync() (in module ClientSDK.Core)</a>
+      <li><a href="enterprise/authentication.html#ClientSDK.Authentication.User">User (in module ClientSDK.Authentication)</a>
+</li>
+      <li><a href="enterprise/authentication.html#ClientSDK.Authentication.UserName">UserName (in module ClientSDK.Authentication)</a>
 </li>
   </ul></td>
 </tr></table>

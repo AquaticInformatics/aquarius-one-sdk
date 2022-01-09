@@ -1,5 +1,9 @@
 Enterprise Core APIs
 ====
+
+ ..  class:: Core 
+    :module: ClientSDK
+
 Enterprise Core manages:
 
 *  Users
