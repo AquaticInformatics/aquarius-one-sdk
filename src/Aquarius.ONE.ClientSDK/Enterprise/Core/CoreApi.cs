@@ -29,14 +29,14 @@ namespace ONE.Enterprise.Core
             role = 1,
             tenant = 2,
             feature = 3,
-            userprovile = 4,
+            userprofile = 4,
             role_tenant = 5,
             role_feature = 6,
             role_userprofile = 7,
             tenant_feature = 8,
             tenant_userprofile = 9,
             tenant_feature_userprofile = 10,
-            role_tenant_feature_userProvile = 11
+            role_tenant_feature_userProfile = 11
         }
         public enum EnumNavigationProperty
         {

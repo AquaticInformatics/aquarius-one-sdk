@@ -5,7 +5,7 @@ VisualStudioVersion = 17.0.31912.275
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquarius.ONE.ClientSDK", "Aquarius.ONE.ClientSDK\Aquarius.ONE.ClientSDK.csproj", "{EA330B04-C4D8-4EA3-812A-26E4ADBCBCAC}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquarius.ONE.Test.ConsoleApp", "Aquarius.ONE.Test.ConsoleApp\Aquarius.ONE.Test.ConsoleApp.csproj", "{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquarius.ONE.Test.ConsoleApp", "Aquarius.ONE.Test.ConsoleApp\Aquarius.ONE.Test.ConsoleApp.csproj", "{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -12,8 +12,8 @@ To use the Aquarius ONE SDK:
 
    dotnet add package Aquarius.ONE.ClientSDK --version 9.2.0-Alpha2
 
-Getting started quickly
-----------------
+.. autosummary::
+   :toctree: generated
 
 
 
