@@ -44,7 +44,32 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="usage.html">Usage</a></li>
 <li class="toctree-l1"><a class="reference internal" href="getting-started.html">Getting Started</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">ClientSDK</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">ClientSDK</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#classes">Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#authentication">Authentication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#core">Core</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data">Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#digitaltwin">DigitalTwin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#library">Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#report">Report</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spreadsheet">Spreadsheet</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#helper-classes">Helper Classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cachehelper">CacheHelper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#poeditor">PoEditor</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#continueoncapturedcontext">ContinueOnCapturedContext</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#environment">Environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logger">Logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logrestfulcalls">LogRestfulCalls</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
 <ul>
@@ -68,9 +93,11 @@
 <li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="utilities/cache.html">Client Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">Client Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor</a></li>
 </ul>
 
         </div>
@@ -100,17 +127,194 @@
   <section id="clientsdk">
 <h1>ClientSDK<a class="headerlink" href="#clientsdk" title="Permalink to this headline"></a></h1>
 <p>The ClientSDK Object is the entry point for using the SDK.</p>
+<section id="classes">
+<h2>Classes<a class="headerlink" href="#classes" title="Permalink to this headline"></a></h2>
 <p>Once instantiated, this class provides:</p>
-<blockquote>
-<div><ul class="simple">
-<li><p><strong>Authentication</strong>: <a class="reference internal" href="enterprise/authentication.html"><span class="doc">Enterprise Authentication</span></a></p></li>
-<li><p><strong>Core</strong>: <a class="reference internal" href="enterprise/core.html"><span class="doc">Enterprise Core APIs</span></a></p></li>
-<li><p><strong>Digital Twins</strong>: <a class="reference internal" href="enterprise/twin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Report</strong>: <a class="reference internal" href="enterprise/report.html"><span class="doc">Enterprise Report</span></a></p></li>
-<li><p><strong>Configuration</strong>: <a class="reference internal" href="common/configuration.html"><span class="doc">Common Configuration</span></a></p></li>
-<li><p><strong>Library</strong>: <a class="reference internal" href="common/library.html"><span class="doc">Common Library</span></a></p></li>
+<section id="authentication">
+<h3>Authentication<a class="headerlink" href="#authentication" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Authentication">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Authentication</span></span><a class="headerlink" href="#Authentication" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="enterprise/authentication.html"><span class="doc">Enterprise Authentication</span></a></p></li>
 </ul>
-</div></blockquote>
+</dd></dl>
+
+</section>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Configuration">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Configuration</span></span><a class="headerlink" href="#Configuration" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="common/configuration.html"><span class="doc">Common Configuration</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="core">
+<h3>Core<a class="headerlink" href="#core" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Core">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Core</span></span><a class="headerlink" href="#Core" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="enterprise/core.html"><span class="doc">Enterprise Core APIs</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="data">
+<h3>Data<a class="headerlink" href="#data" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Data">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Data</span></span><a class="headerlink" href="#Data" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="timeseries/data.html"><span class="doc">TimeSeries Data</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="digitaltwin">
+<h3>DigitalTwin<a class="headerlink" href="#digitaltwin" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="DigitalTwin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DigitalTwin</span></span><a class="headerlink" href="#DigitalTwin" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="enterprise/twin.html"><span class="doc">Digital Twins</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="library">
+<h3>Library<a class="headerlink" href="#library" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Library">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Library</span></span><a class="headerlink" href="#Library" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="common/library.html"><span class="doc">Common Library</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="report">
+<h3>Report<a class="headerlink" href="#report" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Report">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Report</span></span><a class="headerlink" href="#Report" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="enterprise/report.html"><span class="doc">Enterprise Report</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="spreadsheet">
+<h3>Spreadsheet<a class="headerlink" href="#spreadsheet" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Spreadsheet">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Spreadsheet</span></span><a class="headerlink" href="#Spreadsheet" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="operation/spreadsheet.html"><span class="doc">Operation spreadsheet</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+</section>
+<section id="helper-classes">
+<h2>Helper Classes<a class="headerlink" href="#helper-classes" title="Permalink to this headline"></a></h2>
+<section id="cachehelper">
+<h3>CacheHelper<a class="headerlink" href="#cachehelper" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="CacheHelper">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CacheHelper</span></span><a class="headerlink" href="#CacheHelper" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="helpers/cache.html"><span class="doc">Client Caching</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="poeditor">
+<h3>PoEditor<a class="headerlink" href="#poeditor" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="PoEditor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PoEditor</span></span><a class="headerlink" href="#PoEditor" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <a class="reference internal" href="helpers/poeditor.html"><span class="doc">POEditor</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<section id="continueoncapturedcontext">
+<h3>ContinueOnCapturedContext<a class="headerlink" href="#continueoncapturedcontext" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ContinueOnCapturedContext">
+<span class="sig-name descname"><span class="pre">ContinueOnCapturedContext</span></span><a class="headerlink" href="#ContinueOnCapturedContext" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="environment">
+<h3>Environment<a class="headerlink" href="#environment" title="Permalink to this headline"></a></h3>
+<p>The Environment property must be set so that the SDK knows which deployment environment to communicate.
+See: <a class="reference internal" href="concepts/environments.html"><span class="doc">Deployment Environments</span></a></p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Environment">
+<span class="sig-name descname"><span class="pre">Environment</span></span><a class="headerlink" href="#Environment" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>See <a class="reference internal" href="helpers/environment.html"><span class="doc">PlatformEnvironment</span></a></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="helpers/environment.html#ONE.Utilities.PlatformEnvironment" title="ONE.Utilities.PlatformEnvironment">PlatformEnvironment</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="highlight-C# notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">ONE.Utilities</span><span class="p">;</span><span class="w"></span>
+<span class="n">clientSDK</span><span class="p">.</span><span class="n">Environment</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">PlatformEnvironmentHelper</span><span class="p">.</span><span class="n">GetPlatformEnvironment</span><span class="p">(</span><span class="n">EnumPlatformEnvironment</span><span class="p">.</span><span class="n">AqiFeature</span><span class="p">);</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="logger">
+<h3>Logger<a class="headerlink" href="#logger" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Logger">
+<span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#Logger" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="logrestfulcalls">
+<h3>LogRestfulCalls<a class="headerlink" href="#logrestfulcalls" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="LogRestfulCalls">
+<span class="sig-name descname"><span class="pre">LogRestfulCalls</span></span><a class="headerlink" href="#LogRestfulCalls" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -119,6 +323,8 @@
 <tbody>
 </tbody>
 </table>
+</section>
+</section>
 </section>
 
 

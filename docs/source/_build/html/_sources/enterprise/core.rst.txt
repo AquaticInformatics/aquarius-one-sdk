@@ -7,7 +7,7 @@ Enterprise Core manages:
 *  Products
 *  Features
 
-Users
+User Methods
 ------------
 
 CreateUserAsync
@@ -102,7 +102,7 @@ SafeDeleteUserAsync
 
    :rtype: Task<bool>
 
-Tenants
+Tenant Methods
 ------------
 
 CreateTenantAsync
@@ -176,7 +176,7 @@ RemoveTenantProductOfferingAsync
    :rtype: Task<bool>
 
 
-Product Offerings
+Product Offering Methods
 ----------------------
 
 CreateProductOfferingAsync
@@ -223,7 +223,7 @@ DeleteProductOfferingAsync
    :rtype: Task<bool>
 
 
-Features
+Feature Methods
 ------------
 
 

@@ -65,9 +65,11 @@
 <li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Utilities</span></p>
+<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="utilities/cache.html">Client Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">Client Caching</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor</a></li>
 </ul>
 
         </div>
@@ -100,7 +102,10 @@
  <a href="#A"><strong>A</strong></a>
  | <a href="#C"><strong>C</strong></a>
  | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#P"><strong>P</strong></a>
  | <a href="#R"><strong>R</strong></a>
  | <a href="#S"><strong>S</strong></a>
  | <a href="#U"><strong>U</strong></a>
@@ -112,15 +117,27 @@
       <li><a href="enterprise/core.html#ClientSDK.Core.AddTenantProductOfferingAsync">AddTenantProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Authentication">Authentication (built-in class)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="C">C</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="enterprise/core.html#ClientSDK.Core.CreateProductOfferingAsync">CreateProductOfferingAsync() (in module ClientSDK.Core)</a>
+      <li><a href="clientsdk.html#CacheHelper">CacheHelper (built-in class)</a>
+</li>
+      <li><a href="clientsdk.html#Configuration">Configuration (built-in class)</a>
+</li>
+      <li><a href="clientsdk.html#ContinueOnCapturedContext">ContinueOnCapturedContext</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Core">Core (built-in class)</a>
+</li>
+      <li><a href="enterprise/core.html#ClientSDK.Core.CreateProductOfferingAsync">CreateProductOfferingAsync() (in module ClientSDK.Core)</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.CreateTenantAsync">CreateTenantAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.CreateUserAsync">CreateUserAsync() (in module ClientSDK.Core)</a>
@@ -131,6 +148,8 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Data">Data (built-in class)</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.DeleteProductOfferingAsync">DeleteProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
   </ul></td>
@@ -139,25 +158,67 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.DeleteUserAsync">DeleteUserAsync() (in module ClientSDK.Core)</a>
 </li>
+      <li><a href="clientsdk.html#DigitalTwin">DigitalTwin (built-in class)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Environment">Environment</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/environment.html#ONE.Utilities.PlatformEnvironment.Environments">Environments (in module ONE.Utilities.PlatformEnvironment)</a>
+</li>
   </ul></td>
 </tr></table>
 
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/environment.html#ONE.Utilities.PlatformEnvironment.GetPlatformEnvironment">GetPlatformEnvironment() (in module ONE.Utilities.PlatformEnvironment)</a>, <a href="helpers/environment.html#id0">[1]</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingAsync">GetProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingsAsync">GetProductOfferingsAsync() (in module ClientSDK.Core)</a>
 </li>
-      <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantAsync">GetTenantAsync() (in module ClientSDK.Core)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantAsync">GetTenantAsync() (in module ClientSDK.Core)</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantsAsync">GetTenantsAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetUserAsync">GetUserAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetUsersAsync">GetUsersAsync() (in module ClientSDK.Core)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Library">Library (built-in class)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Logger">Logger</a>
+</li>
+      <li><a href="clientsdk.html#LogRestfulCalls">LogRestfulCalls</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/environment.html#ONE.Utilities.PlatformEnvironment">PlatformEnvironment (class in ONE.Utilities)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#PoEditor">PoEditor (built-in class)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -168,12 +229,20 @@
       <li><a href="enterprise/core.html#ClientSDK.Core.RemoveTenantProductOfferingAsync">RemoveTenantProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
   </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Report">Report (built-in class)</a>
+</li>
+  </ul></td>
 </tr></table>
 
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/core.html#ClientSDK.Core.SafeDeleteUserAsync">SafeDeleteUserAsync() (in module ClientSDK.Core)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="clientsdk.html#Spreadsheet">Spreadsheet (built-in class)</a>
 </li>
   </ul></td>
 </tr></table>

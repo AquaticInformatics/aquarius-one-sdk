@@ -48,6 +48,8 @@ Contents
    timeseries/data
 
 .. toctree::
-   :caption: Utilities
+   :caption: Helpers
 
-   utilities/cache
+   helpers/cache
+   helpers/environment
+   helpers/poeditor
