@@ -33,7 +33,7 @@ namespace ONE.Operations
         {
             if (_clientSDK.Authentication.User == null)
             {
-                var result = await _clientSDK.Authentication.GetUserInfo();
+                var result = await _clientSDK.Authentication.GetUserInfoAync();
                 _clientSDK.Authentication.User = await _clientSDK.UserHelper.GetUserFromUserInfoAsync(result);
             }
             var operationTwins = await _clientSDK.DigitalTwin.GetDecendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, Constants.SpaceCategory.OperationType.RefId);
