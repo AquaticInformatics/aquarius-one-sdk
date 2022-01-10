@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Welcome to Aquarius ONE SDK documentation! &mdash; Aquarius.ONE.SDK 9.2 documentation</title>
+  <title>Welcome to Aquarius ONE SDK documentation! &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -29,7 +29,7 @@
             <a href="#" class="icon icon-home"> Aquarius.ONE.SDK
           </a>
               <div class="version">
-                9.2.0
+                10.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
@@ -259,10 +259,27 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Core APIs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#user-methods">User Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createuserasync">CreateUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#updateuserasync">UpdateUserAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getusersasync">GetUsersAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getuserasync">GetUserAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deleteuserasync">DeleteUserAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#safedeleteuserasync">SafeDeleteUserAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#extended-user-methods">Extended User Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#activateuserasync">ActivateUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getuserfeaturesasync">GetUserFeaturesAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#resendinvitationasync">ResendInvitationAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#sendusernametoemailasync">SendUserNameToEmailAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#unlockuserasync">UnlockUserAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#usercreaterolerefasync">UserCreateRoleRefAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#userdeleterolerefasync">UserDeleteRoleRefAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#userrequestpasswordresetasync">UserRequestPasswordResetAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#userpasswordupdateasync">UserPasswordUpdateAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#role-methods">Role Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getrolesasync">GetRolesAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#id14">GetRolesAsync</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#tenant-methods">Tenant Methods</a><ul>
@@ -282,7 +299,16 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deleteproductofferingasync">DeleteProductOfferingAsync</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#feature-methods">Feature Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#feature-methods">Feature Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createfeatureasync">CreateFeatureAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#updatefeatureasync">UpdateFeatureAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getfeaturesasync">GetFeaturesAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getfeatureasync">GetFeatureAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deletefeatureasync">DeleteFeatureAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createfeaturereferenceasync">CreateFeatureReferenceAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#deletefeaturereferenceasync">DeleteFeatureReferenceAsync</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="enterprise/data.html">Enterprise Data APIs</a></li>
@@ -320,20 +346,6 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-parameter-code-methods">Agency Parameter Code Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-unit-type-methods">Agency Unit Type Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-unit-code-methods">Agency Unit Code Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="common/library.html#digital-twin-type-methods">Digital Twin Type Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#createdigitaltwintypeasync">CreateDigitalTwinTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#updatedigitaltwintypeasync">UpdateDigitalTwinTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#deletedigitaltwintypeasync">DeleteDigitalTwinTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#getdigitaltwintypesasync">GetDigitalTwinTypesAsync</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="common/library.html#digital-twin-sub-type-methods">Digital Twin Sub-Type Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#createdigitaltwinsubtypeasync">CreateDigitalTwinSubTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#updatedigitaltwinsubtypeasync">UpdateDigitalTwinSubTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#deletedigitaltwinsubtypeasync">DeleteDigitalTwinSubTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="common/library.html#getdigitaltwinsubtypesasync">GetDigitalTwinSubTypesAsync</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="common/library.html#parameter-methods">Parameter Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="common/library.html#quantity-type-methods">Quantity Type Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="common/library.html#getquantitytypesasync">GetQuantityTypesAsync</a></li>
@@ -344,7 +356,34 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="common/notifications.html">Notification APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Report APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Report APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/report.html#report-definition-methods">Report Definition Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#createdefinitionasync">CreateDefinitionAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#getdefinitionsasync">GetDefinitionsAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#getdefinitionasync">GetDefinitionAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#deletedefinitionasync">DeleteDefinitionAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#updatedefinitionasync">UpdateDefinitionAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/report.html#report-methods">Report Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#downloadreportasync">DownloadReportAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/report.html#report-template-methods">Report Template Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#downloadtemplateasync">DownloadTemplateAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#uploaddefinitiontemplateasync">UploadDefinitionTemplateAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/report.html#report-tag-methods">Report Tag Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#createreporttagasync">CreateReportTagAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#deletereporttagasync">DeleteReportTagAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#getreporttagsasync">GetReportTagsAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#getreporttagasync">GetReportTagAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/report.html#updatereportdefinitiontagasync">UpdateReportDefinitionTagAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">

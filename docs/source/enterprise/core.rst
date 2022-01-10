@@ -158,6 +158,23 @@ Completes the user creation process by setting the userName and password.  The u
    :returns: Whether the user was successfully activated.
    :rtype: Task<bool>
 
+GetUserFeaturesAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Retrieves Features for the user associated with the provided userId.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=featuregetbyuserid`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+
+.. method:: GetUserFeaturesAsync(string userId)
+   :module: ClientSDK.Core
+
+   :param userId: The GUID for the user.
+   :type userId: string
+
+   :returns: A list of features available to the user.
+   :rtype: Task<List<Feature>>
+
 ResendInvitationAsync
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -285,6 +302,42 @@ Updates the password for the user associated with the provided userId.
    :returns: Whether the password was successfully updated.
    :rtype: Task<bool>
 
+Role Methods
+------------
+
+GetRolesAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Retrieves all roles.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=rolegetmany>`_ 
+- **Required Role(s)**: Any
+
+.. method:: GetRolesAsync(bool expandFeature = false)
+   :module: ClientSDK.Core
+
+   :param expandFeature: Whether to expand to all features available to the role.
+   :type expandFeature: bool
+
+   :rtype: Task<List<Role>>
+
+GetRolesAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Retrieve a role by id.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=rolegetbyid>`_ 
+- **Required Role(s)**: Any
+
+.. method:: GetRoleAsync(string id, bool expandFeature = false)
+   :module: ClientSDK.Core
+
+   :param id: Unique identifier (GUID) for the role.
+   :type id: string
+   :param expandFeature: Whether to expand to all features available to the role.
+   :type expandFeature: bool
+
+   :rtype: Task<Role>
 
 Tenant Methods
 ------------
@@ -292,7 +345,10 @@ Tenant Methods
 CreateTenantAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-**Required Role(s)**: Admin, Support Admin, Super Admin
+Creates a tenant (customer).
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=createtenant>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
 
 .. method:: CreateTenantAsync(string name, string culture)
    :module: ClientSDK.Core
@@ -309,7 +365,8 @@ GetTenantsAsync
 
 Retrieves all tenants the user has rights to see.
 
-**Required Role(s)**: Admin, Support Admin, Super Admin
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=tenantgetmany>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
 
 .. method:: GetTenantsAsync()
    :module: ClientSDK.Core   
@@ -319,6 +376,9 @@ Retrieves all tenants the user has rights to see.
 GetTenantAsync
 ^^^^^^^^^^^^^^^^^^^^
 
+Retrieves an existing Tenant based on the id provided.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=tenantget>`_ 
 **Required Role(s)**: Admin, Support Admin, Super Admin
 
 .. method:: GetTenantAsync(string tenantId)
@@ -332,7 +392,10 @@ GetTenantAsync
 UpdateTenantAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-**Required Role(s)**: Admin, Support Admin, Super Admin
+Updates an existing tenant based on the provided id.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=updatetenant>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
 
 .. method:: UpdateTenantAsync(Tenant tenant)
    :module: ClientSDK.Core   
@@ -345,7 +408,10 @@ UpdateTenantAsync
 DeleteTenantAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-**Required Role(s)**: Admin, Support Admin, Super Admin
+Deletes an existing tenant based on the provided id.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=deletetenant>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
 
 .. method:: DeleteTenantAsync(string id)
    :module: ClientSDK.Core   
@@ -358,9 +424,15 @@ DeleteTenantAsync
 AddTenantProductOfferingAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-Assigns a product offering to a tenant.
+Creates a relationship between a Tenant and a Product Offering. 
+Note that for a user to assign a Product Offering to a tenant, the user must currently have that Product Offering in their Product claims. 
+If no Tenant-Product Offering relationship is present, 
+it will be created. If one is present, it will be updated.
+Authorization - Role and Twin Policy. The user must have a valid token, must be an admin, and must have access to the related tenant digital twin.
 
-**Required Role(s)**: Admin, Support Admin, Super Admin
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=TenantProductOfferingCreate>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resouce Authorization**: Must have access to the related tenant digital twin
 
 .. method:: AddTenantProductOfferingAsync(string tenantId, string productOfferingId)
    :module: ClientSDK.Core   
@@ -375,9 +447,11 @@ Assigns a product offering to a tenant.
 RemoveTenantProductOfferingAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-Removes a product offering from a tenant.
+Deletes a relationship between a tenant and a product offering.
 
-**Required Role(s)**: Admin, Support Admin, Super Admin
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=TenantProductOfferingDelete>`_ 
+- - **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resouce Authorization**: Must have access to the related tenant digital twin
 
 .. method:: RemoveTenantProductOfferingAsync(string tenantId, string productOfferingId)
    :module: ClientSDK.Core  
@@ -389,18 +463,17 @@ Removes a product offering from a tenant.
 
    :rtype: Task<bool>
 
-
 Product Offering Methods
 ----------------------
 
 CreateProductOfferingAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-Creates a new product offering.
+Creates a ProductOffering that customers can purchase. 
+ProductOfferings contain a set of features that can be used to determine what ui components to display or to control access to certain endpoints.
 
-**Required Role(s)**: Super Admin
-
-
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=createproductoffering>`_ 
+- **Required Role(s)**: Super Admin
 
 .. method:: CreateProductOfferingAsync(ProductOffering productOffering)
    :module: ClientSDK.Core   
@@ -413,7 +486,10 @@ Creates a new product offering.
 GetProductOfferingAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-**Required Role(s)**: Any
+Retrieves an existing ProductOffering based on the id provided.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=productofferinggetbyid>`_ 
+- **Required Role(s)**: Any
 
 .. method:: GetProductOfferingAsync(string productOfferingId, EnumProductOfferingExpand productOfferingExpand = EnumProductOfferingExpand.None)
    :module: ClientSDK.Core   
@@ -431,10 +507,17 @@ GetProductOfferingAsync
 UpdateProductOfferingAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-**Required Role(s)**: Super Admin
+Updates an existing ProductOffering that customers can purchase. 
+ProductOfferings contain a set of features that can be used to determine what ui components to display or to control access to certain endpoints.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=patchproductoffering>`_ 
+- **Required Role(s)**: Super Admin
 
 .. method:: UpdateProductOfferingAsync(ProductOffering productOffering)
    :module: ClientSDK.Core   
+
+   :param productOfferingId: The GUID for the product offering.
+   :type productOfferingId: string 
 
    :rtype: Task<ProductOffering>
 
@@ -443,7 +526,8 @@ DeleteProductOfferingAsync
 
 Deletes a product offering.
 
-**Required Role(s)**: Super Admin
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=productofferingdelete>`_ 
+- **Required Role(s)**: Super Admin
 
 .. method:: DeleteProductOfferingAsync(string id)
    :module: ClientSDK.Core   
@@ -457,12 +541,16 @@ Deletes a product offering.
 Feature Methods
 ------------
 
+Features are used to determine what ui components to display or to control which users have access to certain endpoints so this can cause components or endpoints to be inaccessable.
+
+
 CreateFeatureAsync
 ^^^^^^^^^^^^^^^^^^^^
 
 Creates a new Feature
 
-**Required Role(s)**: Super Admin
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=createfeature>`_ 
+- **Required Role(s)**: Super Admin
 
 .. method:: CreateFeatureAsync(Feature feature)
    :module: ClientSDK.Core   
@@ -470,7 +558,109 @@ Creates a new Feature
    :param feature: The Feature object.
    :type feature: Feature
 
-   :rtype: Task<ProductOffering>
+   :rtype: Task<Feature>
+
+UpdateFeatureAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Updates an existing Feature. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=patchfeature>`_ 
+- **Required Role(s)**: Super Admin
+
+.. method:: UpdateFeatureAsync(Feature feature)
+   :module: ClientSDK.Core   
+
+   :param feature: The Feature object.
+   :type feature: Feature
+
+   :rtype: Task<Feature>
+
+GetFeaturesAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Retrieves all available Features. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=featuregetmany>`_ 
+- **Required Role(s)**: Super Admin
+
+.. method:: GetFeaturesAsync()
+   :module: ClientSDK.Core   
+
+   :rtype: Task<List<Feature>>
+
+GetFeatureAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Retrieves an existing Feature based on the id provided.
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=featuregetbyid>`_ 
+- **Required Role(s)**: Super Admin
+
+.. method:: GetFeatureAsync(string id)
+   :module: ClientSDK.Core   
+
+   :param id: The unique identifier of the feature to delete
+   :type id: string
+
+   :rtype: Task<Feature>
+
+DeleteFeatureAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Deletes an existing Feature. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=featuredelete>`_ 
+- **Required Role(s)**: Super Admin
+
+.. method:: DeleteFeatureAsync(string id)
+   :module: ClientSDK.Core   
+
+   :param id: The unique identifier of the feature to delete
+   :type id: string
+
+   :rtype: Task<bool>
+
+CreateFeatureReferenceAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Creates a reference to a Feature from another entity. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=featurecreateref>`_ 
+- **Required Role(s)**: Super Admin
+
+.. method:: CreateFeatureReferenceAsync(string featureId, EnumNavigationProperty enumNavigationProperty, string referenceId)
+   :module: ClientSDK.Core   
+
+   :param featureId: The unique identifier of the feature
+   :type featureId: string
+   :param enumNavigationProperty: The unique identifier of the feature
+   :type enumNavigationProperty: EnumNavigationProperty
+   :param referenceId: The unique identifier of the item to be referenced
+   :type referenceId: string
+
+   :rtype: Task<bool>
+
+DeleteFeatureReferenceAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Deletes a reference to a Feature from another entity. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-core-v1&operation=featuredeleteref>`_ 
+- **Required Role(s)**: Super Admin
+
+.. method:: DeleteFeatureReferenceAsync(string featureId, EnumNavigationProperty enumNavigationProperty, string referenceId)
+   :module: ClientSDK.Core   
+
+   :param featureId: The unique identifier of the feature
+   :type featureId: string
+   :param enumNavigationProperty: The unique identifier of the feature
+   :type enumNavigationProperty: EnumNavigationProperty
+   :param referenceId: The unique identifier of the item to be referenced
+   :type referenceId: string
+
+   :rtype: Task<bool>
+
 
 
 .. autosummary::

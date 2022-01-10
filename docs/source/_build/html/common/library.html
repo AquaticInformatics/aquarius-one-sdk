@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Library APIs &mdash; Aquarius.ONE.SDK 9.2 documentation</title>
+  <title>Library APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -30,7 +30,7 @@
             <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
           </a>
               <div class="version">
-                9.2.0
+                10.0.0
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
@@ -71,20 +71,6 @@
 <li class="toctree-l2"><a class="reference internal" href="#agency-parameter-code-methods">Agency Parameter Code Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#agency-unit-type-methods">Agency Unit Type Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#agency-unit-code-methods">Agency Unit Code Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#digital-twin-type-methods">Digital Twin Type Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#createdigitaltwintypeasync">CreateDigitalTwinTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#updatedigitaltwintypeasync">UpdateDigitalTwinTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deletedigitaltwintypeasync">DeleteDigitalTwinTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getdigitaltwintypesasync">GetDigitalTwinTypesAsync</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#digital-twin-sub-type-methods">Digital Twin Sub-Type Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#createdigitaltwinsubtypeasync">CreateDigitalTwinSubTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#updatedigitaltwinsubtypeasync">UpdateDigitalTwinSubTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#deletedigitaltwinsubtypeasync">DeleteDigitalTwinSubTypeAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getdigitaltwinsubtypesasync">GetDigitalTwinSubTypesAsync</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#parameter-methods">Parameter Methods</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#quantity-type-methods">Quantity Type Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#getquantitytypesasync">GetQuantityTypesAsync</a></li>
@@ -100,7 +86,7 @@
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../timeseries/data.html">TimeSeries Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
@@ -152,208 +138,6 @@ In addition all library items are localized into 24 languages. Additional applic
 </section>
 <section id="agency-unit-code-methods">
 <h2>Agency Unit Code Methods<a class="headerlink" href="#agency-unit-code-methods" title="Permalink to this headline"></a></h2>
-</section>
-<section id="digital-twin-type-methods">
-<h2>Digital Twin Type Methods<a class="headerlink" href="#digital-twin-type-methods" title="Permalink to this headline"></a></h2>
-<section id="createdigitaltwintypeasync">
-<h3>CreateDigitalTwinTypeAsync<a class="headerlink" href="#createdigitaltwintypeasync" title="Permalink to this headline"></a></h3>
-<p>Creates a new digital twin type.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=CreateDigitalTwinType">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.CreateDigitalTwinTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinType</span> <span class="pre">digitalTwinType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>digitalTwinType</strong> (<em>DigitalTwinType</em>) – The DigitalTwin Type Object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The created DigitalTwinType.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;DigitalTwinType&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="updatedigitaltwintypeasync">
-<h3>UpdateDigitalTwinTypeAsync<a class="headerlink" href="#updatedigitaltwintypeasync" title="Permalink to this headline"></a></h3>
-<p>Updates an existing digital twin type.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=UpdateDigitalTwinType">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.UpdateDigitalTwinTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinType</span> <span class="pre">digitalTwinType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>digitalTwinType</strong> (<em>DigitalTwinType</em>) – The DigitalTwin Type Object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The updated DigitalTwinType.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;DigitalTwinType&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="deletedigitaltwintypeasync">
-<h3>DeleteDigitalTwinTypeAsync<a class="headerlink" href="#deletedigitaltwintypeasync" title="Permalink to this headline"></a></h3>
-<p>Deletes a digital twin type.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=DeleteDigitalTwinType">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.DeleteDigitalTwinTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The GUID of the DigitalTwinType Object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Whether the deletion was successful.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;bool&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="getdigitaltwintypesasync">
-<h3>GetDigitalTwinTypesAsync<a class="headerlink" href="#getdigitaltwintypesasync" title="Permalink to this headline"></a></h3>
-<p>Retrieves all digital twin types.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDigitalTwinTypes">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Any</p></li>
-<li><p>User must be authenticated</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.GetDigitalTwinTypesAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetDigitalTwinTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetDigitalTwinTypesAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A list of all of the DigitalTwinTypes.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Task&lt;List&lt;DigitalTwinType&gt;&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-</section>
-<section id="digital-twin-sub-type-methods">
-<h2>Digital Twin Sub-Type Methods<a class="headerlink" href="#digital-twin-sub-type-methods" title="Permalink to this headline"></a></h2>
-<section id="createdigitaltwinsubtypeasync">
-<h3>CreateDigitalTwinSubTypeAsync<a class="headerlink" href="#createdigitaltwinsubtypeasync" title="Permalink to this headline"></a></h3>
-<p>Creates a new digital twin sub-type.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=CreateDigitalTwinSubtype">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.CreateDigitalTwinSubTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinSubtype</span> <span class="pre">digitalTwinSubType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>digitalTwinSubType</strong> (<em>DigitalTwinSubtype</em>) – The DigitalTwin Sub-Type Object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The created DigitalTwinSubtype.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;DigitalTwinSubtype&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="updatedigitaltwinsubtypeasync">
-<h3>UpdateDigitalTwinSubTypeAsync<a class="headerlink" href="#updatedigitaltwinsubtypeasync" title="Permalink to this headline"></a></h3>
-<p>Updates an existing digital twin sub-type.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="hhttps://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=updatetwinsubtype">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.UpdateDigitalTwinSubTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinSubtype</span> <span class="pre">digitalTwinSubType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>digitalTwinSubType</strong> (<em>DigitalTwinSubtype</em>) – The DigitalTwinSubtype Type Object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>The updated DigitalTwinSubtype.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;DigitalTwinSubtype&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="deletedigitaltwinsubtypeasync">
-<h3>DeleteDigitalTwinSubTypeAsync<a class="headerlink" href="#deletedigitaltwinsubtypeasync" title="Permalink to this headline"></a></h3>
-<p>Deletes a digital twin sub-type.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="hhttps://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=deletetwinsubtype">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.DeleteDigitalTwinSubTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The GUID of the DigitalTwinSubtype Object</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>Whether the deletion was successful.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;bool&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="getdigitaltwinsubtypesasync">
-<h3>GetDigitalTwinSubTypesAsync<a class="headerlink" href="#getdigitaltwinsubtypesasync" title="Permalink to this headline"></a></h3>
-<p>Retrieves all digital twin types.</p>
-<ul class="simple">
-<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDigitalTwinSubtypes">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
-<li><p><strong>Required Role(s)</strong>: Any</p></li>
-<li><p>User must be authenticated</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.GetDigitalTwinSubTypesAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetDigitalTwinSubTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetDigitalTwinSubTypesAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A list of all of the DigitalTwinSubtypes.</p>
-</dd>
-<dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Task&lt;List&lt;DigitalTwinSubtype&gt;&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
 </section>
 <section id="parameter-methods">
 <h2>Parameter Methods<a class="headerlink" href="#parameter-methods" title="Permalink to this headline"></a></h2>

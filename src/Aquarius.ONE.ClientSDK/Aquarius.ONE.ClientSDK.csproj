@@ -29,4 +29,8 @@
     <PackageReference Include="NodaTime" Version="3.0.9" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Enterprise\Data\" />
+  </ItemGroup>
+
 </Project>

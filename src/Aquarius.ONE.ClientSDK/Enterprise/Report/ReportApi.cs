@@ -7,6 +7,7 @@ using System.Linq;
 using System.IO;
 using Enterprise.Report.Protobuf.Models;
 using Common.Core.Protobuf.Models;
+using Newtonsoft.Json.Linq;
 
 namespace ONE.Enterprise.Report
 {
@@ -22,7 +23,7 @@ namespace ONE.Enterprise.Report
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
         }
-        public async Task<List<ReportDefinition>> GetDefinitionsAsync()
+        public async Task<List<ReportDefinition>> GetDefinitionsAsync(string operationId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -30,7 +31,7 @@ namespace ONE.Enterprise.Report
             List<ReportDefinition> definitions = new List<ReportDefinition>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/definitions?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/definitions?plantId={operationId}&requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
@@ -229,7 +230,7 @@ namespace ONE.Enterprise.Report
                 throw;
             }
         }
-        public async Task<ReportDefinition> DownloadReportAsync(string id, string filename)
+        public async Task<bool> DownloadReportAsync(string id, string filename)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -244,16 +245,12 @@ namespace ONE.Enterprise.Report
                     {
                         await respContent.ResponseMessage.Content.CopyToAsync(fs);
                     }
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-                    foreach (var result in results)
-                    {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Success" });
-                        return result;
-                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Success" });
+
+                    return true;
                 }
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Failed" });
-                return null;
+                return false;
             }
             catch (Exception e)
             {
@@ -261,7 +258,8 @@ namespace ONE.Enterprise.Report
                 throw;
             }
         }
-        public async Task<ReportDefinition> DownloadTemplateAsync(string id, string filename)
+
+        public async Task<bool> DownloadTemplateAsync(string id, string filename)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -276,26 +274,18 @@ namespace ONE.Enterprise.Report
                     {
                         await respContent.ResponseMessage.Content.CopyToAsync(fs);
                     }
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-                    foreach (var result in results)
-                    {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Success" });
-                        return result;
-                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadTemplateAsync Success" });
+                    return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Failed" });
-                return null;
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadTemplateAsync Failed" });
+                return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"DownloadReportAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"DownloadTemplateAsync Failed - {e.Message}" });
                 throw;
             }
         }
-
-
-
 
         public async Task<List<ReportDefinitionTag>> GetReportTagsAsync()
         {
@@ -357,14 +347,18 @@ namespace ONE.Enterprise.Report
                 throw;
             }
         }
-        public async Task<ReportDefinition> CreateReportTagAsync(ReportDefinition reportDefinition)
+        public async Task<ReportDefinitionTag> CreateReportTagAsync(string reportDefinitionId, string tag)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             var endpoint = $"enterprise/report/v1/report/tags?requestId={requestId}";
 
-            var json = JsonConvert.SerializeObject(reportDefinition);
+            dynamic passwordJson = new JObject();
+            passwordJson.ReportDefinitionId = reportDefinitionId;
+            passwordJson.Tag = tag;
+
+            var json = passwordJson.ToString();
 
             try
             {
@@ -372,7 +366,7 @@ namespace ONE.Enterprise.Report
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
+                    var results = apiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"CreateReportTagAsync Success" });
