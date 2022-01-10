@@ -25,6 +25,240 @@ namespace ONE.Enterprise.Twin
 
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
+        /********************* DigitalTwinTypes *********************/
+        public async Task<DigitalTwinType> CreateDigitalTwinTypeAsync(DigitalTwinType digitalTwinType)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"enterprise/twin/v1/DigitalTwinType";
+
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            var json = JsonConvert.SerializeObject(digitalTwinType, jsonSettings);
+
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var results = apiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
+                    foreach (var result in results)
+                    {
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Success" });
+                        return result;
+                    }
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<DigitalTwinType> UpdateDigitalTwinTypeAsync(DigitalTwinType digitalTwinType)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"enterprise/twin/v1/DigitalTwinType/{digitalTwinType.Id}";
+
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            var json = JsonConvert.SerializeObject(digitalTwinType, jsonSettings);
+
+            try
+            {
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var results = apiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
+                    foreach (var result in results)
+                    {
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Success" });
+                        return result;
+                    }
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<bool> DeleteDigitalTwinTypeAsync(string id)
+        {
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            try
+            {
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinType/{id}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Success" });
+                else
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Failed" });
+                return respContent.ResponseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<List<DigitalTwinType>> GetDigitalTwinTypesAsync()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            List<DigitalTwinType> digitalTwinTypes = new List<DigitalTwinType>();
+            try
+            {
+                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var result = apiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Success" });
+                    return result;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        /********************* DigitalTwinSubTypes *********************/
+        public async Task<DigitalTwinSubtype> CreateDigitalTwinSubTypeAsync(DigitalTwinSubtype digitalTwinSubType)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"enterprise/twin/v1/DigitalTwinSubType";
+
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            var json = JsonConvert.SerializeObject(digitalTwinSubType, jsonSettings);
+
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var results = apiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
+                    foreach (var result in results)
+                    {
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Success" });
+                        return result;
+                    }
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<DigitalTwinSubtype> UpdateDigitalTwinSubTypeAsync(DigitalTwinSubtype digitalTwinSubType)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"enterprise/twin/v1/DigitalTwinSubType/{digitalTwinSubType.Id}";
+
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            var json = JsonConvert.SerializeObject(digitalTwinSubType, jsonSettings);
+
+            try
+            {
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var results = apiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
+                    foreach (var result in results)
+                    {
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Success" });
+                        return result;
+                    }
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<bool> DeleteDigitalTwinSubTypeAsync(string id)
+        {
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            try
+            {
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinSubType/{id}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Success" });
+                else
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Failed" });
+                return respContent.ResponseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<List<DigitalTwinSubtype>> GetDigitalTwinSubTypesAsync()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            List<DigitalTwinSubtype> digitalTwinSubTypes = new List<DigitalTwinSubtype>();
+            try
+            {
+                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinSubType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var result = apiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Success" });
+                    return result;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+
+
         public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = Constants.SpaceCategory.LocationType.RefId, string twinSubTypeId = Constants.SpaceCategory.LocationType.OtherSubType.RefId)
         {
             DigitalTwin digitalTwin = new DigitalTwin();

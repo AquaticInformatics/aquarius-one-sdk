@@ -53,7 +53,7 @@ Contents
    :caption: Data Services
 
    operation/spreadsheet
-   timeseries/data
+   historical/data
 
 .. toctree::
    :caption: Helpers
