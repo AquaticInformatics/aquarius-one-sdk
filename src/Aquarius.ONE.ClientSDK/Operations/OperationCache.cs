@@ -140,8 +140,8 @@ namespace ONE.Operations
         {
             if (IsInitialized)
                 return true;
-            ColumnTwins = await ClientSDK.DigitalTwin.GetDecendantsByCategoryAsync(Id, 4);
-            LocationTwins = await ClientSDK.DigitalTwin.GetDecendantsByCategoryAsync(Id, 2);
+            ColumnTwins = await ClientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 4);
+            LocationTwins = await ClientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
             SpreadsheetDefinition = await ClientSDK.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
             FifteenMinuteWorksheetDefinition = await ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
             HourlyWorksheetDefinition = await ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetHour);

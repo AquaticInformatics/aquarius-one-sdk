@@ -36,7 +36,7 @@ namespace ONE.Operations
                 var result = await _clientSDK.Authentication.GetUserInfoAync();
                 _clientSDK.Authentication.User = await _clientSDK.UserHelper.GetUserFromUserInfoAsync(result);
             }
-            var operationTwins = await _clientSDK.DigitalTwin.GetDecendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, Constants.SpaceCategory.OperationType.RefId);
+            var operationTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, Constants.SpaceCategory.OperationType.RefId);
             foreach (var operationTwin in operationTwins)
             {
                 Operations.Add(new OperationCache(_clientSDK, operationTwin));

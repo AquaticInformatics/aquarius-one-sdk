@@ -76,6 +76,18 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#digital-twin-methods">Digital Twin Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#createspaceasync">CreateSpaceAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#createasync">CreateAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#moveasync">MoveAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateasync">UpdateAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updatetwindataasync">UpdateTwinDataAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updatetwindatamanyasync">UpdateTwinDataManyAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteasync">DeleteAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deletetreeasync">DeleteTreeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getasync">GetAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getdescendantsbytypeasync">GetDescendantsByTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getdescendantsasync">GetDescendantsAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getdescendantsbysubtypeasync">GetDescendantsBySubTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id20">GetDescendantsBySubTypeAsync</a></li>
 </ul>
 </li>
 </ul>
@@ -133,8 +145,8 @@
 <p>Digital Twin Definition Language (DTDL) is leveraged to describe data schemas that unleash the power of the data stored within the Digital Twins.</p>
 <blockquote>
 <div><dl class="py class">
-<dt class="sig sig-object py" id="ClientSDK.DigitalTwins">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.</span></span><span class="sig-name descname"><span class="pre">DigitalTwins</span></span><a class="headerlink" href="#ClientSDK.DigitalTwins" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.</span></span><span class="sig-name descname"><span class="pre">DigitalTwin</span></span><a class="headerlink" href="#ClientSDK.DigitalTwin" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
@@ -149,8 +161,8 @@
 <li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.CreateDigitalTwinTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinType</span> <span class="pre">digitalTwinType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.CreateDigitalTwinTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">CreateDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinType</span> <span class="pre">digitalTwinType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.CreateDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>digitalTwinType</strong> (<em>DigitalTwinType</em>) – The DigitalTwin Type Object</p>
@@ -174,8 +186,8 @@
 <li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.UpdateDigitalTwinTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinType</span> <span class="pre">digitalTwinType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.UpdateDigitalTwinTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">UpdateDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinType</span> <span class="pre">digitalTwinType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.UpdateDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>digitalTwinType</strong> (<em>DigitalTwinType</em>) – The DigitalTwin Type Object</p>
@@ -199,8 +211,8 @@
 <li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.DeleteDigitalTwinTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.DeleteDigitalTwinTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">DeleteDigitalTwinTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.DeleteDigitalTwinTypeAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The GUID of the DigitalTwinType Object</p>
@@ -225,8 +237,8 @@
 <li><p>User must be authenticated</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.GetDigitalTwinTypesAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetDigitalTwinTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetDigitalTwinTypesAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetDigitalTwinTypesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetDigitalTwinTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetDigitalTwinTypesAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A list of all of the DigitalTwinTypes.</p>
@@ -250,8 +262,8 @@
 <li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.CreateDigitalTwinSubTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinSubtype</span> <span class="pre">digitalTwinSubType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.CreateDigitalTwinSubTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">CreateDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinSubtype</span> <span class="pre">digitalTwinSubType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.CreateDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>digitalTwinSubType</strong> (<em>DigitalTwinSubtype</em>) – The DigitalTwin Sub-Type Object</p>
@@ -275,8 +287,8 @@
 <li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.UpdateDigitalTwinSubTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinSubtype</span> <span class="pre">digitalTwinSubType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.UpdateDigitalTwinSubTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">UpdateDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwinSubtype</span> <span class="pre">digitalTwinSubType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.UpdateDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>digitalTwinSubType</strong> (<em>DigitalTwinSubtype</em>) – The DigitalTwinSubtype Type Object</p>
@@ -300,8 +312,8 @@
 <li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.DeleteDigitalTwinSubTypeAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.DeleteDigitalTwinSubTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">DeleteDigitalTwinSubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.DeleteDigitalTwinSubTypeAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The GUID of the DigitalTwinSubtype Object</p>
@@ -326,8 +338,8 @@
 <li><p>User must be authenticated</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Library.GetDigitalTwinSubTypesAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetDigitalTwinSubTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetDigitalTwinSubTypesAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetDigitalTwinSubTypesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetDigitalTwinSubTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetDigitalTwinSubTypesAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p>A list of all of the DigitalTwinSubtypes.</p>
@@ -346,14 +358,15 @@
 <h3>CreateSpaceAsync<a class="headerlink" href="#createspaceasync" title="Permalink to this headline"></a></h3>
 <blockquote>
 <div><p>Creates a new space Digital Twin.</p>
-<blockquote>
-<div><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=Create">RESTful API Documentation</a></p>
 </div></blockquote>
-</div></blockquote>
-<p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=Create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+</ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Core.CreateSpaceAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Core.</span></span><span class="sig-name descname"><span class="pre">CreateSpaceAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">parentId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinTypeId</span> <span class="pre">=</span> <span class="pre">Constants.SpaceCategory.LocationType.RefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinSubTypeId</span> <span class="pre">=</span> <span class="pre">Constants.SpaceCategory.LocationType.OtherSubType.RefId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Core.CreateSpaceAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.CreateSpaceAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">CreateSpaceAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">parentId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinTypeId</span> <span class="pre">=</span> <span class="pre">Constants.SpaceCategory.LocationType.RefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinSubTypeId</span> <span class="pre">=</span> <span class="pre">Constants.SpaceCategory.LocationType.OtherSubType.RefId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.CreateSpaceAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
@@ -379,6 +392,334 @@
 <span class="w">   </span><span class="n">Constants</span><span class="p">.</span><span class="n">SpaceCategory</span><span class="p">.</span><span class="n">OperationType</span><span class="p">.</span><span class="n">WasterWaterTreatmentPlantSubType</span><span class="p">.</span><span class="n">RefId</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
+</section>
+<section id="createasync">
+<h3>CreateAsync<a class="headerlink" href="#createasync" title="Permalink to this headline"></a></h3>
+<blockquote>
+<div><p>Creates a new Digital Twin.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=Create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.CreateAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">CreateAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwin</span> <span class="pre">digitalTwin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.CreateAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>digitalTwin</strong> (<em>Digital Twin Object</em>) – Digital Twin Object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Digital Twin Object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="moveasync">
+<h3>MoveAsync<a class="headerlink" href="#moveasync" title="Permalink to this headline"></a></h3>
+<blockquote>
+<div><p>Moves an existing Digital Twin to a new parent.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=MoveByRef">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.MoveAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">MoveAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinRefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">parentRefId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.MoveAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>twinRefId</strong> (<em>string</em>) – Reference ID of the Digital Twin.</p></li>
+<li><p><strong>parentRefId</strong> (<em>string</em>) – Reference ID of the Parent Digital Twin.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Digital Twin Object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateasync">
+<h3>UpdateAsync<a class="headerlink" href="#updateasync" title="Permalink to this headline"></a></h3>
+<blockquote>
+<div><p>Updates an existing Digital Twin.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=UpdateDigitalTwin">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.UpdateAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">UpdateAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwin</span> <span class="pre">digitalTwin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.UpdateAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>digitalTwin</strong> (<a class="reference internal" href="../clientsdk.html#DigitalTwin" title="DigitalTwin"><em>DigitalTwin</em></a>) – Digital Twin Object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Digital Twin Object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updatetwindataasync">
+<h3>UpdateTwinDataAsync<a class="headerlink" href="#updatetwindataasync" title="Permalink to this headline"></a></h3>
+<blockquote>
+<div><p>Updates the twin data on an existing Digital Twin.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=UpdateDigitalTwin">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.UpdateTwinDataAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">UpdateTwinDataAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">JsonPatchDocument</span> <span class="pre">twinData</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.UpdateTwinDataAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>twinReferenceId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p></li>
+<li><p><strong>twinData</strong> (<em>JsonPatchDocument</em>) – JsonPatchDocument.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Digital Twin Object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updatetwindatamanyasync">
+<h3>UpdateTwinDataManyAsync<a class="headerlink" href="#updatetwindatamanyasync" title="Permalink to this headline"></a></h3>
+<blockquote>
+<div><p>Updates the twin data on multiple existing Digital Twins.</p>
+</div></blockquote>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=UpdateDigitalTwin">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.UpdateTwinDataManyAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">UpdateTwinDataManyAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Dictionary&lt;string</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">JsonPatchDocument&gt;</span> <span class="pre">twinDataMany</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.UpdateTwinDataManyAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>twinDataMany</strong> (<em>Dictionary&lt;string</em><em>, </em><em>JsonPatchDocument&gt;</em>) – Dictionary of a collection of twins to be updated.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Digital Twin Object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteasync">
+<h3>DeleteAsync<a class="headerlink" href="#deleteasync" title="Permalink to this headline"></a></h3>
+<p>Deletes a Digital Twin.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=Delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.DeleteAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">DeleteAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long</span> <span class="pre">twinId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.DeleteAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>twinId</strong> (<em>long</em>) – The numeric unique id of the twin.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the deletion was successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deletetreeasync">
+<h3>DeleteTreeAsync<a class="headerlink" href="#deletetreeasync" title="Permalink to this headline"></a></h3>
+<p>Deletes a Digital Twin and its descendants.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=DeleteTwinTree">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Admin, Support Admin, Super Admin</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.DeleteTreeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">DeleteTreeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.DeleteTreeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the deletion was successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getasync">
+<h3>GetAsync<a class="headerlink" href="#getasync" title="Permalink to this headline"></a></h3>
+<p>Returns a digital twin based on the digital twin ID.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=Get">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinRefId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>twinRefId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the deletion was successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getdescendantsbytypeasync">
+<h3>GetDescendantsByTypeAsync<a class="headerlink" href="#getdescendantsbytypeasync" title="Permalink to this headline"></a></h3>
+<p>Returns a collection of digital twins based on the digital twin ID and Type.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDescendantsByRefByType">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetDescendantsByTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetDescendantsByTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinRefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinTypeId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetDescendantsByTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>twinRefId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p></li>
+<li><p><strong>twinTypeId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of Digital Twins.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;DigitalTwin&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getdescendantsasync">
+<h3>GetDescendantsAsync<a class="headerlink" href="#getdescendantsasync" title="Permalink to this headline"></a></h3>
+<p>Returns a collection of digital twins based on the digital twin ID and optional Type.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDescendantsByRef">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetDescendantsAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetDescendantsAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinRefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinTypeId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetDescendantsAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>twinRefId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p></li>
+<li><p><strong>twinTypeId</strong> (<em>string</em>) – (Optional) Unique Reference Id (GUID) of the digital twin type.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of Digital Twins.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;DigitalTwin&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getdescendantsbysubtypeasync">
+<h3>GetDescendantsBySubTypeAsync<a class="headerlink" href="#getdescendantsbysubtypeasync" title="Permalink to this headline"></a></h3>
+<p>Returns a collection of digital twins based on the digital twin ID and Sub Type.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDescendantsByRefByType">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetDescendantsBySubTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetDescendantsBySubTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinRefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinSubTypeId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetDescendantsBySubTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>twinRefId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p></li>
+<li><p><strong>twinSubTypeId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin subtype.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of Digital Twins.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;DigitalTwin&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="id20">
+<h3>GetDescendantsBySubTypeAsync<a class="headerlink" href="#id20" title="Permalink to this headline"></a></h3>
+<p>Returns a collection of digital twins based on the digital twin ID and category Id.  See <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDescendantsByRefByType">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the parent digital twin.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.DigitalTwin.GetDescendantsByCategoryAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.DigitalTwin.</span></span><span class="sig-name descname"><span class="pre">GetDescendantsByCategoryAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinRefId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">categoryId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.DigitalTwin.GetDescendantsByCategoryAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>twinRefId</strong> (<em>string</em>) – Unique Reference Id (GUID) of the digital twin.</p></li>
+<li><p><strong>categoryId</strong> (<em>uint</em>) – Unique category Id of the digital twin category.  See <a class="reference internal" href="../concepts/digitaltwin.html"><span class="doc">Digital Twins</span></a></p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>List of Digital Twins.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;DigitalTwin&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />

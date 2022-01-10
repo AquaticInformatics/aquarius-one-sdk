@@ -258,6 +258,7 @@ namespace ONE.Enterprise.Twin
         }
 
 
+        /********************* DigitalTwins *********************/
 
         public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = Constants.SpaceCategory.LocationType.RefId, string twinSubTypeId = Constants.SpaceCategory.LocationType.OtherSubType.RefId)
         {
@@ -511,11 +512,11 @@ namespace ONE.Enterprise.Twin
             }
         }
 
-        public async Task<List<DigitalTwin>> GetDecendantsByTypeAsync(string twinRefId, string twinTypeId)
+        public async Task<List<DigitalTwin>> GetDescendantsByTypeAsync(string twinRefId, string twinTypeId)
         {
-            return await GetDecendantsAsync(twinRefId, twinTypeId);
+            return await GetDescendantsAsync(twinRefId, twinTypeId);
         }
-        public async Task<List<DigitalTwin>> GetDecendantsAsync(string twinRefId, string twinTypeId)
+        public async Task<List<DigitalTwin>> GetDescendantsAsync(string twinRefId, string twinTypeId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
@@ -547,7 +548,7 @@ namespace ONE.Enterprise.Twin
                 throw;
             }
         }
-        public async Task<List<DigitalTwin>> GetDecendantsBySubTypeAsync(string twinRefId, string twinSubTypeId)
+        public async Task<List<DigitalTwin>> GetDescendantsBySubTypeAsync(string twinRefId, string twinSubTypeId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
@@ -579,7 +580,7 @@ namespace ONE.Enterprise.Twin
                 throw;
             }
         }
-        public async Task<List<DigitalTwin>> GetDecendantsByCategoryAsync(string twinRefId, uint categoryId)
+        public async Task<List<DigitalTwin>> GetDescendantsByCategoryAsync(string twinRefId, uint categoryId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();

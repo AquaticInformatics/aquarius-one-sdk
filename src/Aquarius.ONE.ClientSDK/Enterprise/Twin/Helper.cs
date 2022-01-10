@@ -40,10 +40,10 @@ namespace ONE.Enterprise.Twin
             {
                 OperationDigitalTwinItem = new DigitalTwinItem(operationDigitalTwin);
                 //Load Location Structure
-                var locationDigitalTwins = await _digitalTwinApi.GetDecendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.SpaceCategory.LocationType.RefId);
+                var locationDigitalTwins = await _digitalTwinApi.GetDescendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.SpaceCategory.LocationType.RefId);
 
                 //Load Column Telemetry Twins
-                var columnDigitalTwins = await _digitalTwinApi.GetDecendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.TelemetryCategory.ColumnType.RefId);
+                var columnDigitalTwins = await _digitalTwinApi.GetDescendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.TelemetryCategory.ColumnType.RefId);
 
                 //Merge the Twins
                 var allChildTwins = locationDigitalTwins.Union(columnDigitalTwins).ToList();
