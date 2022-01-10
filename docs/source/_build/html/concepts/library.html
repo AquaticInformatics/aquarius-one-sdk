@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Global Library &mdash; Aquarius.ONE.SDK 9.2 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Spreadsheets" href="spreadsheet.html" />
+    <link rel="prev" title="Digital Twins" href="digitaltwin.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
+          </a>
+              <div class="version">
+                9.2.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clientsdk.html">ClientSDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="authorization.html">Authorization: Roles &amp; Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Global Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#translations-i18n">Translations (i18n)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#supported-languages">Supported languages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modules">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#quantity-types">Quantity Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#units">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agencies">Agencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-parameter-code-types">Agency Parameter Code Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-parameter-codes">Agency Parameter Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-unit-types">Agency Unit Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-unity-codes">Agency Unity Codes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="spreadsheet.html">Spreadsheets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins APIs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report APIs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../timeseries/data.html">TimeSeries Data APIs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor APIs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aquarius.ONE.SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Global Library</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/concepts/library.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="global-library">
+<h1>Global Library<a class="headerlink" href="#global-library" title="Permalink to this headline"></a></h1>
+<p>Provides a global standard set of Water Quality Specific Parameters, Units, Quantity Types, Agencies, Analysis Methods, and the means to map different standards.
+In addition all library items are localized into 24 languages. Additional application localization support is also provided.</p>
+<section id="translations-i18n">
+<h2>Translations (i18n)<a class="headerlink" href="#translations-i18n" title="Permalink to this headline"></a></h2>
+<section id="supported-languages">
+<h3>Supported languages<a class="headerlink" href="#supported-languages" title="Permalink to this headline"></a></h3>
+<p>Currently Translations are typically provided for the following:</p>
+<ul class="simple">
+<li><p>Bulgarian (BG)</p></li>
+<li><p>Chinese (CN)</p></li>
+<li><p>Croatian (HR)</p></li>
+<li><p>Czech (CZ)</p></li>
+<li><p>Danish (DK)</p></li>
+<li><p>Dutch (NL)</p></li>
+<li><p>English American (EN-US)</p></li>
+<li><p>Great Britain (EN-GB)</p></li>
+<li><p>French (FR)</p></li>
+<li><p>German (DE)</p></li>
+<li><p>Greek (GR)</p></li>
+<li><p>Hungarian (HU)</p></li>
+<li><p>Italian (IT)</p></li>
+<li><p>Japanese (JP)</p></li>
+<li><p>Korean (KR)</p></li>
+<li><p>Polish (PL)</p></li>
+<li><p>Portuguese (PT)</p></li>
+<li><p>Romanian (RO)</p></li>
+<li><p>Russian (RU)</p></li>
+<li><p>Serbian (RS)</p></li>
+<li><p>Slovak (SK)</p></li>
+<li><p>Slovenian (SI)</p></li>
+<li><p>Spanish (ES)</p></li>
+<li><p>Swedish (SE)</p></li>
+<li><p>Turkish (TR)</p></li>
+</ul>
+</section>
+<section id="modules">
+<h3>Modules<a class="headerlink" href="#modules" title="Permalink to this headline"></a></h3>
+<p>Translation Keys are grouped into Modules. The current defined modules are:</p>
+<ul class="simple">
+<li><p><strong>AQI_FOUNDATION_LIBRARY</strong>: Contains translations for items in Common Library</p></li>
+<li><p><strong>AQI_WEB_CLIENT</strong>: Contains translations for Angular Web Clients including Common UI Modules</p></li>
+<li><p><strong>AQI_EMAIL_TEMPLATE</strong>: Contains email templates needed for Enterprise Authorization</p></li>
+<li><p><strong>AQI_MOBILE_RIO</strong>: Contains translations for the Aquatic Compliance and Operations Mobile Data Collection Client</p></li>
+</ul>
+</section>
+</section>
+<section id="quantity-types">
+<h2>Quantity Types<a class="headerlink" href="#quantity-types" title="Permalink to this headline"></a></h2>
+<p>Physical quantities are those quantities that can be measured. Basically, there are two types of physical quantities (Base quantities or fundamental quantities) and (Derived quantities).
+These are quantities that are used to describe the laws of physics. Physical quantities may be divided into six categories.</p>
+</section>
+<section id="units">
+<h2>Units<a class="headerlink" href="#units" title="Permalink to this headline"></a></h2>
+<p>Units are the specific instance of a quantity type. For example for the quantity type of Mass, units could be: pounds, kilograms, etc.
+All Units have quantity types.</p>
+</section>
+<section id="parameters">
+<h2>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h2>
+<p>Parameters are the common identifier of what is being measured. As an example, Flow.
+Parameters have an associated Base Unit and quantity type.</p>
+</section>
+<section id="agencies">
+<h2>Agencies<a class="headerlink" href="#agencies" title="Permalink to this headline"></a></h2>
+<p>Agencies are used as a source of authority for Methods, Unit and Parameter Codes.</p>
+<p>Example Agencies:</p>
+<ul class="simple">
+<li><p>UGGS</p></li>
+<li><p>EPA</p></li>
+<li><p>Hach</p></li>
+<li><p>Aquatic Informatics</p></li>
+</ul>
+</section>
+<section id="agency-parameter-code-types">
+<h2>Agency Parameter Code Types<a class="headerlink" href="#agency-parameter-code-types" title="Permalink to this headline"></a></h2>
+</section>
+<section id="agency-parameter-codes">
+<h2>Agency Parameter Codes<a class="headerlink" href="#agency-parameter-codes" title="Permalink to this headline"></a></h2>
+</section>
+<section id="agency-unit-types">
+<h2>Agency Unit Types<a class="headerlink" href="#agency-unit-types" title="Permalink to this headline"></a></h2>
+</section>
+<section id="agency-unity-codes">
+<h2>Agency Unity Codes<a class="headerlink" href="#agency-unity-codes" title="Permalink to this headline"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="digitaltwin.html" class="btn btn-neutral float-left" title="Digital Twins" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="spreadsheet.html" class="btn btn-neutral float-right" title="Spreadsheets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Aquatic Informatics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

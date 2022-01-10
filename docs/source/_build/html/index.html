@@ -50,6 +50,7 @@
 <li class="toctree-l1"><a class="reference internal" href="concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/environments.html">Deployment Environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
@@ -202,6 +203,22 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/library.html">Global Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#translations-i18n">Translations (i18n)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concepts/library.html#supported-languages">Supported languages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/library.html#modules">Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#quantity-types">Quantity Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#units">Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#parameters">Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#agencies">Agencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#agency-parameter-code-types">Agency Parameter Code Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#agency-parameter-codes">Agency Parameter Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#agency-unit-types">Agency Unit Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/library.html#agency-unity-codes">Agency Unity Codes</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/spreadsheet.html">Spreadsheets</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="concepts/spreadsheet.html#worksheet">Worksheet</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#worksheet-type">Worksheet Type</a></li>
@@ -283,7 +300,35 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="common/activities.html">Activity APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Configuration APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/library.html">Library APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-methods">Agency Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-parameter-code-type-methods">Agency Parameter Code Type Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-parameter-code-methods">Agency Parameter Code Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-unit-type-methods">Agency Unit Type Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#agency-unit-code-methods">Agency Unit Code Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#digital-twin-type-methods">Digital Twin Type Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#createdigitaltwintypeasync">CreateDigitalTwinTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#updatedigitaltwintypeasync">UpdateDigitalTwinTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#deletedigitaltwintypeasync">DeleteDigitalTwinTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#getdigitaltwintypesasync">GetDigitalTwinTypesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#digital-twin-sub-type-methods">Digital Twin Sub-Type Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#createdigitaltwinsubtypeasync">CreateDigitalTwinSubTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#updatedigitaltwinsubtypeasync">UpdateDigitalTwinSubTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#deletedigitaltwinsubtypeasync">DeleteDigitalTwinSubTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#getdigitaltwinsubtypesasync">GetDigitalTwinSubTypesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#parameter-methods">Parameter Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#quantity-type-methods">Quantity Type Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="common/library.html#getquantitytypesasync">GetQuantityTypesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#translation-i18n-methods">Translation (i18n) Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common/library.html#unit-type-methods">Unit Type Methods</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="common/notifications.html">Notification APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Report APIs</a></li>
 </ul>

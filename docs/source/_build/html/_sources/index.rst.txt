@@ -27,6 +27,7 @@ Contents
    concepts/authorization
    concepts/environments
    concepts/digitaltwin
+   concepts/library
    concepts/spreadsheet
 
 
