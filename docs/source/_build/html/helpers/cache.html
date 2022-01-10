@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
@@ -75,8 +76,24 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">CacheHelper APIs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CacheHelper APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#librarycache-class">LibraryCache Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#librarycache-class-methods">LibraryCache Class Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#librarycache-class-properties">LibraryCache Class Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#i18nkeys">I18Nkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameteragencycodes">ParameterAgencyCodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameteragencycodetypes">ParameterAgencyCodeTypes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantitytypes">QuantityTypes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#units">Units</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#operationscache-class">OperationsCache Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#reportcache-class">ReportCache Class</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logger APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="poeditor.html">POEditor APIs</a></li>
 </ul>
 
@@ -113,6 +130,124 @@
 <dd></dd></dl>
 
 </div></blockquote>
+<p>The purpose of the Cache Helper is to load fairly static data that is accessed commonly into memory.
+In addition there are helper methods to retrieve these items efficiently.</p>
+<section id="librarycache-class">
+<h2>LibraryCache Class<a class="headerlink" href="#librarycache-class" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.</span></span><span class="sig-name descname"><span class="pre">LibraryCache</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<p>The purpose of the Library Cache is to load the global library, which is fairly static into memory,
+so that commonly reused items such as quantity types, units and paramters along with their translations can be quickly available.
+In addition there are helper methods to retrieve these items efficiently.</p>
+</section>
+<section id="librarycache-class-methods">
+<h2>LibraryCache Class Methods<a class="headerlink" href="#librarycache-class-methods" title="Permalink to this headline"></a></h2>
+</section>
+<section id="librarycache-class-properties">
+<h2>LibraryCache Class Properties<a class="headerlink" href="#librarycache-class-properties" title="Permalink to this headline"></a></h2>
+<section id="i18nkeys">
+<h3>I18Nkeys<a class="headerlink" href="#i18nkeys" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache.I18Nkeys">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.LibraryCache.</span></span><span class="sig-name descname"><span class="pre">I18Nkeys</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache.I18Nkeys" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List&lt;I18NKey&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="parameters">
+<h3>Parameters<a class="headerlink" href="#parameters" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache.Parameters">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.LibraryCache.</span></span><span class="sig-name descname"><span class="pre">Parameters</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache.Parameters" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List&lt;Parameter&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="parameteragencycodes">
+<h3>ParameterAgencyCodes<a class="headerlink" href="#parameteragencycodes" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodes">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.LibraryCache.</span></span><span class="sig-name descname"><span class="pre">ParameterAgencyCodes</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodes" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List&lt;ParameterAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="parameteragencycodetypes">
+<h3>ParameterAgencyCodeTypes<a class="headerlink" href="#parameteragencycodetypes" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodeTypes">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.LibraryCache.</span></span><span class="sig-name descname"><span class="pre">ParameterAgencyCodeTypes</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodeTypes" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List&lt;ParameterAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="quantitytypes">
+<h3>QuantityTypes<a class="headerlink" href="#quantitytypes" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache.QuantityTypes">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.LibraryCache.</span></span><span class="sig-name descname"><span class="pre">QuantityTypes</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache.QuantityTypes" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List&lt;Unit&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="units">
+<h3>Units<a class="headerlink" href="#units" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.LibraryCache.Units">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.LibraryCache.</span></span><span class="sig-name descname"><span class="pre">Units</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.LibraryCache.Units" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>List&lt;QuantityType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="operationscache-class">
+<h2>OperationsCache Class<a class="headerlink" href="#operationscache-class" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.</span></span><span class="sig-name descname"><span class="pre">OperationsCache</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</section>
+<section id="reportcache-class">
+<h2>ReportCache Class<a class="headerlink" href="#reportcache-class" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.ReportCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.</span></span><span class="sig-name descname"><span class="pre">ReportCache</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.ReportCache" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -121,6 +256,7 @@
 <tbody>
 </tbody>
 </table>
+</section>
 </section>
 
 

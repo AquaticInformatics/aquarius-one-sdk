@@ -51,6 +51,7 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
@@ -77,7 +78,15 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cache.html">CacheHelper APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Logger APIs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Logger APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#example-wpf-logging-usercontrol">Example WPF Logging UserControl</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#c-code-behind">C# Code-Behind</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#user-control-xaml">User Control XAML</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="poeditor.html">POEditor APIs</a></li>
 </ul>
 
@@ -114,6 +123,115 @@
 <dd></dd></dl>
 
 </div></blockquote>
+<section id="events">
+<h2>Events<a class="headerlink" href="#events" title="Permalink to this headline"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.Logger.Event">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Logger.</span></span><span class="sig-name descname"><span class="pre">Event</span></span><a class="headerlink" href="#ClientSDK.Logger.Event" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>EventHandler&lt;ClientApiLoggerEventArgs&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="example-wpf-logging-usercontrol">
+<h2>Example WPF Logging UserControl<a class="headerlink" href="#example-wpf-logging-usercontrol" title="Permalink to this headline"></a></h2>
+<section id="c-code-behind">
+<h3>C# Code-Behind<a class="headerlink" href="#c-code-behind" title="Permalink to this headline"></a></h3>
+<div class="highlight-C# notranslate"><div class="highlight"><pre><span></span><span class="k">using</span><span class="w"> </span><span class="nn">ONE.UserControls.Utilities</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="nn">ONE.Utilities</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System.Diagnostics</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System.Windows.Controls</span><span class="p">;</span><span class="w"></span>
+<span class="k">using</span><span class="w"> </span><span class="nn">System.Windows.Navigation</span><span class="p">;</span><span class="w"></span>
+
+<span class="k">namespace</span><span class="w"> </span><span class="nn">ONE.UserControls</span><span class="w"></span>
+<span class="p">{</span><span class="w"></span>
+<span class="w">   </span><span class="c1">/// &lt;summary&gt;</span>
+<span class="w">   </span><span class="c1">/// Interaction logic for Logger.xaml</span>
+<span class="w">   </span><span class="c1">/// &lt;/summary&gt;</span>
+<span class="w">   </span><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Logger</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">UserControl</span><span class="w"></span>
+<span class="w">   </span><span class="p">{</span><span class="w"></span>
+<span class="w">      </span><span class="k">public</span><span class="w"> </span><span class="nf">Logger</span><span class="p">()</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">InitializeComponent</span><span class="p">();</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">public</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Initialize</span><span class="p">(</span><span class="n">ClientSDK</span><span class="w"> </span><span class="n">clientSDK</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="n">clientSDK</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">Event</span><span class="w"> </span><span class="p">+=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">EventHandler</span><span class="p">&lt;</span><span class="n">ClientApiLoggerEventArgs</span><span class="p">&gt;(</span><span class="n">SdkEvent</span><span class="p">);</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">      </span><span class="k">void</span><span class="w"> </span><span class="nf">SdkEvent</span><span class="p">(</span><span class="kt">object</span><span class="w"> </span><span class="n">sender</span><span class="p">,</span><span class="w"> </span><span class="n">ClientApiLoggerEventArgs</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">Dispatcher</span><span class="p">.</span><span class="n">Invoke</span><span class="p">(()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"></span>
+<span class="w">            </span><span class="p">{</span><span class="w"></span>
+<span class="w">               </span><span class="n">lsvLogs</span><span class="p">.</span><span class="n">Items</span><span class="p">.</span><span class="n">Insert</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">LogItem</span><span class="w"></span>
+<span class="w">               </span><span class="p">{</span><span class="w"></span>
+<span class="w">                  </span><span class="n">Timestamp</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">ElapsedMs</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">ElapsedMs</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">Level</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">EventLevel</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">Message</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Message</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">Module</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Module</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">HttpStatus</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">HttpStatusCode</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">HttpCode</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="p">)</span><span class="n">e</span><span class="p">.</span><span class="n">HttpStatusCode</span><span class="p">,</span><span class="w"></span>
+<span class="w">                  </span><span class="n">File</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">File</span><span class="w"></span>
+<span class="w">               </span><span class="p">});</span><span class="w"></span>
+<span class="w">            </span><span class="p">});</span><span class="w"></span>
+
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+
+<span class="w">      </span><span class="k">private</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OpenPageRequestNavigate</span><span class="p">(</span><span class="kt">object</span><span class="w"> </span><span class="n">sender</span><span class="p">,</span><span class="w"> </span><span class="n">RequestNavigateEventArgs</span><span class="w"> </span><span class="n">e</span><span class="p">)</span><span class="w"></span>
+<span class="w">      </span><span class="p">{</span><span class="w"></span>
+<span class="w">            </span><span class="c1">// for .NET Core you need to add UseShellExecute = true</span>
+<span class="w">            </span><span class="c1">// see https://docs.microsoft.com/dotnet/api/system.diagnostics.processstartinfo.useshellexecute#property-value</span>
+<span class="w">            </span><span class="n">Process</span><span class="p">.</span><span class="n">Start</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ProcessStartInfo</span><span class="p">(</span><span class="n">e</span><span class="p">.</span><span class="n">Uri</span><span class="p">.</span><span class="n">AbsoluteUri</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">UseShellExecute</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">});</span><span class="w"></span>
+<span class="w">            </span><span class="n">e</span><span class="p">.</span><span class="n">Handled</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span><span class="w"></span>
+<span class="w">      </span><span class="p">}</span><span class="w"></span>
+<span class="w">   </span><span class="p">}</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
+</pre></div>
+</div>
+</section>
+<section id="user-control-xaml">
+<h3>User Control XAML<a class="headerlink" href="#user-control-xaml" title="Permalink to this headline"></a></h3>
+<div class="highlight-xml notranslate"><div class="highlight"><pre><span></span><span class="nt">&lt;UserControl</span> <span class="na">x:Class=</span><span class="s">&quot;ONE.UserControls.Logger&quot;</span>
+            <span class="na">xmlns=</span><span class="s">&quot;http://schemas.microsoft.com/winfx/2006/xaml/presentation&quot;</span>
+            <span class="na">xmlns:x=</span><span class="s">&quot;http://schemas.microsoft.com/winfx/2006/xaml&quot;</span>
+            <span class="na">xmlns:mc=</span><span class="s">&quot;http://schemas.openxmlformats.org/markup-compatibility/2006&quot;</span>
+            <span class="na">xmlns:d=</span><span class="s">&quot;http://schemas.microsoft.com/expression/blend/2008&quot;</span>
+            <span class="na">xmlns:local=</span><span class="s">&quot;clr-namespace:ONE.UserControls&quot;</span>
+            <span class="na">mc:Ignorable=</span><span class="s">&quot;d&quot;</span>
+            <span class="na">d:DesignHeight=</span><span class="s">&quot;450&quot;</span> <span class="na">d:DesignWidth=</span><span class="s">&quot;800&quot;</span><span class="nt">&gt;</span>
+   <span class="nt">&lt;Grid&gt;</span>
+      <span class="nt">&lt;ListView</span> <span class="na">Grid.Column=</span><span class="s">&quot;1&quot;</span> <span class="na">Grid.RowSpan=</span><span class="s">&quot;4&quot;</span> <span class="na">x:Name=</span><span class="s">&quot;lsvLogs&quot;</span> <span class="na">HorizontalAlignment=</span><span class="s">&quot;Stretch&quot;</span> <span class="na">HorizontalContentAlignment=</span><span class="s">&quot;Stretch&quot;</span><span class="nt">&gt;</span>
+            <span class="nt">&lt;ListView.View&gt;</span>
+               <span class="nt">&lt;GridView&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;Timestamp&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding Timestamp}&quot;</span> <span class="na">Width=</span><span class="s">&quot;150&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;ElapsedMs&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding ElapsedMs}&quot;</span> <span class="na">Width=</span><span class="s">&quot;70&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;HttpCode&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding HttpCode}&quot;</span> <span class="na">Width=</span><span class="s">&quot;70&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;HttpStatus&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding HttpStatus}&quot;</span> <span class="na">Width=</span><span class="s">&quot;70&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;Level&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding Level}&quot;</span> <span class="na">Width=</span><span class="s">&quot;70&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;Module&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding Module}&quot;</span> <span class="na">Width=</span><span class="s">&quot;100&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;Message&quot;</span> <span class="na">DisplayMemberBinding=</span><span class="s">&quot;{Binding Message}&quot;</span> <span class="na">Width=</span><span class="s">&quot;500&quot;</span><span class="nt">&gt;&lt;/GridViewColumn&gt;</span>
+                  <span class="nt">&lt;GridViewColumn</span> <span class="na">Header=</span><span class="s">&quot;Log&quot;</span>  <span class="na">Width=</span><span class="s">&quot;500&quot;</span><span class="nt">&gt;</span>
+                        <span class="nt">&lt;GridViewColumn.CellTemplate&gt;</span>
+                           <span class="nt">&lt;DataTemplate&gt;</span>
+                              <span class="nt">&lt;TextBlock</span>  <span class="na">Name=</span><span class="s">&quot;urlToContent&quot;</span> <span class="na">MinWidth=</span><span class="s">&quot;100&quot;</span> <span class="na">Width=</span><span class="s">&quot;Auto&quot;</span><span class="nt">&gt;</span>
+                                    <span class="nt">&lt;Hyperlink</span> <span class="na">NavigateUri=</span><span class="s">&quot;{Binding Path=File}&quot;</span> <span class="na">Name=</span><span class="s">&quot;Log&quot;</span>   <span class="na">RequestNavigate=</span><span class="s">&quot;OpenPageRequestNavigate&quot;</span><span class="nt">&gt;</span>
+                                       <span class="nt">&lt;TextBlock</span> <span class="na">Text=</span><span class="s">&quot;{Binding Path=File}&quot;</span><span class="nt">/&gt;</span>
+                                    <span class="nt">&lt;/Hyperlink&gt;</span>
+                                 <span class="nt">&lt;/TextBlock&gt;</span>
+                           <span class="nt">&lt;/DataTemplate&gt;</span>
+                        <span class="nt">&lt;/GridViewColumn.CellTemplate&gt;</span>
+                  <span class="nt">&lt;/GridViewColumn&gt;</span>
+               <span class="nt">&lt;/GridView&gt;</span>
+            <span class="nt">&lt;/ListView.View&gt;</span>
+      <span class="nt">&lt;/ListView&gt;</span>
+   <span class="nt">&lt;/Grid&gt;</span>
+<span class="nt">&lt;/UserControl&gt;</span>
+</pre></div>
+</div>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -122,6 +240,8 @@
 <tbody>
 </tbody>
 </table>
+</section>
+</section>
 </section>
 
 
