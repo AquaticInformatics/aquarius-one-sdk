@@ -211,102 +211,6 @@ CreateAsync
    :returns: Digital Twin Object.
    :rtype: Task<DigitalTwin>
 
-MoveAsync
-^^^^^^^^^^^^^^^^^^^^
-
- Moves an existing Digital Twin to a new parent. 
-
-- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=MoveByRef>`_ 
-- **Required Role(s)**: Admin, Support Admin, Super Admin
-- **Resource Authorization**: Access to the parent digital twin.
-
-.. method:: MoveAsync(string twinRefId, string parentRefId)
-   :module: ClientSDK.DigitalTwin
-
-   :param twinRefId: Reference ID of the Digital Twin.
-   :type twinRefId: string
-   :param parentRefId: Reference ID of the Parent Digital Twin.
-   :type parentRefId: string
-
-   :returns: Digital Twin Object.
-   :rtype: Task<DigitalTwin>
-
-
-UpdateAsync
-^^^^^^^^^^^^^^^^^^^^
-
- Updates an existing Digital Twin. 
-
-- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=UpdateDigitalTwin>`_ 
-- **Required Role(s)**: Admin, Support Admin, Super Admin
-- **Resource Authorization**: Access to the parent digital twin.
-
-.. method:: UpdateAsync(DigitalTwin digitalTwin)
-   :module: ClientSDK.DigitalTwin
-
-   :param digitalTwin: Digital Twin Object.
-   :type digitalTwin: DigitalTwin
- 
-   :returns: Digital Twin Object.
-   :rtype: Task<DigitalTwin>
-
-UpdateTwinDataAsync
-^^^^^^^^^^^^^^^^^^^^
-
- Updates the twin data on an existing Digital Twin. 
-
-- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=UpdateDigitalTwin>`_ 
-- **Required Role(s)**: Admin, Support Admin, Super Admin
-- **Resource Authorization**: Access to the parent digital twin.
-
-.. method:: UpdateTwinDataAsync(string twinReferenceId, JsonPatchDocument twinData)
-   :module: ClientSDK.DigitalTwin
-
-   :param twinReferenceId: Unique Reference Id (GUID) of the digital twin.
-   :type twinReferenceId: string
- 
-   :param twinData: JsonPatchDocument.
-   :type twinData: JsonPatchDocument
-
-   :returns: Digital Twin Object.
-   :rtype: Task<DigitalTwin>
-
-UpdateTwinDataManyAsync
-^^^^^^^^^^^^^^^^^^^^
-
- Updates the twin data on multiple existing Digital Twins. 
-
-- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=UpdateDigitalTwin>`_ 
-- **Required Role(s)**: Admin, Support Admin, Super Admin
-- **Resource Authorization**: Access to the parent digital twin.
-
-.. method:: UpdateTwinDataManyAsync(Dictionary<string, JsonPatchDocument> twinDataMany)
-   :module: ClientSDK.DigitalTwin
-
-   :param twinDataMany: Dictionary of a collection of twins to be updated.
-   :type twinDataMany: Dictionary<string, JsonPatchDocument>
-
-   :returns: Digital Twin Object.
-   :rtype: Task<DigitalTwin>
-
-DeleteAsync
-^^^^^^^^^^^^^^^^^^^^
-
-Deletes a Digital Twin. 
-
-- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=Delete>`_ 
-- **Required Role(s)**: Admin, Support Admin, Super Admin
-- **Resource Authorization**: Access to the parent digital twin.
-
-.. method:: DeleteAsync(long twinId)
-   :module: ClientSDK.DigitalTwin
-
-   :param twinId: The numeric unique id of the twin.
-   :type twinId: long
-
-   :returns: Whether the deletion was successful.
-   :rtype: Task<bool>
-
 DeleteTreeAsync
 ^^^^^^^^^^^^^^^^^^^^
 
@@ -426,6 +330,103 @@ Returns a collection of digital twins based on the digital twin ID and category 
 
    :returns: List of Digital Twins.
    :rtype: Task<List<DigitalTwin>>
+
+MoveAsync
+^^^^^^^^^^^^^^^^^^^^
+
+ Moves an existing Digital Twin to a new parent. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=MoveByRef>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resource Authorization**: Access to the parent digital twin.
+
+.. method:: MoveAsync(string twinRefId, string parentRefId)
+   :module: ClientSDK.DigitalTwin
+
+   :param twinRefId: Reference ID of the Digital Twin.
+   :type twinRefId: string
+   :param parentRefId: Reference ID of the Parent Digital Twin.
+   :type parentRefId: string
+
+   :returns: Digital Twin Object.
+   :rtype: Task<DigitalTwin>
+
+
+UpdateAsync
+^^^^^^^^^^^^^^^^^^^^
+
+ Updates an existing Digital Twin. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=UpdateDigitalTwin>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resource Authorization**: Access to the parent digital twin.
+
+.. method:: UpdateAsync(DigitalTwin digitalTwin)
+   :module: ClientSDK.DigitalTwin
+
+   :param digitalTwin: Digital Twin Object.
+   :type digitalTwin: DigitalTwin
+ 
+   :returns: Digital Twin Object.
+   :rtype: Task<DigitalTwin>
+
+UpdateTwinDataAsync
+^^^^^^^^^^^^^^^^^^^^
+
+ Updates the twin data on an existing Digital Twin. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=UpdateDigitalTwin>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resource Authorization**: Access to the parent digital twin.
+
+.. method:: UpdateTwinDataAsync(string twinReferenceId, JsonPatchDocument twinData)
+   :module: ClientSDK.DigitalTwin
+
+   :param twinReferenceId: Unique Reference Id (GUID) of the digital twin.
+   :type twinReferenceId: string
+ 
+   :param twinData: JsonPatchDocument.
+   :type twinData: JsonPatchDocument
+
+   :returns: Digital Twin Object.
+   :rtype: Task<DigitalTwin>
+
+UpdateTwinDataManyAsync
+^^^^^^^^^^^^^^^^^^^^
+
+ Updates the twin data on multiple existing Digital Twins. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=UpdateDigitalTwin>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resource Authorization**: Access to the parent digital twin.
+
+.. method:: UpdateTwinDataManyAsync(Dictionary<string, JsonPatchDocument> twinDataMany)
+   :module: ClientSDK.DigitalTwin
+
+   :param twinDataMany: Dictionary of a collection of twins to be updated.
+   :type twinDataMany: Dictionary<string, JsonPatchDocument>
+
+   :returns: Digital Twin Object.
+   :rtype: Task<DigitalTwin>
+
+DeleteAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Deletes a Digital Twin. 
+
+- `RESTful API Documentation <https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&operation=Delete>`_ 
+- **Required Role(s)**: Admin, Support Admin, Super Admin
+- **Resource Authorization**: Access to the parent digital twin.
+
+.. method:: DeleteAsync(long twinId)
+   :module: ClientSDK.DigitalTwin
+
+   :param twinId: The numeric unique id of the twin.
+   :type twinId: long
+
+   :returns: Whether the deletion was successful.
+   :rtype: Task<bool>
+
 
 
 .. autosummary::

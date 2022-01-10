@@ -71,7 +71,20 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Spreadsheet APIs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Spreadsheet APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cellvalidateasync">CellValidateAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#columngetbydayasync">ColumnGetByDayAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#columngetbymonthasync">ColumnGetByMonthAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#columngetbyyearasync">ColumnGetByYearAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computationcreateasync">ComputationCreateAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computationexecuteasync">ComputationExecuteAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#computationgetoneasync">ComputationGetOneAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id7">ComputationGetOneAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
@@ -111,6 +124,257 @@
 <p>Water treatment, purpose built data models of tabular data related to water treatment operations.
 Used in conjunction with Enterprise Twins to model the treatment process and Common Computations to calculate data needed to
 operate treatment processes and facilities within regulatory compliance.</p>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.Report">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">Report</span></span><a class="headerlink" href="#ClientSDK.Spreadsheet.Report" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<section id="cellvalidateasync">
+<h3>CellValidateAsync<a class="headerlink" href="#cellvalidateasync" title="Permalink to this headline"></a></h3>
+<p>Validates the provided cell. This is the same validation that takes place on a save request but without actually saving the cell.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=cellvalidate">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-READ</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.CellValidateAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">CellValidateAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Cell</span> <span class="pre">cell</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.CellValidateAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>cell</strong> (<em>Cell</em>) – The Cell to validate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>User Object that matches the User Protocol Buffer.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Cell&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="columngetbydayasync">
+<h3>ColumnGetByDayAsync<a class="headerlink" href="#columngetbydayasync" title="Permalink to this headline"></a></h3>
+<p>Returns column data based on day, month and year</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=columngetbyday">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-GRAPHS</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ColumnGetByDayAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ColumnGetByDayAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">columnId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DateTime</span> <span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ColumnGetByDayAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>columnId</strong> (<em>uint</em>) – The numeric id or column number.</p></li>
+<li><p><strong>date</strong> (<em>DateTime</em>) – The Date to retrieve the Column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A collection of measurements that match the date specified.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;Measurement&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="columngetbymonthasync">
+<h3>ColumnGetByMonthAsync<a class="headerlink" href="#columngetbymonthasync" title="Permalink to this headline"></a></h3>
+<p>Returns column data based on month and year of the passed in date</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=columngetbymonth">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-GRAPHS</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ColumnGetByMonthAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ColumnGetByMonthAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">columnId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DateTime</span> <span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ColumnGetByMonthAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>columnId</strong> (<em>uint</em>) – The numeric id or column number.</p></li>
+<li><p><strong>date</strong> (<em>DateTime</em>) – The Date to retrieve the Column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A collection of measurements that match the date specified.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;Measurement&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="columngetbyyearasync">
+<h3>ColumnGetByYearAsync<a class="headerlink" href="#columngetbyyearasync" title="Permalink to this headline"></a></h3>
+<p>Returns column data based on year of the passed in date</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=columngetbyyear">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-GRAPHS</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ColumnGetByYearAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ColumnGetByYearAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">columnId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DateTime</span> <span class="pre">date</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ColumnGetByYearAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>columnId</strong> (<em>uint</em>) – The numeric id or column number.</p></li>
+<li><p><strong>date</strong> (<em>DateTime</em>) – The Date to retrieve the Column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A collection of measurements that match the date specified.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;Measurement&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="computationcreateasync">
+<h3>ComputationCreateAsync<a class="headerlink" href="#computationcreateasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new spreadsheet computation.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=computationcreate">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.COMPUTATIONS_WRITE</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ComputationCreateAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ComputationCreateAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SpreadsheetComputation</span> <span class="pre">spreadsheetComputation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ComputationCreateAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>spreadsheetComputation</strong> (<em>SpreadsheetComputation</em>) – The computation related to the column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A SpreadsheetComputation object.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;SpreadsheetComputation&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="computationexecuteasync">
+<h3>ComputationExecuteAsync<a class="headerlink" href="#computationexecuteasync" title="Permalink to this headline"></a></h3>
+<p>Executes all computations based on column number, start row or end row.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=computationcreate">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-EDIT</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ComputationExecuteAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ComputationExecuteAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">startRow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">endRow</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">DataSourceBinding</span> <span class="pre">dataSourceBinding</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ComputationExecuteAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>startRow</strong> (<em>uint</em>) – Start Row number for computation execution.</p></li>
+<li><p><strong>endRow</strong> (<em>uint</em>) – End Row number for computation execution.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;SpreadsheetComputation&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="computationgetoneasync">
+<h3>ComputationGetOneAsync<a class="headerlink" href="#computationgetoneasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves a computation based on the Computation Binding ID.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=computationcreate">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-EDIT</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ComputationGetOneAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ComputationGetOneAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">twinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">computationBindingId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ComputationGetOneAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>computationBindingId</strong> (<em>string</em>) – Binding ID of the computation to be retrieved.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;SpreadsheetComputation&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="id7">
+<h3>ComputationGetOneAsync<a class="headerlink" href="#id7" title="Permalink to this headline"></a></h3>
+<p>Validates a computation payload.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-operations-spreadsheet-v1&amp;operation=computationcreate">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+<li><p><strong>Feature Authorization</strong>: FEATURE.SPREADSHEET-EDIT</p></li>
+<li></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ComputationValidateAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ComputationValidateAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">operationTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SpreadsheetComputation</span> <span class="pre">spreadsheetComputation</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ComputationValidateAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>operationTwinReferenceId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The enumeration of the type of worksheet.</p></li>
+<li><p><strong>spreadsheetComputation</strong> (<em>SpreadsheetComputation</em>) – The computation related to the column.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;ApiError&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -119,6 +383,8 @@ operate treatment processes and facilities within regulatory compliance.</p>
 <tbody>
 </tbody>
 </table>
+</section>
+</section>
 </section>
 
 
