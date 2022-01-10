@@ -49,29 +49,35 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Authentication APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Core APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Common Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common/library.html">Common Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Enterprise Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/activities.html">Activity APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Configuration APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/notifications.html">Notification APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Report APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Spreadsheet APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">Client Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/logger.html">Logger APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor APIs</a></li>
 </ul>
 
         </div>
@@ -142,13 +148,14 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clientsdk.html#helper-classes">Helper Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clientsdk.html#cachehelper">CacheHelper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clientsdk.html#logger">Logger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clientsdk.html#poeditor">PoEditor</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="clientsdk.html#properties">Properties</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="clientsdk.html#continueoncapturedcontext">ContinueOnCapturedContext</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clientsdk.html#environment">Environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="clientsdk.html#logger">Logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="clientsdk.html#id1">Logger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="clientsdk.html#logrestfulcalls">LogRestfulCalls</a></li>
 </ul>
 </li>
@@ -179,12 +186,42 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/digitaltwin.html">Digital Twins</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts/digitaltwin.html#what-is-a-digital-twin">What is a Digital Twin?</a></li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/digitaltwin.html#provides-data-about-physical-counterpart">Provides Data about Physical Counterpart</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concepts/digitaltwin.html#hierarchical-context">Hierarchical Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/digitaltwin.html#geospatial-context">Geospatial Context</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/digitaltwin.html#metadata-and-attributes">Metadata and Attributes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="concepts/digitaltwin.html#digital-twin-categories-types-and-subtypes">Digital Twin Categories, Types and SubTypes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concepts/digitaltwin.html#categories">Categories</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/digitaltwin.html#types">Types</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/digitaltwin.html#sub-types">Sub-Types</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/spreadsheet.html">Spreadsheets</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="concepts/spreadsheet.html#worksheet">Worksheet</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#worksheet-type">Worksheet Type</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#row">Row</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#row-number">Row Number</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#worksheet-row-time-window">Worksheet Row Time Window</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#worksheet-column-parameter">Worksheet Column (Parameter)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#cell">Cell</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#cell-data">Cell Data</a></li>
+<li class="toctree-l3"><a class="reference internal" href="concepts/spreadsheet.html#sheet">Sheet</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication APIs</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Authentication APIs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="enterprise/authentication.html#methods">Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/authentication.html#gettokenasync">GetTokenAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/authentication.html#getuserinfoaync">GetUserInfoAync</a></li>
@@ -202,7 +239,7 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Core APIs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#user-methods">User Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#createuserasync">CreateUserAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="enterprise/core.html#getusersasync">GetUsersAsync</a></li>
@@ -231,29 +268,38 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 <li class="toctree-l2"><a class="reference internal" href="enterprise/core.html#feature-methods">Feature Methods</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="enterprise/twin.html#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="enterprise/twin.html#createspaceasync">CreateSpaceAsync</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Common Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common/library.html">Common Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Enterprise Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/activities.html">Activity APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Configuration APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/notifications.html">Notification APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Report APIs</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Spreadsheet APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data APIs</a></li>
 </ul>
 </div>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">Client Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment APIs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="helpers/environment.html#methods">Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="helpers/environment.html#getplatformenvironment">GetPlatformEnvironment</a></li>
 </ul>
@@ -264,7 +310,8 @@ how to <a class="reference internal" href="usage.html#installation"><span class=
 </li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/logger.html">Logger APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor APIs</a></li>
 </ul>
 </div>
 </section>

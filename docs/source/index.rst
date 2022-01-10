@@ -26,20 +26,27 @@ Contents
 
    concepts/authorization
    concepts/environments
+   concepts/digitaltwin
+   concepts/spreadsheet
+
 
 .. toctree::
    :caption: Authentication and Authorization
 
    enterprise/authentication
    enterprise/core
+   enterprise/data
    enterprise/twin
 
 .. toctree::
    :caption: Common Services
    
+   common/activities
    common/configuration
    common/library
+   common/notifications
    enterprise/report
+   enterprise/timezone
 
 .. toctree::
    :caption: Data Services
@@ -52,4 +59,5 @@ Contents
 
    helpers/cache
    helpers/environment
+   helpers/logger
    helpers/poeditor

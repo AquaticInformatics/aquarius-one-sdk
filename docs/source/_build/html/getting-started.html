@@ -63,7 +63,7 @@
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
 </ul>
@@ -82,6 +82,7 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">Client Caching</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor</a></li>
 </ul>
 
         </div>
@@ -153,7 +154,7 @@ You must have a development account on the Aquatic Informatics “Integration”
 <section id="get-user-information">
 <h3>Get User Information<a class="headerlink" href="#get-user-information" title="Permalink to this headline"></a></h3>
 <p>This is useful for other calls in the future. This call will return the user ID of the user that you logged in with as well as your tenant ID. Often these IDs are very handy in other API calls.</p>
-<div class="highlight-C# notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">clientSDK</span><span class="p">.</span><span class="n">Authentication</span><span class="p">.</span><span class="n">GetUserInfo</span><span class="p">();</span><span class="w"></span>
+<div class="highlight-C# notranslate"><div class="highlight"><pre><span></span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="p">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">clientSDK</span><span class="p">.</span><span class="n">Authentication</span><span class="p">.</span><span class="n">GetUserInfoAsync</span><span class="p">();</span><span class="w"></span>
 </pre></div>
 </div>
 <p>This will also populate some handy information on the clientSDK.Authentication Object:</p>

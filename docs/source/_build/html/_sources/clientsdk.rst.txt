@@ -74,6 +74,14 @@ CacheHelper
 
    - See: :doc:`/helpers/cache/` 
 
+Logger
+^^^^^^
+  
+..  class:: Logger 
+
+   - See: :doc:`/helpers/logger/` 
+
+
 PoEditor
 ^^^^^^
   

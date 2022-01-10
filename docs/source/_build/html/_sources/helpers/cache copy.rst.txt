@@ -1,13 +1,11 @@
-Client Caching
+CacheHelper APIs
 ====
-Enterprise Core manages:
-- Users
-- Tenants
-- Products
-- Features
+
+ ..  class:: CacheHelper 
+    :module: ClientSDK
 
 
 .. autosummary::
    :toctree: generated
 
-hello  
+  

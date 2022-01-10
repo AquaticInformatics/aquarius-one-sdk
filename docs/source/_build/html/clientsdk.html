@@ -58,13 +58,14 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#helper-classes">Helper Classes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#cachehelper">CacheHelper</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#logger">Logger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#poeditor">PoEditor</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#continueoncapturedcontext">ContinueOnCapturedContext</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#environment">Environment</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#logger">Logger</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">Logger</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#logrestfulcalls">LogRestfulCalls</a></li>
 </ul>
 </li>
@@ -75,29 +76,34 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Enterprise Authentication</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Enterprise Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/authentication.html">Authentication APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/core.html">Core APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/twin.html">Digital Twins APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Common Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="common/library.html">Common Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Enterprise Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/activities.html">Activity APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/configuration.html">Configuration APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common/notifications.html">Notification APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="enterprise/report.html">Report APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Operation spreadsheet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Spreadsheet APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="timeseries/data.html">TimeSeries Data APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">Client Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor APIs</a></li>
 </ul>
 
         </div>
@@ -136,7 +142,7 @@
 <dt class="sig sig-object py" id="Authentication">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Authentication</span></span><a class="headerlink" href="#Authentication" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="enterprise/authentication.html"><span class="doc">Enterprise Authentication</span></a></p></li>
+<li><p>See: <a class="reference internal" href="enterprise/authentication.html"><span class="doc">Authentication APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -147,7 +153,7 @@
 <dt class="sig sig-object py" id="Configuration">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Configuration</span></span><a class="headerlink" href="#Configuration" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="common/configuration.html"><span class="doc">Common Configuration</span></a></p></li>
+<li><p>See: <a class="reference internal" href="common/configuration.html"><span class="doc">Configuration APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -158,7 +164,7 @@
 <dt class="sig sig-object py" id="Core">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Core</span></span><a class="headerlink" href="#Core" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="enterprise/core.html"><span class="doc">Enterprise Core APIs</span></a></p></li>
+<li><p>See: <a class="reference internal" href="enterprise/core.html"><span class="doc">Core APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -169,7 +175,7 @@
 <dt class="sig sig-object py" id="Data">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Data</span></span><a class="headerlink" href="#Data" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="timeseries/data.html"><span class="doc">TimeSeries Data</span></a></p></li>
+<li><p>See: <a class="reference internal" href="timeseries/data.html"><span class="doc">TimeSeries Data APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -180,7 +186,7 @@
 <dt class="sig sig-object py" id="DigitalTwin">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DigitalTwin</span></span><a class="headerlink" href="#DigitalTwin" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="enterprise/twin.html"><span class="doc">Digital Twins</span></a></p></li>
+<li><p>See: <a class="reference internal" href="enterprise/twin.html"><span class="doc">Digital Twins APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -191,7 +197,7 @@
 <dt class="sig sig-object py" id="Library">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Library</span></span><a class="headerlink" href="#Library" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="common/library.html"><span class="doc">Common Library</span></a></p></li>
+<li><p>See: <a class="reference internal" href="common/library.html"><span class="doc">Library APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -202,7 +208,7 @@
 <dt class="sig sig-object py" id="Report">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Report</span></span><a class="headerlink" href="#Report" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="enterprise/report.html"><span class="doc">Enterprise Report</span></a></p></li>
+<li><p>See: <a class="reference internal" href="enterprise/report.html"><span class="doc">Report APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -213,7 +219,7 @@
 <dt class="sig sig-object py" id="Spreadsheet">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Spreadsheet</span></span><a class="headerlink" href="#Spreadsheet" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="operation/spreadsheet.html"><span class="doc">Operation spreadsheet</span></a></p></li>
+<li><p>See: <a class="reference internal" href="operation/spreadsheet.html"><span class="doc">Spreadsheet APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -227,7 +233,18 @@
 <dt class="sig sig-object py" id="CacheHelper">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CacheHelper</span></span><a class="headerlink" href="#CacheHelper" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="helpers/cache.html"><span class="doc">Client Caching</span></a></p></li>
+<li><p>See: <a class="reference internal" href="helpers/cache.html"><span class="doc">CacheHelper APIs</span></a></p></li>
+</ul>
+</dd></dl>
+
+</section>
+<section id="logger">
+<h3>Logger<a class="headerlink" href="#logger" title="Permalink to this headline"></a></h3>
+<dl class="py class">
+<dt class="sig sig-object py" id="Logger">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#Logger" title="Permalink to this definition"></a></dt>
+<dd><ul class="simple">
+<li><p>See: <span class="xref std std-doc">/helpers/logger/</span></p></li>
 </ul>
 </dd></dl>
 
@@ -238,7 +255,7 @@
 <dt class="sig sig-object py" id="PoEditor">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">PoEditor</span></span><a class="headerlink" href="#PoEditor" title="Permalink to this definition"></a></dt>
 <dd><ul class="simple">
-<li><p>See: <a class="reference internal" href="helpers/poeditor.html"><span class="doc">POEditor</span></a></p></li>
+<li><p>See: <a class="reference internal" href="helpers/poeditor.html"><span class="doc">POEditor APIs</span></a></p></li>
 </ul>
 </dd></dl>
 
@@ -271,7 +288,7 @@ See: <a class="reference internal" href="concepts/environments.html"><span class
 <span class="sig-name descname"><span class="pre">Environment</span></span><a class="headerlink" href="#Environment" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>See <a class="reference internal" href="helpers/environment.html"><span class="doc">PlatformEnvironment</span></a></p>
+<dd class="field-odd"><p>See <a class="reference internal" href="helpers/environment.html"><span class="doc">PlatformEnvironment APIs</span></a></p>
 </dd>
 <dt class="field-even">Return type</dt>
 <dd class="field-even"><p><a class="reference internal" href="helpers/environment.html#ONE.Utilities.PlatformEnvironment" title="ONE.Utilities.PlatformEnvironment">PlatformEnvironment</a></p>
@@ -284,11 +301,11 @@ See: <a class="reference internal" href="concepts/environments.html"><span class
 </pre></div>
 </div>
 </section>
-<section id="logger">
-<h3>Logger<a class="headerlink" href="#logger" title="Permalink to this headline"></a></h3>
+<section id="id1">
+<h3>Logger<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
 <dl class="py attribute">
-<dt class="sig sig-object py" id="Logger">
-<span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#Logger" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">Logger</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
 <dd class="field-odd"><p></p>

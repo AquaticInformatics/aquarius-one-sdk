@@ -1,5 +1,8 @@
-Enterprise Core APIs
+Core APIs
 ====
+
+Provides centralized multi-tenancy and multi-product registration and management. 
+Provides full APIs for managing Tenants, Users, Products and Features providing GDPR compliance.
 
  ..  class:: Core 
     :module: ClientSDK

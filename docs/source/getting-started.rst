@@ -55,7 +55,7 @@ This is useful for other calls in the future. This call will return the user ID 
 
 .. code-block:: C#
 
-   var result = await clientSDK.Authentication.GetUserInfo();
+   var result = await clientSDK.Authentication.GetUserInfoAsync();
 
 This will also populate some handy information on the clientSDK.Authentication Object:
 

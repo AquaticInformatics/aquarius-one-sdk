@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enterprise Authentication APIs &mdash; Aquarius.ONE.SDK 9.2 documentation</title>
+  <title>Authentication APIs &mdash; Aquarius.ONE.SDK 9.2 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Enterprise Core APIs" href="core.html" />
-    <link rel="prev" title="Deployment Environments" href="../concepts/environments.html" /> 
+    <link rel="prev" title="Spreadsheets" href="../concepts/spreadsheet.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -50,10 +50,12 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Enterprise Authentication APIs</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Authentication APIs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#gettokenasync">GetTokenAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getuserinfoaync">GetUserInfoAync</a></li>
@@ -72,13 +74,16 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="core.html">Enterprise Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="twin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="twin.html">Digital Twins APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Common Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Common Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="report.html">Enterprise Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activities</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notifications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="report.html">Report</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
@@ -106,7 +111,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Enterprise Authentication APIs</li>
+      <li>Authentication APIs</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/enterprise/authentication.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -116,8 +121,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="enterprise-authentication-apis">
-<h1>Enterprise Authentication APIs<a class="headerlink" href="#enterprise-authentication-apis" title="Permalink to this headline"></a></h1>
+  <section id="authentication-apis">
+<h1>Authentication APIs<a class="headerlink" href="#authentication-apis" title="Permalink to this headline"></a></h1>
+<p>Provides centralized Identity Service through the implementation of Open ID Connect.
+Based on Identity Server, this service provides single sing-on / sign-out across federated gateways such as Azure Active Directory, Google, etc.</p>
 <blockquote>
 <div><dl class="py class">
 <dt class="sig sig-object py" id="ClientSDK.Authentication">
@@ -318,7 +325,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../concepts/environments.html" class="btn btn-neutral float-left" title="Deployment Environments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../concepts/spreadsheet.html" class="btn btn-neutral float-left" title="Spreadsheets" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="core.html" class="btn btn-neutral float-right" title="Enterprise Core APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

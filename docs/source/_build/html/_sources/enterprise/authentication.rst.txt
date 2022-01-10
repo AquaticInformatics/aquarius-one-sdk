@@ -1,5 +1,8 @@
-Enterprise Authentication APIs
+Authentication APIs
 ====
+
+Provides centralized Identity Service through the implementation of Open ID Connect. 
+Based on Identity Server, this service provides single sing-on / sign-out across federated gateways such as Azure Active Directory, Google, etc.
 
  ..  class:: Authentication 
     :module: ClientSDK
