@@ -42,7 +42,7 @@ namespace ONE.Enterprise.Core
                 }
                 else
                 {
-                    if (await _coreApi.UserCreateRoleRef(user.Id, roleId))
+                    if (await _coreApi.UserCreateRoleRefAsync(user.Id, roleId))
                         return true;
                 }
             }

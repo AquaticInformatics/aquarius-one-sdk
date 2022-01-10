@@ -56,11 +56,55 @@ Digital Twin Categories, Types and SubTypes
 Categories
 ^^^^^^^
 
+#. **Organization** (Tenants, Customers, Regions): Used to model the multi-tenant aspects of Space, Device and Sensor Ownership
+#. **Space** (Locations): Used by Engineering companies to simulate a physical environment so that guidance can be given to the creation or modification of a system
+#. **Instrument** (Device and Sensors): Used by IoT frameworks to create a virtual copy of an instrument, so that the cloud software can talk to the virtual copy (device twin) instantaneously, and the device twin will take care of the synchronization to the real, physical hardware.
+#. **Telemetry Category** (Measurements, Columns): Signal data (Measurements, Events, etc.) from Devices and Sensors.
+
 Types
 ^^^^^^^
 
+Within each Category, each digital twin is further classified by a type.
+
+.. list-table:: Digital Twin Types Example
+   :widths: 25 100
+   :header-rows: 1
+
+   * - Heading Category
+     - Heading Type
+   * - Organization
+     - Users, Tenants
+   * - Space
+     - Operation, Plant, Wastewater Locations, Sampling Locations
+   * - Instrument
+     - Controllers, Process Instruments, Lab Instruments
+   * - Telemetry
+     - Spreadsheet Columns, Historical Data
+
 Sub-Types
 ^^^^^^^
+
+Within each Category and Type, each digital twin is further classified by a subtype.
+
+.. list-table:: Digital Twin Types Example
+   :widths: 25 25 50
+   :header-rows: 1
+
+   * - Heading Category
+     - Heading Type
+     - Heading SubType
+   * - Organization
+     - Tenants
+     - Customers, Demo, Regional, Private Water Company, Test Account
+   * - Space
+     - Operation
+     - Surface Water Treatment Plant, Wastewater Treatment Plant, Collection System, Distribution System
+   * - Instrument
+     - Controllers
+     - Hach SC200, Hach SC4200, Hach SC4500
+   * - Telemetry
+     - Spreadsheet Columns
+     - 15 Minute, Hourly, Four Hour, Daily
 
 .. autosummary::
    :toctree: generated

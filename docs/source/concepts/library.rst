@@ -50,8 +50,20 @@ Translation Keys are grouped into Modules. The current defined modules are:
 Quantity Types
 -----
 
-Physical quantities are those quantities that can be measured. Basically, there are two types of physical quantities (Base quantities or fundamental quantities) and (Derived quantities).
-These are quantities that are used to describe the laws of physics. Physical quantities may be divided into six categories.
+Physical quantities are those quantities that can be measured. 
+Basically, there are two types of physical quantities (Base quantities or fundamental quantities) and (Derived quantities).
+These are quantities that are used to describe the laws of physics. 
+
+Physical quantities may be divided into seven categories.
+- Mass
+- Length
+- Time
+- Temperature
+- Electric current
+- Luminous intensity
+- Amount of substance
+
+ONE Platform does not differentiate between fundamental and derived quantities.  Each quantity type is assigned a GUID for universal use. 
 
 Units
 -----

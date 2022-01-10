@@ -140,21 +140,6 @@ namespace ONE.Enterprise.Core
             }
         }
 
-        public async Task<bool> SafeDeleteUserAsync(string userId)
-        {
-            User user = await GetUserAsync(userId, EnumUserExpand.role);
-            if (user == null)
-                return false;
-            if (UserHelper.HasRole(user, Constants.Roles.Admin.Id) || UserHelper.HasRole(user, Constants.Roles.SupportAdmin.Id) || UserHelper.HasRole(user, Constants.Roles.SuperAdmin.Id))
-                return false;
-            if (user.UserStatus == EnumUserStatus.UserstatusAccountActive)
-                return false;
-            if (user.UserStatus == EnumUserStatus.UserstatusInviteExpired && user.RecordAuditInfo.CreatedOn.ToDateTime() > DateTime.Now.AddMonths(-3))
-                return false;
-            else if (user.UserStatus == EnumUserStatus.UserstatusPasswordExpired || user.UserStatus == EnumUserStatus.UserstatusAccountLocked)
-                return false;
-            return await DeleteUserAsync(userId);
-        }
         public async Task<User> GetUserAsync(string userId, EnumUserExpand userExpand = EnumUserExpand.none)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -882,7 +867,7 @@ namespace ONE.Enterprise.Core
                 throw;
             }
         }
-        public async Task<bool> ResendInvitation(string userId)
+        public async Task<bool> ResendInvitationAsync(string userId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
@@ -892,15 +877,15 @@ namespace ONE.Enterprise.Core
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitation Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitationAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitation Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitationAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"SendUserNameToEmailAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"ResendInvitationAsync Failed - {e.Message}" });
                 throw;
             }
         }
@@ -991,21 +976,29 @@ namespace ONE.Enterprise.Core
                 throw;
             }
         }
-        public async Task<ServiceResponse> ActivateUserAsync(string id)
+        public async Task<bool> ActivateUserAsync(string userName, string password, string userToken)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             var endpoint = $"enterprise/core/v1/User/ActivateUser";
 
+            dynamic userJson = new JObject();
+            userJson.userName = userName;
+            userJson.password = password;
+            userJson.userToken = userToken;
+
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, id, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, userJson.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ActivateUserAsync Success" });
+                    return true;
+                }
                 else
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ActivateUserAsync Failed" });
-                return respContent;
+                return false;
 
             }
             catch (Exception e)
@@ -1014,7 +1007,7 @@ namespace ONE.Enterprise.Core
                 throw;
             }
         }
-        public async Task<bool> UserCreateRoleRef(string userId, string roleId)
+        public async Task<bool> UserCreateRoleRefAsync(string userId, string roleId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
@@ -1025,19 +1018,19 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserAssignRoleAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserCreateRoleRefAsync Success" });
                     return true;
                 }
                 else
                 {
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserAssignRoleAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserCreateRoleRefAsync Failed" });
                     return false;
                 }
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserAssignRoleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserCreateRoleRefAsync Failed - {e.Message}" });
                 throw;
             }
         }
@@ -1129,34 +1122,6 @@ namespace ONE.Enterprise.Core
             }
         }
 
-        public async Task<User> AcceptTermsAndConditions(string email)
-        {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/core/v1/User/accepttermsandconditions?email={email}";
-            try
-            {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint);
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Users.Items.Select(x => x).ToList();
-                    foreach (var result in results)
-                    {
-                        return result;
-                    }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AcceptTermsAndConditions Success" });
-                    return null;
-                }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AcceptTermsAndConditions Failed" });
-                return null;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"AcceptTermsAndConditions Failed - {e.Message}" });
-                throw;
-            }
-        }
+       
     }
 }

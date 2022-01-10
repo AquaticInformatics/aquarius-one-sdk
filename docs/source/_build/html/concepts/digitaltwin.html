@@ -18,7 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Spreadsheets" href="spreadsheet.html" />
+    <link rel="next" title="Global Library" href="library.html" />
     <link rel="prev" title="Deployment Environments" href="environments.html" /> 
 </head>
 
@@ -66,32 +66,35 @@
 </li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="spreadsheet.html">Spreadsheets</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Enterprise Authentication APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Enterprise Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notifications</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Enterprise Report</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Operation spreadsheet</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../timeseries/data.html">TimeSeries Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">Client Caching</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor APIs</a></li>
 </ul>
 
         </div>
@@ -165,12 +168,78 @@
 <img alt="../_images/categories.png" src="../_images/categories.png" />
 <section id="categories">
 <h3>Categories<a class="headerlink" href="#categories" title="Permalink to this headline"></a></h3>
+<ol class="arabic simple">
+<li><p><strong>Organization</strong> (Tenants, Customers, Regions): Used to model the multi-tenant aspects of Space, Device and Sensor Ownership</p></li>
+<li><p><strong>Space</strong> (Locations): Used by Engineering companies to simulate a physical environment so that guidance can be given to the creation or modification of a system</p></li>
+<li><p><strong>Instrument</strong> (Device and Sensors): Used by IoT frameworks to create a virtual copy of an instrument, so that the cloud software can talk to the virtual copy (device twin) instantaneously, and the device twin will take care of the synchronization to the real, physical hardware.</p></li>
+<li><p><strong>Telemetry Category</strong> (Measurements, Columns): Signal data (Measurements, Events, etc.) from Devices and Sensors.</p></li>
+</ol>
 </section>
 <section id="types">
 <h3>Types<a class="headerlink" href="#types" title="Permalink to this headline"></a></h3>
+<p>Within each Category, each digital twin is further classified by a type.</p>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Digital Twin Types Example</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 80%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Heading Category</p></th>
+<th class="head"><p>Heading Type</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Organization</p></td>
+<td><p>Users, Tenants</p></td>
+</tr>
+<tr class="row-odd"><td><p>Space</p></td>
+<td><p>Operation, Plant, Wastewater Locations, Sampling Locations</p></td>
+</tr>
+<tr class="row-even"><td><p>Instrument</p></td>
+<td><p>Controllers, Process Instruments, Lab Instruments</p></td>
+</tr>
+<tr class="row-odd"><td><p>Telemetry</p></td>
+<td><p>Spreadsheet Columns, Historical Data</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 <section id="sub-types">
 <h3>Sub-Types<a class="headerlink" href="#sub-types" title="Permalink to this headline"></a></h3>
+<p>Within each Category and Type, each digital twin is further classified by a subtype.</p>
+<table class="colwidths-given docutils align-default" id="id2">
+<caption><span class="caption-text">Digital Twin Types Example</span><a class="headerlink" href="#id2" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Heading Category</p></th>
+<th class="head"><p>Heading Type</p></th>
+<th class="head"><p>Heading SubType</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Organization</p></td>
+<td><p>Tenants</p></td>
+<td><p>Customers, Demo, Regional, Private Water Company, Test Account</p></td>
+</tr>
+<tr class="row-odd"><td><p>Space</p></td>
+<td><p>Operation</p></td>
+<td><p>Surface Water Treatment Plant, Wastewater Treatment Plant, Collection System, Distribution System</p></td>
+</tr>
+<tr class="row-even"><td><p>Instrument</p></td>
+<td><p>Controllers</p></td>
+<td><p>Hach SC200, Hach SC4200, Hach SC4500</p></td>
+</tr>
+<tr class="row-odd"><td><p>Telemetry</p></td>
+<td><p>Spreadsheet Columns</p></td>
+<td><p>15 Minute, Hourly, Four Hour, Daily</p></td>
+</tr>
+</tbody>
+</table>
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -188,7 +257,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="environments.html" class="btn btn-neutral float-left" title="Deployment Environments" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="spreadsheet.html" class="btn btn-neutral float-right" title="Spreadsheets" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="library.html" class="btn btn-neutral float-right" title="Global Library" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>
