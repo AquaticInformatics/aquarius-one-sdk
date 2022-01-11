@@ -70,3 +70,4 @@ Contents
    helpers/environment
    helpers/logger
    helpers/poeditor
+   helpers/rownumber

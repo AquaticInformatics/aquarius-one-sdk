@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>RowNumber &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="POEditor" href="poeditor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
+          </a>
+              <div class="version">
+                10.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clientsdk.html">ClientSDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="poeditor.html">POEditor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">RowNumber</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getdatetimefromrownumberandworksheettype">GetDateTimeFromRowNumberAndWorksheetType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getrownumberfromdatetimeandworksheettype">GetRowNumberFromDateTimeAndWorksheetType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timespanofworksheettype">TimeSpanOfWorksheetType</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aquarius.ONE.SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>RowNumber</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/helpers/rownumber.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="rownumber">
+<h1>RowNumber<a class="headerlink" href="#rownumber" title="Permalink to this headline"></a></h1>
+<p>This is a static class that helps convert dates to row numbers and row numbers to dates.</p>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">RowNumber</span></span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
+<p>For the ACO worksheets, there is a row number assigned to each slot.  These row numbers all originate from Midnight on January 1, 1900.
+Example first five row number to date time for each worksheet type:</p>
+<p>Daily</p>
+<ol class="arabic simple">
+<li><ul class="simple">
+<li><p>1/1/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/2/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/3/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/4/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/5/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+</ol>
+<p>Hourly</p>
+<ol class="arabic simple">
+<li><ul class="simple">
+<li><p>1/1/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 1:00</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 2:00</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 3:00</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 4:00</p></li>
+</ul>
+</li>
+</ol>
+<p>Four Hour</p>
+<ol class="arabic simple">
+<li><ul class="simple">
+<li><p>1/1/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 4:00</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 8:00</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 12:00</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 16:00</p></li>
+</ul>
+</li>
+</ol>
+<p>15 Minute</p>
+<ol class="arabic simple">
+<li><ul class="simple">
+<li><p>1/1/1900 0:00 (Midnight)</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 0:15</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 0:30</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 0:45</p></li>
+</ul>
+</li>
+<li><ul class="simple">
+<li><p>1/1/1900 1:00</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<section id="getdatetimefromrownumberandworksheettype">
+<h3>GetDateTimeFromRowNumberAndWorksheetType<a class="headerlink" href="#getdatetimefromrownumberandworksheettype" title="Permalink to this headline"></a></h3>
+<p>Gets the Date Time from a row number.  The worksheet type is also required because the row number sequence is different for each worksheet type.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.GetDateTimeFromRowNumberAndWorksheetType">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">GetDateTimeFromRowNumberAndWorksheetType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">rowNumber</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.GetDateTimeFromRowNumberAndWorksheetType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rowNumber</strong> (<em>uint</em>) – The number of the row.  See overview above.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The type of the worksheet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The row number given the date and worksheet type.  Null is returned if there is an error.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DateTime?</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getrownumberfromdatetimeandworksheettype">
+<h3>GetRowNumberFromDateTimeAndWorksheetType<a class="headerlink" href="#getrownumberfromdatetimeandworksheettype" title="Permalink to this headline"></a></h3>
+<p>Gets the Date Time from a row number.  The worksheet type is also required because the row number sequence is different for each worksheet type.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.GetRowNumberFromDateTimeAndWorksheetType">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">GetRowNumberFromDateTimeAndWorksheetType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DateTime</span> <span class="pre">localDateTime</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.GetRowNumberFromDateTimeAndWorksheetType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>localDateTime</strong> (<em>DateTime</em>) – The local Date and time for the operation.</p></li>
+<li><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The type of the worksheet.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The row number given the date and worksheet type.  Null is returned if there is an error.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>DateTime?</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="timespanofworksheettype">
+<h3>TimeSpanOfWorksheetType<a class="headerlink" href="#timespanofworksheettype" title="Permalink to this headline"></a></h3>
+<p>Gets the Date Time from a row number.  The worksheet type is also required because the row number sequence is different for each worksheet type.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.TimeSpanOfWorksheetType">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">TimeSpanOfWorksheetType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">worksheetType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.TimeSpanOfWorksheetType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>worksheetType</strong> (<em>EnumWorksheet</em>) – The type of the worksheet.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The time span of a row, given the worksheet type.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>TimeSpan</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.BaseTime">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">BaseTime</span></span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.BaseTime" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The beginning of time for row numbering</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="poeditor.html" class="btn btn-neutral float-left" title="POEditor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Aquatic Informatics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
