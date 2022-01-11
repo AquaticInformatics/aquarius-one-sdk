@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>CacheHelper APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>LibraryCache APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,7 +17,9 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" /> 
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OperationsCache APIs" href="operationscache.html" />
+    <link rel="prev" title="CacheHelper APIs" href="cache.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -73,8 +75,39 @@
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">LibraryCache APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#librarycache-class">LibraryCache Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loadasync">LoadAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameter-by-guid">GetParameter - By GUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameter-by-long-id">GetParameter - By long Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameterbyname">GetParameterByName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycodetype">GetParameterAgencyCodeType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getquantitytype">GetQuantityType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getquantitytypebyname">GetQuantityTypeByName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycode">GetParameterAgencyCode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunit-by-guid">GetUnit - By GUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunit-by-long-id">GetUnit - By long Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitbyi18nkey">GetUnitByI18nKey</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitbyname">GetUnitByName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tostring">ToString</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#i18nkeys">I18Nkeys</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameteragencycodes">ParameterAgencyCodes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#parameteragencycodetypes">ParameterAgencyCodeTypes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#quantitytypes">QuantityTypes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#units">Units</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operationscache.html">OperationsCache APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reportcache.html">OperationsCache APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logger.html">Logger APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="poeditor.html">POEditor APIs</a></li>
@@ -94,9 +127,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>CacheHelper APIs</li>
+      <li>LibraryCache APIs</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/helpers/cache copy.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/helpers/librarycache.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -104,16 +137,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="cachehelper-apis">
-<h1>CacheHelper APIs<a class="headerlink" href="#cachehelper-apis" title="Permalink to this headline"></a></h1>
-<blockquote>
-<div><dl class="py class">
-<dt class="sig sig-object py" id="ClientSDK.CacheHelper">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.</span></span><span class="sig-name descname"><span class="pre">CacheHelper</span></span><a class="headerlink" href="#ClientSDK.CacheHelper" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</div></blockquote>
-<p>The purpose of the Cache Helper is to load fairly static data that is accessed commonly into memory.
+  <section id="librarycache-apis">
+<h1>LibraryCache APIs<a class="headerlink" href="#librarycache-apis" title="Permalink to this headline"></a></h1>
+<p>The purpose of the Library Cache is to load the global library, which is fairly static into memory,
+so that commonly reused items such as quantity types, units and parameters along with their translations can be quickly available.
 In addition there are helper methods to retrieve these items efficiently.</p>
 <section id="librarycache-class">
 <h2>LibraryCache Class<a class="headerlink" href="#librarycache-class" title="Permalink to this headline"></a></h2>
@@ -124,12 +151,9 @@ In addition there are helper methods to retrieve these items efficiently.</p>
 <dd></dd></dl>
 
 </div></blockquote>
-<p>The purpose of the Library Cache is to load the global library, which is fairly static into memory,
-so that commonly reused items such as quantity types, units and paramters along with their translations can be quickly available.
-In addition there are helper methods to retrieve these items efficiently.</p>
 </section>
-<section id="librarycache-class-methods">
-<h2>LibraryCache Class Methods<a class="headerlink" href="#librarycache-class-methods" title="Permalink to this headline"></a></h2>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
 <section id="loadasync">
 <h3>LoadAsync<a class="headerlink" href="#loadasync" title="Permalink to this headline"></a></h3>
 <p>Loads the library cache.  After the library cache is loaded, the other methods will perform.</p>
@@ -385,8 +409,8 @@ In addition there are helper methods to retrieve these items efficiently.</p>
 
 </section>
 </section>
-<section id="librarycache-class-properties">
-<h2>LibraryCache Class Properties<a class="headerlink" href="#librarycache-class-properties" title="Permalink to this headline"></a></h2>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
 <section id="i18nkeys">
 <h3>I18Nkeys<a class="headerlink" href="#i18nkeys" title="Permalink to this headline"></a></h3>
 <dl class="py attribute">
@@ -466,40 +490,15 @@ In addition there are helper methods to retrieve these items efficiently.</p>
 
 </section>
 </section>
-<section id="operationscache-class">
-<h2>OperationsCache Class<a class="headerlink" href="#operationscache-class" title="Permalink to this headline"></a></h2>
-<blockquote>
-<div><dl class="py class">
-<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.</span></span><span class="sig-name descname"><span class="pre">OperationsCache</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</div></blockquote>
-</section>
-<section id="reportcache-class">
-<h2>ReportCache Class<a class="headerlink" href="#reportcache-class" title="Permalink to this headline"></a></h2>
-<blockquote>
-<div><dl class="py class">
-<dt class="sig sig-object py" id="ClientSDK.CacheHelper.ReportCache">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.</span></span><span class="sig-name descname"><span class="pre">ReportCache</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.ReportCache" title="Permalink to this definition"></a></dt>
-<dd></dd></dl>
-
-</div></blockquote>
-<table class="longtable docutils align-default">
-<colgroup>
-<col style="width: 10%" />
-<col style="width: 90%" />
-</colgroup>
-<tbody>
-</tbody>
-</table>
-</section>
 </section>
 
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="cache.html" class="btn btn-neutral float-left" title="CacheHelper APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="operationscache.html" class="btn btn-neutral float-right" title="OperationsCache APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
 
   <hr/>
 

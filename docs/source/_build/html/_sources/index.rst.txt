@@ -2,7 +2,7 @@ Welcome to Aquarius ONE SDK documentation!
 ===================================
 
 **Aquarius ONE SDK** is a C# SDK for .NET enabling developers to interact with the Aquarius ONE Platform.
-Documentation for the RESTful APIs can be found at: `Aquarius ONE Developer Portal <https://aqi-feature-api-mgmt.developer.azure-api.net/>`.
+Documentation for the RESTful APIs can be found at: `Aquarius ONE Developer Portal <https://aqi-feature-api-mgmt.developer.azure-api.net/>`_.
 
 Check out the :doc:`usage` section for further information, including
 how to :ref:`installation` the nuget package.
@@ -59,6 +59,10 @@ Contents
    :caption: Helpers
 
    helpers/cache
+   helpers/librarycache
+   helpers/operationscache
+   helpers/operationcache
+   helpers/reportcache
    helpers/environment
    helpers/logger
    helpers/poeditor

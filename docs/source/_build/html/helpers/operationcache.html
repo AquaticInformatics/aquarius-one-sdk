@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OperationCache APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="OperationsCache APIs" href="reportcache.html" />
+    <link rel="prev" title="OperationsCache APIs" href="operationscache.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
+          </a>
+              <div class="version">
+                10.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clientsdk.html">ClientSDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins APIs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report APIs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="librarycache.html">LibraryCache APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operationscache.html">OperationsCache APIs</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">OperationCache APIs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#operationscache-class">OperationsCache Class</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initializeasync">InitializeAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#column-info-methods">Column Info Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gettelemetrypath">GetTelemetryPath</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getwimsvartype">GetWimsVarType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getwimstype">GetWimsType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumnguidbyindex">GetColumnGuidByIndex</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#get-column-methods">Get Column Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumnbycolumnnumber">GetColumnByColumnNumber</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumnbyidentifier">GetColumnByIdentifier</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumnbyvarnum">GetColumnByVarNum</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumnbyvariableid">GetColumnByVariableId</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumntwinbyguid">GetColumnTwinByGuid</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#column-twin-data-methods">Column Twin Data Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumntwindatapropertylong">GetColumnTwinDataPropertyLong</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumntwindatapropertydouble">GetColumnTwinDataPropertyDouble</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getcolumntwindatapropertydate">GetColumnTwinDataPropertyDate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getvariableid-by-column-twin">GetVariableId by Column Twin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getvariableid-by-column-guid">GetVariableId by Column GUID</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#operation-methods">Operation Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getoperationbyid">GetOperationById</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#row-cache-methods">Row Cache Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#addrow">AddRow</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getrow">GetRow</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id">Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#digitaltwin">DigitalTwin</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#digitaltwinitem">DigitalTwinItem</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#isinitiated">IsInitiated</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#delimiter">Delimiter</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#name">Name</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#spreadsheetdefinition">SpreadsheetDefinition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fifteenminuteworksheetdefinition">FifteenMinuteWorksheetDefinition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hourlyworksheetdefinition">HourlyWorksheetDefinition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fourhourworksheetdefinition">FourHourWorksheetDefinition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dailyworksheetdefinition">DailyWorksheetDefinition</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fifteenminuterows">FifteenMinuteRows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hourlyrows">HourlyRows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fourhourrows">FourHourRows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dailyrows">DailyRows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#locationtwins">LocationTwins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#columntwins">ColumnTwins</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#measurementcache">MeasurementCache</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="reportcache.html">OperationsCache APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logger APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="poeditor.html">POEditor APIs</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aquarius.ONE.SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>OperationCache APIs</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/helpers/operationcache.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="operationcache-apis">
+<h1>OperationCache APIs<a class="headerlink" href="#operationcache-apis" title="Permalink to this headline"></a></h1>
+<p>The purpose of the Operations Cache is to load the configuration of an ACO operation, which is fairly static into memory,
+so that commonly reused items such as column definitions, views and related location twins are quickly accessible.</p>
+<section id="operationscache-class">
+<h2>OperationsCache Class<a class="headerlink" href="#operationscache-class" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationCache">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.</span></span><span class="sig-name descname"><span class="pre">OperationCache</span></span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationCache" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+<section id="initializeasync">
+<h3>InitializeAsync<a class="headerlink" href="#initializeasync" title="Permalink to this headline"></a></h3>
+<p>Loads the operation cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.InitializeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">InitializeAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.InitializeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="column-info-methods">
+<h2>Column Info Methods<a class="headerlink" href="#column-info-methods" title="Permalink to this headline"></a></h2>
+<section id="gettelemetrypath">
+<h3>GetTelemetryPath<a class="headerlink" href="#gettelemetrypath" title="Permalink to this headline"></a></h3>
+<p>Loads the operation cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetTelemetryPath">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetTelemetryPath</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">digitalTwinReferenceId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bool</span> <span class="pre">includeItem</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetTelemetryPath" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>digitalTwinReferenceId</strong> (<em>string</em>) – The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.</p></li>
+<li><p><strong>includeItem</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – Whether to include the column name in the path.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getwimsvartype">
+<h3>GetWimsVarType<a class="headerlink" href="#getwimsvartype" title="Permalink to this headline"></a></h3>
+<p>Retrieves the WIMS Var Type for a column.  This is the single letter representation.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetWimsVarType">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetWimsVarType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Column</span> <span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetWimsVarType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>Column</em>) – The Column object.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getwimstype">
+<h3>GetWimsType<a class="headerlink" href="#getwimstype" title="Permalink to this headline"></a></h3>
+<p>Retrieves the WIMS Var Type for a column.  This is the text representation.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetWimsType">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetWimsType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Column</span> <span class="pre">column</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetWimsType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>column</strong> (<em>Column</em>) – The Column object.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>WIMS equivalent variable types:
+- Daily Worksheet</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>P - Daily variable / parameter</p></li>
+<li><p>C - Daily calculated variable</p></li>
+<li><p>T - Daily text variable</p></li>
+</ul>
+</div></blockquote>
+<ul class="simple">
+<li><dl class="simple">
+<dt>Four Hour Worksheet</dt><dd><ul>
+<li><p>4 - Daily Detail variable tracked every 4 hours</p></li>
+<li><p>G - 4 hour calc.</p></li>
+<li><p>E - 4 hour text variable</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Hourly Worksheet</dt><dd><ul>
+<li><p>H - Daily Detail variable tracked every hour</p></li>
+<li><p>N - Hourly Calc</p></li>
+<li><p>B - Hourly Text</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Hourly Worksheet</dt><dd><ul>
+<li><p>F - Daily Detail variable tracked every 15 minutes</p></li>
+<li><p>V - 15 Minute Calc</p></li>
+<li><p>X - 15 Minute Text</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</section>
+<section id="getcolumnguidbyindex">
+<h3>GetColumnGuidByIndex<a class="headerlink" href="#getcolumnguidbyindex" title="Permalink to this headline"></a></h3>
+<p>Returns a column GUID based on the index of the column digital twin.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnGuidByIndex">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnGuidByIndex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnGuidByIndex" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>string</em>) – The index of the column digital twin.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="get-column-methods">
+<h2>Get Column Methods<a class="headerlink" href="#get-column-methods" title="Permalink to this headline"></a></h2>
+<section id="getcolumnbycolumnnumber">
+<h3>GetColumnByColumnNumber<a class="headerlink" href="#getcolumnbycolumnnumber" title="Permalink to this headline"></a></h3>
+<p>Returns a column based on the Column Number</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnByColumnNumber">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnByColumnNumber</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnByColumnNumber" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>uint</strong> (<em>string</em>) – The unique uint id of the column.  This is also the long id of the column twin.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Column</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getcolumnbyidentifier">
+<h3>GetColumnByIdentifier<a class="headerlink" href="#getcolumnbyidentifier" title="Permalink to this headline"></a></h3>
+<p>Returns a column based on any of the following:</p>
+<ul class="simple">
+<li><p><strong>Column Number</strong>: The unique uint id of the column.  This is also the long id of the column twin.</p></li>
+<li><p><strong>Column GUID</strong>: The unique id (GUID) of the column.  This is also the TwinReferenceId of the twin related to the column.</p></li>
+<li><p><strong>WIMS VarNum</strong>: The Variable Number from WIMS if the operation was converted from WIMS.</p></li>
+<li><p><strong>WIMS Variable Id</strong>: The Variable Id from WIMS if the operation was converted from WIMS.</p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnByIdentifier">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnByIdentifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">sId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnByIdentifier" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sId</strong> (<em>string</em>) – unique identifier of the column.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Column</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getcolumnbyvarnum">
+<h3>GetColumnByVarNum<a class="headerlink" href="#getcolumnbyvarnum" title="Permalink to this headline"></a></h3>
+<p>Returns a column based on the WIMS VarNum.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnByVarNum">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnByVarNum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long</span> <span class="pre">varNum</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnByVarNum" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>varNum</strong> (<em>long</em>) – The VarNum from WIMS if the operation was converted from WIMS.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Column</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getcolumnbyvariableid">
+<h3>GetColumnByVariableId<a class="headerlink" href="#getcolumnbyvariableid" title="Permalink to this headline"></a></h3>
+<p>Returns a column based on the WIMS Variable ID.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnByVariableId">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnByVariableId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long</span> <span class="pre">variableId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnByVariableId" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variableId</strong> (<em>long</em>) – The Variable Id from WIMS if the operation was converted from WIMS.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Column</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getcolumntwinbyguid">
+<h3>GetColumnTwinByGuid<a class="headerlink" href="#getcolumntwinbyguid" title="Permalink to this headline"></a></h3>
+<p>Returns a column twin based on the Column GUID.  This is also the TwinReferenceId of the twin related to the column.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnTwinByGuid">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnTwinByGuid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinByGuid" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>guid</strong> (<em>string</em>) – The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../enterprise/twin.html#ClientSDK.DigitalTwin" title="ClientSDK.DigitalTwin">DigitalTwin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="column-twin-data-methods">
+<h2>Column Twin Data Methods<a class="headerlink" href="#column-twin-data-methods" title="Permalink to this headline"></a></h2>
+<section id="getcolumntwindatapropertylong">
+<h3>GetColumnTwinDataPropertyLong<a class="headerlink" href="#getcolumntwindatapropertylong" title="Permalink to this headline"></a></h3>
+<p>Retrieves the value from the Column Twin Data.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyLong">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnTwinDataPropertyLong</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyLong" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guid</strong> (<em>string</em>) – The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.</p></li>
+<li><p><strong>path</strong> (<em>string</em>) – JSON Path to the key to be retrieved.</p></li>
+<li><p><strong>key</strong> (<em>string</em>) – JSON Key that is found under the path.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>long</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getcolumntwindatapropertydouble">
+<h3>GetColumnTwinDataPropertyDouble<a class="headerlink" href="#getcolumntwindatapropertydouble" title="Permalink to this headline"></a></h3>
+<p>Retrieves the value from the Column Twin Data.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyDouble">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnTwinDataPropertyDouble</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyDouble" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guid</strong> (<em>string</em>) – The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.</p></li>
+<li><p><strong>path</strong> (<em>string</em>) – JSON Path to the key to be retrieved.</p></li>
+<li><p><strong>key</strong> (<em>string</em>) – JSON Key that is found under the path.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>double</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getcolumntwindatapropertydate">
+<h3>GetColumnTwinDataPropertyDate<a class="headerlink" href="#getcolumntwindatapropertydate" title="Permalink to this headline"></a></h3>
+<p>Retrieves the value from the Column Twin Data.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyDate">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetColumnTwinDataPropertyDate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">path</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyDate" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>guid</strong> (<em>string</em>) – The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.</p></li>
+<li><p><strong>path</strong> (<em>string</em>) – JSON Path to the key to be retrieved.</p></li>
+<li><p><strong>key</strong> (<em>string</em>) – JSON Key that is found under the path.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getvariableid-by-column-twin">
+<h3>GetVariableId by Column Twin<a class="headerlink" href="#getvariableid-by-column-twin" title="Permalink to this headline"></a></h3>
+<p>Retrieves the WIMS VariableId from the Column Twin Data.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetVariableId">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetVariableId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwin</span> <span class="pre">columnTwin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetVariableId" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>columnTwin</strong> (<a class="reference internal" href="../enterprise/twin.html#ClientSDK.DigitalTwin" title="ClientSDK.DigitalTwin"><em>DigitalTwin</em></a>) – The column digital twin.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>long</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getvariableid-by-column-guid">
+<h3>GetVariableId by Column GUID<a class="headerlink" href="#getvariableid-by-column-guid" title="Permalink to this headline"></a></h3>
+<p>Retrieves the WIMS VariableId from the Column Twin Data.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetVariableId</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>guid</strong> (<em>string</em>) – The unique id (GUID) of the column digital twin.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>long</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="operation-methods">
+<h2>Operation Methods<a class="headerlink" href="#operation-methods" title="Permalink to this headline"></a></h2>
+<section id="getoperationbyid">
+<h3>GetOperationById<a class="headerlink" href="#getoperationbyid" title="Permalink to this headline"></a></h3>
+<p>Finds the Operation GUID given the index of the operation.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetOperationById">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetOperationById</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetOperationById" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>guid</strong> (<em>string</em>) – unique identifier of the operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#ClientSDK.CacheHelper.OperationCache" title="ClientSDK.CacheHelper.OperationCache">OperationCache</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="row-cache-methods">
+<h2>Row Cache Methods<a class="headerlink" href="#row-cache-methods" title="Permalink to this headline"></a></h2>
+<section id="addrow">
+<h3>AddRow<a class="headerlink" href="#addrow" title="Permalink to this headline"></a></h3>
+<p>Adds a row to the operation cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.AddRow">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">AddRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">enumWorksheet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Row</span> <span class="pre">row</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.AddRow" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enumWorksheet</strong> (<em>EnumWorksheet</em>) – The Worksheet Type.</p></li>
+<li><p><strong>row</strong> (<em>Row</em>) – The Worksheet row to be cached.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>void</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getrow">
+<h3>GetRow<a class="headerlink" href="#getrow" title="Permalink to this headline"></a></h3>
+<p>Gets a row from the operation cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetRow">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetRow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">EnumWorksheet</span> <span class="pre">enumWorksheet</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">uint</span> <span class="pre">rowNumber</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetRow" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>enumWorksheet</strong> (<em>EnumWorksheet</em>) – The Worksheet Type.</p></li>
+<li><p><strong>rowNumber</strong> (<em>uint</em>) – The Worksheet row number.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Row</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<section id="id">
+<h3>Id<a class="headerlink" href="#id" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Id">
+<span class="sig-name descname"><span class="pre">Id</span></span><a class="headerlink" href="#Id" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The unique identifier (GUID) for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="digitaltwin">
+<h3>DigitalTwin<a class="headerlink" href="#digitaltwin" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DigitalTwin">
+<span class="sig-name descname"><span class="pre">DigitalTwin</span></span><a class="headerlink" href="#DigitalTwin" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The digital twin that represents for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="../enterprise/twin.html#ClientSDK.DigitalTwin" title="ClientSDK.DigitalTwin">DigitalTwin</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="digitaltwinitem">
+<h3>DigitalTwinItem<a class="headerlink" href="#digitaltwinitem" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DigitalTwinItem">
+<span class="sig-name descname"><span class="pre">DigitalTwinItem</span></span><a class="headerlink" href="#DigitalTwinItem" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The digital twin item (tree item) that represents for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DigitalTwinItem</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="isinitiated">
+<h3>IsInitiated<a class="headerlink" href="#isinitiated" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="IsInitiated">
+<span class="sig-name descname"><span class="pre">IsInitiated</span></span><a class="headerlink" href="#IsInitiated" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the operation cache has been loaded.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="delimiter">
+<h3>Delimiter<a class="headerlink" href="#delimiter" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Delimiter">
+<span class="sig-name descname"><span class="pre">Delimiter</span></span><a class="headerlink" href="#Delimiter" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The delimiter used to separate the path for locations.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="name">
+<h3>Name<a class="headerlink" href="#name" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="Name">
+<span class="sig-name descname"><span class="pre">Name</span></span><a class="headerlink" href="#Name" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="spreadsheetdefinition">
+<h3>SpreadsheetDefinition<a class="headerlink" href="#spreadsheetdefinition" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="SpreadsheetDefinition">
+<span class="sig-name descname"><span class="pre">SpreadsheetDefinition</span></span><a class="headerlink" href="#SpreadsheetDefinition" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The SpreadsheetDefinition for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>SpreadsheetDefinition</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="fifteenminuteworksheetdefinition">
+<h3>FifteenMinuteWorksheetDefinition<a class="headerlink" href="#fifteenminuteworksheetdefinition" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="FifteenMinuteWorksheetDefinition">
+<span class="sig-name descname"><span class="pre">FifteenMinuteWorksheetDefinition</span></span><a class="headerlink" href="#FifteenMinuteWorksheetDefinition" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The FifteenMinuteWorksheetDefinition for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>WorksheetDefinition</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="hourlyworksheetdefinition">
+<h3>HourlyWorksheetDefinition<a class="headerlink" href="#hourlyworksheetdefinition" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HourlyWorksheetDefinition">
+<span class="sig-name descname"><span class="pre">HourlyWorksheetDefinition</span></span><a class="headerlink" href="#HourlyWorksheetDefinition" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The HourlyWorksheetDefinition for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>WorksheetDefinition</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="fourhourworksheetdefinition">
+<h3>FourHourWorksheetDefinition<a class="headerlink" href="#fourhourworksheetdefinition" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="FourHourWorksheetDefinition">
+<span class="sig-name descname"><span class="pre">FourHourWorksheetDefinition</span></span><a class="headerlink" href="#FourHourWorksheetDefinition" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The FourHourWorksheetDefinition for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>WorksheetDefinition</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="dailyworksheetdefinition">
+<h3>DailyWorksheetDefinition<a class="headerlink" href="#dailyworksheetdefinition" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DailyWorksheetDefinition">
+<span class="sig-name descname"><span class="pre">DailyWorksheetDefinition</span></span><a class="headerlink" href="#DailyWorksheetDefinition" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The DailyWorksheetDefinition for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>WorksheetDefinition</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="fifteenminuterows">
+<h3>FifteenMinuteRows<a class="headerlink" href="#fifteenminuterows" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="FifteenMinuteRows">
+<span class="sig-name descname"><span class="pre">FifteenMinuteRows</span></span><a class="headerlink" href="#FifteenMinuteRows" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Cached FifteenMinuteRows for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dictionary&lt;uint, Row&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="hourlyrows">
+<h3>HourlyRows<a class="headerlink" href="#hourlyrows" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="HourlyRows">
+<span class="sig-name descname"><span class="pre">HourlyRows</span></span><a class="headerlink" href="#HourlyRows" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Cached HourlyRows for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dictionary&lt;uint, Row&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="fourhourrows">
+<h3>FourHourRows<a class="headerlink" href="#fourhourrows" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="FourHourRows">
+<span class="sig-name descname"><span class="pre">FourHourRows</span></span><a class="headerlink" href="#FourHourRows" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Cached FourHourRows for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dictionary&lt;uint, Row&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="dailyrows">
+<h3>DailyRows<a class="headerlink" href="#dailyrows" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="DailyRows">
+<span class="sig-name descname"><span class="pre">DailyRows</span></span><a class="headerlink" href="#DailyRows" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The Cached DailyRows for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dictionary&lt;uint, Row&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="locationtwins">
+<h3>LocationTwins<a class="headerlink" href="#locationtwins" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="LocationTwins">
+<span class="sig-name descname"><span class="pre">LocationTwins</span></span><a class="headerlink" href="#LocationTwins" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The location twins for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="columntwins">
+<h3>ColumnTwins<a class="headerlink" href="#columntwins" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ColumnTwins">
+<span class="sig-name descname"><span class="pre">ColumnTwins</span></span><a class="headerlink" href="#ColumnTwins" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The column twins for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>List&lt;DigitalTwin&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="measurementcache">
+<h3>MeasurementCache<a class="headerlink" href="#measurementcache" title="Permalink to this headline"></a></h3>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="MeasurementCache">
+<span class="sig-name descname"><span class="pre">MeasurementCache</span></span><a class="headerlink" href="#MeasurementCache" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The cache of measurements for the current operation.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Dictionary&lt;string, List&lt;Measurement&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="operationscache.html" class="btn btn-neutral float-left" title="OperationsCache APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="reportcache.html" class="btn btn-neutral float-right" title="OperationsCache APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Aquatic Informatics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

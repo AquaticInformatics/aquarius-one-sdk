@@ -246,20 +246,7 @@ namespace ONE.Operations
                 return matches.First();
             return null;
         }
-        public List<Column> GetColumnByName(string name)
-        {
-           List<Column> columns = new List<Column>();
-           
-           return columns;
-
-        }
-        public List<Column> GetColumnByFullName(string name)
-        {
-            List<Column> columns = new List<Column>();
-
-            return columns;
-
-        }
+  
         public long GetColumnTwinDataPropertyLong(string guid, string path, string key)
         {
             DigitalTwin columnTwin = GetColumnTwinByGuid(guid);

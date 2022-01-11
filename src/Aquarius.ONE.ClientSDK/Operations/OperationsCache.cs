@@ -62,11 +62,11 @@ namespace ONE.Operations
             return operation.Name;
         }
        
-        public OperationCache GetOperationById(string id)
+        public OperationCache GetOperationById(string guid)
         {
-            if (string.IsNullOrEmpty(id) || Operations == null)
+            if (string.IsNullOrEmpty(guid) || Operations == null)
                 return null;
-            var matches = Operations.Where(c => c.Id.ToUpper() == id.ToUpper());
+            var matches = Operations.Where(c => c.Id.ToUpper() == guid.ToUpper());
             if (matches.Count() > 0)
                 return matches.First();
             return null;

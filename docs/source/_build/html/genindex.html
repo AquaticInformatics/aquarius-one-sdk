@@ -74,6 +74,10 @@
 <p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/librarycache.html">LibraryCache APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/operationscache.html">OperationsCache APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/operationcache.html">OperationCache APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="helpers/reportcache.html">OperationsCache APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpers/environment.html">PlatformEnvironment APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpers/logger.html">Logger APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="helpers/poeditor.html">POEditor APIs</a></li>
@@ -113,9 +117,11 @@
  | <a href="#E"><strong>E</strong></a>
  | <a href="#F"><strong>F</strong></a>
  | <a href="#G"><strong>G</strong></a>
+ | <a href="#H"><strong>H</strong></a>
  | <a href="#I"><strong>I</strong></a>
  | <a href="#L"><strong>L</strong></a>
  | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
  | <a href="#O"><strong>O</strong></a>
  | <a href="#P"><strong>P</strong></a>
  | <a href="#Q"><strong>Q</strong></a>
@@ -131,10 +137,12 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/core.html#ClientSDK.Core.ActivateUserAsync">ActivateUserAsync() (in module ClientSDK.Core)</a>
 </li>
-      <li><a href="enterprise/core.html#ClientSDK.Core.AddTenantProductOfferingAsync">AddTenantProductOfferingAsync() (in module ClientSDK.Core)</a>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.AddRow">AddRow() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="enterprise/core.html#ClientSDK.Core.AddTenantProductOfferingAsync">AddTenantProductOfferingAsync() (in module ClientSDK.Core)</a>
+</li>
       <li><a href="clientsdk.html#Authentication">Authentication (built-in class)</a>
 
       <ul>
@@ -169,6 +177,8 @@
 </li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.ColumnGetByYearAsync">ColumnGetByYearAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
+      <li><a href="helpers/operationcache.html#ColumnTwins">ColumnTwins</a>
+</li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.ComputationCreateAsync">ComputationCreateAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.ComputationExecuteAsync">ComputationExecuteAsync() (in module ClientSDK.Spreadsheet)</a>
@@ -181,10 +191,10 @@
 </li>
       <li><a href="clientsdk.html#ContinueOnCapturedContext">ContinueOnCapturedContext</a>
 </li>
-      <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.CookPlantAsync">CookPlantAsync() (in module ClientSDK.Spreadsheet)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.CookPlantAsync">CookPlantAsync() (in module ClientSDK.Spreadsheet)</a>
+</li>
       <li><a href="clientsdk.html#Core">Core (built-in class)</a>
 
       <ul>
@@ -219,7 +229,13 @@
 <h2 id="D">D</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#DailyRows">DailyRows</a>
+</li>
+      <li><a href="helpers/operationcache.html#DailyWorksheetDefinition">DailyWorksheetDefinition</a>
+</li>
       <li><a href="clientsdk.html#Data">Data (built-in class)</a>
+</li>
+      <li><a href="helpers/operationscache.html#ClientSDK.CacheHelper.OperationsCache.DefaultOperation">DefaultOperation (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
       <li><a href="enterprise/twin.html#ClientSDK.DigitalTwin.DeleteAsync">DeleteAsync() (in module ClientSDK.DigitalTwin)</a>
 </li>
@@ -247,12 +263,18 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.DeleteUserAsync">DeleteUserAsync() (in module ClientSDK.Core)</a>
 </li>
-      <li><a href="clientsdk.html#DigitalTwin">DigitalTwin (built-in class)</a>
+      <li><a href="helpers/operationcache.html#Delimiter">Delimiter</a>
+</li>
+      <li><a href="helpers/operationcache.html#DigitalTwin">DigitalTwin</a>
 
       <ul>
+        <li><a href="clientsdk.html#DigitalTwin">(built-in class)</a>
+</li>
         <li><a href="enterprise/twin.html#ClientSDK.DigitalTwin">(class in ClientSDK)</a>
 </li>
       </ul></li>
+      <li><a href="helpers/operationcache.html#DigitalTwinItem">DigitalTwinItem</a>
+</li>
       <li><a href="enterprise/report.html#ClientSDK.Core.DownloadReportAsync">DownloadReportAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/report.html#ClientSDK.Core.DownloadTemplateAsync">DownloadTemplateAsync() (in module ClientSDK.Core)</a>
@@ -277,7 +299,17 @@
 <h2 id="F">F</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#FifteenMinuteRows">FifteenMinuteRows</a>
+</li>
+      <li><a href="helpers/operationcache.html#FifteenMinuteWorksheetDefinition">FifteenMinuteWorksheetDefinition</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.FlushPlantAsync">FlushPlantAsync() (in module ClientSDK.Spreadsheet)</a>
+</li>
+      <li><a href="helpers/operationcache.html#FourHourRows">FourHourRows</a>
+</li>
+      <li><a href="helpers/operationcache.html#FourHourWorksheetDefinition">FourHourWorksheetDefinition</a>
 </li>
   </ul></td>
 </tr></table>
@@ -286,6 +318,24 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/twin.html#ClientSDK.DigitalTwin.GetAsync">GetAsync() (in module ClientSDK.DigitalTwin)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnByColumnNumber">GetColumnByColumnNumber() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnByIdentifier">GetColumnByIdentifier() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnByVariableId">GetColumnByVariableId() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnByVarNum">GetColumnByVarNum() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnGuidByIndex">GetColumnGuidByIndex() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinByGuid">GetColumnTwinByGuid() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyDate">GetColumnTwinDataPropertyDate() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyDouble">GetColumnTwinDataPropertyDouble() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnTwinDataPropertyLong">GetColumnTwinDataPropertyLong() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
       <li><a href="enterprise/report.html#ClientSDK.Core.GetDefinitionAsync">GetDefinitionAsync() (in module ClientSDK.Core)</a>
 </li>
@@ -307,13 +357,15 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetFeaturesAsync">GetFeaturesAsync() (in module ClientSDK.Core)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetParameter">GetParameter() (in module ClientSDK.Spreadsheet)</a>, <a href="helpers/cache.html#id0">[1]</a>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetOperationById">GetOperationById() (in module ClientSDK.CacheHelper.OperationsCache)</a>, <a href="helpers/operationscache.html#ClientSDK.CacheHelper.OperationsCache.GetOperationById">[1]</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetParameterAgencyCode">GetParameterAgencyCode() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetParameter">GetParameter() (in module ClientSDK.Spreadsheet)</a>, <a href="helpers/librarycache.html#id0">[1]</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetParameterAgencyCodeType">GetParameterAgencyCodeType() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetParameterAgencyCode">GetParameterAgencyCode() (in module ClientSDK.Spreadsheet)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetParameterByName">GetParameterByName() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetParameterAgencyCodeType">GetParameterAgencyCodeType() (in module ClientSDK.Spreadsheet)</a>
+</li>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetParameterByName">GetParameterByName() (in module ClientSDK.Spreadsheet)</a>
 </li>
       <li><a href="helpers/environment.html#ONE.Utilities.PlatformEnvironment.GetPlatformEnvironment">GetPlatformEnvironment() (in module ONE.Utilities.PlatformEnvironment)</a>, <a href="helpers/environment.html#id0">[1]</a>
 </li>
@@ -321,12 +373,12 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingsAsync">GetProductOfferingsAsync() (in module ClientSDK.Core)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetQuantityType">GetQuantityType() (in module ClientSDK.Spreadsheet)</a>
-</li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetQuantityTypeByName">GetQuantityTypeByName() (in module ClientSDK.Spreadsheet)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetQuantityType">GetQuantityType() (in module ClientSDK.Spreadsheet)</a>
+</li>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetQuantityTypeByName">GetQuantityTypeByName() (in module ClientSDK.Spreadsheet)</a>
+</li>
       <li><a href="common/library.html#ClientSDK.Library.GetQuantityTypesAsync">GetQuantityTypesAsync() (in module ClientSDK.Library)</a>
 </li>
       <li><a href="enterprise/report.html#ClientSDK.Core.GetReportTagAsync">GetReportTagAsync() (in module ClientSDK.Core)</a>
@@ -336,6 +388,8 @@
       <li><a href="enterprise/core.html#ClientSDK.Core.GetRoleAsync">GetRoleAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetRolesAsync">GetRolesAsync() (in module ClientSDK.Core)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetRow">GetRow() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.GetRowIndicesAsync">GetRowIndicesAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
@@ -347,17 +401,19 @@
 </li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.GetSpreadsheetDefinitionAsync">GetSpreadsheetDefinitionAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetTelemetryPath">GetTelemetryPath() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantAsync">GetTenantAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetTenantsAsync">GetTenantsAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.GetTokenAsync">GetTokenAsync() (in module ONE.Utilities.PlatformEnvironment)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetUnit">GetUnit() (in module ClientSDK.Spreadsheet)</a>, <a href="helpers/cache.html#id1">[1]</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetUnit">GetUnit() (in module ClientSDK.Spreadsheet)</a>, <a href="helpers/librarycache.html#id1">[1]</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetUnitByI18nKey">GetUnitByI18nKey() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetUnitByI18nKey">GetUnitByI18nKey() (in module ClientSDK.Spreadsheet)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.GetUnitByName">GetUnitByName() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.GetUnitByName">GetUnitByName() (in module ClientSDK.Spreadsheet)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetUserAsync">GetUserAsync() (in module ClientSDK.Core)</a>
 </li>
@@ -367,7 +423,27 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetUsersAsync">GetUsersAsync() (in module ClientSDK.Core)</a>
 </li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetVariableId">GetVariableId() (in module ClientSDK.CacheHelper.OperationsCache)</a>, <a href="helpers/operationcache.html#id0">[1]</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetWimsType">GetWimsType() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetWimsVarType">GetWimsVarType() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync">GetWorksheetDefinitionAsync() (in module ClientSDK.Spreadsheet)</a>
+</li>
+      <li><a href="helpers/operationscache.html#ClientSDK.CacheHelper.OperationsCache.GuidByIndex">GuidByIndex() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="H">H</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#HourlyRows">HourlyRows</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#HourlyWorksheetDefinition">HourlyWorksheetDefinition</a>
 </li>
   </ul></td>
 </tr></table>
@@ -375,11 +451,17 @@
 <h2 id="I">I</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache.I18Nkeys">I18Nkeys (in module ClientSDK.CacheHelper.LibraryCache)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache.I18Nkeys">I18Nkeys (in module ClientSDK.CacheHelper.LibraryCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#Id">Id</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationsCache.InitializeAsync">InitializeAsync() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
       <li><a href="enterprise/authentication.html#ClientSDK.Authentication.IsAuthenticated">IsAuthenticated (in module ClientSDK.Authentication)</a>
+</li>
+      <li><a href="helpers/operationcache.html#IsInitiated">IsInitiated</a>
 </li>
   </ul></td>
 </tr></table>
@@ -389,10 +471,16 @@
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="clientsdk.html#Library">Library (built-in class)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache">LibraryCache (class in ClientSDK.CacheHelper)</a>
+      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache">LibraryCache (class in ClientSDK.CacheHelper)</a>, <a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache">[1]</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.LoadAsync">LoadAsync() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.LoadAsync">LoadAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
+      <li><a href="helpers/operationscache.html#ClientSDK.CacheHelper.OperationsCache.LoadOperationsAsync">LoadOperationsAsync() (in module ClientSDK.CacheHelper.OperationsCache)</a>
+</li>
+      <li><a href="helpers/operationcache.html#LocationTwins">LocationTwins</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="clientsdk.html#id0">Logger</a>
 
       <ul>
@@ -401,8 +489,6 @@
         <li><a href="helpers/logger.html#ClientSDK.Logger">(class in ClientSDK)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.LoginResourceOwnerAsync">LoginResourceOwnerAsync() (in module ONE.Utilities.PlatformEnvironment)</a>
 </li>
       <li><a href="enterprise/authentication.html#ONE.Utilities.PlatformEnvironment.Logout">Logout() (in module ONE.Utilities.PlatformEnvironment)</a>
@@ -415,7 +501,23 @@
 <h2 id="M">M</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#MeasurementCache">MeasurementCache</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="enterprise/twin.html#ClientSDK.DigitalTwin.MoveAsync">MoveAsync() (in module ClientSDK.DigitalTwin)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationcache.html#Name">Name</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationscache.html#ClientSDK.CacheHelper.OperationsCache.Name">Name() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -423,7 +525,11 @@
 <h2 id="O">O</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.OperationsCache">OperationsCache (class in ClientSDK.CacheHelper)</a>
+      <li><a href="helpers/operationcache.html#ClientSDK.CacheHelper.OperationCache">OperationCache (class in ClientSDK.CacheHelper)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="helpers/operationscache.html#ClientSDK.CacheHelper.OperationsCache">OperationsCache (class in ClientSDK.CacheHelper)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -431,11 +537,11 @@
 <h2 id="P">P</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodes">ParameterAgencyCodes (in module ClientSDK.CacheHelper.LibraryCache)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodes">ParameterAgencyCodes (in module ClientSDK.CacheHelper.LibraryCache)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodeTypes">ParameterAgencyCodeTypes (in module ClientSDK.CacheHelper.LibraryCache)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache.ParameterAgencyCodeTypes">ParameterAgencyCodeTypes (in module ClientSDK.CacheHelper.LibraryCache)</a>
 </li>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache.Parameters">Parameters (in module ClientSDK.CacheHelper.LibraryCache)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache.Parameters">Parameters (in module ClientSDK.CacheHelper.LibraryCache)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
@@ -451,7 +557,7 @@
 <h2 id="Q">Q</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache.QuantityTypes">QuantityTypes (in module ClientSDK.CacheHelper.LibraryCache)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache.QuantityTypes">QuantityTypes (in module ClientSDK.CacheHelper.LibraryCache)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -471,7 +577,7 @@
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.ReportCache">ReportCache (class in ClientSDK.CacheHelper)</a>
+      <li><a href="helpers/reportcache.html#ClientSDK.CacheHelper.ReportCache">ReportCache (class in ClientSDK.CacheHelper)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.ResendInvitationAsync">ResendInvitationAsync() (in module ClientSDK.Core)</a>
 </li>
@@ -493,6 +599,8 @@
 </li>
       <li><a href="clientsdk.html#Spreadsheet">Spreadsheet (built-in class)</a>
 </li>
+      <li><a href="helpers/operationcache.html#SpreadsheetDefinition">SpreadsheetDefinition</a>
+</li>
   </ul></td>
 </tr></table>
 
@@ -503,7 +611,7 @@
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.Spreadsheet.ToString">ToString() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.Spreadsheet.ToString">ToString() (in module ClientSDK.Spreadsheet)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -511,7 +619,7 @@
 <h2 id="U">U</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
-      <li><a href="helpers/cache.html#ClientSDK.CacheHelper.LibraryCache.Units">Units (in module ClientSDK.CacheHelper.LibraryCache)</a>
+      <li><a href="helpers/librarycache.html#ClientSDK.CacheHelper.LibraryCache.Units">Units (in module ClientSDK.CacheHelper.LibraryCache)</a>
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.UnlockUserAsync">UnlockUserAsync() (in module ClientSDK.Core)</a>
 </li>
