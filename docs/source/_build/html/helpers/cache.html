@@ -78,7 +78,22 @@
 <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CacheHelper APIs</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#librarycache-class">LibraryCache Class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#librarycache-class-methods">LibraryCache Class Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#librarycache-class-methods">LibraryCache Class Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#loadasync">LoadAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameter-by-guid">GetParameter - By GUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameter-by-long-id">GetParameter - By long Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameterbyname">GetParameterByName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycodetype">GetParameterAgencyCodeType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getquantitytype">GetQuantityType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getquantitytypebyname">GetQuantityTypeByName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycode">GetParameterAgencyCode</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunit-by-guid">GetUnit - By GUID</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunit-by-long-id">GetUnit - By long Id</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitbyi18nkey">GetUnitByI18nKey</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitbyname">GetUnitByName</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tostring">ToString</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#librarycache-class-properties">LibraryCache Class Properties</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#i18nkeys">I18Nkeys</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#parameters">Parameters</a></li>
@@ -147,6 +162,260 @@ In addition there are helper methods to retrieve these items efficiently.</p>
 </section>
 <section id="librarycache-class-methods">
 <h2>LibraryCache Class Methods<a class="headerlink" href="#librarycache-class-methods" title="Permalink to this headline"></a></h2>
+<section id="loadasync">
+<h3>LoadAsync<a class="headerlink" href="#loadasync" title="Permalink to this headline"></a></h3>
+<p>Loads the library cache.  After the library cache is loaded, the other methods will perform.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.LoadAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">LoadAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.LoadAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameter-by-guid">
+<h3>GetParameter - By GUID<a class="headerlink" href="#getparameter-by-guid" title="Permalink to this headline"></a></h3>
+<p>Retrieves a parameter by GUID from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetParameter">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">parameterId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetParameter" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterId</strong> (<em>string</em>) – Unique Identifier (GUID).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameter-by-long-id">
+<h3>GetParameter - By long Id<a class="headerlink" href="#getparameter-by-long-id" title="Permalink to this headline"></a></h3>
+<p>Retrieves a parameter by the long id from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetParameter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long</span> <span class="pre">parameterId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterId</strong> (<em>long</em>) – Unique Identifier (long).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameterbyname">
+<h3>GetParameterByName<a class="headerlink" href="#getparameterbyname" title="Permalink to this headline"></a></h3>
+<p>Retrieves a parameter by translated Name from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetParameterByName">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetParameterByName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetParameterByName" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – Translated name of the parameter.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Parameter</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameteragencycodetype">
+<h3>GetParameterAgencyCodeType<a class="headerlink" href="#getparameteragencycodetype" title="Permalink to this headline"></a></h3>
+<p>Retrieves a Parameter Agency Code Type by GUID from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetParameterAgencyCodeType">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetParameterAgencyCodeType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetParameterAgencyCodeType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – Unique Identifier (GUID).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ParameterAgencyCodeType</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getquantitytype">
+<h3>GetQuantityType<a class="headerlink" href="#getquantitytype" title="Permalink to this headline"></a></h3>
+<p>Retrieves a quantity type by GUID from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetQuantityType">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetQuantityType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">quantityTypeId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetQuantityType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>quantityTypeId</strong> (<em>string</em>) – Unique Identifier (GUID).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QuantityType</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getquantitytypebyname">
+<h3>GetQuantityTypeByName<a class="headerlink" href="#getquantitytypebyname" title="Permalink to this headline"></a></h3>
+<p>Retrieves a quantity type by Name from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetQuantityTypeByName">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetQuantityTypeByName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetQuantityTypeByName" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – Display name of the quantity type.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>QuantityType</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameteragencycode">
+<h3>GetParameterAgencyCode<a class="headerlink" href="#getparameteragencycode" title="Permalink to this headline"></a></h3>
+<p>Retrieves a Parameter Agency Code by GUID from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetParameterAgencyCode">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetParameterAgencyCode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetParameterAgencyCode" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – Unique Identifier (GUID).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>ParameterAgencyCode</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunit-by-guid">
+<h3>GetUnit - By GUID<a class="headerlink" href="#getunit-by-guid" title="Permalink to this headline"></a></h3>
+<p>Retrieves a unit by GUID from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetUnit">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">unitId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetUnit" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitId</strong> (<em>string</em>) – Unique Identifier (GUID).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunit-by-long-id">
+<h3>GetUnit - By long Id<a class="headerlink" href="#getunit-by-long-id" title="Permalink to this headline"></a></h3>
+<p>Retrieves a unit by the long id from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="id1">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetUnit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">long</span> <span class="pre">unitId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#id1" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitId</strong> (<em>long</em>) – Unique Identifier (long).</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitbyi18nkey">
+<h3>GetUnitByI18nKey<a class="headerlink" href="#getunitbyi18nkey" title="Permalink to this headline"></a></h3>
+<p>Retrieves a unit by I18nKey from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetUnitByI18nKey">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetUnitByI18nKey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">i18nKey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetUnitByI18nKey" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i18nKey</strong> (<em>string</em>) – The i18n Key for the Unit.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitbyname">
+<h3>GetUnitByName<a class="headerlink" href="#getunitbyname" title="Permalink to this headline"></a></h3>
+<p>Retrieves a unit by translated Name from Cache.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.GetUnitByName">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">GetUnitByName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">name</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.GetUnitByName" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>name</strong> (<em>string</em>) – Translated name of the unit.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Unit</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="tostring">
+<h3>ToString<a class="headerlink" href="#tostring" title="Permalink to this headline"></a></h3>
+<p>Serializes Cache for local storage.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Spreadsheet.ToString">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">ToString</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Spreadsheet.ToString" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="librarycache-class-properties">
 <h2>LibraryCache Class Properties<a class="headerlink" href="#librarycache-class-properties" title="Permalink to this headline"></a></h2>
