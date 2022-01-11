@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Qualifiers &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="RowNumber" href="rownumber.html" />
+    <link rel="prev" title="POEditor" href="poeditor.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
+          </a>
+              <div class="version">
+                10.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clientsdk.html">ClientSDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="poeditor.html">POEditor</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Qualifiers</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#class">Class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#cascade-rule">Cascade rule</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-qualifier-rules">Data Qualifier rules</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getaggregatequalifer">GetAggregateQualifer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getrownumberfromdatetimeandworksheettype">GetRowNumberFromDateTimeAndWorksheetType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getsymbol">GetSymbol</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="rownumber.html">RowNumber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aquarius.ONE.SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Qualifiers</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/helpers/qualifiers.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="qualifiers">
+<h1>Qualifiers<a class="headerlink" href="#qualifiers" title="Permalink to this headline"></a></h1>
+<p>This is a static helper class to assist with laboratory qualifiers.</p>
+<section id="class">
+<h2>Class<a class="headerlink" href="#class" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.Qualifiers">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.</span></span><span class="sig-name descname"><span class="pre">Qualifiers</span></span><a class="headerlink" href="#ONE.Operations.Spreadsheet.Qualifiers" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</section>
+<section id="concepts">
+<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this headline"></a></h2>
+<section id="cascade-rule">
+<h3>Cascade rule<a class="headerlink" href="#cascade-rule" title="Permalink to this headline"></a></h3>
+<p>CASCADE RULE: Sets when to display the data qualifiers (&lt;,&gt;, ND) with the calculated statistic.  Valid settings are:</p>
+<ol class="arabic simple" start="0">
+<li><p>Display no data qualifiers in result.</p></li>
+<li><p>Display the data qualifier if one of the values contains the qualifier.</p></li>
+<li><p>Display data qualifier if over half the values contains the qualifier.</p></li>
+<li><p>Display data qualifier if all of the values contains the qualifier.</p></li>
+</ol>
+</section>
+<section id="data-qualifier-rules">
+<h3>Data Qualifier rules<a class="headerlink" href="#data-qualifier-rules" title="Permalink to this headline"></a></h3>
+<ol class="arabic simple" start="0">
+<li><p>Zero</p></li>
+<li><p>Entered Value</p></li>
+<li><p>Half of &lt;, twice of &gt;</p></li>
+</ol>
+<table class="colwidths-given docutils align-default" id="id1">
+<caption><span class="caption-text">Data Qualifier Rule Example</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Qualifier</p></th>
+<th class="head"><p>Rule 0</p></th>
+<th class="head"><p>Rule 1</p></th>
+<th class="head"><p>Rule 2</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&lt;</p></td>
+<td><p>0</p></td>
+<td><p>Entered Value</p></td>
+<td><p>Half Value</p></td>
+</tr>
+<tr class="row-odd"><td><p>&gt;</p></td>
+<td><p>Entered Value</p></td>
+<td><p>Entered Value</p></td>
+<td><p>Double Value</p></td>
+</tr>
+<tr class="row-even"><td><p>ND</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+<tr class="row-odd"><td><p>E</p></td>
+<td><p>0</p></td>
+<td><p>Entered Value</p></td>
+<td><p>Half Value</p></td>
+</tr>
+<tr class="row-even"><td><p>DNQ</p></td>
+<td><p>0</p></td>
+<td><p>Entered Value</p></td>
+<td><p>Half Value</p></td>
+</tr>
+<tr class="row-odd"><td><p>TNTC</p></td>
+<td><p>Enter Value or 10000 if no value</p></td>
+<td><p>Enter Value or 10000 if no value</p></td>
+<td><p>Enter Value or 10000 if no value</p></td>
+</tr>
+<tr class="row-even"><td><p>P</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-odd"><td><p>A</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+<td><p>0</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<section id="getaggregatequalifer">
+<h3>GetAggregateQualifer<a class="headerlink" href="#getaggregatequalifer" title="Permalink to this headline"></a></h3>
+<p>Gets the qualifier that should be applied to an aggregate result.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.GetAggregateQualifer">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">GetAggregateQualifer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">List&lt;Measurement&gt;</span> <span class="pre">measurements</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">cascadeRule</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.GetAggregateQualifer" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>measurements</strong> (<em>List&lt;Measurement&gt;</em>) – A collection of measurements.</p></li>
+<li><p><strong>cascadeRule</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Cascade rule:  See concepts above.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The resulting qualifier from the aggregate.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getrownumberfromdatetimeandworksheettype">
+<h3>GetRowNumberFromDateTimeAndWorksheetType<a class="headerlink" href="#getrownumberfromdatetimeandworksheettype" title="Permalink to this headline"></a></h3>
+<p>Gets the count of each of the qualifiers from the QualifierList.
+This is helpful for many statistical queries that will bias the result based on the weight of the qualifiers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.GetQualifierCount">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">GetQualifierCount</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">List&lt;Measurement&gt;</span> <span class="pre">measurements</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.GetQualifierCount" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>measurements</strong> (<em>List&lt;Measurement&gt;</em>) – A collection of measurements to get the qualifier count.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An array of the counts of qualifiers.  The array matches the QualifierList.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>[]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getsymbol">
+<h3>GetSymbol<a class="headerlink" href="#getsymbol" title="Permalink to this headline"></a></h3>
+<p>Retrieves the symbol from a string value.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.GetSymbol">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">GetSymbol</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.GetSymbol" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>value</strong> (<em>string</em>) – The value to retrieve the symbol.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The symbol if one exists in the input value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.Qualifiers.QualifierList">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.Qualifiers.</span></span><span class="sig-name descname"><span class="pre">QualifierList</span></span><a class="headerlink" href="#ONE.Operations.Spreadsheet.Qualifiers.QualifierList" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A comma delimited list of supported qualifiers.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="poeditor.html" class="btn btn-neutral float-left" title="POEditor" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="rownumber.html" class="btn btn-neutral float-right" title="RowNumber" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Aquatic Informatics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

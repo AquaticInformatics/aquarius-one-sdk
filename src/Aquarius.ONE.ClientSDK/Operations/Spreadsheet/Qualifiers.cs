@@ -553,8 +553,6 @@ namespace ONE.Operations.Spreadsheet
             if (dblMax != null)
                 return strMax;
             return "";
-
-
         }
         public static object Min(object range, EnumCascadeRule cascadeRule, EnumQualifierRule qualifierRule, string strFormat)
         {
@@ -724,7 +722,6 @@ namespace ONE.Operations.Spreadsheet
                 }
             }
             return strLast;
-            
         }
         public static object GeometricMeans(object CR, string strStat, EnumCascadeRule cascadeRule, EnumQualifierRule qualifierRule, string strFormat)
         {
