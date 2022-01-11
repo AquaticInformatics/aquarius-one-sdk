@@ -57,7 +57,7 @@ namespace ONE.Operations.Spreadsheet
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/column/{columnId}/byday/{date.Year}/{date.Month}/{date.Day}";
+            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/column/{columnId}/byday/{date.Year}/{date.Month}/{date.Day}?requestId={requestId}";
 
             try
             {
@@ -82,7 +82,7 @@ namespace ONE.Operations.Spreadsheet
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/column/{columnId}/bymonth/{date.Year}/{date.Month}";
+            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/column/{columnId}/bymonth/{date.Year}/{date.Month}?requestId={requestId}";
 
             try
             {
@@ -107,7 +107,7 @@ namespace ONE.Operations.Spreadsheet
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/column/{columnId}/byyear/{date.Year}";
+            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/column/{columnId}/byyear/{date.Year}?requestId={requestId}";
 
             try
             {
@@ -193,11 +193,11 @@ namespace ONE.Operations.Spreadsheet
             }
         }
      
-        public async Task<SpreadsheetComputation> ComputationGetOneAsync(string twinReferenceId, EnumWorksheet worksheetType, string computationBindingId)
+        public async Task<SpreadsheetComputation> ComputationGetOneAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, string computationBindingId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operations/spreadsheet/v1/{twinReferenceId}/worksheet/{(int)worksheetType}/computation/{computationBindingId}?requestId={requestId}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/computation/{computationBindingId}?requestId={requestId}";
 
             try
             {
@@ -259,7 +259,7 @@ namespace ONE.Operations.Spreadsheet
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"operations/spreadsheet/v1/{operationTwinReferenceId}/plant").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"operations/spreadsheet/v1/{operationTwinReferenceId}/plant?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"DeletePlantAsync Success" });
                 else
@@ -305,15 +305,15 @@ namespace ONE.Operations.Spreadsheet
                 throw;
             }
         }
-        public async Task<Rows> GetRowsAsync(string twinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null)
+        public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null)
         {
-            return await GetSpreadsheetRowsAsync(twinReferenceId, worksheetType, startRow, endRow, columnList, viewId);
+            return await GetSpreadsheetRowsAsync(operationTwinReferenceId, worksheetType, startRow, endRow, columnList, viewId);
         }
-        public async Task<Rows> GetSpreadsheetRowsAsync(string twinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null)
+        public async Task<Rows> GetSpreadsheetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operations/spreadsheet/v1/{twinReferenceId}/worksheet/{(int)worksheetType}/rows?startRow={startRow}&endRow={endRow}&columns={columnList}&viewid={viewId}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows?requestId={requestId}&startRow={startRow}&endRow={endRow}&columns={columnList}&viewid={viewId}";
             try
             {
                 var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
@@ -332,11 +332,11 @@ namespace ONE.Operations.Spreadsheet
                 throw;
             }
         }
-        public async Task<Rows> GetRowsByDayAsync(string twinReferenceId, EnumWorksheet worksheetType, DateTime date)
+        public async Task<Rows> GetRowsByDayAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, DateTime date, string columnList = null, string viewId = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operations/spreadsheet/v1/{twinReferenceId}/worksheet/{(int)worksheetType}/rows/byday/{date.Year}/{date.Month}/{date.Day}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows/byday/{date.Year}/{date.Month}/{date.Day}?requestId={requestId}&columns={columnList}&viewid={viewId}";
             try
             {
                 var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
@@ -355,11 +355,11 @@ namespace ONE.Operations.Spreadsheet
                 throw;
             }
         }
-        public async Task<Rows> GetRowsByMonthAsync(string twinReferenceId, EnumWorksheet worksheetType, DateTime date)
+        public async Task<Rows> GetRowsByMonthAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, DateTime date, string columnList = null, string viewId = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operations/spreadsheet/v1/{twinReferenceId}/worksheet/{(int)worksheetType}/rows/bymonth/{date.Year}/{date.Month}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows/bymonth/{date.Year}/{date.Month}?requestId={requestId}&columns={columnList}&viewid={viewId}";
             try
             {
                 var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
@@ -378,11 +378,11 @@ namespace ONE.Operations.Spreadsheet
                 throw;
             }
         }
-        public async Task<SpreadsheetDefinition> GetSpreadsheetDefinitionAsync(string twinReferenceId)
+        public async Task<SpreadsheetDefinition> GetSpreadsheetDefinitionAsync(string operationTwinReferenceId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operations/spreadsheet/v1/{twinReferenceId}/definition?requestId={requestId}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/definition?requestId={requestId}";
 
             try
             {
@@ -407,11 +407,11 @@ namespace ONE.Operations.Spreadsheet
                 throw;
             }
         }
-        public async Task<WorksheetDefinition> GetWorksheetDefinitionAsync(string twinReferenceId, EnumWorksheet worksheetType)
+        public async Task<WorksheetDefinition> GetWorksheetDefinitionAsync(string operationTwinReferenceId, EnumWorksheet worksheetType)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{twinReferenceId}/worksheet/{(int)worksheetType}/definition?requestId={requestId}";
+            var worksheetDefinitionEndpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/definition?requestId={requestId}";
 
             try
             {
