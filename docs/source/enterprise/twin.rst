@@ -1,4 +1,4 @@
-Digital Twins APIs
+Digital Twins
 ====
 
 Enterprise Twin are digital twins that provide multiple essential purposes including: Organizational Modelling and Security, Resource-Based Access Control, physical world modelling, Instrument relations with Telemetry, and Data Cataloguing through Telemetry Twins.

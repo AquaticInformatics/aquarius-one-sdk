@@ -1,4 +1,4 @@
-Core APIs
+Core (User & Tenants)
 ====
 
 Provides centralized multi-tenancy and multi-product registration and management. 

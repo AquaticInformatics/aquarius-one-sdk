@@ -1,4 +1,4 @@
-PlatformEnvironment APIs
+PlatformEnvironment
 ====
 
 PlatformEnvironment is a static class

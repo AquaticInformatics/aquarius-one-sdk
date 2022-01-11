@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Report APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>Report &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -54,20 +54,20 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core.html">Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="data.html">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data.html">Enterprise Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="twin.html">Digital Twins APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Report APIs</a><ul>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Report</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#report-definition-methods">Report Definition Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#createdefinitionasync">CreateDefinitionAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getdefinitionsasync">GetDefinitionsAsync</a></li>
@@ -96,14 +96,21 @@
 </ul>
 </li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor APIs</a></li>
@@ -123,7 +130,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Report APIs</li>
+      <li>Report</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/enterprise/report.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -133,8 +140,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="report-apis">
-<h1>Report APIs<a class="headerlink" href="#report-apis" title="Permalink to this headline"></a></h1>
+  <section id="report">
+<h1>Report<a class="headerlink" href="#report" title="Permalink to this headline"></a></h1>
 <p>Provides human readable rendering of data as file artifacts.
 This service leverages Enterprise Data to assemble datasets required for the rendering of the reports.
 In addition Rendering Engines and Templates are registered within this system.</p>

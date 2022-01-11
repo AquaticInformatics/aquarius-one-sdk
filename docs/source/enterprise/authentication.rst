@@ -1,4 +1,4 @@
-Authentication APIs
+Authentication
 ====
 
 Provides centralized Identity Service through the implementation of Open ID Connect. 

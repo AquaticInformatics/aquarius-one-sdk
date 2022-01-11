@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enterprise Data APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>Enterprise Data &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Digital Twins APIs" href="twin.html" />
-    <link rel="prev" title="Core APIs" href="core.html" /> 
+    <link rel="prev" title="Core (User &amp; Tenants)" href="core.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,14 +54,14 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="core.html">Core APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Enterprise Data APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Enterprise Data</a></li>
 <li class="toctree-l1"><a class="reference internal" href="twin.html">Digital Twins APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
@@ -69,14 +69,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="report.html">Report APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor APIs</a></li>
@@ -96,7 +103,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Enterprise Data APIs</li>
+      <li>Enterprise Data</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/enterprise/data.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -106,8 +113,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="enterprise-data-apis">
-<h1>Enterprise Data APIs<a class="headerlink" href="#enterprise-data-apis" title="Permalink to this headline"></a></h1>
+  <section id="enterprise-data">
+<h1>Enterprise Data<a class="headerlink" href="#enterprise-data" title="Permalink to this headline"></a></h1>
 <p>Provides data proxy to abstract the interaction with cloud enabled data sources through data adapters.
 This service is leveraged by Enterprise Report to be able to assemble information across a variety of data sources.
 Enterprise Twin is leveraged as a data catalogue that also provides resource-based access control through Telemetry Twins.</p>
@@ -125,7 +132,7 @@ Enterprise Twin is leveraged as a data catalogue that also provides resource-bas
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="core.html" class="btn btn-neutral float-left" title="Core APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="core.html" class="btn btn-neutral float-left" title="Core (User &amp; Tenants)" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="twin.html" class="btn btn-neutral float-right" title="Digital Twins APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

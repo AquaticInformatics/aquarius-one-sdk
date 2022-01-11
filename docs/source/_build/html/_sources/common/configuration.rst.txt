@@ -1,4 +1,4 @@
-Configuration APIs
+Configuration
 ====
 
 Stores configurations related to functionality within an application as JSON. Examples include: Dashboard Configurations, Graph Configurations, layout configurations. 

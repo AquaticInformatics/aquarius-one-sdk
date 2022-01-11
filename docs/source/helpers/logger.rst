@@ -1,4 +1,4 @@
-Logger APIs
+Logger
 ====
 
  ..  class:: Logger 

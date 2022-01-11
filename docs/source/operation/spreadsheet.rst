@@ -1,4 +1,4 @@
-Spreadsheet APIs
+Spreadsheet
 ====
 
 Water treatment, purpose built data models of tabular data related to water treatment operations. 

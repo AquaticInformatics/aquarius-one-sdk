@@ -1,4 +1,4 @@
-OperationCache APIs
+Operation
 ====
 
 The purpose of the Operations Cache is to load the configuration of an ACO operation, which is fairly static into memory, 
@@ -163,6 +163,7 @@ Returns a column info based on any of the following:
    :rtype: string
 
 .. note:: Info Fields (Field - Info Returned):
+   
    - Operation - Operation hame
    - Location:VarName - path:ColumnName
    - Name:Units - ColumnName {Unit Short Name}

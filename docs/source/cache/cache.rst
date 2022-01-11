@@ -1,4 +1,4 @@
-CacheHelper APIs
+CacheHelper
 ====
 
  ..  class:: CacheHelper 

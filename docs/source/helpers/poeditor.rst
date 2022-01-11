@@ -1,4 +1,4 @@
-POEditor APIs
+POEditor
 ====
 Enterprise Core manages:
 - Users

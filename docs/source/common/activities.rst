@@ -1,4 +1,4 @@
-Activity APIs
+Activity
 ====
 
 Provides services that are similar to Microsoft's Common Data Model (CDM) Activities. 

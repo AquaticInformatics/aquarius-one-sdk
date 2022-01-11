@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Library APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>Library &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,8 +18,8 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Notification APIs" href="notifications.html" />
-    <link rel="prev" title="Configuration APIs" href="configuration.html" /> 
+    <link rel="next" title="Notification" href="notifications.html" />
+    <link rel="prev" title="Configuration" href="configuration.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,46 +54,105 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="activities.html">Activity APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Library APIs</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#agency-methods">Agency Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#agency-parameter-code-type-methods">Agency Parameter Code Type Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#agency-parameter-code-methods">Agency Parameter Code Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#agency-unit-type-methods">Agency Unit Type Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#agency-unit-code-methods">Agency Unit Code Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#parameter-methods">Parameter Methods</a></li>
+<li class="toctree-l1"><a class="reference internal" href="activities.html">Activity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="configuration.html">Configuration</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Library</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#agency-methods">Agency Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createagencyasync">CreateAgencyAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateagencyasync">UpdateAgencyAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getagencyasync">GetAgencyAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getagenciesasync">GetAgenciesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-parameter-code-type-methods">Agency Parameter Code Type Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createparameteragencycodetypeasync">CreateParameterAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateparameteragencycodetypeasync">UpdateParameterAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteparameteragencycodetypeasync">DeleteParameterAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycodetypeasync">GetParameterAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycodetypesasync">GetParameterAgencyCodeTypesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-parameter-code-methods">Agency Parameter Code Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createparameteragencycodeasync">CreateParameterAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateparameteragencycodeasync">UpdateParameterAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteparameteragencycodeasync">DeleteParameterAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycodeasync">GetParameterAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameteragencycodesasync">GetParameterAgencyCodesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-unit-type-methods">Agency Unit Type Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createunitagencycodetypeasync">CreateUnitAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateunitagencycodetypeasync">UpdateUnitAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteunitagencycodetypeasync">DeleteUnitAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitagencycodetypeasync">GetUnitAgencyCodeTypeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitagencycodetypesasync">GetUnitAgencyCodeTypesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#agency-unit-code-methods">Agency Unit Code Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createunitagencycodeasync">CreateUnitAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateunitagencycodeasync">UpdateUnitAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteunitagencycodeasync">DeleteUnitAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitagencycodeasync">GetUnitAgencyCodeAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitagencycodesasync">GetUnitAgencyCodesAsync</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#parameter-methods">Parameter Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createparameterasync">CreateParameterAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateparameterasync">UpdateParameterAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteparameterasync">DeleteParameterAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparameterasync">GetParameterAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getparametersasync">GetParametersAsync</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#quantity-type-methods">Quantity Type Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#getquantitytypesasync">GetQuantityTypesAsync</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#translation-i18n-methods">Translation (i18n) Methods</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#unit-type-methods">Unit Type Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#translation-i18n-methods">Translation (i18n) Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#getmobilei18nkeysasync">GetMobilei18nKeysAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#geti18nkeysasync">Geti18nKeysAsync</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notification APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#unit-type-methods">Unit Type Methods</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#createunitasync">CreateUnitAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updateunitasync">UpdateUnitAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#deleteunitasync">DeleteUnitAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitasync">GetUnitAsync</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getunitsasync">GetUnitsAsync</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
+</li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notifications.html">Notification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">CacheHelper APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor</a></li>
 </ul>
 
         </div>
@@ -110,7 +169,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Library APIs</li>
+      <li>Library</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/common/library.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -120,27 +179,740 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="library-apis">
-<h1>Library APIs<a class="headerlink" href="#library-apis" title="Permalink to this headline"></a></h1>
+  <section id="library">
+<h1>Library<a class="headerlink" href="#library" title="Permalink to this headline"></a></h1>
 <p>Provides a global standard set of Water Quality Specific Parameters, Units, Quantity Types, Agencies, Analysis Methods, and the means to map different standards.
 In addition all library items are localized into 24 languages. Additional application localization support is also provided.</p>
+<ul class="simple">
+<li><p>See Also: <a class="reference internal" href="../concepts/library.html"><span class="doc">Global Library</span></a></p></li>
+</ul>
 <section id="agency-methods">
 <h2>Agency Methods<a class="headerlink" href="#agency-methods" title="Permalink to this headline"></a></h2>
+<section id="createagencyasync">
+<h3>CreateAgencyAsync<a class="headerlink" href="#createagencyasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new agency.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateAgencyAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateAgencyAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Agency</span> <span class="pre">agency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateAgencyAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>agency</strong> (<em>Agency</em>) – The Agency as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created Agency.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Agency&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateagencyasync">
+<h3>UpdateAgencyAsync<a class="headerlink" href="#updateagencyasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing Agency.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=agency-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateAgencyAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateAgencyAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Agency</span> <span class="pre">agency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateAgencyAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>agency</strong> (<em>Agency</em>) – The Agency as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated Agency.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Agency&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getagencyasync">
+<h3>GetAgencyAsync<a class="headerlink" href="#getagencyasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves Parameter by unique Id (GUID).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=agency-get">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetAgencyAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetAgencyAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetAgencyAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the Agency.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>An Agency.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Agency&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getagenciesasync">
+<h3>GetAgenciesAsync<a class="headerlink" href="#getagenciesasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all agencies.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=agency-getmany">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetAgenciesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetAgenciesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetAgenciesAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all of the Agencies.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;Agency&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="agency-parameter-code-type-methods">
 <h2>Agency Parameter Code Type Methods<a class="headerlink" href="#agency-parameter-code-type-methods" title="Permalink to this headline"></a></h2>
+<section id="createparameteragencycodetypeasync">
+<h3>CreateParameterAgencyCodeTypeAsync<a class="headerlink" href="#createparameteragencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new parameterAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycodetype-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateParameterAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateParameterAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ParameterAgencyCodeType</span> <span class="pre">parameterAgencyCodeType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateParameterAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterAgencyCodeType</strong> (<em>ParameterAgencyCodeType</em>) – The ParameterAgencyCodeType as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateparameteragencycodetypeasync">
+<h3>UpdateParameterAgencyCodeTypeAsync<a class="headerlink" href="#updateparameteragencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing ParameterAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycodetype-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateParameterAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateParameterAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ParameterAgencyCodeType</span> <span class="pre">parameterAgencyCodeType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateParameterAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterAgencyCodeType</strong> (<em>ParameterAgencyCodeType</em>) – The ParameterAgencyCodeType as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteparameteragencycodetypeasync">
+<h3>DeleteParameterAgencyCodeTypeAsync<a class="headerlink" href="#deleteparameteragencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Deletes an existing ParameterAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycodetype-delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.DeleteParameterAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteParameterAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteParameterAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the ParameterAgencyCodeType was deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameteragencycodetypeasync">
+<h3>GetParameterAgencyCodeTypeAsync<a class="headerlink" href="#getparameteragencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves ParameterAgencyCodeType by unique Id (GUID).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-get-by-id">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetParameterAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetParameterAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetParameterAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameteragencycodetypesasync">
+<h3>GetParameterAgencyCodeTypesAsync<a class="headerlink" href="#getparameteragencycodetypesasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all ParameterAgencyCodeTypes.</p>
+<ul class="simple">
+<li><p><a href="#id36"><span class="problematic" id="id37">`RESTful API Documentation &lt;https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycodetype-get`_</span></a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetParameterAgencyCodeTypesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetParameterAgencyCodeTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetParameterAgencyCodeTypesAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all of the ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;ParameterAgencyCodeType&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="agency-parameter-code-methods">
 <h2>Agency Parameter Code Methods<a class="headerlink" href="#agency-parameter-code-methods" title="Permalink to this headline"></a></h2>
+<section id="createparameteragencycodeasync">
+<h3>CreateParameterAgencyCodeAsync<a class="headerlink" href="#createparameteragencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new ParameterAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycode-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateParameterAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateParameterAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ParameterAgencyCode</span> <span class="pre">parameterAgencyCode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateParameterAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterAgencyCode</strong> (<em>ParameterAgencyCode</em>) – The ParameterAgencyCode as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created ParameterAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateparameteragencycodeasync">
+<h3>UpdateParameterAgencyCodeAsync<a class="headerlink" href="#updateparameteragencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing ParameterAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycode-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateParameterAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateParameterAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ParameterAgencyCode</span> <span class="pre">parameterAgencyCode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateParameterAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterAgencyCode</strong> (<em>ParameterAgencyCode</em>) – The ParameterAgencyCode as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated ParameterAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteparameteragencycodeasync">
+<h3>DeleteParameterAgencyCodeAsync<a class="headerlink" href="#deleteparameteragencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Deletes an existing ParameterAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycode-delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.DeleteParameterAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteParameterAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteParameterAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the ParameterAgencyCode.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the ParameterAgencyCode was deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameteragencycodeasync">
+<h3>GetParameterAgencyCodeAsync<a class="headerlink" href="#getparameteragencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves ParameterAgencyCode by unique Id (GUID).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycode-get">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetParameterAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetParameterAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetParameterAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the ParameterAgencyCode.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A ParameterAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameteragencycodesasync">
+<h3>GetParameterAgencyCodesAsync<a class="headerlink" href="#getparameteragencycodesasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all ParameterAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycodetype-get">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetParameterAgencyCodesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetParameterAgencyCodesAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">parameterAgencyCodeTypeId</span> <span class="pre">=</span> <span class="pre">null</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetParameterAgencyCodesAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameterAgencyCodeTypeId</strong> (<em>string</em>) – The parameterAgencyCodeTypeId (GUID).</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of all of the ParameterAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;ParameterAgencyCode&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="agency-unit-type-methods">
 <h2>Agency Unit Type Methods<a class="headerlink" href="#agency-unit-type-methods" title="Permalink to this headline"></a></h2>
+<section id="createunitagencycodetypeasync">
+<h3>CreateUnitAgencyCodeTypeAsync<a class="headerlink" href="#createunitagencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new UnitAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycodetype-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateUnitAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateUnitAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">UnitAgencyCodeType</span> <span class="pre">unitAgencyCodeType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateUnitAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitAgencyCodeType</strong> (<em>UnitAgencyCodeType</em>) – The UnitAgencyCodeType as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created UnitAgencyCodeType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;UnitAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateunitagencycodetypeasync">
+<h3>UpdateUnitAgencyCodeTypeAsync<a class="headerlink" href="#updateunitagencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing UnitAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycodetype-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateUnitAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateUnitAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">UnitAgencyCodeType</span> <span class="pre">unitAgencyCodeType</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateUnitAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitAgencyCodeType</strong> (<em>UnitAgencyCodeType</em>) – The UnitAgencyCodeType as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated UnitAgencyCodeType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;UnitAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteunitagencycodetypeasync">
+<h3>DeleteUnitAgencyCodeTypeAsync<a class="headerlink" href="#deleteunitagencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Deletes an existing UnitAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameteragencycodetype-delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.DeleteUnitAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteUnitAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteUnitAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the UnitAgencyCodeType.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the UnitAgencyCodeType was deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitagencycodetypeasync">
+<h3>GetUnitAgencyCodeTypeAsync<a class="headerlink" href="#getunitagencycodetypeasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves ParameterAgencyCodeType by unique Id (GUID).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycodetype-get">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetUnitAgencyCodeTypeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetUnitAgencyCodeTypeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetUnitAgencyCodeTypeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A ParameterAgencyCodeType.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;ParameterAgencyCodeType&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitagencycodetypesasync">
+<h3>GetUnitAgencyCodeTypesAsync<a class="headerlink" href="#getunitagencycodetypesasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all UnitAgencyCodeType.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycodetype-getmany">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetUnitAgencyCodeTypesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetUnitAgencyCodeTypesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetUnitAgencyCodeTypesAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all of the UnitAgencyCodeType.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;UnitAgencyCodeType&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="agency-unit-code-methods">
 <h2>Agency Unit Code Methods<a class="headerlink" href="#agency-unit-code-methods" title="Permalink to this headline"></a></h2>
+<section id="createunitagencycodeasync">
+<h3>CreateUnitAgencyCodeAsync<a class="headerlink" href="#createunitagencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new ParameterAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycode-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateUnitAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateUnitAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">UnitAgencyCode</span> <span class="pre">unitAgencyCode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateUnitAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitAgencyCode</strong> (<em>UnitAgencyCode</em>) – The UnitAgencyCode as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created UnitAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;UnitAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateunitagencycodeasync">
+<h3>UpdateUnitAgencyCodeAsync<a class="headerlink" href="#updateunitagencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing UnitAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycode-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateUnitAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateUnitAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">UnitAgencyCode</span> <span class="pre">unitAgencyCode</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateUnitAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitAgencyCode</strong> (<em>UnitAgencyCode</em>) – The UnitAgencyCode as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated UnitAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;UnitAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteunitagencycodeasync">
+<h3>DeleteUnitAgencyCodeAsync<a class="headerlink" href="#deleteunitagencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Deletes an existing UnitAgencyCode.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycode-delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.DeleteUnitAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteUnitAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteUnitAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the UnitAgencyCode.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the UnitAgencyCode was deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitagencycodeasync">
+<h3>GetUnitAgencyCodeAsync<a class="headerlink" href="#getunitagencycodeasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves UnitAgencyCode by unique Id (GUID).</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycode-get">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetUnitAgencyCodeAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetUnitAgencyCodeAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetUnitAgencyCodeAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the UnitAgencyCode.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A UnitAgencyCode.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;UnitAgencyCode&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitagencycodesasync">
+<h3>GetUnitAgencyCodesAsync<a class="headerlink" href="#getunitagencycodesasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all UnitAgencyCodes.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unitagencycode-getmany">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetUnitAgencyCodesAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetUnitAgencyCodesAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetUnitAgencyCodesAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all of the UnitAgencyCode.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;UnitAgencyCode&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="parameter-methods">
 <h2>Parameter Methods<a class="headerlink" href="#parameter-methods" title="Permalink to this headline"></a></h2>
+<section id="createparameterasync">
+<h3>CreateParameterAsync<a class="headerlink" href="#createparameterasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new parameter.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateParameterAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateParameterAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Parameter</span> <span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateParameterAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameter</strong> (<em>Parameter</em>) – The Parameter as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created Unit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Parameter&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateparameterasync">
+<h3>UpdateParameterAsync<a class="headerlink" href="#updateparameterasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing parameter.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateParameterAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateParameterAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Parameter</span> <span class="pre">parameter</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateParameterAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>parameter</strong> (<em>Parameter</em>) – The Parameter as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated Parameter.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Parameter&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteparameterasync">
+<h3>DeleteParameterAsync<a class="headerlink" href="#deleteparameterasync" title="Permalink to this headline"></a></h3>
+<p>Deletes an existing parameter.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.DeleteParameterAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteParameterAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteParameterAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the Parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the Parameter was deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparameterasync">
+<h3>GetParameterAsync<a class="headerlink" href="#getparameterasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves Parameter by unique integer Id.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-get-by-id">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetParameterAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetParameterAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetParameterAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitId</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The unique identifier (int) for the Parameter.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A Parameter.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Parameter&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getparametersasync">
+<h3>GetParametersAsync<a class="headerlink" href="#getparametersasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all parameters.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=parameter-getmany">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetParametersAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetParametersAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetParametersAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all of the Parameters.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;Parameter&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="quantity-type-methods">
 <h2>Quantity Type Methods<a class="headerlink" href="#quantity-type-methods" title="Permalink to this headline"></a></h2>
@@ -149,7 +921,6 @@ In addition all library items are localized into 24 languages. Additional applic
 <p>Retrieves all quantity types.</p>
 <ul class="simple">
 <li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDigitalTwinSubtypes">RESTful API Documentation</a></p></li>
-<li><p>See Also: <a class="reference internal" href="../concepts/library.html"><span class="doc">Global Library</span></a></p></li>
 <li><p><strong>Required Role(s)</strong>: Any</p></li>
 <li><p>User must be authenticated</p></li>
 </ul>
@@ -170,9 +941,183 @@ In addition all library items are localized into 24 languages. Additional applic
 </section>
 <section id="translation-i18n-methods">
 <h2>Translation (i18n) Methods<a class="headerlink" href="#translation-i18n-methods" title="Permalink to this headline"></a></h2>
+<section id="getmobilei18nkeysasync">
+<h3>GetMobilei18nKeysAsync<a class="headerlink" href="#getmobilei18nkeysasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves translation keys needed for the mobile application.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDigitalTwinSubtypes">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetMobilei18nKeysAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetMobilei18nKeysAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">language</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetMobilei18nKeysAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>language</strong> (<em>string</em>) – The language culture code.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of all of the requested i18nKey objects needed for Mobile.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;I18NKey&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="geti18nkeysasync">
+<h3>Geti18nKeysAsync<a class="headerlink" href="#geti18nkeysasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves translation keys for a list of requested modules.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-enterprise-twin-v1&amp;operation=GetDigitalTwinSubtypes">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.Geti18nKeysAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">Geti18nKeysAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">language</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">modules</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.Geti18nKeysAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>language</strong> (<em>string</em>) – The language culture code.</p></li>
+<li><p><strong>modules</strong> (<em>string</em>) – Comma delimited set of Modules of translations.  Example: AQI_FOUNDATION_LIBRARY, AQI_MOBILE_RIO</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A list of all of the requested i18nKey objects needed for Mobile.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;List&lt;I18NKey&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 </section>
 <section id="unit-type-methods">
 <h2>Unit Type Methods<a class="headerlink" href="#unit-type-methods" title="Permalink to this headline"></a></h2>
+<section id="createunitasync">
+<h3>CreateUnitAsync<a class="headerlink" href="#createunitasync" title="Permalink to this headline"></a></h3>
+<p>Creates a new unit.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unit-create">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.CreateUnitAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">CreateUnitAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Unit</span> <span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.CreateUnitAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unit</strong> (<em>Unit</em>) – The Unit as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Newly created Unit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Unit&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="updateunitasync">
+<h3>UpdateUnitAsync<a class="headerlink" href="#updateunitasync" title="Permalink to this headline"></a></h3>
+<p>Updates an existing unit.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unit-update">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.UpdateUnitAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">UpdateUnitAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Unit</span> <span class="pre">unit</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.UpdateUnitAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unit</strong> (<em>Unit</em>) – The Unit as an object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Updated Unit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Unit&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="deleteunitasync">
+<h3>DeleteUnitAsync<a class="headerlink" href="#deleteunitasync" title="Permalink to this headline"></a></h3>
+<p>Deletes an existing unit.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=unit-delete">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Super Admin</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.DeleteUnitAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">DeleteUnitAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">id</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.DeleteUnitAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>id</strong> (<em>string</em>) – The unique identifier (GUID) for the Unit.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the unit was successfully deleted.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitasync">
+<h3>GetUnitAsync<a class="headerlink" href="#getunitasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves Unit by unique integer Id.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=5d6974441f7a0e5d13cedf62">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetUnitAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetUnitAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">int</span> <span class="pre">unitId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetUnitAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>unitId</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – The unique identifier (int) for the Unit.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Requested Unit.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;Unit&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getunitsasync">
+<h3>GetUnitsAsync<a class="headerlink" href="#getunitsasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves all units.</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://aqi-feature-api-mgmt.developer.azure-api.net/api-details#api=claros-common-library-v1&amp;operation=5d69741c4697ae815db391d3">RESTful API Documentation</a></p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p>User must be authenticated</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Library.GetUnitsAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Library.</span></span><span class="sig-name descname"><span class="pre">GetUnitsAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Library.GetUnitsAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A list of all of the Units.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;List&lt;Unit&gt;&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
 <table class="longtable docutils align-default">
 <colgroup>
 <col style="width: 10%" />
@@ -183,13 +1128,14 @@ In addition all library items are localized into 24 languages. Additional applic
 </table>
 </section>
 </section>
+</section>
 
 
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="notifications.html" class="btn btn-neutral float-right" title="Notification APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="configuration.html" class="btn btn-neutral float-left" title="Configuration" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="notifications.html" class="btn btn-neutral float-right" title="Notification" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

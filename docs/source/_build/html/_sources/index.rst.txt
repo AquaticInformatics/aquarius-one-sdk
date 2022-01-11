@@ -32,7 +32,7 @@ Contents
 
 
 .. toctree::
-   :caption: Authentication and Authorization
+   :caption: Authentication & Authorization APIs
 
    enterprise/authentication
    enterprise/core
@@ -40,7 +40,7 @@ Contents
    enterprise/twin
 
 .. toctree::
-   :caption: Common Services
+   :caption: Common Service APIs
    
    common/activities
    common/configuration
@@ -50,19 +50,23 @@ Contents
    enterprise/timezone
 
 .. toctree::
-   :caption: Data Services
+   :caption: Data APIs
 
    operation/spreadsheet
    historical/data
 
 .. toctree::
-   :caption: Helpers
+   :caption: Caching APIs
 
-   helpers/cache
-   helpers/librarycache
-   helpers/operationscache
-   helpers/operationcache
-   helpers/reportcache
+   cache/cache
+   cache/librarycache
+   cache/operationscache
+   cache/operationcache
+   cache/reportcache
+
+.. toctree::
+   :caption: Helper APIs
+
    helpers/environment
    helpers/logger
    helpers/poeditor

@@ -1,4 +1,4 @@
-Enterprise Data APIs
+Enterprise Data
 ====
 
 Provides data proxy to abstract the interaction with cloud enabled data sources through data adapters. 

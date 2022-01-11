@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Core APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>Core (User &amp; Tenants) &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -19,7 +19,7 @@
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Enterprise Data APIs" href="data.html" />
-    <link rel="prev" title="Authentication APIs" href="authentication.html" /> 
+    <link rel="prev" title="Authentication" href="authentication.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -54,10 +54,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Core APIs</a><ul>
+<li class="toctree-l1"><a class="reference internal" href="authentication.html">Authentication</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Core (User &amp; Tenants)</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#user-methods">User Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#createuserasync">CreateUserAsync</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#updateuserasync">UpdateUserAsync</a></li>
@@ -115,7 +115,7 @@
 <li class="toctree-l1"><a class="reference internal" href="data.html">Enterprise Data APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="twin.html">Digital Twins APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
@@ -123,14 +123,21 @@
 <li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="report.html">Report APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../helpers/cache.html">CacheHelper APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor APIs</a></li>
@@ -150,7 +157,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Core APIs</li>
+      <li>Core (User &amp; Tenants)</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/enterprise/core.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -160,8 +167,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="core-apis">
-<h1>Core APIs<a class="headerlink" href="#core-apis" title="Permalink to this headline"></a></h1>
+  <section id="core-user-tenants">
+<h1>Core (User &amp; Tenants)<a class="headerlink" href="#core-user-tenants" title="Permalink to this headline"></a></h1>
 <p>Provides centralized multi-tenancy and multi-product registration and management.
 Provides full APIs for managing Tenants, Users, Products and Features providing GDPR compliance.</p>
 <blockquote>
@@ -1039,7 +1046,7 @@ ProductOfferings contain a set of features that can be used to determine what ui
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="authentication.html" class="btn btn-neutral float-left" title="Authentication APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="authentication.html" class="btn btn-neutral float-left" title="Authentication" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
         <a href="data.html" class="btn btn-neutral float-right" title="Enterprise Data APIs" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 

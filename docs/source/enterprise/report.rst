@@ -1,4 +1,4 @@
-Report APIs
+Report
 ====
 
 Provides human readable rendering of data as file artifacts. 

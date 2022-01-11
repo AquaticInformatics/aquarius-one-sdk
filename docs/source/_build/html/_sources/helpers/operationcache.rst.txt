@@ -90,6 +90,39 @@ Retrieves the WIMS Var Type for a column.  This is the text representation.
       - V - 15 Minute Calc
       - X - 15 Minute Text
 
+GetWorksheetType
+^^^^^^^^^^^^^^^^^^^^
+
+Returns the enumerated Worksheet Type
+
+- **Required Role(s)**: Any
+  
+.. method:: GetWorksheetType(DigitalTwin digitalTwin)
+   :module: ClientSDK.CacheHelper.OperationsCache
+
+   :param digitalTwin: The column digital twin.
+   :type digitalTwin: DigitalTwin
+
+   :rtype: EnumWorksheet
+
+GetWorksheetTypeName
+^^^^^^^^^^^^^^^^^^^^
+
+Returns the name of the type of the worksheet.
+ - 15 Minutes
+ - Hourly
+ - 4 Hour
+ - Daily
+
+- **Required Role(s)**: Any
+  
+.. method:: GetWorksheetTypeName(string guid)
+   :module: ClientSDK.CacheHelper.OperationsCache
+
+   :param guid: The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.
+   :type guid: string
+
+   :rtype: string
 
 GetColumnGuidByIndex
 ^^^^^^^^^^^^^^^^^^^^
@@ -105,6 +138,59 @@ Returns a column GUID based on the index of the column digital twin.
    :type index: string
 
    :rtype: string
+
+Info
+^^^^^^^^^^^^^^^^^^^^
+
+Returns a column info based on any of the following:
+
+- **Column Number**: The unique uint id of the column.  This is also the long id of the column twin.
+- **Column GUID**: The unique id (GUID) of the column.  This is also the TwinReferenceId of the twin related to the column.
+- **WIMS VarNum**: The Variable Number from WIMS if the operation was converted from WIMS. 
+- **WIMS Variable Id**: The Variable Id from WIMS if the operation was converted from WIMS. 
+
+
+- **Required Role(s)**: Any
+  
+.. method:: Info(string columnIdentifier, string field)
+   :module: ClientSDK.CacheHelper.OperationsCache
+
+   :param columnIdentifier: unique identifier of the column.
+   :type columnIdentifier: string
+   :param field: The information to retrieve.  See Note below.
+   :type field: string
+
+   :rtype: string
+
+.. note:: Info Fields (Field - Info Returned):
+   
+   - Operation - Operation hame
+   - Location:VarName - path:ColumnName
+   - Name:Units - ColumnName {Unit Short Name}
+   - ShortName - Parameter Short Name
+   - ShortName.Units - Parameter Short Name {Unit Short Name}
+   - GetWimsVarType
+   - Type
+   - ParameterType - Parameter Long Name
+   - ParameterType.Units - Parameter Long Name {Unit Short Name}
+   - Units - Unit Short Name
+   - XREF
+   - ScadaTag
+   - LIMS_LOC
+   - LIMS_TEST
+   - Statistic
+   - StoretCode
+   - StoretCodeDesc
+   - StoretCode-Desc - Storet Code - Storet Code Description
+   - EntryMin
+   - EntryMax
+   - Path
+   - Location
+   - Parent
+   - GrandParent
+   - Frequency
+   - VarNum
+
 
 Get Column Methods
 -----

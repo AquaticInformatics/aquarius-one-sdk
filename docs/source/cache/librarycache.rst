@@ -1,4 +1,4 @@
-LibraryCache APIs
+Library
 ====
 
 The purpose of the Library Cache is to load the global library, which is fairly static into memory, 

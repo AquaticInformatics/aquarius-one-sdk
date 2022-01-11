@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>POEditor APIs &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>POEditor &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -18,7 +18,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="prev" title="Logger APIs" href="logger.html" /> 
+    <link rel="prev" title="Logger" href="logger.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -53,32 +53,39 @@
 <li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Authentication and Authorization</span></p>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Common Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Data Services</span></p>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet APIs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data APIs</a></li>
 </ul>
-<p class="caption" role="heading"><span class="caption-text">Helpers</span></p>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
 <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="cache.html">CacheHelper APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment APIs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="logger.html">Logger APIs</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">POEditor APIs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logger.html">Logger</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">POEditor</a></li>
 </ul>
 
         </div>
@@ -95,7 +102,7 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>POEditor APIs</li>
+      <li>POEditor</li>
       <li class="wy-breadcrumbs-aside">
             <a href="../_sources/helpers/poeditor.rst.txt" rel="nofollow"> View page source</a>
       </li>
@@ -105,8 +112,8 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="poeditor-apis">
-<h1>POEditor APIs<a class="headerlink" href="#poeditor-apis" title="Permalink to this headline"></a></h1>
+  <section id="poeditor">
+<h1>POEditor<a class="headerlink" href="#poeditor" title="Permalink to this headline"></a></h1>
 <p>Enterprise Core manages:
 - Users
 - Tenants
@@ -127,7 +134,7 @@
            </div>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="logger.html" class="btn btn-neutral float-left" title="Logger APIs" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="logger.html" class="btn btn-neutral float-left" title="Logger" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
     </div>
 
   <hr/>

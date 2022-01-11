@@ -1,4 +1,4 @@
-Notification APIs
+Notification
 ====
 
 A publisher - subscriber notification system that allows applications to register topics with associated templates for each type of delivery method such as email, 

@@ -88,7 +88,10 @@
 <li class="toctree-l3"><a class="reference internal" href="#gettelemetrypath">GetTelemetryPath</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getwimsvartype">GetWimsVarType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getwimstype">GetWimsType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworksheettype">GetWorksheetType</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getworksheettypename">GetWorksheetTypeName</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getcolumnguidbyindex">GetColumnGuidByIndex</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#info">Info</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#get-column-methods">Get Column Methods</a><ul>
@@ -306,6 +309,54 @@ so that commonly reused items such as column definitions, views and related loca
 </ul>
 </div>
 </section>
+<section id="getworksheettype">
+<h3>GetWorksheetType<a class="headerlink" href="#getworksheettype" title="Permalink to this headline"></a></h3>
+<p>Returns the enumerated Worksheet Type</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetWorksheetType">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetWorksheetType</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">DigitalTwin</span> <span class="pre">digitalTwin</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetWorksheetType" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>digitalTwin</strong> (<a class="reference internal" href="../enterprise/twin.html#ClientSDK.DigitalTwin" title="ClientSDK.DigitalTwin"><em>DigitalTwin</em></a>) – The column digital twin.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>EnumWorksheet</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getworksheettypename">
+<h3>GetWorksheetTypeName<a class="headerlink" href="#getworksheettypename" title="Permalink to this headline"></a></h3>
+<dl class="simple">
+<dt>Returns the name of the type of the worksheet.</dt><dd><ul class="simple">
+<li><p>15 Minutes</p></li>
+<li><p>Hourly</p></li>
+<li><p>4 Hour</p></li>
+<li><p>Daily</p></li>
+</ul>
+</dd>
+</dl>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.GetWorksheetTypeName">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">GetWorksheetTypeName</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">guid</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.GetWorksheetTypeName" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>guid</strong> (<em>string</em>) – The unique Column identifier (GUID).  This is also the TwinReferenceId of the twin related to the column.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="getcolumnguidbyindex">
 <h3>GetColumnGuidByIndex<a class="headerlink" href="#getcolumnguidbyindex" title="Permalink to this headline"></a></h3>
 <p>Returns a column GUID based on the index of the column digital twin.</p>
@@ -325,6 +376,65 @@ so that commonly reused items such as column definitions, views and related loca
 </dl>
 </dd></dl>
 
+</section>
+<section id="info">
+<h3>Info<a class="headerlink" href="#info" title="Permalink to this headline"></a></h3>
+<p>Returns a column info based on any of the following:</p>
+<ul class="simple">
+<li><p><strong>Column Number</strong>: The unique uint id of the column.  This is also the long id of the column twin.</p></li>
+<li><p><strong>Column GUID</strong>: The unique id (GUID) of the column.  This is also the TwinReferenceId of the twin related to the column.</p></li>
+<li><p><strong>WIMS VarNum</strong>: The Variable Number from WIMS if the operation was converted from WIMS.</p></li>
+<li><p><strong>WIMS Variable Id</strong>: The Variable Id from WIMS if the operation was converted from WIMS.</p></li>
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.CacheHelper.OperationsCache.Info">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.CacheHelper.OperationsCache.</span></span><span class="sig-name descname"><span class="pre">Info</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">columnIdentifier</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">field</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.CacheHelper.OperationsCache.Info" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>columnIdentifier</strong> (<em>string</em>) – unique identifier of the column.</p></li>
+<li><p><strong>field</strong> (<em>string</em>) – The information to retrieve.  See Note below.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Info Fields (Field - Info Returned):</p>
+<ul class="simple">
+<li><p>Operation - Operation hame</p></li>
+<li><p>Location:VarName - path:ColumnName</p></li>
+<li><p>Name:Units - ColumnName {Unit Short Name}</p></li>
+<li><p>ShortName - Parameter Short Name</p></li>
+<li><p>ShortName.Units - Parameter Short Name {Unit Short Name}</p></li>
+<li><p>GetWimsVarType</p></li>
+<li><p>Type</p></li>
+<li><p>ParameterType - Parameter Long Name</p></li>
+<li><p>ParameterType.Units - Parameter Long Name {Unit Short Name}</p></li>
+<li><p>Units - Unit Short Name</p></li>
+<li><p>XREF</p></li>
+<li><p>ScadaTag</p></li>
+<li><p>LIMS_LOC</p></li>
+<li><p>LIMS_TEST</p></li>
+<li><p>Statistic</p></li>
+<li><p>StoretCode</p></li>
+<li><p>StoretCodeDesc</p></li>
+<li><p>StoretCode-Desc - Storet Code - Storet Code Description</p></li>
+<li><p>EntryMin</p></li>
+<li><p>EntryMax</p></li>
+<li><p>Path</p></li>
+<li><p>Location</p></li>
+<li><p>Parent</p></li>
+<li><p>GrandParent</p></li>
+<li><p>Frequency</p></li>
+<li><p>VarNum</p></li>
+</ul>
+</div>
 </section>
 </section>
 <section id="get-column-methods">
