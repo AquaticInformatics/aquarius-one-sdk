@@ -14,7 +14,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
        
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
-            var result = await clientSDK.Authentication.GetUserInfoAync();
+            var result = await clientSDK.Authentication.GetUserInfoAsync();
             if (result == null)
                 return 0;
             else

@@ -81,7 +81,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
                 Console.WriteLine($"Expires: {clientSDK.Authentication.Token.expires.ToString("MM/dd/yyyy HH:mm:ss")}");
                 Console.WriteLine($"Login Successful!");
                 CommandHelper.SaveConfig(clientSDK);
-                var result = await clientSDK.Authentication.GetUserInfoAync();
+                var result = await clientSDK.Authentication.GetUserInfoAsync();
                 return true;
             }
             return false;

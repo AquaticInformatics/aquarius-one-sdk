@@ -91,13 +91,16 @@
 <li class="toctree-l2"><a class="reference internal" href="#class">Class</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#cascade-rule">Cascade rule</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#data-qualifier-rules">Data Qualifier rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#qualifier-rules">Qualifier Rules</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sort-rules">Sort Rules</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#getaggregatequalifer">GetAggregateQualifer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getrownumberfromdatetimeandworksheettype">GetRowNumberFromDateTimeAndWorksheetType</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#getsymbol">GetSymbol</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#getvalue">GetValue</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sort">Sort</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#properties">Properties</a></li>
@@ -155,15 +158,15 @@
 <li><p>Display data qualifier if all of the values contains the qualifier.</p></li>
 </ol>
 </section>
-<section id="data-qualifier-rules">
-<h3>Data Qualifier rules<a class="headerlink" href="#data-qualifier-rules" title="Permalink to this headline"></a></h3>
+<section id="qualifier-rules">
+<h3>Qualifier Rules<a class="headerlink" href="#qualifier-rules" title="Permalink to this headline"></a></h3>
 <ol class="arabic simple" start="0">
 <li><p>Zero</p></li>
 <li><p>Entered Value</p></li>
 <li><p>Half of &lt;, twice of &gt;</p></li>
 </ol>
 <table class="colwidths-given docutils align-default" id="id1">
-<caption><span class="caption-text">Data Qualifier Rule Example</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
+<caption><span class="caption-text">Qualifier Rule Example</span><a class="headerlink" href="#id1" title="Permalink to this table"></a></caption>
 <colgroup>
 <col style="width: 25%" />
 <col style="width: 25%" />
@@ -220,6 +223,23 @@
 </tr>
 </tbody>
 </table>
+</section>
+<section id="sort-rules">
+<h3>Sort Rules<a class="headerlink" href="#sort-rules" title="Permalink to this headline"></a></h3>
+<p><strong>California Sort Rule</strong></p>
+<p>California requires the Average or the Geometric Mean to be reported as a Median if any values in the data set contains a data qualifier (i.e. &lt;,ND, DNQ, etc…).  WIMS Spread Functions GAVGMEDZ, GGMMEDZ, and STATZ support these calculations.</p>
+<p>The following is the Rule as stated in a typical California Permit:</p>
+<p>When determining compliance with an average monthly limit and more than one sample result is available in a month, the discharger shall compute the arithmetic mean unless the data set contains one or more reported determinations of detected but not quantified (DNQ) or not detected (ND). In those cases, the discharger shall compute the median in place of the arithmetic mean in accordance with the following procedure:</p>
+<ol class="arabic simple">
+<li><p>The data set shall be ranked from low to high, reported ND determinations lowest, DNQ determinations next, followed by quantified values (if any). The order of the individual ND or DNQ determinations is unimportant.</p></li>
+<li><p>The median value of the data set shall be determined. If the data set has an odd number of data points, then the median is the middle value. If the data set has an even number of data points, then the median is the average of the two values around the middle unless one or both of the points are ND or DNQ, in which case the median value shall be the lower of the two data points where DNQ is lower than a value and ND is lower than DNQ. If a sample result, or the arithmetic mean or median of multiple sample results, is below the reported ML, and there is evidence that the priority pollutant is present in the effluent above an effluent limitation and the discharger conducts a pollutant minimization program (PMP)16 (as described in Section I.7.), the discharger shall not be deemed out of compliance.</p></li>
+</ol>
+<p>Other permits state: (which implies Geometric Mean should also be calculated as a Median if data qualifiers exist)</p>
+<p>When determining compliance with a measure of central tendency (arithmetic mean, geometric mean, median, etc…) of multiple sample analyses and the data set contains one or more reported determinations of detected but not quantified (DNQ) or not detected (ND), the Permittee shall compute the median in place of the arithmetic mean in accordance with the following procedure:</p>
+<ol class="arabic simple">
+<li><p>The data set shall be ranked from low to high, ranking the ND determinations lowest, DNQ determinations next, followed by quantified values (if any). The order of the individual ND or DNQ determinations is unimportant.</p></li>
+<li><p>The median value of the data set shall be determined. If the data set has an odd number of data points, then the median is the middle value. If the data set has an even number of data points, then the median is the average of the two values around the middle unless one or both of the points are ND or DNQ, in which case the median value shall be the lower of the two data points where DNQ is lower than a value and ND is lower than DNQ.</p></li>
+</ol>
 </section>
 </section>
 <section id="methods">
@@ -283,6 +303,46 @@ This is helpful for many statistical queries that will bias the result based on 
 </dd>
 <dt class="field-odd">Return type</dt>
 <dd class="field-odd"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="getvalue">
+<h3>GetValue<a class="headerlink" href="#getvalue" title="Permalink to this headline"></a></h3>
+<p>Retrieves the numeric value from a string value taking into consideration the qualifier rules.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.GetValue">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">GetValue</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">enteredValue</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumQualifierRule</span> <span class="pre">qualifierRule</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.GetValue" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enteredValue</strong> (<em>string</em>) – The value to retrieve the numeric value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value from the string value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="sort">
+<h3>Sort<a class="headerlink" href="#sort" title="Permalink to this headline"></a></h3>
+<p>Returns a sorted list of items based on qualifier and sort rules.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="ONE.Operations.Spreadsheet.RowNumber.Sort">
+<span class="sig-prename descclassname"><span class="pre">ONE.Operations.Spreadsheet.RowNumber.</span></span><span class="sig-name descname"><span class="pre">Sort</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">object</span> <span class="pre">range</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">EnumQualifierRule</span> <span class="pre">qualifierRule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">sortRule</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">sortOrder</span> <span class="pre">=</span> <span class="pre">&quot;&quot;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ONE.Operations.Spreadsheet.RowNumber.Sort" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>enteredValue</strong> (<em>string</em>) – The value to retrieve the numeric value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The value from the string value.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a></p>
 </dd>
 </dl>
 </dd></dl>

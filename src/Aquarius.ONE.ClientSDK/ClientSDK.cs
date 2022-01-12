@@ -55,8 +55,6 @@ namespace ONE
             _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls);
             _restHelper.Event += Logger.Logger_Event;
 
-            
-
             Core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper);
             Core.Event += Logger.Logger_Event;
 

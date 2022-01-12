@@ -114,7 +114,7 @@ namespace ONE.Enterprise.Authentication
 
             return IsAuthenticated;
         }
-        public async Task<string> GetUserInfoAync()
+        public async Task<string> GetUserInfoAsync()
         {
             try
             {
