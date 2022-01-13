@@ -71,6 +71,12 @@
 <li class="toctree-l1"><a class="reference internal" href="operation/spreadsheet.html">Spreadsheet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="historical/data.html">Historical Data</a></li>
 </ul>
+<p class="caption" role="heading"><span class="caption-text">Ingest APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ingest/ingest.html">Ingest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingest/ingestclient.html">IngestClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingest/ingest.html">Ingest</a></li>
+</ul>
 <p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cache/cache.html">CacheHelper</a></li>
@@ -198,6 +204,12 @@
 </li>
       <li><a href="clientsdk.html#Configuration">Configuration (built-in class)</a>
 </li>
+      <li><a href="ingest/ingestclient.html#ClientSDK.Ingest.IngestClient.ConfigurationJson">ConfigurationJson (in module ClientSDK.Ingest.IngestClient)</a>
+
+      <ul>
+        <li><a href="ingest/ingestplugin.html#ClientSDK.Ingest.IngestPlugin.ConfigurationJson">(in module ClientSDK.Ingest.IngestPlugin)</a>
+</li>
+      </ul></li>
       <li><a href="clientsdk.html#ContinueOnCapturedContext">ContinueOnCapturedContext</a>
 </li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.CookPlantAsync">CookPlantAsync() (in module ClientSDK.Spreadsheet)</a>
@@ -208,10 +220,10 @@
         <li><a href="enterprise/core.html#ClientSDK.Core">(class in ClientSDK)</a>
 </li>
       </ul></li>
-      <li><a href="common/library.html#ClientSDK.Library.CreateAgencyAsync">CreateAgencyAsync() (in module ClientSDK.Library)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="common/library.html#ClientSDK.Library.CreateAgencyAsync">CreateAgencyAsync() (in module ClientSDK.Library)</a>
+</li>
       <li><a href="enterprise/twin.html#ClientSDK.DigitalTwin.CreateAsync">CreateAsync() (in module ClientSDK.DigitalTwin)</a>
 </li>
       <li><a href="enterprise/report.html#ClientSDK.Core.CreateDefinitionAsync">CreateDefinitionAsync() (in module ClientSDK.Core)</a>
@@ -358,7 +370,11 @@
 </li>
       <li><a href="helpers/qualifiers.html#ONE.Operations.Spreadsheet.RowNumber.GetAggregateQualifer">GetAggregateQualifer() (in module ONE.Operations.Spreadsheet.RowNumber)</a>
 </li>
+      <li><a href="ingest/ingest.html#ClientSDK.Ingest.GetAllClientsAsync">GetAllClientsAsync() (in module ClientSDK.Ingest)</a>
+</li>
       <li><a href="enterprise/twin.html#ClientSDK.DigitalTwin.GetAsync">GetAsync() (in module ClientSDK.DigitalTwin)</a>
+</li>
+      <li><a href="ingest/ingest.html#ClientSDK.Ingest.GetClientByIdAsync">GetClientByIdAsync() (in module ClientSDK.Ingest)</a>
 </li>
       <li><a href="cache/operationcache.html#ClientSDK.CacheHelper.OperationsCache.GetColumnByColumnNumber">GetColumnByColumnNumber() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
@@ -430,10 +446,10 @@
 </li>
       <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingAsync">GetProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
-      <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingsAsync">GetProductOfferingsAsync() (in module ClientSDK.Core)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="enterprise/core.html#ClientSDK.Core.GetProductOfferingsAsync">GetProductOfferingsAsync() (in module ClientSDK.Core)</a>
+</li>
       <li><a href="helpers/qualifiers.html#ONE.Operations.Spreadsheet.RowNumber.GetQualifierCount">GetQualifierCount() (in module ONE.Operations.Spreadsheet.RowNumber)</a>
 </li>
       <li><a href="cache/librarycache.html#ClientSDK.Spreadsheet.GetQuantityType">GetQuantityType() (in module ClientSDK.Spreadsheet)</a>
@@ -540,8 +556,14 @@
 </li>
       <li><a href="cache/operationcache.html#ClientSDK.CacheHelper.OperationsCache.Info">Info() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
+      <li><a href="ingest/ingest.html#ClientSDK.Ingest">Ingest (class in ClientSDK)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ingest/ingestclient.html#ClientSDK.Ingest.IngestClient">IngestClient (class in ClientSDK.Ingest)</a>
+</li>
+      <li><a href="ingest/ingestplugin.html#ClientSDK.Ingest.IngestPlugin">IngestPlugin (class in ClientSDK.Ingest)</a>
+</li>
       <li><a href="cache/operationcache.html#ClientSDK.CacheHelper.OperationsCache.InitializeAsync">InitializeAsync() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
       <li><a href="enterprise/authentication.html#ClientSDK.Authentication.IsAuthenticated">IsAuthenticated (in module ClientSDK.Authentication)</a>
@@ -558,8 +580,12 @@
 </li>
       <li><a href="cache/cache.html#ClientSDK.CacheHelper.LibraryCache">LibraryCache (class in ClientSDK.CacheHelper)</a>, <a href="cache/librarycache.html#ClientSDK.CacheHelper.LibraryCache">[1]</a>
 </li>
-      <li><a href="cache/librarycache.html#ClientSDK.Spreadsheet.LoadAsync">LoadAsync() (in module ClientSDK.Spreadsheet)</a>
+      <li><a href="ingest/ingestclient.html#ClientSDK.Ingest.LoadAsync">LoadAsync() (in module ClientSDK.Ingest)</a>, <a href="ingest/ingestplugin.html#ClientSDK.Ingest.LoadAsync">[1]</a>
+
+      <ul>
+        <li><a href="cache/librarycache.html#ClientSDK.Spreadsheet.LoadAsync">(in module ClientSDK.Spreadsheet)</a>
 </li>
+      </ul></li>
       <li><a href="cache/operationscache.html#ClientSDK.CacheHelper.OperationsCache.LoadOperationsAsync">LoadOperationsAsync() (in module ClientSDK.CacheHelper.OperationsCache)</a>
 </li>
       <li><a href="cache/operationcache.html#LocationTwins">LocationTwins</a>
@@ -599,7 +625,13 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cache/operationcache.html#Name">Name</a>
+
+      <ul>
+        <li><a href="ingest/ingestclient.html#ClientSDK.Ingest.IngestClient.Name">(in module ClientSDK.Ingest.IngestClient)</a>, <a href="ingest/ingestclient.html#id0">[1]</a>, <a href="ingest/ingestplugin.html#ClientSDK.Ingest.IngestClient.Name">[2]</a>
 </li>
+        <li><a href="ingest/ingestplugin.html#ClientSDK.Ingest.IngestPlugin.Name">(in module ClientSDK.Ingest.IngestPlugin)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="cache/operationscache.html#ClientSDK.CacheHelper.OperationsCache.Name">Name() (in module ClientSDK.CacheHelper.OperationsCache)</a>
@@ -656,6 +688,8 @@
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ingest/ingest.html#ClientSDK.Ingest.RegisterClientAsync">RegisterClientAsync() (in module ClientSDK.Ingest)</a>
+</li>
       <li><a href="enterprise/core.html#ClientSDK.Core.RemoveTenantProductOfferingAsync">RemoveTenantProductOfferingAsync() (in module ClientSDK.Core)</a>
 </li>
       <li><a href="clientsdk.html#Report">Report (built-in class)</a>
@@ -682,14 +716,16 @@
 <h2 id="S">S</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="ingest/ingestclient.html#ClientSDK.Ingest.Save">Save() (in module ClientSDK.Ingest)</a>, <a href="ingest/ingestplugin.html#ClientSDK.Ingest.Save">[1]</a>
+</li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.SaveRowsAsync">SaveRowsAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
       <li><a href="operation/spreadsheet.html#ClientSDK.Spreadsheet.SaveSpreadsheetDefinitionAsync">SaveSpreadsheetDefinitionAsync() (in module ClientSDK.Spreadsheet)</a>
 </li>
-      <li><a href="enterprise/core.html#ClientSDK.Core.SendUserNameToEmailAsync">SendUserNameToEmailAsync() (in module ClientSDK.Core)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="enterprise/core.html#ClientSDK.Core.SendUserNameToEmailAsync">SendUserNameToEmailAsync() (in module ClientSDK.Core)</a>
+</li>
       <li><a href="helpers/qualifiers.html#ONE.Operations.Spreadsheet.RowNumber.Sort">Sort() (in module ONE.Operations.Spreadsheet.RowNumber)</a>
 </li>
       <li><a href="clientsdk.html#Spreadsheet">Spreadsheet (built-in class)</a>
