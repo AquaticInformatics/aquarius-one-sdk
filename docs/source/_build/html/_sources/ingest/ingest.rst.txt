@@ -13,7 +13,7 @@ Child Classes
 -----
 
 - :doc:`/ingest/ingestclient` 
-- :doc:`/ingest/ingestplugin` 
+- :doc:`/ingest/ingestagent` 
 
 
 Methods

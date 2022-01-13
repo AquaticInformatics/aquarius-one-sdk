@@ -15,7 +15,7 @@ using TimeSeries.Data.Protobuf.Models;
 
 namespace ONE.Ingest
 {
-    public class IngestPlugin
+    public class IngestAgent
     {
         private AuthenticationApi _authentificationApi;
         private CoreApi _coreApi;
@@ -33,7 +33,7 @@ namespace ONE.Ingest
             return result != null;
         }
 
-        public IngestPlugin(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
+        public IngestAgent(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
         {
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;

@@ -1,10 +1,10 @@
-IngestPlugin
+IngestAgent
 ====
 
 Class
 ----
 
- ..  class:: IngestPlugin
+ ..  class:: IngestAgent
     :module: ClientSDK.Ingest
 
 Methods
@@ -13,13 +13,13 @@ Methods
 IngestDataAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-Loads the definition of the ingest client plugin and all of it's data.
+Loads the definition of the ingest client agent and all of it's data.
 
 - **Required Role(s)**: Any
 - **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.
 
 .. method:: IngestDataAsync(string telemetryTwinId, TimeSeriesDatas timeSeriesDatas)
-   :module: ClientSDK.Ingest
+   :module: ClientSDK.Ingest.IngestAgent
 
    :param telemetryTwinId: The unique Identifier (GUID) of the telemetry or dataset.
    :type telemetryTwinId: string
@@ -32,13 +32,13 @@ Loads the definition of the ingest client plugin and all of it's data.
 LoadAsync
 ^^^^^^^^^^^^^^^^^^^^
 
-Loads the definition of the ingest client plugin and all of it's data.
+Loads the definition of the ingest client agent and all of it's data.
 
 - **Required Role(s)**: Any
 - **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.
 
 .. method:: LoadAsync()
-   :module: ClientSDK.Ingest
+   :module: ClientSDK.Ingest.IngestAgent
 
    :returns: Whether the load was successful.
    :rtype: Task<bool>
@@ -46,13 +46,13 @@ Loads the definition of the ingest client plugin and all of it's data.
 Save
 ^^^^^^^^^^^^^^^^^^^^
 
-Loads the definition of the ingest client plugin and its configuration and all of it's data.
+Loads the definition of the ingest client agent and its configuration and all of it's data.
 
 - **Required Role(s)**: Any
 - **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.
 
 .. method:: Save()
-   :module: ClientSDK.Ingest
+   :module: ClientSDK.Ingest.IngestAgent
 
    :returns: Whether the save was successful.
    :rtype: Task<bool>
@@ -64,11 +64,11 @@ Properties
 ConfigurationJson
 ^^^^^
 
-This property returns the configuration JSON for the Ingest Client Plugin.  
+This property returns the configuration JSON for the Ingest Client agent.  
 If this property is set, the Save() method will need to be called to persist the change.
 
 .. attribute:: ConfigurationJson
-   :module: ClientSDK.Ingest.IngestPlugin
+   :module: ClientSDK.Ingest.IngestAgent
 
    :returns: The configuration as a JSON string for the IngestClient
    :rtype: string
@@ -76,25 +76,25 @@ If this property is set, the Save() method will need to be called to persist the
 Name
 ^^^^^
 
-This property returns the name of the Ingest Client Plugin.  
+This property returns the name of the Ingest Client agent.  
 If this property is set, the Save() method will need to be called to persist the change.
 
 .. attribute:: Name
-   :module: ClientSDK.Ingest.IngestPlugin
+   :module: ClientSDK.Ingest.IngestAgent
 
-   :returns: The name of the IngestPlugin
+   :returns: The name of the IngestAgent
    :rtype: DateTime
 
 Telemetry
 ^^^^^
 
-This property returns the collection of Digital Twins that represent the data related to Ingest Client Plugin.  
+This property returns the collection of Digital Twins that represent the data related to Ingest Client agent.  
 This property is populated when the LoadAsync is called.
 
 .. attribute:: Name
-   :module: ClientSDK.Ingest.IngestClient
+   :module: ClientSDK.Ingest.IngestAgent
 
-   :returns: The collection of digital twins that represent the data related to Ingest Client Plugin.
+   :returns: The collection of digital twins that represent the data related to Ingest Client agent.
    :rtype: List<DigitalTwin>
 
 .. autosummary::

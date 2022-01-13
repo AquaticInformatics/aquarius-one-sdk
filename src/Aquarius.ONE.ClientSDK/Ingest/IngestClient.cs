@@ -34,10 +34,10 @@ namespace ONE.Ingest
             _ingestClientDigitalTwin = ingestClientDigitalTwin;
             _configurationApi = configurationApi;
             _dataApi = dataApi;
-            Plugins = new List<IngestPlugin>();
+            Agents = new List<IngestAgent>();
         }
 
-        public List<IngestPlugin> Plugins { get; set; } 
+        public List<IngestAgent> Agents { get; set; } 
 
         public async Task<bool> LoadAsync()
         {
@@ -62,9 +62,9 @@ namespace ONE.Ingest
             {
                 foreach (var pluginTwin in pluginTwins)
                 {
-                    var plugin = new IngestPlugin(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, pluginTwin);
+                    var plugin = new IngestAgent(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, pluginTwin);
                     await plugin.LoadAsync();
-                    Plugins.Add(plugin);
+                    Agents.Add(plugin);
                 }
             }
             return false;
