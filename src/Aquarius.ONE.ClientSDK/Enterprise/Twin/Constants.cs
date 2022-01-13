@@ -6,6 +6,8 @@ namespace ONE.Enterprise.Twin
     {
         public static class OrganizationCategory
         {
+            public const int Id = 1;
+
             public static class TenantType
             {
                 public static bool Is(DigitalTwin digitalTwin)
@@ -83,6 +85,8 @@ namespace ONE.Enterprise.Twin
         }
         public static class SpaceCategory
         {
+            public const int Id = 2;
+
             public static class OperationType
             {
                 public static bool Is(DigitalTwin digitalTwin)
@@ -204,8 +208,48 @@ namespace ONE.Enterprise.Twin
                 }
             }
         }
+        public static class IntrumentCategory
+        {
+            public const int Id = 3;
+            public static class ClientIngestType
+            {
+                public static bool Is(DigitalTwin digitalTwin)
+                {
+                    return digitalTwin.TwinTypeId != null && digitalTwin.TwinTypeId.ToUpper() == RefId.ToUpper();
+                }
+                public const string RefId = "9c77b2dc-1c6b-4f02-88e1-eac43692d1c0";
+
+                public static class ClientIngestSubType
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "02d6fd74-f610-428f-8dd6-2789960e7fd";
+                }
+            }
+            public static class ClientIngestPluginType
+            {
+                public static bool Is(DigitalTwin digitalTwin)
+                {
+                    return digitalTwin.TwinTypeId != null && digitalTwin.TwinTypeId.ToUpper() == RefId.ToUpper();
+                }
+                public const string RefId = "3209ac8f-640b-4f68-a74b-08b670187182";
+                public static class ClientIngestPluginTest
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "cafd1356-7e06-44d9-9f28-3a897fbc4cf8";
+                }
+            }
+
+        }
         public static class TelemetryCategory
         {
+            public const int Id = 4;
+
             public static class InstrumentType
             {
                 public static bool Is(DigitalTwin digitalTwin)

@@ -10,6 +10,25 @@ Class
 Methods
 ------
 
+IngestDataAsync
+^^^^^^^^^^^^^^^^^^^^
+
+Loads the definition of the ingest client plugin and all of it's data.
+
+- **Required Role(s)**: Any
+- **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.
+
+.. method:: IngestDataAsync(string telemetryTwinId, TimeSeriesDatas timeSeriesDatas)
+   :module: ClientSDK.Ingest
+
+   :param telemetryTwinId: The unique Identifier (GUID) of the telemetry or dataset.
+   :type telemetryTwinId: string
+   :param timeSeriesDatas: The historian data to be uploaded.
+   :type timeSeriesDatas: TimeSeriesDatas
+
+   :returns: Whether the load was successful.
+   :rtype: Task<bool>
+
 LoadAsync
 ^^^^^^^^^^^^^^^^^^^^
 

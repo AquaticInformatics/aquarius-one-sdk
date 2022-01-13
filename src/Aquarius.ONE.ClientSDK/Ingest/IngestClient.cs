@@ -2,6 +2,9 @@
 using Enterprise.Twin.Protobuf.Models;
 using Google.Protobuf.WellKnownTypes;
 using ONE.Common.Configuration;
+using ONE.Common.Historian;
+using ONE.Enterprise.Authentication;
+using ONE.Enterprise.Core;
 using ONE.Enterprise.Twin;
 using ONE.Utilities;
 using System;
@@ -14,27 +17,55 @@ namespace ONE.Ingest
     public class IngestClient
     {
         private ConfigurationApi _configurationApi;
+        private CoreApi _coreApi;
         private DigitalTwinApi _digitalTwinApi;
         private DigitalTwin _ingestClientDigitalTwin;
+        private DataApi _dataApi;
+        private AuthenticationApi _authentificationApi;
+
+
         private Configuration configuration;
 
-        public IngestClient(DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DigitalTwin ingestClientDigitalTwin)
+        public IngestClient(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
         {
+            _authentificationApi = authentificationApi;
+            _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
             _ingestClientDigitalTwin = ingestClientDigitalTwin;
             _configurationApi = configurationApi;
+            _dataApi = dataApi;
+            Plugins = new List<IngestPlugin>();
         }
 
         public List<IngestPlugin> Plugins { get; set; } 
 
         public async Task<bool> LoadAsync()
         {
-            Plugins = new List<IngestPlugin>();
+            if (_authentificationApi.User == null)
+            {
+                string userInfo = await _authentificationApi.GetUserInfoAsync();
+                if (!string.IsNullOrEmpty(userInfo))
+                {
+                    UserHelper userHelper = new UserHelper(_coreApi);
+                    _authentificationApi.User = await userHelper.GetUserFromUserInfoAsync(userInfo);
+                }
+            }
+            
             var configurations = await _configurationApi.GetConfigurationsAsync(1, _ingestClientDigitalTwin.TwinReferenceId);
             if (configurations != null && configurations.Count > 0)
             {
                 configuration = configurations[0];
                 ConfigurationJson = configuration.ConfigurationData;
+            }
+            var pluginTwins = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestPluginType.RefId);
+            if (pluginTwins != null)
+            {
+                foreach (var pluginTwin in pluginTwins)
+                {
+                    var plugin = new IngestPlugin(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, pluginTwin);
+                    await plugin.LoadAsync();
+                    Plugins.Add(plugin);
+                }
             }
             return false;
         }
@@ -62,6 +93,7 @@ namespace ONE.Ingest
             {
                 configuration = new Configuration();
                 configuration.Name = Name;
+                configuration.OwnerId = _authentificationApi.User.Id;
                 configuration.EnumEntity = EnumEntity.EntityFormtemplate; 
                 configuration.ConfigurationData = ConfigurationJson;
                 configuration.FilterById = _ingestClientDigitalTwin.TwinReferenceId;

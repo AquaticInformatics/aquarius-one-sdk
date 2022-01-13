@@ -25,7 +25,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 StringValue = "<10"
 
             });
-            var result = await clientSDK.Data.SaveData(telemetryTwinRefId, timeSeriesDatas);
+            var result = await clientSDK.Data.SaveDataAsync(telemetryTwinRefId, timeSeriesDatas);
             if (result == null)
                 return 0;
             else

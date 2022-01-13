@@ -1,4 +1,5 @@
 ﻿using ONE.Common.Configuration;
+using ONE.Common.Historian;
 using ONE.Common.Library;
 using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
@@ -78,7 +79,7 @@ namespace ONE
             Data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper);
             Data.Event += Logger.Logger_Event;
 
-            Ingest = new IngestApi(DigitalTwin, Configuration);
+            Ingest = new IngestApi(Authentication, Core, DigitalTwin, Configuration, Data);
 
             PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext);
             poEditor.Event += Logger.Logger_Event;

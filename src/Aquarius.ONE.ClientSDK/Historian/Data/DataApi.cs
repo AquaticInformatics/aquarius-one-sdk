@@ -7,7 +7,8 @@ using System.Linq;
 using TimeSeries.Data.Protobuf.Models;
 using Common.Core.Protobuf.Models;
 
-namespace ONE.Common.Configuration
+namespace ONE.Common.Historian
+
 {
     public class DataApi
     {
@@ -54,7 +55,7 @@ namespace ONE.Common.Configuration
             }
         }
 
-        public async Task<List<TimeSeriesData>> SaveData(string telemetryTwinRefId, TimeSeriesDatas timeSeriesDatas)
+        public async Task<List<TimeSeriesData>> SaveDataAsync(string telemetryTwinRefId, TimeSeriesDatas timeSeriesDatas)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 

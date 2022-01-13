@@ -2,29 +2,45 @@
 using Enterprise.Twin.Protobuf.Models;
 using Google.Protobuf.WellKnownTypes;
 using ONE.Common.Configuration;
+using ONE.Common.Historian;
+using ONE.Enterprise.Authentication;
+using ONE.Enterprise.Core;
 using ONE.Enterprise.Twin;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using TimeSeries.Data.Protobuf.Models;
 
 namespace ONE.Ingest
 {
     public class IngestPlugin
     {
+        private AuthenticationApi _authentificationApi;
+        private CoreApi _coreApi;
         private ConfigurationApi _configurationApi;
         private DigitalTwinApi _digitalTwinApi;
         private DigitalTwin _ingestClientDigitalTwin;
         private Configuration configuration;
+        private DataApi _dataApi;
 
         public List<DigitalTwin> Telemetry { get; set; }
 
-        public IngestPlugin(DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DigitalTwin ingestClientDigitalTwin)
+        public async Task<bool> IngestDataAsync(string telemetryTwinId, TimeSeriesDatas timeSeriesDatas)
         {
+            var result = await _dataApi.SaveDataAsync(telemetryTwinId, timeSeriesDatas);
+            return result != null;
+        }
+
+        public IngestPlugin(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
+        {
+            _authentificationApi = authentificationApi;
+            _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
             _ingestClientDigitalTwin = ingestClientDigitalTwin;
             _configurationApi = configurationApi;
+            _dataApi = dataApi;
         }
 
         public async Task<bool> LoadAsync()

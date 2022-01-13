@@ -9,17 +9,12 @@ Class
  ..  class:: Ingest
     :module: ClientSDK
 
-Concepts
+Child Classes
 -----
 
-Ingest Clients
-^^^^^^
+- :doc:`/ingest/ingestclient` 
+- :doc:`/ingest/ingestplugin` 
 
-Ingest Plugin
-^^^^^^
-
-Ingest Plugin Data
-^^^^^^
 
 Methods
 ------

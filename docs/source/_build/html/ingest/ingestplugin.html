@@ -133,6 +133,33 @@
 </section>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<section id="ingestdataasync">
+<h3>IngestDataAsync<a class="headerlink" href="#ingestdataasync" title="Permalink to this headline"></a></h3>
+<p>Loads the definition of the ingest client plugin and all of it’s data.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestDataAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">IngestDataAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">telemetryTwinId</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">TimeSeriesDatas</span> <span class="pre">timeSeriesDatas</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.IngestDataAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>telemetryTwinId</strong> (<em>string</em>) – The unique Identifier (GUID) of the telemetry or dataset.</p></li>
+<li><p><strong>timeSeriesDatas</strong> (<em>TimeSeriesDatas</em>) – The historian data to be uploaded.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the load was successful.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="loadasync">
 <h3>LoadAsync<a class="headerlink" href="#loadasync" title="Permalink to this headline"></a></h3>
 <p>Loads the definition of the ingest client plugin and all of it’s data.</p>
