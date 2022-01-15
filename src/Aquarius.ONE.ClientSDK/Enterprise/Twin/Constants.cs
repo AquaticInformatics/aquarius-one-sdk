@@ -225,17 +225,17 @@ namespace ONE.Enterprise.Twin
                     {
                         return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
                     }
-                    public const string RefId = "02d6fd74-f610-428f-8dd6-2789960e7fd";
+                    public const string RefId = "02d6fd74-f610-428f-8dd6-2789960e7fd7";
                 }
             }
-            public static class ClientIngestPluginType
+            public static class ClientIngestAgentType
             {
                 public static bool Is(DigitalTwin digitalTwin)
                 {
                     return digitalTwin.TwinTypeId != null && digitalTwin.TwinTypeId.ToUpper() == RefId.ToUpper();
                 }
                 public const string RefId = "3209ac8f-640b-4f68-a74b-08b670187182";
-                public static class ClientIngestPluginTest
+                public static class ClientIngestAgentTest
                 {
                     public static bool Is(DigitalTwin digitalTwin)
                     {

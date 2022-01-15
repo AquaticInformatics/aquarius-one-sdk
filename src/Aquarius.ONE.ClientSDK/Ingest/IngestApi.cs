@@ -40,11 +40,23 @@ namespace ONE.Ingest
         }
         public async Task<IngestClient> RegisterClientAsync(string ingestClientName)
         {
+            if (_authentificationApi.User == null)
+            {
+                string userInfo = await _authentificationApi.GetUserInfoAsync();
+                if (!string.IsNullOrEmpty(userInfo))
+                {
+                    UserHelper userHelper = new UserHelper(_coreApi);
+                    _authentificationApi.User = await userHelper.GetUserFromUserInfoAsync(userInfo);
+                }
+            }
+
             DigitalTwin ingestClientTwin = new DigitalTwin {
                 CategoryId = Enterprise.Twin.Constants.IntrumentCategory.Id,
                 TwinTypeId = Enterprise.Twin.Constants.IntrumentCategory.ClientIngestType.RefId,
                 TwinSubTypeId = Enterprise.Twin.Constants.IntrumentCategory.ClientIngestType.ClientIngestSubType.RefId,
-                Name = ingestClientName
+                TwinReferenceId = Guid.NewGuid().ToString(),
+                Name = ingestClientName,
+                ParentTwinReferenceId = _authentificationApi.User.TenantId
             };
             ingestClientTwin = await _digitalTwinApi.CreateAsync(ingestClientTwin);
             if (ingestClientTwin != null)

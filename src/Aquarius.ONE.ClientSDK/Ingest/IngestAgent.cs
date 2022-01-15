@@ -21,7 +21,7 @@ namespace ONE.Ingest
         private CoreApi _coreApi;
         private ConfigurationApi _configurationApi;
         private DigitalTwinApi _digitalTwinApi;
-        private DigitalTwin _ingestClientDigitalTwin;
+        private DigitalTwin _ingestClientAgentDigitalTwin;
         private Configuration configuration;
         private DataApi _dataApi;
 
@@ -32,20 +32,22 @@ namespace ONE.Ingest
             var result = await _dataApi.SaveDataAsync(telemetryTwinId, timeSeriesDatas);
             return result != null;
         }
+        public bool Enabled { get; set; }
+        public DateTime LastRun { get; set; }
 
         public IngestAgent(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
         {
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
-            _ingestClientDigitalTwin = ingestClientDigitalTwin;
+            _ingestClientAgentDigitalTwin = ingestClientDigitalTwin;
             _configurationApi = configurationApi;
             _dataApi = dataApi;
         }
 
         public async Task<bool> LoadAsync()
         {
-            var configurations = await _configurationApi.GetConfigurationsAsync(1, _ingestClientDigitalTwin.TwinReferenceId);
+            var configurations = await _configurationApi.GetConfigurationsAsync(1, _ingestClientAgentDigitalTwin.TwinReferenceId);
             if (configurations != null && configurations.Count > 0)
             {
                 configuration = configurations[0];
@@ -58,11 +60,11 @@ namespace ONE.Ingest
         {
             if (_name != Name)
             {
-                _ingestClientDigitalTwin.Name = _name;
-                _ingestClientDigitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
-                var updatedTWin = await _digitalTwinApi.UpdateAsync(_ingestClientDigitalTwin);
+                _ingestClientAgentDigitalTwin.Name = _name;
+                _ingestClientAgentDigitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
+                var updatedTWin = await _digitalTwinApi.UpdateAsync(_ingestClientAgentDigitalTwin);
                 if (updatedTWin != null)
-                    _ingestClientDigitalTwin = updatedTWin;
+                    _ingestClientAgentDigitalTwin = updatedTWin;
                 else
                     return false;
             }
@@ -79,7 +81,7 @@ namespace ONE.Ingest
                 configuration.Name = Name;
                 configuration.EnumEntity = EnumEntity.EntityFormtemplate;
                 configuration.ConfigurationData = ConfigurationJson;
-                configuration.FilterById = _ingestClientDigitalTwin.TwinReferenceId;
+                configuration.FilterById = _ingestClientAgentDigitalTwin.TwinReferenceId;
                 configuration = await _configurationApi.SaveConfiguration(configuration);
                 if (configuration == null)
                     return false;
@@ -93,7 +95,7 @@ namespace ONE.Ingest
         {
             get
             {
-                return _ingestClientDigitalTwin.Name;
+                return _ingestClientAgentDigitalTwin.Name;
             }
             set
             {

@@ -37,7 +37,28 @@ namespace ONE.Ingest
             Agents = new List<IngestAgent>();
         }
 
-        public List<IngestAgent> Agents { get; set; } 
+        public List<IngestAgent> Agents { get; set; }
+
+        public async Task<IngestAgent> RegisterAgentAsync(string ingestClientId, string ingestAgentName, string agentSubTypeId)
+        {
+            DigitalTwin ingestAgentTwin = new DigitalTwin
+            {
+                CategoryId = Enterprise.Twin.Constants.IntrumentCategory.Id,
+                TwinTypeId = Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId,
+                TwinSubTypeId = agentSubTypeId,
+                TwinReferenceId = Guid.NewGuid().ToString(),
+                Name = ingestAgentName,
+                ParentTwinReferenceId = ingestClientId
+            };
+            ingestAgentTwin = await _digitalTwinApi.CreateAsync(ingestAgentTwin);
+            if (ingestAgentTwin != null)
+            {
+                IngestAgent ingestAgent = new IngestAgent(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestAgentTwin);
+                Agents.Add(ingestAgent);
+                return ingestAgent;
+            }
+            return null;
+        }
 
         public async Task<bool> LoadAsync()
         {
@@ -57,7 +78,7 @@ namespace ONE.Ingest
                 configuration = configurations[0];
                 ConfigurationJson = configuration.ConfigurationData;
             }
-            var pluginTwins = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestPluginType.RefId);
+            var pluginTwins = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId);
             if (pluginTwins != null)
             {
                 foreach (var pluginTwin in pluginTwins)
@@ -115,6 +136,13 @@ namespace ONE.Ingest
             set
             {
                 _name = value;
+            }
+        }
+        public string Id
+        {
+            get
+            {
+                return _ingestClientDigitalTwin.TwinReferenceId;
             }
         }
 
