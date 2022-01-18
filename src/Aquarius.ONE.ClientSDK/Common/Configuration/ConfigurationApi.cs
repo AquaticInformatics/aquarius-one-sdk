@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using Common.Core.Protobuf.Models;
 using configProtobuf = Common.Configuration.Protobuf.Models;
+using Newtonsoft.Json.Linq;
 
 namespace ONE.Common.Configuration
 {
@@ -56,35 +57,75 @@ namespace ONE.Common.Configuration
             }
         }
 
-        public async Task<configProtobuf.Configuration> SaveConfiguration(configProtobuf.Configuration configuration)
+        public async Task<bool> CreateConfigurationAsync(configProtobuf.Configuration configuration)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             var endpoint = $"common/configuration/v1/";
+            
+           
+            dynamic jObject = new JObject();
+            jObject["configurationData"] = configuration.ConfigurationData;
+            jObject["enumEntity"] = (int)configuration.EnumEntity;
+            jObject["filterById"] = configuration.FilterById;
+            jObject["isPublic"] = configuration.IsPublic;
+            if (!string.IsNullOrEmpty(configuration.Name))
+                jObject["name"] = configuration.Name;
 
-            var json = JsonConvert.SerializeObject(configuration);
+            var json = JsonConvert.SerializeObject(jObject);
 
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"SaveConfiguration Success" });
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Configurations.Items.Distinct().ToList();
-                    foreach (var result in results)
-                    {
-                        return new configProtobuf.Configuration(result);
-                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Success" });
+                    return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"SaveConfiguration Failed" });
-                return null;
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed" });
+                return false;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"SaveConfigurationn Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<bool> UpdateConfigurationAsync(configProtobuf.Configuration configuration)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"common/configuration/v1/{configuration.Id}";
+
+
+            dynamic jObject = new JObject();
+            jObject["configurationData"] = configuration.ConfigurationData;
+            jObject["enumEntity"] = (int)configuration.EnumEntity;
+            jObject["filterById"] = configuration.FilterById;
+            jObject["isPublic"] = configuration.IsPublic;
+            if (!string.IsNullOrEmpty(configuration.Name))
+                jObject["name"] = configuration.Name;
+
+            var json = JsonConvert.SerializeObject(jObject);
+
+            try
+            {
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Success" });
+                    return true;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Failed" });
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Failed - {e.Message}" });
                 throw;
             }
         }

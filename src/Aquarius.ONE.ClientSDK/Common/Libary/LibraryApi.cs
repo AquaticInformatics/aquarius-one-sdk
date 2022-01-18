@@ -504,7 +504,8 @@ namespace ONE.Common.Library
         public async Task<List<I18NKey>> Geti18nKeysAsync(string language, string modules)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            modules = modules.ToUpper().Replace("FOUNDATION_LIBRARY", "AQI_FOUNDATION_LIBRARY");
+            if (!modules.Contains("AQI_FOUNDATION_LIBRARY"))
+                modules = modules.ToUpper().Replace("FOUNDATION_LIBRARY", "AQI_FOUNDATION_LIBRARY");
             List<I18NKey> translations = new List<I18NKey>();
             var requestId = Guid.NewGuid();
             //_authentication.Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));

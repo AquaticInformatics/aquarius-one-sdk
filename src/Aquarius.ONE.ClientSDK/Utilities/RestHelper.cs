@@ -67,7 +67,6 @@ namespace ONE.Utilities
                     Result = respContent,
                     ElapsedMs = elapsedMs
                 };
-
             }
             catch (Exception e)
             {

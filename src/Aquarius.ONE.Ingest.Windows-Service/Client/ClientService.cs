@@ -11,13 +11,13 @@ namespace ONE.Ingest.WindowsService.Client
 {
     public sealed class ClientService : BackgroundService
     {
-        private readonly TestAgentService _testAgentService;
         private readonly ILogger<ClientService> _logger;
         private readonly ClientSDK _clientSDK;
+        private AgentService _testAgentService;
         public ClientService(
-            TestAgentService jokeService,
+            AgentService testAgentService,
             ILogger<ClientService> logger, ClientSDK clientSDK) =>
-            (_testAgentService, _logger, _clientSDK) = (jokeService, logger, clientSDK);
+            (_testAgentService, _logger, _clientSDK) = (testAgentService, logger, clientSDK);
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
@@ -74,12 +74,30 @@ namespace ONE.Ingest.WindowsService.Client
                     ingestClient = await _clientSDK.Ingest.GetClientByIdAsync(appSettings.Settings["ClientId"].Value);
                 }
 
+                if (ingestClient == null)
+                { 
+                    appSettings.Settings["ClientId"].Value = "";
+                    configuration.Save();
+                    ingestClient = await _clientSDK.Ingest.RegisterClientAsync(Environment.MachineName);
+                    if (ingestClient != null)
+                    {
+                        appSettings.Settings["ClientId"].Value = ingestClient.Id;
+                        configuration.Save();
+                    }
+                }
                 if (ingestClient != null)
-                {
+                { 
                     await ingestClient.LoadAsync();
                     if (ingestClient.Agents == null || ingestClient.Agents.Count == 0)
                     {
-                        await ingestClient.RegisterAgentAsync(ingestClient.Id, "Test Agent", Enterprise.Twin.Constants.IntrumentCategory.ClientIngestType.ClientIngestSubType.RefId);
+                        await ingestClient.RegisterAgentAsync(_testAgentService, ingestClient.Id, "Test Agent", Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentTest.RefId);
+                    }
+                    else
+                    {
+                        foreach (var agent in ingestClient.Agents)
+                        {
+                            await agent.LoadAsync();
+                        }
                     }
                     if (ingestClient.Agents != null && ingestClient.Agents.Count > 0)
                     {
@@ -87,7 +105,7 @@ namespace ONE.Ingest.WindowsService.Client
                         {
                             try
                             {
-                                _testAgentService.Ingest();
+                                //_testAgentService.Ingest();
                                 //_logger.LogInformation("Access Token:" + _testAgentService.GetAccessToken());
                                 //string joke = await _testAgentService.GetJokeAsync();
                                 //_logger.LogWarning(joke);

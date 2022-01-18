@@ -6,10 +6,8 @@ using ONE.Common.Historian;
 using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
 using ONE.Enterprise.Twin;
-using ONE.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using TimeSeries.Data.Protobuf.Models;
 
@@ -21,9 +19,26 @@ namespace ONE.Ingest
         private CoreApi _coreApi;
         private ConfigurationApi _configurationApi;
         private DigitalTwinApi _digitalTwinApi;
-        private DigitalTwin _ingestClientAgentDigitalTwin;
+        public DigitalTwin DigitalTwin;
         private Configuration configuration;
         private DataApi _dataApi;
+
+        public TimeSeriesDatas Datas { get; set; }
+
+        public async Task<bool> UploadAsync()
+        {
+            var result = await _dataApi.SaveDataAsync(DigitalTwin.TwinReferenceId, Datas);
+            if (result == null)
+                return false;
+            else
+            {
+                Datas = new TimeSeriesDatas();
+                return true;
+            }
+        }
+
+        public TimeSpan RunFrequency { get; set; }
+        public TimeSpan UploadFrequency { get; set; }
 
         public List<DigitalTwin> Telemetry { get; set; }
 
@@ -34,20 +49,76 @@ namespace ONE.Ingest
         }
         public bool Enabled { get; set; }
         public DateTime LastRun { get; set; }
-
+        public IngestLogger Logger { get; set; }
         public IngestAgent(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
         {
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
-            _ingestClientAgentDigitalTwin = ingestClientDigitalTwin;
+            DigitalTwin = ingestClientDigitalTwin;
             _configurationApi = configurationApi;
             _dataApi = dataApi;
         }
 
+        public async Task<bool> InitializeAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, string ingestClientId, string ingestAgentName, string agentSubTypeId)
+        {
+            _authentificationApi = authentificationApi;
+            _coreApi = coreApi;
+            _digitalTwinApi= digitalTwinApi;
+            _configurationApi = configurationApi;
+            _dataApi = dataApi;
+            _name = ingestAgentName;
+            DigitalTwin ingestAgentTwin = new DigitalTwin
+            {
+                CategoryId = Enterprise.Twin.Constants.IntrumentCategory.Id,
+                TwinTypeId = Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId,
+                TwinSubTypeId = agentSubTypeId,
+                TwinReferenceId = Guid.NewGuid().ToString(),
+                Name = ingestAgentName,
+                ParentTwinReferenceId = ingestClientId
+            };
+            DigitalTwin = await _digitalTwinApi.CreateAsync(ingestAgentTwin);
+            if (DigitalTwin != null)
+            {
+                Logger = await IngestLogger.InitializeAsync(_authentificationApi, _digitalTwinApi, _dataApi, DigitalTwin.TwinReferenceId, ingestAgentName + " Logger");
+
+                if (Configuration != null)
+                {
+                    Configuration.Initialize();
+                    if (!string.IsNullOrEmpty(ConfigurationJson))
+                    {
+                        await Save();
+
+                        // Create Telemetry Twins if they exist
+                        foreach (var telemetry in Configuration.Telemetry)
+                        {
+                            if (!string.IsNullOrEmpty(telemetry.Id) && !string.IsNullOrEmpty(telemetry.Name))
+                            {
+                                DigitalTwin telemetryTwin = new DigitalTwin
+                                {
+                                    CategoryId = Enterprise.Twin.Constants.TelemetryCategory.Id,
+                                    TwinTypeId = Enterprise.Twin.Constants.TelemetryCategory.HistorianType.RefId,
+                                    TwinSubTypeId = Enterprise.Twin.Constants.TelemetryCategory.HistorianType.InstrumentMeasurements.RefId,
+                                    TwinReferenceId = telemetry.Id,
+                                    Name = telemetry.Name,
+                                    ParentTwinReferenceId = DigitalTwin.TwinReferenceId
+                                };
+                                await digitalTwinApi.CreateAsync(telemetryTwin);
+                            }
+                        }
+
+
+                    }
+                }
+                return true;
+            }
+            return false;
+        }
+
+        
         public async Task<bool> LoadAsync()
         {
-            var configurations = await _configurationApi.GetConfigurationsAsync(1, _ingestClientAgentDigitalTwin.TwinReferenceId);
+            var configurations = await _configurationApi.GetConfigurationsAsync(1, DigitalTwin.TwinReferenceId);
             if (configurations != null && configurations.Count > 0)
             {
                 configuration = configurations[0];
@@ -60,31 +131,31 @@ namespace ONE.Ingest
         {
             if (_name != Name)
             {
-                _ingestClientAgentDigitalTwin.Name = _name;
-                _ingestClientAgentDigitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
-                var updatedTWin = await _digitalTwinApi.UpdateAsync(_ingestClientAgentDigitalTwin);
+                DigitalTwin.Name = _name;
+                DigitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
+                var updatedTWin = await _digitalTwinApi.UpdateAsync(DigitalTwin);
                 if (updatedTWin != null)
-                    _ingestClientAgentDigitalTwin = updatedTWin;
+                    DigitalTwin = updatedTWin;
                 else
                     return false;
             }
             if (configuration != null && ConfigurationJson != configuration.ConfigurationData)
             {
                 configuration.ConfigurationData = ConfigurationJson;
-                configuration = await _configurationApi.SaveConfiguration(configuration);
-                if (configuration == null)
-                    return false;
+                configuration.FilterById = DigitalTwin.TwinReferenceId;
+                configuration.EnumEntity = EnumEntity.EntityWorksheetview;
+
+                return await _configurationApi.UpdateConfigurationAsync(configuration);
+
             }
             else if (configuration == null && !string.IsNullOrEmpty(ConfigurationJson))
             {
                 configuration = new Configuration();
-                configuration.Name = Name;
-                configuration.EnumEntity = EnumEntity.EntityFormtemplate;
+                configuration.EnumEntity = EnumEntity.EntityWorksheetview;
                 configuration.ConfigurationData = ConfigurationJson;
-                configuration.FilterById = _ingestClientAgentDigitalTwin.TwinReferenceId;
-                configuration = await _configurationApi.SaveConfiguration(configuration);
-                if (configuration == null)
-                    return false;
+                configuration.FilterById = DigitalTwin.TwinReferenceId;
+                configuration.IsPublic = true;
+                return await _configurationApi.CreateConfigurationAsync(configuration);
             }
             return true;
         }
@@ -95,7 +166,7 @@ namespace ONE.Ingest
         {
             get
             {
-                return _ingestClientAgentDigitalTwin.Name;
+                return DigitalTwin.Name;
             }
             set
             {
@@ -105,16 +176,25 @@ namespace ONE.Ingest
 
         private string _configurationJson;
 
-        public string ConfigurationJson
+        public virtual string ConfigurationJson
         {
             get
             {
-                return _configurationJson;
+                if (Configuration != null)
+                    return Configuration.ToString();
+                else
+                    return _configurationJson;
             }
             set
             {
-                _configurationJson = value;
+                if (Configuration != null)
+                    if (!Configuration.Load(value))
+                        _configurationJson = value;
+                    else
+                    _configurationJson = value;
             }
         }
+
+        public IngestConfiguration Configuration { get; set; }
     }
 }

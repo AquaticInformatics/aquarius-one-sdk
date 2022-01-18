@@ -22,8 +22,6 @@ namespace ONE.Ingest
         private DigitalTwin _ingestClientDigitalTwin;
         private DataApi _dataApi;
         private AuthenticationApi _authentificationApi;
-
-
         private Configuration configuration;
 
         public IngestClient(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
@@ -39,27 +37,19 @@ namespace ONE.Ingest
 
         public List<IngestAgent> Agents { get; set; }
 
-        public async Task<IngestAgent> RegisterAgentAsync(string ingestClientId, string ingestAgentName, string agentSubTypeId)
+        public IngestLogger Logger { get; set; }
+
+        public async Task<IngestAgent> RegisterAgentAsync(IngestAgent ingestAgent, string ingestClientId, string ingestAgentName, string agentSubTypeId)
         {
-            DigitalTwin ingestAgentTwin = new DigitalTwin
+            bool success = await ingestAgent.InitializeAsync(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestClientId, ingestAgentName, agentSubTypeId);
+            if (success)
             {
-                CategoryId = Enterprise.Twin.Constants.IntrumentCategory.Id,
-                TwinTypeId = Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId,
-                TwinSubTypeId = agentSubTypeId,
-                TwinReferenceId = Guid.NewGuid().ToString(),
-                Name = ingestAgentName,
-                ParentTwinReferenceId = ingestClientId
-            };
-            ingestAgentTwin = await _digitalTwinApi.CreateAsync(ingestAgentTwin);
-            if (ingestAgentTwin != null)
-            {
-                IngestAgent ingestAgent = new IngestAgent(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestAgentTwin);
                 Agents.Add(ingestAgent);
+
                 return ingestAgent;
             }
             return null;
         }
-
         public async Task<bool> LoadAsync()
         {
             if (_authentificationApi.User == null)
@@ -78,7 +68,19 @@ namespace ONE.Ingest
                 configuration = configurations[0];
                 ConfigurationJson = configuration.ConfigurationData;
             }
+            var loggers = await _digitalTwinApi.GetDescendantsBySubTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.TelemetryCategory.HistorianType.Logger.RefId);
+            foreach (var logger in loggers)
+            {
+                if (logger.ParentTwinReferenceId == _ingestClientDigitalTwin.TwinReferenceId)
+                {
+                    Logger = new IngestLogger(_authentificationApi, _digitalTwinApi, _dataApi, logger);
+                    break;
+                }
+            }
+            if (Logger == null)
+                Logger = await IngestLogger.InitializeAsync(_authentificationApi, _digitalTwinApi, _dataApi, _ingestClientDigitalTwin.TwinReferenceId, Name + " Logger");
             var pluginTwins = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId);
+
             if (pluginTwins != null)
             {
                 foreach (var pluginTwin in pluginTwins)
@@ -106,21 +108,20 @@ namespace ONE.Ingest
             if (configuration != null && ConfigurationJson != configuration.ConfigurationData)
             {
                 configuration.ConfigurationData = ConfigurationJson;
-                configuration = await _configurationApi.SaveConfiguration(configuration);
-                if (configuration == null)
-                    return false;
+                configuration.EnumEntity = EnumEntity.EntityWorksheetview;
+                configuration.FilterById = _ingestClientDigitalTwin.TwinReferenceId;
+
+                return await _configurationApi.UpdateConfigurationAsync(configuration);
             }
             else if (configuration == null && !string.IsNullOrEmpty(ConfigurationJson))
             {
                 configuration = new Configuration();
                 configuration.Name = Name;
                 configuration.OwnerId = _authentificationApi.User.Id;
-                configuration.EnumEntity = EnumEntity.EntityFormtemplate; 
+                configuration.EnumEntity = EnumEntity.EntityWorksheetview; 
                 configuration.ConfigurationData = ConfigurationJson;
                 configuration.FilterById = _ingestClientDigitalTwin.TwinReferenceId;
-                configuration = await _configurationApi.SaveConfiguration(configuration);
-                if (configuration == null)
-                    return false;
+                return await _configurationApi.CreateConfigurationAsync(configuration);
             }
             return true;
         }

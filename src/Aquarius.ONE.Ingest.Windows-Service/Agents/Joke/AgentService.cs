@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ONE.Ingest.WindowsService.Agents.Joke
 {
-    public class JokeAgentService
+    public class AgentService
     {
         private readonly ClientSDK _clientSDK;
         private readonly HttpClient _httpClient;
@@ -18,8 +18,12 @@ namespace ONE.Ingest.WindowsService.Agents.Joke
         private const string JokeApiUrl =
             "https://karljoke.herokuapp.com/jokes/programming/random";
 
-        public JokeAgentService(HttpClient httpClient, ClientSDK clientSDK) => (_httpClient, _clientSDK) = (httpClient, clientSDK);
+        public AgentService(HttpClient httpClient, ClientSDK clientSDK)
+        {
+            _httpClient = httpClient;
+            _clientSDK = clientSDK;
 
+        }
         public string GetAccessToken()
         {
             return _clientSDK.Authentication.Token.access_token;

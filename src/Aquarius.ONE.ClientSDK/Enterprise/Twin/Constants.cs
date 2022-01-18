@@ -258,7 +258,7 @@ namespace ONE.Enterprise.Twin
                 }
                 public const string RefId = "2a471801-f462-4248-8567-b128ae261fe7";
             }
-            public static class TimeSeriesType
+            public static class HistorianType
             {
                 public static bool Is(DigitalTwin digitalTwin)
                 {
@@ -304,6 +304,14 @@ namespace ONE.Enterprise.Twin
                         return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
                     }
                     public const string RefId = "32dec483-6cf4-4924-a972-2cf45766e3c1";
+                }
+                public static class Logger
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "84bd3673-cc96-4d6e-a9f9-d146949f1514";
                 }
             }
             public static class ColumnType

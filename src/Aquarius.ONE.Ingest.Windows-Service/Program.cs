@@ -13,7 +13,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddSingleton<ClientSDK>();
         services.AddHostedService<ClientService>();
-        services.AddSingleton<TestAgentService>();
+        services.AddSingleton<AgentService>();
     })
     .Build();
 
