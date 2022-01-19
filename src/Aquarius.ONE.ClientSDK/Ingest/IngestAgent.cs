@@ -34,15 +34,16 @@ namespace ONE.Ingest
         /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
         /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
         /// <param name="dataApi">The Data Class from the Client SDK</param>
-        /// <param name="ingestClientDigitalTwin">Digital Twin of the Instrument Ingestion Client</param>
-        public IngestAgent(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
+        /// <param name="ingestAgentDigitalTwin">Digital Twin of the Instrument Ingestion Client</param>
+        public IngestAgent(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestAgentDigitalTwin)
         {
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
-            _digitalTwin = ingestClientDigitalTwin;
+            _digitalTwin = ingestAgentDigitalTwin;
             _configurationApi = configurationApi;
             _dataApi = dataApi;
+            DataSets = new Dictionary<string, TimeSeriesDatas>();
         }
 
         /// <summary>
@@ -117,6 +118,11 @@ namespace ONE.Ingest
         public async Task<bool> LoadAsync()
         {
             var configurations = await _configurationApi.GetConfigurationsAsync(1, _digitalTwin.TwinReferenceId);
+            Enabled = Helper.GetBoolTwinDataProperty(_digitalTwin, "", "Enabled");
+            LastRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "LastRun");
+            NextRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "NextRun");
+            LastUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "LastUpload");
+            NextUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "NextUpload");
             if (configurations != null && configurations.Count > 0)
             {
                 configuration = configurations[0];
@@ -281,7 +287,14 @@ namespace ONE.Ingest
             jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "NextRun", NextRun.ToString("MM/dd/yyyy hh:mm:ss"));
             jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "LastUpload", LastUpload.ToString("MM/dd/yyyy hh:mm:ss"));
             jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "NextUpload", NextUpload.ToString("MM/dd/yyyy hh:mm:ss"));
-            _digitalTwin = await _digitalTwinApi.UpdateTwinDataAsync(_digitalTwin.TwinReferenceId, jsonPatchDocument);
+            if (jsonPatchDocument.Operations.Count > 0)
+            {
+                var updateTwin = await _digitalTwinApi.UpdateTwinDataAsync(_digitalTwin.TwinReferenceId, jsonPatchDocument);
+                if (updateTwin != null)
+                    _digitalTwin = updateTwin;
+                else
+                    return false;
+            }
             if (configuration != null && ConfigurationJson != configuration.ConfigurationData)
             {
                 configuration.ConfigurationData = ConfigurationJson;

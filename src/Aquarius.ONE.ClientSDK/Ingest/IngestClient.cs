@@ -102,13 +102,13 @@ namespace ONE.Ingest
             }
             if (Logger == null)
                 Logger = await IngestLogger.InitializeAsync(_authentificationApi, _digitalTwinApi, _dataApi, _ingestClientDigitalTwin.TwinReferenceId, Name + " Logger");
-            var pluginTwins = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId);
+            var ingestAgents = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId);
 
-            if (pluginTwins != null)
+            if (ingestAgents != null)
             {
-                foreach (var pluginTwin in pluginTwins)
+                foreach (var ingestAgent in ingestAgents)
                 {
-                    var plugin = new IngestAgent(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, pluginTwin);
+                    var plugin = new IngestAgent(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestAgent);
                     await plugin.LoadAsync();
                     Agents.Add(plugin);
                 }
