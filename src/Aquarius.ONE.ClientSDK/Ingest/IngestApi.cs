@@ -20,6 +20,14 @@ namespace ONE.Ingest
         private ConfigurationApi _configurationApi;
         private DataApi _dataApi;
 
+        /// <summary>
+        /// Instantiates the IngestApi
+        /// </summary>
+        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="coreApi">The Core Class from the Client SDK</param>
+        /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
+        /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
+        /// <param name="dataApi">The Data Class from the Client SDK</param>
         public IngestApi(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi)
         {
             _authentificationApi = authentificationApi;
@@ -28,9 +36,11 @@ namespace ONE.Ingest
             _configurationApi = configurationApi;
             _dataApi = dataApi;
         }
-
-        public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-
+        /// <summary>
+        /// Retrieves the IngestClient by the Twin Reference Id
+        /// </summary>
+        /// <param name="ingestClientId">Digital Twin Refrence Id of the Instrument Ingestion Client</param>
+        /// <returns>IngestClient</returns>
         public async Task<IngestClient> GetClientByIdAsync(string ingestClientId)
         {
             DigitalTwin ingestClientTwin = await _digitalTwinApi.GetAsync(ingestClientId);
@@ -38,6 +48,11 @@ namespace ONE.Ingest
                 return new IngestClient(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestClientTwin);
             return null;
         }
+        /// <summary>
+        /// Creates a Digital Twin for the Ingest Client and does minimal setup
+        /// </summary>
+        /// <param name="ingestClientName">Name of the Client</param>
+        /// <returns>New IngestClient</returns>
         public async Task<IngestClient> RegisterClientAsync(string ingestClientName)
         {
             if (_authentificationApi.User == null)
@@ -66,6 +81,10 @@ namespace ONE.Ingest
             }
             return null;
         }
+        /// <summary>
+        /// Retrieves a collection of all IngestClients the user has rights to retrieve
+        /// </summary>
+        /// <returns>Collection of IngestClients</returns>
         public async Task<List<IngestClient>> GetAllClientsAsync()
         {
             List<IngestClient> ingestClients = new List<IngestClient>();

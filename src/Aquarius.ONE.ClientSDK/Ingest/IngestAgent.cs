@@ -25,74 +25,14 @@ namespace ONE.Ingest
         private DataApi _dataApi;
 
         /// <summary>
-        /// Data is the in memory cache for the data to be stored by Telemetry GUID
+        /// Instantiates the Class
         /// </summary>
-        public Dictionary<string,TimeSeriesDatas> DataSets { get; set; }
-
-        public async Task<bool> UploadAsync()
-        {
-            DateTime dateTime = DateTime.Now;
-            bool success = true;
-            foreach (var dataset in DataSets)
-            {
-                var result = await _dataApi.SaveDataAsync(dataset.Key, dataset.Value);
-                if (result == null)
-                    success = false;
-                else
-                {
-                    DataSets[dataset.Key] = new TimeSeriesDatas();
-                    incrementNextUpload(dateTime);
-                }
-            }
-            return success;
-        }
-
-        public void IngestData(string telemetryTwinId, DateTime dateTime, double value, string propertyBag)
-        {
-            IngestData(telemetryTwinId, new TimeSeriesData 
-            { 
-                DateTimeUTC = dateTime.ToJsonTicksDateTime(),
-                Value = value,
-                PropertyBag = propertyBag
-            });
-        }
-        public void IngestData(string telemetryTwinId, TimeSeriesData timeSeriesData)
-        {
-            if (!DataSets.ContainsKey(telemetryTwinId))
-                DataSets.Add(telemetryTwinId, new TimeSeriesDatas());
-            DataSets[telemetryTwinId].Items.Add(timeSeriesData);
-        }
-        public bool Enabled { get; set; }
-
-        public bool IsTimeToRun
-        {
-            get 
-            { 
-                return NextRun < DateTime.Now; 
-            }
-        }
-        public void incrementNextRun(DateTime dateTime)
-        {
-            NextRun = dateTime.Add(Configuration.RunFrequency);
-            LastRun = dateTime;
-        }
-        public bool IsTimeToUpload
-        {
-            get
-            {
-                return NextUpload < DateTime.Now;
-            }
-        }
-        public void incrementNextUpload(DateTime dateTime)
-        {
-            NextUpload = dateTime.Add(Configuration.UploadFrequency);
-            LastUpload = dateTime;
-        }
-        public DateTime LastRun { get; set; }
-        public DateTime NextRun { get; set; }
-        public DateTime LastUpload { get; set; }
-        public DateTime NextUpload { get; set; }
-        public IngestLogger Logger { get; set; }
+        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="coreApi">The Core Class from the Client SDK</param>
+        /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
+        /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
+        /// <param name="dataApi">The Data Class from the Client SDK</param>
+        /// <param name="ingestClientDigitalTwin">Digital Twin of the Instrument Ingestion Client</param>
         public IngestAgent(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
         {
             _authentificationApi = authentificationApi;
@@ -103,11 +43,23 @@ namespace ONE.Ingest
             _dataApi = dataApi;
         }
 
+        /// <summary>
+        /// Initializes the Class when a new agent is created
+        /// </summary>
+        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="coreApi">The Core Class from the Client SDK</param>
+        /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
+        /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
+        /// <param name="dataApi">The Data Class from the Client SDK</param>
+        /// <param name="ingestClientId">Digital Twin Refrence Id of the Instrument Ingestion Client</param>
+        /// <param name="ingestAgentName">Name of this Agent</param>
+        /// <param name="agentSubTypeId">Instrument Agent Digital Twin SubType Id</param>
+        /// <returns></returns>
         public async Task<bool> InitializeAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, string ingestClientId, string ingestAgentName, string agentSubTypeId)
         {
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;
-            _digitalTwinApi= digitalTwinApi;
+            _digitalTwinApi = digitalTwinApi;
             _configurationApi = configurationApi;
             _dataApi = dataApi;
             _name = ingestAgentName;
@@ -156,7 +108,10 @@ namespace ONE.Ingest
             return false;
         }
 
-        
+        /// <summary>
+        /// Loads the Agent with the information it needs to run
+        /// </summary>
+        /// <returns>Whether the Agent was successfully loaded</returns>
         public async Task<bool> LoadAsync()
         {
             var configurations = await _configurationApi.GetConfigurationsAsync(1, DigitalTwin.TwinReferenceId);
@@ -168,6 +123,136 @@ namespace ONE.Ingest
             return false;
         }
 
+        /// <summary>
+        /// Data is a memory cache for the data to be stored by Telemetry GUID
+        /// </summary>
+        public Dictionary<string,TimeSeriesDatas> DataSets { get; set; }
+
+        /// <summary>
+        /// Uploads the data to a Telemetry Data Set configured by a digital Twin with the same Reference Id
+        /// </summary>
+        /// <returns>Whether the upload was successful</returns>
+        public async Task<bool> UploadAsync()
+        {
+            DateTime dateTime = DateTime.Now;
+            bool success = true;
+            foreach (var dataset in DataSets)
+            {
+                var result = await _dataApi.SaveDataAsync(dataset.Key, dataset.Value);
+                if (result == null)
+                    success = false;
+                else
+                {
+                    DataSets[dataset.Key] = new TimeSeriesDatas();
+                    IncrementNextUpload(dateTime);
+                }
+            }
+            return success;
+        }
+
+        /// <summary>
+        /// Adds Data to be uploaded to a local cache until the UploadAsync method is called
+        /// </summary>
+        /// <param name="telemetryTwinId">Digital Twin Reference Id of the Telemetry Dataset</param>
+        /// <param name="dateTime">Time related to the value</param>
+        /// <param name="value">Numerical data to be stored</param>
+        /// /// <param name="stringValue">(Optional) String equivalent of the Numerical data to be stored</param>
+        /// <param name="propertyBag">(Optional) additional data stored as JSON</param>
+        public void IngestData(string telemetryTwinId, DateTime dateTime, double value, string stringValue= "", string propertyBag = "")
+        {
+            IngestData(telemetryTwinId, new TimeSeriesData 
+            { 
+                DateTimeUTC = dateTime.ToJsonTicksDateTime(),
+                Value = value,
+                StringValue = stringValue,
+                PropertyBag = propertyBag
+            });
+        }
+        /// <summary>
+        /// Adds Data to be uploaded to a local cache until the UploadAsync method is called
+        /// </summary>
+        /// <param name="telemetryTwinId">Digital Twin Reference Id of the Telemetry Dataset</param>
+        /// <param name="timeSeriesData">Protocol Buffer used to represent Data</param>
+        public void IngestData(string telemetryTwinId, TimeSeriesData timeSeriesData)
+        {
+            if (!DataSets.ContainsKey(telemetryTwinId))
+                DataSets.Add(telemetryTwinId, new TimeSeriesDatas());
+            DataSets[telemetryTwinId].Items.Add(timeSeriesData);
+        }
+        /// <summary>
+        /// Whether the Agent is Enabled.
+        /// </summary>
+        public bool Enabled { get; set; }
+
+        /// <summary>
+        /// Whether the Agent is Elegible to run. AKA it is time to run
+        /// </summary>
+        public bool IsTimeToRun
+        {
+            get 
+            { 
+                return NextRun < DateTime.Now; 
+            }
+        }
+
+        /// <summary>
+        /// Increments the Next Run and sets the Next run according to the Configuration Run Frequency
+        /// </summary>
+        /// <param name="dateTime">The time of the current completed run</param>
+        public void IncrementNextRun(DateTime dateTime)
+        {
+            NextRun = dateTime.Add(Configuration.RunFrequency);
+            LastRun = dateTime;
+        }
+        /// <summary>
+        /// Whether the Agent Data is Elegible to be uploaded. AKA it is time to upload data
+        /// </summary>
+        public bool IsTimeToUpload
+        {
+            get
+            {
+                return NextUpload < DateTime.Now;
+            }
+        }
+        /// <summary>
+        /// Increments the Next Upload time and sets the Next Upload according to the Configuration Upload Frequency
+        /// </summary>
+        /// <param name="dateTime">The time of the current completed upload</param>
+        public void IncrementNextUpload(DateTime dateTime)
+        {
+            NextUpload = dateTime.Add(Configuration.UploadFrequency);
+            LastUpload = dateTime;
+        }
+
+        /// <summary>
+        /// Last time the agent was run
+        /// </summary>
+        public DateTime LastRun { get; set; }
+        
+        /// <summary>
+        /// Next time the agent should be run
+        /// </summary>
+        public DateTime NextRun { get; set; }
+
+        /// <summary>
+        /// Last time the data in the agent was uploaded
+        /// </summary>
+        public DateTime LastUpload { get; set; }
+
+        /// <summary>
+        /// Next time the data in the agent should be uploaded
+        /// </summary>
+        public DateTime NextUpload { get; set; }
+
+        /// <summary>
+        /// This is a class that manages the logging of information for the Agent
+        /// </summary>
+        public IngestLogger Logger { get; set; }
+        
+        /// <summary>
+        /// Saves all of the Digital Twin and Configuration Data related to the agent.
+        /// </summary>
+        /// <returns>Whether the save was successful</returns>
         public async Task<bool> Save()
         {
             if (_name != Name)
@@ -203,6 +288,9 @@ namespace ONE.Ingest
 
         private string _name;
 
+        /// <summary>
+        /// The name of the agent
+        /// </summary>
         public string Name
         {
             get
@@ -217,6 +305,9 @@ namespace ONE.Ingest
 
         private string _configurationJson;
 
+        /// <summary>
+        /// The JSON representation of the configuration
+        /// </summary>
         public virtual string ConfigurationJson
         {
             get
@@ -236,8 +327,15 @@ namespace ONE.Ingest
             }
         }
 
-        public IngestConfiguration Configuration { get; set; }
+        /// <summary>
+        /// The Configuration Object related to the Agent
+        /// </summary>
+        public IngestAgentConfiguration Configuration { get; set; }
 
+        /// <summary>
+        /// Runs the agent to obtain data
+        /// </summary>
+        /// <returns>Whether the run was successful</returns>
         public virtual async Task<bool> RunAsync()
         {
             return true;

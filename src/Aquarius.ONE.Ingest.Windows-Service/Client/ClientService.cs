@@ -23,36 +23,12 @@ namespace ONE.Ingest.WindowsService.Client
         {
 
             // Initialize Configuration
+            ClientServiceConfiguration clientServiceConfiguration = new ClientServiceConfiguration();
 
-            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-            AppSettingsSection appSettings = configuration.AppSettings;
-            bool isAppSettingsDirty = false;
-            if (appSettings.Settings["Username"] == null)
-            {
-                appSettings.Settings.Add(new KeyValueConfigurationElement("Username", ""));
-                isAppSettingsDirty = true;
-            }
-            if (appSettings.Settings["Password"] == null)
-            { 
-                appSettings.Settings.Add(new KeyValueConfigurationElement("Password", ""));
-                isAppSettingsDirty = true;
-            }
-            if (appSettings.Settings["Environment"] == null)
-            {
-                appSettings.Settings.Add(new KeyValueConfigurationElement("Environment", PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature).Name));
-                isAppSettingsDirty = true;
-            }
-            if (appSettings.Settings["ClientId"] == null)
-            {
-                appSettings.Settings.Add(new KeyValueConfigurationElement("ClientId", ""));
-                isAppSettingsDirty = true;
-            }
-            if (isAppSettingsDirty)
-                configuration.Save();
-            _clientSDK.Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(appSettings.Settings["Environment"].Value);
+            _clientSDK.Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(clientServiceConfiguration.Environment);
 
             // Authenticate with ONE
-            await _clientSDK.Authentication.LoginResourceOwnerAsync(appSettings.Settings["Username"].Value, appSettings.Settings["Password"].Value);
+            await _clientSDK.Authentication.LoginResourceOwnerAsync(clientServiceConfiguration.UserName, clientServiceConfiguration.Password);
 
             if (_clientSDK.Authentication.IsAuthenticated)
             {
@@ -60,38 +36,27 @@ namespace ONE.Ingest.WindowsService.Client
 
                 IngestClient ingestClient;
 
-                if (string.IsNullOrEmpty(appSettings.Settings["ClientId"].Value))
+                if (string.IsNullOrEmpty(clientServiceConfiguration.ClientId))
                 {
                     ingestClient = await _clientSDK.Ingest.RegisterClientAsync(Environment.MachineName);
                     if (ingestClient != null)
-                    {
-                        appSettings.Settings["ClientId"].Value = ingestClient.Id;
-                        configuration.Save();
-                    }
+                        clientServiceConfiguration.ClientId = ingestClient.Id;
                 }
                 else
-                {
-                    ingestClient = await _clientSDK.Ingest.GetClientByIdAsync(appSettings.Settings["ClientId"].Value);
-                }
+                    ingestClient = await _clientSDK.Ingest.GetClientByIdAsync(clientServiceConfiguration.ClientId);
 
                 if (ingestClient == null)
-                { 
-                    appSettings.Settings["ClientId"].Value = "";
-                    configuration.Save();
+                {
+                    clientServiceConfiguration.ClientId = "";
                     ingestClient = await _clientSDK.Ingest.RegisterClientAsync(Environment.MachineName);
                     if (ingestClient != null)
-                    {
-                        appSettings.Settings["ClientId"].Value = ingestClient.Id;
-                        configuration.Save();
-                    }
+                        clientServiceConfiguration.ClientId = ingestClient.Id;
                 }
                 if (ingestClient != null)
                 { 
                     await ingestClient.LoadAsync();
                     if (ingestClient.Agents == null || ingestClient.Agents.Count == 0)
-                    {
-                        await ingestClient.RegisterAgentAsync(_testAgentService, ingestClient.Id, "Test Agent", Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentTest.RefId);
-                    }
+                        await ingestClient.RegisterAgentAsync(_testAgentService, "Test Agent", Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentTest.RefId);
                     else
                     {
                         foreach (var agent in ingestClient.Agents)

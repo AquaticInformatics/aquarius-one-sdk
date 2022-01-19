@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace ONE.Ingest.WindowsService.Agents.Test
 {
-    public class AgentConfiguration : IngestConfiguration
+    public class AgentConfiguration : IngestAgentConfiguration
     {
         public AgentConfiguration()
         {

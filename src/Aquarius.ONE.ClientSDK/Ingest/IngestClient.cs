@@ -24,6 +24,15 @@ namespace ONE.Ingest
         private AuthenticationApi _authentificationApi;
         private Configuration configuration;
 
+        /// <summary>
+        /// Instantiates the IngestClientClass
+        /// </summary>
+        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="coreApi">The Core Class from the Client SDK</param>
+        /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
+        /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
+        /// <param name="dataApi">The Data Class from the Client SDK</param>
+        /// <param name="ingestClientDigitalTwin">Digital Twin of the Instrument Ingestion Client</param>
         public IngestClient(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin ingestClientDigitalTwin)
         {
             _authentificationApi = authentificationApi;
@@ -35,13 +44,26 @@ namespace ONE.Ingest
             Agents = new List<IngestAgent>();
         }
 
+        /// <summary>
+        /// A Collection of Ingest Agents that belong to this client
+        /// </summary>
         public List<IngestAgent> Agents { get; set; }
 
+        /// <summary>
+        /// This is a class that manages the logging of information for the Client
+        /// </summary>
         public IngestLogger Logger { get; set; }
 
-        public async Task<IngestAgent> RegisterAgentAsync(IngestAgent ingestAgent, string ingestClientId, string ingestAgentName, string agentSubTypeId)
+        /// <summary>
+        /// Registers a new IngestAgent with this Client
+        /// </summary>
+        /// <param name="ingestAgent">The IngestAgent Object</param>
+        /// <param name="ingestAgentName">Name of the new Agent</param>
+        /// <param name="agentSubTypeId">Instrument Agent Digital Twin SubType Id</param>
+        /// <returns></returns>
+        public async Task<IngestAgent> RegisterAgentAsync(IngestAgent ingestAgent, string ingestAgentName, string agentSubTypeId)
         {
-            bool success = await ingestAgent.InitializeAsync(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestClientId, ingestAgentName, agentSubTypeId);
+            bool success = await ingestAgent.InitializeAsync(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, Id, ingestAgentName, agentSubTypeId);
             if (success)
             {
                 Agents.Add(ingestAgent);
@@ -50,6 +72,10 @@ namespace ONE.Ingest
             }
             return null;
         }
+        /// <summary>
+        /// Loads the Client with the information it needs to run
+        /// </summary>
+        /// <returns>Whether the Client was successfully loaded</returns>
         public async Task<bool> LoadAsync()
         {
             if (_authentificationApi.User == null)
@@ -68,12 +94,12 @@ namespace ONE.Ingest
                 configuration = configurations[0];
                 ConfigurationJson = configuration.ConfigurationData;
             }
-            var loggers = await _digitalTwinApi.GetDescendantsBySubTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.TelemetryCategory.HistorianType.Logger.RefId);
-            foreach (var logger in loggers)
+            var loggerTwins = await _digitalTwinApi.GetDescendantsBySubTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.TelemetryCategory.HistorianType.Logger.RefId);
+            foreach (var loggerTwin in loggerTwins)
             {
-                if (logger.ParentTwinReferenceId == _ingestClientDigitalTwin.TwinReferenceId)
+                if (loggerTwin.ParentTwinReferenceId == _ingestClientDigitalTwin.TwinReferenceId)
                 {
-                    Logger = new IngestLogger(_authentificationApi, _digitalTwinApi, _dataApi, logger);
+                    Logger = new IngestLogger(_authentificationApi, _digitalTwinApi, _dataApi, loggerTwin.TwinReferenceId);
                     break;
                 }
             }
@@ -93,6 +119,10 @@ namespace ONE.Ingest
             return false;
         }
 
+        /// <summary>
+        /// Saves all of the Digital Twin and Configuration Data related to the client.
+        /// </summary>
+        /// <returns>Whether the save was successful</returns>
         public async Task<bool> Save()
         {
             if (_name != Name)
