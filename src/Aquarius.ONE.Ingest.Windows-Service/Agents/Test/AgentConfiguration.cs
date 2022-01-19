@@ -18,18 +18,22 @@ namespace ONE.Ingest.WindowsService.Agents.Test
             {
                  Id = Guid.NewGuid().ToString(),
                  Name = "pH",
-                 MinimumValue = 6.5M,
-                 MaximumValue = 7.5M
+                 MinimumValue = 6.5,
+                 MaximumValue = 7.5
             }
             );
             Telemetry.Add(new TelemetryConfig
             {
                 Id = Guid.NewGuid().ToString(),
                 Name = "BOD",
-                MinimumValue = 22M,
-                MaximumValue = 30M
+                MinimumValue = 22,
+                MaximumValue = 30
             }
             );
+
+            RunFrequency = new TimeSpan(0, 1, 0);
+            UploadFrequency = new TimeSpan(0, 5, 0);
+
         }
         public override bool Load(string configurationJson)
         {

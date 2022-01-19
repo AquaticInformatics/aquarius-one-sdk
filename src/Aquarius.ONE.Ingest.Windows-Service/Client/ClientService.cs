@@ -105,11 +105,17 @@ namespace ONE.Ingest.WindowsService.Client
                         {
                             try
                             {
-                                //_testAgentService.Ingest();
-                                //_logger.LogInformation("Access Token:" + _testAgentService.GetAccessToken());
-                                //string joke = await _testAgentService.GetJokeAsync();
-                                //_logger.LogWarning(joke);
-
+                                foreach(var ingestAgent in ingestClient.Agents)
+                                {
+                                    if (ingestAgent.IsTimeToRun)
+                                    {
+                                        bool success = await ingestAgent.RunAsync();
+                                    }
+                                    if (ingestAgent.IsTimeToUpload)
+                                    {
+                                        bool succcess = await ingestAgent.UploadAsync();
+                                    }
+                                }
                                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                             }
                             catch (OperationCanceledException)

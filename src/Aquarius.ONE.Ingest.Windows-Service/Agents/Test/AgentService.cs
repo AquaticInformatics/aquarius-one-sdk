@@ -20,18 +20,26 @@ namespace ONE.Ingest.WindowsService.Agents.Test
         {
             Configuration = new AgentConfiguration();
         }
-        public bool Ingest()
+        public override async Task<bool> RunAsync()
         {
-            try
+            var success = true;
+            DateTime dateTime = DateTime.Now;
+            foreach (TelemetryConfig telemetryConfig in Configuration.Telemetry)
             {
-              
+                try
+                {
+                    Random random = new Random();
+                    Double value = random.NextDouble() * (telemetryConfig.MaximumValue - telemetryConfig.MinimumValue) + telemetryConfig.MinimumValue;
+                    IngestData(telemetryConfig.Id, dateTime, value, "");
+                    LastRun = dateTime;
+                }
+                catch (Exception ex)
+                {
+                    Logger.Log(ex.Message, ex.StackTrace);
+                    success = false;
+                }
             }
-            catch (Exception ex)
-            {
-                //return $"That's not funny! {ex}";
-            }
-
-            throw new NotImplementedException();
+            return success;
         }
     }
 

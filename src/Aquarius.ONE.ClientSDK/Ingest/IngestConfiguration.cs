@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 
 namespace ONE.Ingest
@@ -9,6 +10,8 @@ namespace ONE.Ingest
         public virtual void Initialize()
         {
         }
+        public TimeSpan RunFrequency { get; set; }
+        public TimeSpan UploadFrequency { get; set; }
         public virtual bool Load(string configurationJson)
         {
             try
