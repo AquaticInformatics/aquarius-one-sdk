@@ -22,7 +22,7 @@ namespace ONE.Ingest.WindowsService.Agents.Test
                     Random random = new Random();
                     Double value = random.NextDouble() * (telemetryConfig.MaximumValue - telemetryConfig.MinimumValue) + telemetryConfig.MinimumValue;
                     IngestData(telemetryConfig.Id, dateTime, value, "");
-                    IncrementNextRun(LastRun);
+                    IncrementNextRun(dateTime);
                 }
                 catch (Exception ex)
                 {

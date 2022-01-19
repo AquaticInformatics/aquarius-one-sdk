@@ -1,13 +1,11 @@
-﻿using ONE.Enterprise.Authentication;
-using ONE.Enterprise.Twin;
+﻿using Enterprise.Twin.Protobuf.Models;
 using ONE.Common.Historian;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using Enterprise.Twin.Protobuf.Models;
-using TimeSeries.Data.Protobuf.Models;
+using ONE.Enterprise.Authentication;
+using ONE.Enterprise.Twin;
 using ONE.Utilities;
+using System;
+using System.Threading.Tasks;
+using TimeSeries.Data.Protobuf.Models;
 
 namespace ONE.Ingest
 {

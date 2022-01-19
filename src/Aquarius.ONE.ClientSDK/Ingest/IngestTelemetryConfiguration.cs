@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ONE.Ingest
+﻿namespace ONE.Ingest
 {
     public class IngestTelemetryConfiguration
     {

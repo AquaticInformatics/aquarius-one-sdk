@@ -1,6 +1,8 @@
 ﻿using Common.Configuration.Protobuf.Models;
 using Enterprise.Twin.Protobuf.Models;
 using Google.Protobuf.WellKnownTypes;
+using Microsoft.AspNetCore.JsonPatch;
+using Newtonsoft.Json.Linq;
 using ONE.Common.Configuration;
 using ONE.Common.Historian;
 using ONE.Enterprise.Authentication;
@@ -20,7 +22,7 @@ namespace ONE.Ingest
         private CoreApi _coreApi;
         private ConfigurationApi _configurationApi;
         private DigitalTwinApi _digitalTwinApi;
-        public DigitalTwin DigitalTwin;
+        private DigitalTwin _digitalTwin = null;
         private Configuration configuration;
         private DataApi _dataApi;
 
@@ -38,7 +40,7 @@ namespace ONE.Ingest
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
-            DigitalTwin = ingestClientDigitalTwin;
+            _digitalTwin = ingestClientDigitalTwin;
             _configurationApi = configurationApi;
             _dataApi = dataApi;
         }
@@ -72,17 +74,17 @@ namespace ONE.Ingest
                 Name = ingestAgentName,
                 ParentTwinReferenceId = ingestClientId
             };
-            DigitalTwin = await _digitalTwinApi.CreateAsync(ingestAgentTwin);
-            if (DigitalTwin != null)
+            _digitalTwin = await _digitalTwinApi.CreateAsync(ingestAgentTwin);
+            if (_digitalTwin != null)
             {
-                Logger = await IngestLogger.InitializeAsync(_authentificationApi, _digitalTwinApi, _dataApi, DigitalTwin.TwinReferenceId, ingestAgentName + " Logger");
+                Logger = await IngestLogger.InitializeAsync(_authentificationApi, _digitalTwinApi, _dataApi, _digitalTwin.TwinReferenceId, ingestAgentName + " Logger");
 
                 if (Configuration != null)
                 {
                     Configuration.Initialize();
                     if (!string.IsNullOrEmpty(ConfigurationJson))
                     {
-                        await Save();
+                        await SaveAsync();
 
                         // Create Telemetry Twins if they exist
                         foreach (var telemetry in Configuration.Telemetry)
@@ -96,7 +98,7 @@ namespace ONE.Ingest
                                     TwinSubTypeId = Enterprise.Twin.Constants.TelemetryCategory.HistorianType.InstrumentMeasurements.RefId,
                                     TwinReferenceId = telemetry.Id,
                                     Name = telemetry.Name,
-                                    ParentTwinReferenceId = DigitalTwin.TwinReferenceId
+                                    ParentTwinReferenceId = _digitalTwin.TwinReferenceId
                                 };
                                 await digitalTwinApi.CreateAsync(telemetryTwin);
                             }
@@ -114,7 +116,7 @@ namespace ONE.Ingest
         /// <returns>Whether the Agent was successfully loaded</returns>
         public async Task<bool> LoadAsync()
         {
-            var configurations = await _configurationApi.GetConfigurationsAsync(1, DigitalTwin.TwinReferenceId);
+            var configurations = await _configurationApi.GetConfigurationsAsync(1, _digitalTwin.TwinReferenceId);
             if (configurations != null && configurations.Count > 0)
             {
                 configuration = configurations[0];
@@ -147,6 +149,8 @@ namespace ONE.Ingest
                     IncrementNextUpload(dateTime);
                 }
             }
+            if (success)
+                await SaveAsync();
             return success;
         }
 
@@ -175,6 +179,8 @@ namespace ONE.Ingest
         /// <param name="timeSeriesData">Protocol Buffer used to represent Data</param>
         public void IngestData(string telemetryTwinId, TimeSeriesData timeSeriesData)
         {
+            if (DataSets == null)
+                DataSets = new Dictionary<string,TimeSeriesDatas>();
             if (!DataSets.ContainsKey(telemetryTwinId))
                 DataSets.Add(telemetryTwinId, new TimeSeriesDatas());
             DataSets[telemetryTwinId].Items.Add(timeSeriesData);
@@ -253,22 +259,33 @@ namespace ONE.Ingest
         /// Saves all of the Digital Twin and Configuration Data related to the agent.
         /// </summary>
         /// <returns>Whether the save was successful</returns>
-        public async Task<bool> Save()
+        public async Task<bool> SaveAsync()
         {
             if (_name != Name)
             {
-                DigitalTwin.Name = _name;
-                DigitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
-                var updatedTWin = await _digitalTwinApi.UpdateAsync(DigitalTwin);
+                _digitalTwin.Name = _name;
+                _digitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
+                var updatedTWin = await _digitalTwinApi.UpdateAsync(_digitalTwin);
                 if (updatedTWin != null)
-                    DigitalTwin = updatedTWin;
+                    _digitalTwin = updatedTWin;
                 else
                     return false;
             }
+            // Update The agent twin data
+            JsonPatchDocument jsonPatchDocument = new JsonPatchDocument();
+            var existingTwinData = new JObject();
+            if (!string.IsNullOrEmpty(_digitalTwin.TwinData))
+                existingTwinData = JObject.Parse(_digitalTwin.TwinData);
+            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "Enabled", Enabled.ToString());
+            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "LastRun", LastRun.ToString("MM/dd/yyyy hh:mm:ss"));
+            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "NextRun", NextRun.ToString("MM/dd/yyyy hh:mm:ss"));
+            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "LastUpload", LastUpload.ToString("MM/dd/yyyy hh:mm:ss"));
+            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "NextUpload", NextUpload.ToString("MM/dd/yyyy hh:mm:ss"));
+            _digitalTwin = await _digitalTwinApi.UpdateTwinDataAsync(_digitalTwin.TwinReferenceId, jsonPatchDocument);
             if (configuration != null && ConfigurationJson != configuration.ConfigurationData)
             {
                 configuration.ConfigurationData = ConfigurationJson;
-                configuration.FilterById = DigitalTwin.TwinReferenceId;
+                configuration.FilterById = _digitalTwin.TwinReferenceId;
                 configuration.EnumEntity = EnumEntity.EntityWorksheetview;
 
                 return await _configurationApi.UpdateConfigurationAsync(configuration);
@@ -279,7 +296,7 @@ namespace ONE.Ingest
                 configuration = new Configuration();
                 configuration.EnumEntity = EnumEntity.EntityWorksheetview;
                 configuration.ConfigurationData = ConfigurationJson;
-                configuration.FilterById = DigitalTwin.TwinReferenceId;
+                configuration.FilterById = _digitalTwin.TwinReferenceId;
                 configuration.IsPublic = true;
                 return await _configurationApi.CreateConfigurationAsync(configuration);
             }
@@ -295,7 +312,7 @@ namespace ONE.Ingest
         {
             get
             {
-                return DigitalTwin.Name;
+                return _digitalTwin.Name;
             }
             set
             {
