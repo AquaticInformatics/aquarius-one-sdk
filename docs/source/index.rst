@@ -56,13 +56,6 @@ Contents
    historical/data
 
 .. toctree::
-   :caption: Ingest APIs
-
-   ingest/ingest
-   ingest/ingestclient
-   ingest/ingest
-
-.. toctree::
    :caption: Caching APIs
 
    cache/cache

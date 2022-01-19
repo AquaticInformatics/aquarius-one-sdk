@@ -166,8 +166,8 @@ Returns a sorted list of items based on qualifier and sort rules.
 .. method:: Sort(object range, EnumQualifierRule qualifierRule, string sortRule, string sortOrder = "")
    :module: ONE.Operations.Spreadsheet.RowNumber
 
-   :param enteredValue: The value to retrieve the numeric value.
-   :type enteredValue: string
+   :param range: A collection of values.  See Range under concepts.
+   :type range: object
 
    :returns: The value from the string value.
    :rtype: object
