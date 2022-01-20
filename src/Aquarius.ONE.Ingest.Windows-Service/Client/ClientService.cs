@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using ONE.Ingest.WindowsService.Agents.Test;
+using Test = ONE.Ingest.WindowsService.Agents.Test;
+using Csv = ONE.Ingest.WindowsService.Agents.CSV;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
@@ -14,11 +15,14 @@ namespace ONE.Ingest.WindowsService.Client
     {
         private readonly ILogger<ClientService> _logger;
         private readonly ClientSDK _clientSDK;
-        private AgentService _testAgentService;
+        private Test.AgentService _testAgentService;
+        private Csv.AgentService _csvAgentService;
         public ClientService(
-            AgentService testAgentService,
-            ILogger<ClientService> logger, ClientSDK clientSDK) =>
-            (_testAgentService, _logger, _clientSDK) = (testAgentService, logger, clientSDK);
+            Test.AgentService testAgentService,
+            Csv.AgentService csvAgentService,
+            ILogger<ClientService> logger, 
+            ClientSDK clientSDK) =>
+            (_testAgentService, _csvAgentService, _logger, _clientSDK) = (testAgentService, csvAgentService, logger, clientSDK);
 
      
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -71,15 +75,19 @@ namespace ONE.Ingest.WindowsService.Client
                 if (ingestClient != null)
                 {
                     _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Loading Client Configuration: {Environment.MachineName}");
-                    await ingestClient.LoadAsync(new List<IngestAgent> { _testAgentService });
+                    await ingestClient.LoadAsync(new List<IngestAgent> { _testAgentService, _csvAgentService });
                     ingestClient.Logger.IngestLogData($"Loading Client Configuration: {Environment.MachineName}");
                     if (ingestClient.Agents == null || ingestClient.Agents.Count == 0)
                     {
                         string agentName = "Test Agent";
                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Registering New Agent: {agentName}");
                         ingestClient.Logger.IngestLogData($"Registering New Agent: {agentName}");
-
                         await ingestClient.RegisterAgentAsync(_testAgentService, agentName, Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentTest.RefId);
+
+                        agentName = "CSV Agent";
+                        _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Registering New Agent: {agentName}");
+                        ingestClient.Logger.IngestLogData($"Registering New Agent: {agentName}");
+                        await ingestClient.RegisterAgentAsync(_csvAgentService, agentName, Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentCsv.RefId);
                     }
                     if (ingestClient.Agents != null && ingestClient.Agents.Count > 0)
                     {
@@ -116,6 +124,7 @@ namespace ONE.Ingest.WindowsService.Client
                                 break;
                             }
                         }
+                        _logger.LogInformation("Shutting Down");
                     }
                 }
             }

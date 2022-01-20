@@ -243,6 +243,14 @@ namespace ONE.Enterprise.Twin
                     }
                     public const string RefId = "cafd1356-7e06-44d9-9f28-3a897fbc4cf8";
                 }
+                public static class ClientIngestAgentCsv
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "049ea0cb-3a66-497d-b722-f59ac0d48745";
+                }
             }
 
         }

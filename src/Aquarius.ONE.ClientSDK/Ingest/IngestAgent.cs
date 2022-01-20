@@ -69,6 +69,7 @@ namespace ONE.Ingest
             _configurationApi = configurationApi;
             _dataApi = dataApi;
             _name = ingestAgentName;
+            
             DigitalTwin ingestAgentTwin = new DigitalTwin
             {
                 CategoryId = Enterprise.Twin.Constants.IntrumentCategory.Id,
@@ -88,6 +89,7 @@ namespace ONE.Ingest
                     if (!string.IsNullOrEmpty(ConfigurationJson))
                     {
                         await SaveAsync();
+                        TelemetryTwins = new List<DigitalTwin>();
 
                         // Create Telemetry Twins if they exist
                         foreach (var telemetry in Telemetry)
@@ -103,7 +105,8 @@ namespace ONE.Ingest
                                     Name = telemetry,
                                     ParentTwinReferenceId = _digitalTwin.TwinReferenceId
                                 };
-                                await digitalTwinApi.CreateAsync(telemetryTwin);
+                                DigitalTwin newTwin = await digitalTwinApi.CreateAsync(telemetryTwin);
+                                TelemetryTwins.Add(newTwin);
                             }
                         }
                     }
@@ -224,7 +227,7 @@ namespace ONE.Ingest
         /// <param name="value">Numerical data to be stored</param>
         /// /// <param name="stringValue">(Optional) String equivalent of the Numerical data to be stored</param>
         /// <param name="propertyBag">(Optional) additional data stored as JSON</param>
-        public void IngestData(string telemetryTwinId, DateTime dateTime, double value, string stringValue= "", string propertyBag = "")
+        public void IngestData(string telemetryTwinId, DateTime dateTime, double? value, string stringValue= "", string propertyBag = "")
         {
             IngestData(telemetryTwinId, new TimeSeriesData 
             { 

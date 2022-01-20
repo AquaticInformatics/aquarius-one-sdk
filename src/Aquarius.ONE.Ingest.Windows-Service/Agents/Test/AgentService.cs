@@ -81,13 +81,16 @@ namespace ONE.Ingest.WindowsService.Agents.Test
         }
         private async Task<bool> UpdateTelemetryTwinInfoAsync()
         {
-            for (int i = 0; i < TelemetryTwins.Count; i++)
+            if (TelemetryTwins != null)
             {
-                var telemetryConfig = GetById(TelemetryTwins[i].TwinReferenceId);
-                if (telemetryConfig == null)
-                    return false;
-                if (!string.IsNullOrEmpty(telemetryConfig.Name) && telemetryConfig.Name != TelemetryTwins[i].Name)
-                    await UpdateTelemetryTwinName(TelemetryTwins[i], telemetryConfig.Name);
+                for (int i = 0; i < TelemetryTwins.Count; i++)
+                {
+                    var telemetryConfig = GetById(TelemetryTwins[i].TwinReferenceId);
+                    if (telemetryConfig == null)
+                        return false;
+                    if (!string.IsNullOrEmpty(telemetryConfig.Name) && telemetryConfig.Name != TelemetryTwins[i].Name)
+                        await UpdateTelemetryTwinName(TelemetryTwins[i], telemetryConfig.Name);
+                }
             }
             return true;
         }

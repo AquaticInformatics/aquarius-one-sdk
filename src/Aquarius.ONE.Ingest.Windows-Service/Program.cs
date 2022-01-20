@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ONE;
-using ONE.Ingest.WindowsService.Agents.Test;
 using ONE.Ingest.WindowsService.Client;
 
 using IHost host = Host.CreateDefaultBuilder(args)
@@ -13,7 +12,8 @@ using IHost host = Host.CreateDefaultBuilder(args)
     {
         services.AddSingleton<ClientSDK>();
         services.AddHostedService<ClientService>();
-        services.AddSingleton<AgentService>();
+        services.AddSingleton<ONE.Ingest.WindowsService.Agents.Test.AgentService>();
+        services.AddSingleton<ONE.Ingest.WindowsService.Agents.CSV.AgentService>();
     })
     .Build();
 
