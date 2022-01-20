@@ -39,7 +39,7 @@ namespace ONE.Ingest
         /// <param name="dataApi">The Data Class from the Client SDK</param>
         /// <param name="parentId">The Reference Id of the Instrument Twin the logger belongs</param>
         /// <param name="loggerName">Display name of the Log Telemetry Dataset</param>
-        /// <returns></returns>
+        /// <returns>IngestLogger</returns>
         public static async Task<IngestLogger> InitializeAsync(AuthenticationApi authentificationApi, DigitalTwinApi digitalTwinApi, DataApi dataApi, string parentId, string loggerName)
         {
             DigitalTwin loggerTwin = new DigitalTwin
@@ -61,6 +61,26 @@ namespace ONE.Ingest
         }
 
         /// <summary>
+        /// Finds a child logger for a given Digital Twin
+        /// </summary>
+        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
+        /// <param name="dataApi">The Data Class from the Client SDK</param>
+        /// <param name="parentId">The Reference Id of the Instrument Twin the logger belongs</param>
+        /// <returns>IngestLogger</returns>
+        public static async Task<IngestLogger> GetByParentAsync(AuthenticationApi authentificationApi, DigitalTwinApi digitalTwinApi, DataApi dataApi, string parentId)
+        {
+            var loggerTwins = await digitalTwinApi.GetDescendantsBySubTypeAsync(parentId, ONE.Enterprise.Twin.Constants.TelemetryCategory.HistorianType.Logger.RefId);
+            foreach (var loggerTwin in loggerTwins)
+            {
+                if (loggerTwin.ParentTwinReferenceId == parentId)
+                {
+                    return new IngestLogger(authentificationApi, digitalTwinApi, dataApi, loggerTwin.TwinReferenceId);
+                }
+            }
+            return null;
+        }
+        /// <summary>
         /// Log data is a memory cache for the data to be stored by Telemetry GUID (Id)
         /// </summary>
         public TimeSeriesDatas Log { get; set; }
@@ -75,7 +95,7 @@ namespace ONE.Ingest
         /// </summary>
         /// <param name="message">Short Log Message</param>
         /// <param name="detail">Longer log message</param>
-        public void IngestLogData(string message, object detail)
+        public void IngestLogData(string message, object detail = null)
         {
             string propertybag = "";
             if (detail == null)
@@ -101,14 +121,18 @@ namespace ONE.Ingest
         /// <returns>Whether the upload was successful</returns>
         public async Task<bool> UploadAsync()
         {
-            var result = await _dataApi.SaveDataAsync(Id, Log);
-            if (result == null)
-                return false;
-            else
+            if (Log.Items.Count > 0)
             {
-                Log = new TimeSeriesDatas();
-                return true;
+                var result = await _dataApi.SaveDataAsync(Id, Log);
+                if (result == null)
+                    return false;
+                else
+                {
+                    Log = new TimeSeriesDatas();
+                    return true;
+                }
             }
+            return true;
         }
         
     }

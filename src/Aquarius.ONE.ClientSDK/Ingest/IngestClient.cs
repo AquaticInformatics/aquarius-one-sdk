@@ -73,7 +73,7 @@ namespace ONE.Ingest
         /// Loads the Client with the information it needs to run
         /// </summary>
         /// <returns>Whether the Client was successfully loaded</returns>
-        public async Task<bool> LoadAsync()
+        public async Task<bool> LoadAsync(List<IngestAgent> ingestAgents)
         {
             if (_authentificationApi.User == null)
             {
@@ -85,32 +85,30 @@ namespace ONE.Ingest
                 }
             }
             
-            var configurations = await _configurationApi.GetConfigurationsAsync(1, _ingestClientDigitalTwin.TwinReferenceId);
+            var configurations = await _configurationApi.GetConfigurationsAsync(5, _ingestClientDigitalTwin.TwinReferenceId);
             if (configurations != null && configurations.Count > 0)
             {
                 configuration = configurations[0];
                 ConfigurationJson = configuration.ConfigurationData;
             }
-            var loggerTwins = await _digitalTwinApi.GetDescendantsBySubTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.TelemetryCategory.HistorianType.Logger.RefId);
-            foreach (var loggerTwin in loggerTwins)
-            {
-                if (loggerTwin.ParentTwinReferenceId == _ingestClientDigitalTwin.TwinReferenceId)
-                {
-                    Logger = new IngestLogger(_authentificationApi, _digitalTwinApi, _dataApi, loggerTwin.TwinReferenceId);
-                    break;
-                }
-            }
+            Logger = await IngestLogger.GetByParentAsync(_authentificationApi, _digitalTwinApi, _dataApi, _ingestClientDigitalTwin.TwinReferenceId);
             if (Logger == null)
                 Logger = await IngestLogger.InitializeAsync(_authentificationApi, _digitalTwinApi, _dataApi, _ingestClientDigitalTwin.TwinReferenceId, Name + " Logger");
-            var ingestAgents = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId);
+            var ingestAgentTwins = await _digitalTwinApi.GetDescendantsByTypeAsync(_ingestClientDigitalTwin.TwinReferenceId, ONE.Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.RefId);
 
-            if (ingestAgents != null)
+            if (ingestAgentTwins != null)
             {
-                foreach (var ingestAgent in ingestAgents)
+                foreach (var ingestAgentTwin in ingestAgentTwins)
                 {
-                    var plugin = new IngestAgent(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestAgent);
-                    await plugin.LoadAsync();
-                    Agents.Add(plugin);
+                    foreach (var ingestAgent in ingestAgents)
+                    {
+                        if (ingestAgent.TwinSubTypeId == ingestAgentTwin.TwinSubTypeId)
+                        {
+                            await ingestAgent.LoadAsync(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, ingestAgentTwin);
+                            Agents.Add(ingestAgent);
+                        }
+                    }
+                    
                 }
             }
             return false;

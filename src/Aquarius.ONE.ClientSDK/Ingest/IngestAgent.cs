@@ -2,6 +2,7 @@
 using Enterprise.Twin.Protobuf.Models;
 using Google.Protobuf.WellKnownTypes;
 using Microsoft.AspNetCore.JsonPatch;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.Common.Configuration;
 using ONE.Common.Historian;
@@ -23,7 +24,7 @@ namespace ONE.Ingest
         private ConfigurationApi _configurationApi;
         private DigitalTwinApi _digitalTwinApi;
         private DigitalTwin _digitalTwin = null;
-        private Configuration configuration;
+        private Configuration _configuration;
         private DataApi _dataApi;
 
         /// <summary>
@@ -44,6 +45,8 @@ namespace ONE.Ingest
             _configurationApi = configurationApi;
             _dataApi = dataApi;
             DataSets = new Dictionary<string, TimeSeriesDatas>();
+            _name = _digitalTwin.Name;
+            Telemetry = new List<string>();
         }
 
         /// <summary>
@@ -58,7 +61,7 @@ namespace ONE.Ingest
         /// <param name="ingestAgentName">Name of this Agent</param>
         /// <param name="agentSubTypeId">Instrument Agent Digital Twin SubType Id</param>
         /// <returns></returns>
-        public async Task<bool> InitializeAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, string ingestClientId, string ingestAgentName, string agentSubTypeId)
+        public virtual async Task<bool> InitializeAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, string ingestClientId, string ingestAgentName, string agentSubTypeId)
         {
             _authentificationApi = authentificationApi;
             _coreApi = coreApi;
@@ -82,23 +85,22 @@ namespace ONE.Ingest
 
                 if (Configuration != null)
                 {
-                    Configuration.Initialize();
                     if (!string.IsNullOrEmpty(ConfigurationJson))
                     {
                         await SaveAsync();
 
                         // Create Telemetry Twins if they exist
-                        foreach (var telemetry in Configuration.Telemetry)
+                        foreach (var telemetry in Telemetry)
                         {
-                            if (!string.IsNullOrEmpty(telemetry.Id) && !string.IsNullOrEmpty(telemetry.Name))
+                            if (!string.IsNullOrEmpty(telemetry) && !string.IsNullOrEmpty(telemetry))
                             {
                                 DigitalTwin telemetryTwin = new DigitalTwin
                                 {
                                     CategoryId = Enterprise.Twin.Constants.TelemetryCategory.Id,
                                     TwinTypeId = Enterprise.Twin.Constants.TelemetryCategory.HistorianType.RefId,
                                     TwinSubTypeId = Enterprise.Twin.Constants.TelemetryCategory.HistorianType.InstrumentMeasurements.RefId,
-                                    TwinReferenceId = telemetry.Id,
-                                    Name = telemetry.Name,
+                                    TwinReferenceId = telemetry,
+                                    Name = telemetry,
                                     ParentTwinReferenceId = _digitalTwin.TwinReferenceId
                                 };
                                 await digitalTwinApi.CreateAsync(telemetryTwin);
@@ -112,22 +114,76 @@ namespace ONE.Ingest
         }
 
         /// <summary>
+        /// Updates one of the Telemetry Twins Names
+        /// </summary>
+        /// <param name="digitalTwin">The Telemetry Twin</param>
+        /// <param name="name">The new name of the Telemetry Twin</param>
+        /// <returns>Whether the Telemetry Twin was updated</returns>
+        public async Task<bool> UpdateTelemetryTwinName(DigitalTwin digitalTwin, string name)
+        {
+            if (digitalTwin != null && !string.IsNullOrEmpty(name) && digitalTwin.Name != name)
+            {
+                digitalTwin.Name = name;
+                digitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
+                var updatedTwin = await _digitalTwinApi.UpdateAsync(digitalTwin);
+                if (updatedTwin != null)
+                {
+                    for (int i = 0; i < TelemetryTwins.Count; i++)
+                    {
+                        if (TelemetryTwins[i].TwinReferenceId == digitalTwin.TwinReferenceId)
+                        {
+                            TelemetryTwins[i] = digitalTwin;
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
         /// Loads the Agent with the information it needs to run
         /// </summary>
+        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="coreApi">The Core Class from the Client SDK</param>
+        /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
+        /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
+        /// <param name="dataApi">The Data Class from the Client SDK</param>
+        /// <param name="digitalTwin">The digital Twin that represents the IngestAgent</param>
         /// <returns>Whether the Agent was successfully loaded</returns>
-        public async Task<bool> LoadAsync()
+        public async Task<bool> LoadAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin digitalTwin)
         {
-            var configurations = await _configurationApi.GetConfigurationsAsync(1, _digitalTwin.TwinReferenceId);
-            Enabled = Helper.GetBoolTwinDataProperty(_digitalTwin, "", "Enabled");
-            LastRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "LastRun");
-            NextRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "NextRun");
-            LastUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "LastUpload");
-            NextUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "", "NextUpload");
+            _authentificationApi = authentificationApi;
+            _coreApi = coreApi;
+            _digitalTwinApi = digitalTwinApi;
+            _configurationApi = configurationApi;
+            _dataApi = dataApi;
+            _digitalTwin = digitalTwin;
+            var configurations = await _configurationApi.GetConfigurationsAsync(5, _digitalTwin.TwinReferenceId);
+            Enabled = Helper.GetBoolTwinDataProperty(_digitalTwin, "Agent", "Enabled");
+            LastRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "LastRun");
+            NextRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "NextRun");
+            LastUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "LastUpload");
+            NextUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "NextUpload");
+            Telemetry = Helper.GetTwinDataPropertyAslist(_digitalTwin, "Agent", "Telemetry");
+            TelemetryTwins = new List<DigitalTwin>();
+            foreach (string telemetryId in Telemetry)
+            {
+                var telemetryTwin = await _digitalTwinApi.GetAsync(telemetryId);
+                if (telemetryTwin == null)
+                    Telemetry.Remove(telemetryId);
+                else
+                {
+                    TelemetryTwins.Add(telemetryTwin);
+                }
+
+            }
             if (configurations != null && configurations.Count > 0)
             {
-                configuration = configurations[0];
-                ConfigurationJson = configuration.ConfigurationData;
+                _configuration = configurations[0];
+                ConfigurationJson = _configuration.ConfigurationData;
             }
+            Logger = await IngestLogger.GetByParentAsync(_authentificationApi, _digitalTwinApi, _dataApi, _digitalTwin.TwinReferenceId);
             return false;
         }
 
@@ -178,6 +234,7 @@ namespace ONE.Ingest
                 PropertyBag = propertyBag
             });
         }
+
         /// <summary>
         /// Adds Data to be uploaded to a local cache until the UploadAsync method is called
         /// </summary>
@@ -235,6 +292,16 @@ namespace ONE.Ingest
             NextUpload = dateTime.Add(Configuration.UploadFrequency);
             LastUpload = dateTime;
         }
+        /// <summary>
+        /// The Telemetry Datasets that are related to the Agent
+        /// </summary>
+        public List<string> Telemetry { get; set; }
+        
+        /// <summary>
+        /// The Twins related to the telemetry for this Agent
+        /// </summary>
+        public List<DigitalTwin> TelemetryTwins { get; set; }
+
 
         /// <summary>
         /// Last time the agent was run
@@ -267,7 +334,7 @@ namespace ONE.Ingest
         /// <returns>Whether the save was successful</returns>
         public async Task<bool> SaveAsync()
         {
-            if (_name != Name)
+            if (!string.IsNullOrEmpty(_name) && _name != Name)
             {
                 _digitalTwin.Name = _name;
                 _digitalTwin.UpdateMask = new FieldMask { Paths = { "name" } };
@@ -278,15 +345,21 @@ namespace ONE.Ingest
                     return false;
             }
             // Update The agent twin data
+            var properties = new Dictionary<string, object>();
+
+            properties.Add("Enabled", Enabled.ToString());
+            properties.Add("LastRun", LastRun.ToString("MM/dd/yyyy hh:mm:ss"));
+            properties.Add("NextRun", NextRun.ToString("MM/dd/yyyy hh:mm:ss"));
+            properties.Add("LastUpload", LastUpload.ToString("MM/dd/yyyy hh:mm:ss"));
+            properties.Add("NextUpload", NextUpload.ToString("MM/dd/yyyy hh:mm:ss"));
+            properties.Add("Telemetry", Telemetry);
+
             JsonPatchDocument jsonPatchDocument = new JsonPatchDocument();
             var existingTwinData = new JObject();
             if (!string.IsNullOrEmpty(_digitalTwin.TwinData))
                 existingTwinData = JObject.Parse(_digitalTwin.TwinData);
-            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "Enabled", Enabled.ToString());
-            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "LastRun", LastRun.ToString("MM/dd/yyyy hh:mm:ss"));
-            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "NextRun", NextRun.ToString("MM/dd/yyyy hh:mm:ss"));
-            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "LastUpload", LastUpload.ToString("MM/dd/yyyy hh:mm:ss"));
-            jsonPatchDocument = Helper.UpdateJsonDataField(_digitalTwin, jsonPatchDocument, existingTwinData, "NextUpload", NextUpload.ToString("MM/dd/yyyy hh:mm:ss"));
+            jsonPatchDocument.Add("/Agent", properties);
+
             if (jsonPatchDocument.Operations.Count > 0)
             {
                 var updateTwin = await _digitalTwinApi.UpdateTwinDataAsync(_digitalTwin.TwinReferenceId, jsonPatchDocument);
@@ -295,23 +368,23 @@ namespace ONE.Ingest
                 else
                     return false;
             }
-            if (configuration != null && ConfigurationJson != configuration.ConfigurationData)
+            if (_configuration != null && ConfigurationJson != _configuration.ConfigurationData)
             {
-                configuration.ConfigurationData = ConfigurationJson;
-                configuration.FilterById = _digitalTwin.TwinReferenceId;
-                configuration.EnumEntity = EnumEntity.EntityWorksheetview;
+                _configuration.ConfigurationData = ConfigurationJson;
+                _configuration.FilterById = _digitalTwin.TwinReferenceId;
+                _configuration.EnumEntity = EnumEntity.EntityWorksheetview;
 
-                return await _configurationApi.UpdateConfigurationAsync(configuration);
+                return await _configurationApi.UpdateConfigurationAsync(_configuration);
 
             }
-            else if (configuration == null && !string.IsNullOrEmpty(ConfigurationJson))
+            else if (_configuration == null && !string.IsNullOrEmpty(ConfigurationJson))
             {
-                configuration = new Configuration();
-                configuration.EnumEntity = EnumEntity.EntityWorksheetview;
-                configuration.ConfigurationData = ConfigurationJson;
-                configuration.FilterById = _digitalTwin.TwinReferenceId;
-                configuration.IsPublic = true;
-                return await _configurationApi.CreateConfigurationAsync(configuration);
+                _configuration = new Configuration();
+                _configuration.EnumEntity = EnumEntity.EntityWorksheetview;
+                _configuration.ConfigurationData = ConfigurationJson;
+                _configuration.FilterById = _digitalTwin.TwinReferenceId;
+                _configuration.IsPublic = true;
+                return await _configurationApi.CreateConfigurationAsync(_configuration);
             }
             return true;
         }
@@ -333,6 +406,8 @@ namespace ONE.Ingest
             }
         }
 
+        public string TwinSubTypeId { get; set; }
+
         private string _configurationJson;
 
         /// <summary>
@@ -349,18 +424,35 @@ namespace ONE.Ingest
             }
             set
             {
-                if (Configuration != null)
-                    if (!Configuration.Load(value))
-                        _configurationJson = value;
-                    else
+                if (value != null)
+                {
+                    LoadConfiguration(value);
                     _configurationJson = value;
+                }
+                else
+                    _configurationJson = "";
             }
         }
-
+        /// <summary>
+        /// Loads the configuration object from the ConfigurationJSON
+        /// </summary>
+        /// <returns>Whether the load was successful</returns>
+        public virtual bool LoadConfiguration(string json)
+        {
+            try
+            {
+                Configuration = JsonConvert.DeserializeObject<IngestAgentConfiguration>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return false;
+            }
+            return true;
+        }
         /// <summary>
         /// The Configuration Object related to the Agent
         /// </summary>
-        public IngestAgentConfiguration Configuration { get; set; }
+        public virtual IngestAgentConfiguration Configuration { get; set; }
 
         /// <summary>
         /// Runs the agent to obtain data

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using ONE.Ingest.WindowsService.Agents.Test;
 using ONE.Utilities;
 using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,6 +20,7 @@ namespace ONE.Ingest.WindowsService.Client
             ILogger<ClientService> logger, ClientSDK clientSDK) =>
             (_testAgentService, _logger, _clientSDK) = (testAgentService, logger, clientSDK);
 
+     
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
 
@@ -44,7 +46,10 @@ namespace ONE.Ingest.WindowsService.Client
                     _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Registering New Client: {Environment.MachineName}");
                     ingestClient = await _clientSDK.Ingest.RegisterClientAsync(Environment.MachineName);
                     if (ingestClient != null)
+                    {
+                        ingestClient.Logger.IngestLogData($"Registering New Client: { Environment.MachineName}");
                         clientServiceConfiguration.ClientId = ingestClient.Id;
+                    }
                 }
                 else
                 {
@@ -59,28 +64,22 @@ namespace ONE.Ingest.WindowsService.Client
 
                     ingestClient = await _clientSDK.Ingest.RegisterClientAsync(Environment.MachineName);
                     if (ingestClient != null)
+                    {
                         clientServiceConfiguration.ClientId = ingestClient.Id;
+                    }
                 }
                 if (ingestClient != null)
                 {
                     _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Loading Client Configuration: {Environment.MachineName}");
-
-                    await ingestClient.LoadAsync();
+                    await ingestClient.LoadAsync(new List<IngestAgent> { _testAgentService });
+                    ingestClient.Logger.IngestLogData($"Loading Client Configuration: {Environment.MachineName}");
                     if (ingestClient.Agents == null || ingestClient.Agents.Count == 0)
                     {
                         string agentName = "Test Agent";
                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Registering New Agent: {agentName}");
+                        ingestClient.Logger.IngestLogData($"Registering New Agent: {agentName}");
 
                         await ingestClient.RegisterAgentAsync(_testAgentService, agentName, Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentTest.RefId);
-                    }
-                    else
-                    {
-                        foreach (var agent in ingestClient.Agents)
-                        {
-                            _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Loading Agent: {agent.Name}");
-
-                            await agent.LoadAsync();
-                        }
                     }
                     if (ingestClient.Agents != null && ingestClient.Agents.Count > 0)
                     {
@@ -104,8 +103,12 @@ namespace ONE.Ingest.WindowsService.Client
                                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Uploading Agent Data: {ingestAgent.Name}");
                                         bool succcess = await ingestAgent.UploadAsync();
                                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Uploading Agent Data Complete: {ingestAgent.Name}");
+                                        ingestAgent.Logger.IngestLogData("Uploading Agent Data Complete");
                                     }
+                                    ingestAgent.Logger.UploadAsync();
                                 }
+                                ingestClient.Logger.UploadAsync();
+
                                 await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
                             }
                             catch (OperationCanceledException)

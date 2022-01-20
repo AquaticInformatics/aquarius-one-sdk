@@ -6,17 +6,7 @@ namespace ONE.Ingest
 {
     public class IngestAgentConfiguration
     {
-        /// <summary>
-        /// The Telemetry Datasets that are related to the Agent
-        /// </summary>
-        public List<IngestTelemetryConfiguration> Telemetry { get; set; }
         
-        /// <summary>
-        /// Initalization of the class
-        /// </summary>
-        public virtual void Initialize()
-        {
-        }
         /// <summary>
         /// Frequency the agent should acquire data
         /// </summary>
