@@ -23,15 +23,33 @@ namespace ONE.Common.Library
         public List<ParameterAgencyCodeType> ParameterAgencyCodeTypes { get; set;}
         public List<Unit> Units { get; set; }
         public List<I18NKey> I18Nkeys { get; set; }
-        public async Task<bool> LoadAsync()
-        {
-            QuantityTypes = await _clientSDK.Library.GetQuantityTypesAsync();
-            Parameters = await _clientSDK.Library.GetParametersAsync();
-            Units = await _clientSDK.Library.GetUnitsAsync();
-            ParameterAgencyCodeTypes = await _clientSDK.Library.GetParameterAgencyCodeTypesAsync();
-            ParameterAgencyCodes = await _clientSDK.Library.GetParameterAgencyCodesAsync();
 
-            I18Nkeys = await _clientSDK.Library.Geti18nKeysAsync("en-US", "FOUNDATION_LIBRARY");
+        public async Task<bool> LoadAsync(string culture = "en-US", string modules = "AQI_FOUNDATION_LIBRARY")
+        {
+            try
+            {
+
+                var QuantityTypesTask = _clientSDK.Library.GetQuantityTypesAsync();
+                var ParametersTask = _clientSDK.Library.GetParametersAsync();
+                var UnitsTask = _clientSDK.Library.GetUnitsAsync();
+                var ParameterAgencyCodeTypesTask = _clientSDK.Library.GetParameterAgencyCodeTypesAsync();
+                var ParameterAgencyCodesTask = _clientSDK.Library.GetParameterAgencyCodesAsync();
+                var I18NkeysTask = _clientSDK.Library.Geti18nKeysAsync(culture, modules);
+
+                await Task.WhenAll(QuantityTypesTask, ParametersTask, UnitsTask, ParameterAgencyCodeTypesTask, ParameterAgencyCodesTask, I18NkeysTask);
+                QuantityTypes = QuantityTypesTask.Result;
+                Parameters = ParametersTask.Result;
+                Units = UnitsTask.Result;
+                ParameterAgencyCodeTypes = ParameterAgencyCodeTypesTask.Result;
+                ParameterAgencyCodes = ParameterAgencyCodesTask.Result;
+                I18Nkeys = I18NkeysTask.Result;
+
+            }
+            catch
+            {
+                return false;
+            }
+
             return true;
         }
         public ParameterAgencyCodeType GetParameterAgencyCodeType(string id)

@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using ONE.Enterprise.Twin;
 using ONE.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -11,13 +12,41 @@ namespace ONE.Operations
     {
         ClientSDK _clientSDK;
 
-        public List<OperationCache> Operations;
+        public List<OperationCache> Operations { get; set; }
 
-        public OperationsCache(ClientSDK clientSDK)
+        public OperationsCache(ClientSDK clientSDK, string serializedObject = "")
         {
             _clientSDK = clientSDK;
             Operations = new List<OperationCache>();
+            if (!string.IsNullOrEmpty(serializedObject))
+            {
+                var operationsCache = JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                Operations = operationsCache.Operations;
+                foreach (var operationCache in Operations)
+                {
+                    operationCache.SetClientSDK(clientSDK);
+                    operationCache.CacheColumns();
+                }
+            }
         }
+        public OperationsCache(string serializedObject)
+        {
+            try
+            {
+                var operationsCache = JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                Operations = operationsCache.Operations;
+                foreach (var operationCache in Operations)
+                {
+                    operationCache.CacheColumns();
+                }
+            }
+            catch (Exception ex)
+            {
+                Operations = new List<OperationCache>();
+            }
+        }
+        public OperationsCache()
+        { }
         private OperationCache _currentOperation;
         public OperationCache CurrentOperation
         {
@@ -29,6 +58,10 @@ namespace ONE.Operations
             {
                 _currentOperation = value;
             }
+        }
+        public void Unload()
+        {
+            Operations = new List<OperationCache>();
         }
         public async Task<List<OperationCache>> LoadOperationsAsync()
         {
@@ -83,16 +116,10 @@ namespace ONE.Operations
                 return base.ToString();
             }
         }
-        public static OperationsCache Load(string serializedObject)
+        public void Load(string serializedObject)
         {
-            try
-            {
-                return JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            }
-            catch
-            {
-                return null;
-            }
+            
         }
+        
     }
 }

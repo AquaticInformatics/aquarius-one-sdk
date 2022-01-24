@@ -17,7 +17,7 @@ namespace ONE.Operations
     {
         public OperationCache(ClientSDK clientSDK, DigitalTwin digitalTwin)
         {
-            ClientSDK = clientSDK;
+            _clientSDK = clientSDK;
             DigitalTwin = digitalTwin;
             DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
             ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
@@ -28,7 +28,64 @@ namespace ONE.Operations
             DailyRows = new Dictionary<uint, Row>();
             MeasurementCache = new Dictionary<string, List<Measurement>>();
         }
-        public ClientSDK ClientSDK { get; set; }
+        public OperationCache (string serializedObject)
+        {
+            try
+            {
+                var operationCache = JsonConvert.DeserializeObject<OperationCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                DigitalTwin = operationCache.DigitalTwin;
+                DigitalTwinItem = operationCache.DigitalTwinItem;
+                ItemDictionarybyGuid = operationCache.ItemDictionarybyGuid;
+                ItemDictionarybyLong = operationCache.ItemDictionarybyLong;
+                
+                FifteenMinuteRows = operationCache.FifteenMinuteRows;
+                HourlyRows = operationCache.HourlyRows;
+                FourHourRows = operationCache.FourHourRows;
+                DailyRows = operationCache.DailyRows;
+                
+                MeasurementCache = operationCache.MeasurementCache;
+                
+                Delimiter = operationCache.Delimiter;
+                IsCached = operationCache.IsCached;
+
+                CacheColumns();
+            }
+            catch
+            {
+            }
+        }
+        public OperationCache()
+        {
+            DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
+            ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
+            ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+            FifteenMinuteRows = new Dictionary<uint, Row>();
+            HourlyRows = new Dictionary<uint, Row>();
+            FourHourRows = new Dictionary<uint, Row>();
+            DailyRows = new Dictionary<uint, Row>();
+            MeasurementCache = new Dictionary<string, List<Measurement>>();
+        }
+        public void Unload()
+        {
+            DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
+            ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
+            ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+            FifteenMinuteRows = new Dictionary<uint, Row>();
+            HourlyRows = new Dictionary<uint, Row>();
+            FourHourRows = new Dictionary<uint, Row>();
+            DailyRows = new Dictionary<uint, Row>();
+            MeasurementCache = new Dictionary<string, List<Measurement>>();
+
+            ColumnsByVariable = new Dictionary<long, Column>();
+            ColumnsByVarNum = new Dictionary<long, Column>();
+            ColumnsById = new Dictionary<long, Column>();
+            ColumnsByGuid = new Dictionary<string, Column>();
+        }
+        public void SetClientSDK(ClientSDK clientSDK)
+        {
+            _clientSDK = clientSDK;
+        }
+        private ClientSDK _clientSDK { get; set; }
         public string Id {
             get
             {
@@ -136,29 +193,56 @@ namespace ONE.Operations
         }
         
         
-        public bool IsInitialized { get; set; }
-        public async Task<bool> InitializeAsync()
+        public bool IsCached { get; set; }
+        public async Task<bool> LoadAsync()
         {
-            if (IsInitialized)
+            if (IsCached)
                 return true;
-            ColumnTwins = await ClientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 4);
-            LocationTwins = await ClientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
-            SpreadsheetDefinition = await ClientSDK.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
-            FifteenMinuteWorksheetDefinition = await ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
-            HourlyWorksheetDefinition = await ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetHour);
-            FourHourWorksheetDefinition = await ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
-            DailyWorksheetDefinition = await ClientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
 
+            try
+            {
+                var ColumnTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 4);
+                var LocationTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
+                var SpreadsheetDefinitionTask = _clientSDK.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
+                var FifteenMinuteWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
+                var HourlyWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetHour);
+                var FourHourWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
+                var DailyWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
+
+                await Task.WhenAll(
+                    ColumnTwinsTask, 
+                    LocationTwinsTask, 
+                    SpreadsheetDefinitionTask, 
+                    FifteenMinuteWorksheetDefinitionTask, 
+                    HourlyWorksheetDefinitionTask,
+                    FourHourWorksheetDefinitionTask,
+                    DailyWorksheetDefinitionTask);
+
+                ColumnTwins = ColumnTwinsTask.Result;
+                LocationTwins = LocationTwinsTask.Result;
+                SpreadsheetDefinition = SpreadsheetDefinitionTask.Result;
+                FifteenMinuteWorksheetDefinition = FifteenMinuteWorksheetDefinitionTask.Result;
+                HourlyWorksheetDefinition = HourlyWorksheetDefinitionTask.Result;
+                FourHourWorksheetDefinition = FourHourWorksheetDefinitionTask.Result;
+                DailyWorksheetDefinition = DailyWorksheetDefinitionTask.Result;
+
+            }
+            catch
+            {
+                return false;
+            }
             //Merge the Twins
             var allChildTwins = LocationTwins.Union(ColumnTwins).ToList();
             
             AddChildren(DigitalTwinItem, allChildTwins);
+            IsCached = true;
             CacheColumns();
-            IsInitialized = true;
             return true;
         }
-        private void CacheColumns()
+        public void CacheColumns()
         {
+            if (!IsCached)
+                return;
             ColumnsByVariable = new Dictionary<long, Column>();
             ColumnsByVarNum = new Dictionary<long, Column>();
             ColumnsById = new Dictionary<long, Column>();
@@ -170,12 +254,12 @@ namespace ONE.Operations
                 ColumnsByGuid.Add(columnTwin.TwinReferenceId, column);
                 string variableId = ONE.Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
                 long.TryParse(variableId, out var value);
-                if (value != 0)
+                if (value != 0 && !ColumnsByVariable.ContainsKey(value))
                     ColumnsByVariable.Add(value, column);
 
                 string varNum = ONE.Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
                 long.TryParse(variableId, out var varNumValue);
-                if (varNumValue != 0)
+                if (varNumValue != 0 && !ColumnsByVarNum.ContainsKey(varNumValue))
                     ColumnsByVarNum.Add(varNumValue, column);
             }
         }
@@ -372,15 +456,16 @@ namespace ONE.Operations
                 else
                     childDigitalTwinItem.Path = $"{digitalTwinTreeItem.Path}{Delimiter}{childDigitalTwinItem.DigitalTwin.Name}";
                 digitalTwinTreeItem.ChildDigitalTwinItems.Add(childDigitalTwinItem);
-                if (!string.IsNullOrEmpty(digitalTwin.TwinReferenceId))
+                if (!string.IsNullOrEmpty(digitalTwin.TwinReferenceId) && !ItemDictionarybyGuid.ContainsKey(digitalTwin.TwinReferenceId))
                     ItemDictionarybyGuid.Add(digitalTwin.TwinReferenceId, childDigitalTwinItem);
-                ItemDictionarybyLong.Add(digitalTwin.Id, childDigitalTwinItem);
+                if (!ItemDictionarybyLong.ContainsKey(digitalTwin.Id))
+                    ItemDictionarybyLong.Add(digitalTwin.Id, childDigitalTwinItem);
                 AddChildren(childDigitalTwinItem, digitalTwins);
             }
         }
         public string GetColumnGuidByIndex(string index)
         {
-            if (!IsInitialized)
+            if (!IsCached)
                 return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
 
             int.TryParse(index, out int idx);
@@ -470,20 +555,26 @@ namespace ONE.Operations
             }
             return "";
         }
-        public string Info(string columnIdentifier, string field)
+        public string Info(string columnIdentifier, string field, Cache library = null)
         {
-            if (!IsInitialized)
+            if (!IsCached)
                 return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+            if (library == null && _clientSDK != null && _clientSDK.CacheHelper != null && _clientSDK.CacheHelper.LibaryCache != null)
+                library = _clientSDK.CacheHelper.LibaryCache;
+
 
             Column column = GetColumnByIdentifier(columnIdentifier);
             if (column == null)
                 return EnumErrors.ERR_INVALID_PARAMETER_GUID.ToString();
             var columnTwin = GetColumnTwinByGuid(column.ColumnId);
 
-            var library = ClientSDK.CacheHelper.LibaryCache;
-            Parameter parameter = library.GetParameter(column.ParameterId);
-
-            Unit unit = library.GetUnit((long)column.DisplayUnitId);
+            Parameter parameter = null;
+            Unit unit = null;
+            if (library != null)
+            {
+                parameter = library.GetParameter(column.ParameterId);
+                unit = library.GetUnit((long)column.DisplayUnitId);
+            }
             string path = GetTelemetryPath(column.ColumnId, false);
             string[] anscestors = path.Split('\\');
 
@@ -503,20 +594,32 @@ namespace ONE.Operations
                         return $"{anscestors[anscestors.Length - 1]}.{column.Name}";
                     return column.Name;
                 case "NAME.UNITS":
+                    if (library == null)
+                        return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
                     return $"{column.Name}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
                 case "SHORTNAME":
+                    if (library == null)
+                        return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
                     return I18NKeyHelper.GetValue("SHORT", parameter.I18NKey);
                 case "SHORTNAME.UNITS":
+                    if (library == null)
+                        return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
                     return $"{I18NKeyHelper.GetValue("SHORT", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
                 case "VARTYPE":
                     return GetWimsVarType(column);
                 case "TYPE":
                     return GetWimsType(column);
                 case "PARAMETERTYPE":
+                    if (library == null)
+                        return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
                     return I18NKeyHelper.GetValue("LONG", parameter.I18NKey);
                 case "PARAMETERTYPE.UNITS":
+                    if (library == null)
+                        return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
                     return $"{I18NKeyHelper.GetValue("LONG", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
                 case "UNITS":
+                    if (library == null)
+                        return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
                     return I18NKeyHelper.GetValue("SHORT", unit.I18NKey);
                 case "XREF":
                     if (column.DataSourceBinding != null)
@@ -645,7 +748,7 @@ namespace ONE.Operations
        
         public string GetWorksheetTypeName(string guid)
         {
-            if (!IsInitialized)
+            if (!IsCached)
                 return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
 
             var column = GetColumnTwinByGuid(guid);
@@ -664,17 +767,7 @@ namespace ONE.Operations
                 return base.ToString();
             }
         }
-        public static OperationCache Load(string serializedObject)
-        {
-            try
-            {
-                return JsonConvert.DeserializeObject<OperationCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-            }
-            catch
-            {
-                return null;
-            }
-        }
+        
 
     }
 }

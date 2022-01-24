@@ -44,6 +44,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
                     GetRowsCommand,
                     I18nCommand,
                     LoginCommand,
+                    OperationsCommand,
                     ParameterCommand,
                     QuantityTypesCommand,
                     RolesCommand,

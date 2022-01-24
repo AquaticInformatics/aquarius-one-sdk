@@ -25,6 +25,22 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             else
                 configuration.AppSettings.Settings[key].Value = value;
         }
+        public static void SetConfiguration(string key, string value)
+        {
+            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (configuration.AppSettings.Settings[key] == null)
+                configuration.AppSettings.Settings.Add(key, value);
+            else
+                configuration.AppSettings.Settings[key].Value = value;
+            configuration.Save(ConfigurationSaveMode.Full);
+        }
+        public static string GetConfiguration(string key)
+        {
+            Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            if (configuration.AppSettings.Settings[key] == null)
+                return null;
+            return configuration.AppSettings.Settings[key].Value;
+        }
         public static void LoadConfig(ClientSDK clientSDK)
         {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);

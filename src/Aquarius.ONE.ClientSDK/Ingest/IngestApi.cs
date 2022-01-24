@@ -37,7 +37,7 @@ namespace ONE.Ingest
         /// <summary>
         /// Retrieves the IngestClient by the Twin Reference Id
         /// </summary>
-        /// <param name="ingestClientId">Digital Twin Refrence Id of the Instrument Ingestion Client</param>
+        /// <param name="ingestClientId">Digital Twin Reference Id of the Instrument Ingestion Client</param>
         /// <returns>IngestClient</returns>
         public async Task<IngestClient> GetClientByIdAsync(string ingestClientId)
         {

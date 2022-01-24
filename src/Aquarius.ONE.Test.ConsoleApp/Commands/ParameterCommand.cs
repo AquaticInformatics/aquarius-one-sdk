@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using Common.Library.Protobuf.Models;
 using ONE;
+using ONE.Common.Library;
 using System;
 using System.Threading.Tasks;
 
@@ -16,20 +17,47 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         public long Id { get; set; }
         [Option('n', "name", Required = false, HelpText = "Unit Name")]
         public string Name { get; set; }
+        
+        [Option('s', "show", Required = false, HelpText = "Show Cache")]
+        public bool ShowCache { get; set; }
+
+        [Option('c', "cache", Required = false, HelpText = "Cache Command (Clear)")]
+        public string CacheCommand { get; set; }
 
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
-            if (!string.IsNullOrEmpty(Guid) || !string.IsNullOrEmpty(Name) || Id > 0)
+            if (CacheCommand != null && CacheCommand.ToUpper() == "CLEAR")
+                CommandHelper.SetConfiguration("LibraryCache", "");
+            string serializedCache = CommandHelper.GetConfiguration("LibraryCache");
+            if (string.IsNullOrEmpty(serializedCache))
+            {
+                await clientSDK.CacheHelper.LibaryCache.LoadAsync("en-us", "AQI_MOBILE_RIO,AQI_FOUNDATION_LIBRARY");
+                serializedCache = clientSDK.CacheHelper.LibaryCache.ToString();
+                CommandHelper.SetConfiguration("LibraryCache", serializedCache);
+            }
+            // Load Cache
+            var cache = Cache.Load(serializedCache);
+
+            if (ShowCache)
+            {
+
+                foreach (var parameter in cache.Parameters)
+                {
+
+                    Console.WriteLine($"{parameter.Id}: {parameter.IntId}: {parameter.I18NKey}");
+                }
+            }
+            else if (!string.IsNullOrEmpty(Guid) || !string.IsNullOrEmpty(Name) || Id > 0)
             {
 
                 await clientSDK.CacheHelper.LibaryCache.LoadAsync();
                 Parameter parameter = null;
                 if (!string.IsNullOrEmpty(Guid))
-                    parameter = clientSDK.CacheHelper.LibaryCache.GetParameter(Guid);
+                    parameter = cache.GetParameter(Guid);
                 else if (!string.IsNullOrEmpty(Name))
-                    parameter = clientSDK.CacheHelper.LibaryCache.GetParameterByName(Name);
+                    parameter = cache.GetParameterByName(Name);
                 else if (Id > 0)
-                    parameter = clientSDK.CacheHelper.LibaryCache.GetParameter(Id);
+                    parameter = cache.GetParameter(Id);
                 if (parameter == null)
                     return 0;
                 else
