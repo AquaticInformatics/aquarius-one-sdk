@@ -1,26 +1,28 @@
 Ingest
-====
+===========
 
 The Ingest API is intended to provide an SDK for client applications installed at customer locations to ingest data from local data sources.
 
 Class
-----
+----------
 
  ..  class:: Ingest
     :module: ClientSDK
 
 Child Classes
------
+-------------
 
 - :doc:`/ingest/ingestclient` 
 - :doc:`/ingest/ingestagent` 
-
+- :doc:`/ingest/ingestagentconfiguration` 
 
 Methods
-------
+----------
 
 GetClientByIdAsync
 ^^^^^^^^^^^^^^^^^^^^
+
+Retrieves the IngestClient by the Twin Reference Id
 
 - **Required Role(s)**: Any
 - **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.
@@ -37,6 +39,8 @@ GetClientByIdAsync
 RegisterClientAsync
 ^^^^^^^^^^^^^^^^^^^^
 
+Creates a Digital Twin for the Ingest Client and does minimal setup
+
 - **Required Role(s)**: Any
 - **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.
 
@@ -51,6 +55,8 @@ RegisterClientAsync
 
 GetAllClientsAsync
 ^^^^^^^^^^^^^^^^^^^^
+
+Retrieves a collection of all IngestClients the user has rights to retrieve
 
 - **Required Role(s)**: Any
 - **Resource Authorization**: Access to the digital twin associated to the operation that the report definition is associated.

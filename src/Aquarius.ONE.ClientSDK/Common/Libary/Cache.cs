@@ -195,5 +195,16 @@ namespace ONE.Common.Library
                 return base.ToString();
             }
         }
+        public static Cache Load(string serializedObject)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<Cache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return null;
+            }
+        }
     }
 }

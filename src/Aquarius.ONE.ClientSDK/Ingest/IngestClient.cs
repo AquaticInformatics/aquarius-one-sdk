@@ -57,7 +57,7 @@ namespace ONE.Ingest
         /// <param name="ingestAgent">The IngestAgent Object</param>
         /// <param name="ingestAgentName">Name of the new Agent</param>
         /// <param name="agentSubTypeId">Instrument Agent Digital Twin SubType Id</param>
-        /// <returns></returns>
+        /// <returns>The newly registered Ingest Agent</returns>
         public async Task<IngestAgent> RegisterAgentAsync(IngestAgent ingestAgent, string ingestAgentName, string agentSubTypeId)
         {
             bool success = await ingestAgent.InitializeAsync(_authentificationApi, _coreApi, _digitalTwinApi, _configurationApi, _dataApi, Id, ingestAgentName, agentSubTypeId);
@@ -72,6 +72,7 @@ namespace ONE.Ingest
         /// <summary>
         /// Loads the Client with the information it needs to run
         /// </summary>
+        /// <param name="ingestAgents">The collection of ingest agent objects</param>
         /// <returns>Whether the Client was successfully loaded</returns>
         public async Task<bool> LoadAsync(List<IngestAgent> ingestAgents)
         {
@@ -151,8 +152,12 @@ namespace ONE.Ingest
             return true;
         }
 
+
         private string _name;
 
+        /// <summary>
+        /// The name of the Ingest Client.  
+        /// </summary>
         public string Name
         {
             get
@@ -164,6 +169,9 @@ namespace ONE.Ingest
                 _name = value;
             }
         }
+        /// <summary>
+        /// The Twin Reference Id of the Twin that represents the ingest client
+        /// </summary>
         public string Id
         {
             get
@@ -174,6 +182,9 @@ namespace ONE.Ingest
 
         private string _configurationJson;
 
+        /// <summary>
+        /// This property returns the configuration JSON for the Ingest Client.  
+        /// </summary>
         public string ConfigurationJson
         {
             get

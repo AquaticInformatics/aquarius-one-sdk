@@ -52,18 +52,18 @@ namespace ONE.Ingest
         /// <summary>
         /// Initializes the Class when a new agent is created
         /// </summary>
-        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="authenticationApi">The Authentication Class from the Client SDK</param>
         /// <param name="coreApi">The Core Class from the Client SDK</param>
         /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
         /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
         /// <param name="dataApi">The Data Class from the Client SDK</param>
-        /// <param name="ingestClientId">Digital Twin Refrence Id of the Instrument Ingestion Client</param>
+        /// <param name="ingestClientId">Digital Twin Reference Id of the Instrument Ingestion Client</param>
         /// <param name="ingestAgentName">Name of this Agent</param>
         /// <param name="agentSubTypeId">Instrument Agent Digital Twin SubType Id</param>
-        /// <returns></returns>
-        public virtual async Task<bool> InitializeAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, string ingestClientId, string ingestAgentName, string agentSubTypeId)
+        /// <returns>Whether the agent was successfully initialized</returns>
+        public virtual async Task<bool> InitializeAsync(AuthenticationApi authenticationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, string ingestClientId, string ingestAgentName, string agentSubTypeId)
         {
-            _authentificationApi = authentificationApi;
+            _authentificationApi = authenticationApi;
             _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
             _configurationApi = configurationApi;
@@ -147,16 +147,16 @@ namespace ONE.Ingest
         /// <summary>
         /// Loads the Agent with the information it needs to run
         /// </summary>
-        /// <param name="authentificationApi">The Authentication Class from the Client SDK</param>
+        /// <param name="authenticationApi">The Authentication Class from the Client SDK</param>
         /// <param name="coreApi">The Core Class from the Client SDK</param>
         /// <param name="digitalTwinApi">The Digital Twin Class from the Client SDK</param>
         /// <param name="configurationApi">The Configuration Class from the Client SDK</param>
         /// <param name="dataApi">The Data Class from the Client SDK</param>
         /// <param name="digitalTwin">The digital Twin that represents the IngestAgent</param>
         /// <returns>Whether the Agent was successfully loaded</returns>
-        public async Task<bool> LoadAsync(AuthenticationApi authentificationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin digitalTwin)
+        public async Task<bool> LoadAsync(AuthenticationApi authenticationApi, CoreApi coreApi, DigitalTwinApi digitalTwinApi, ConfigurationApi configurationApi, DataApi dataApi, DigitalTwin digitalTwin)
         {
-            _authentificationApi = authentificationApi;
+            _authentificationApi = authenticationApi;
             _coreApi = coreApi;
             _digitalTwinApi = digitalTwinApi;
             _configurationApi = configurationApi;
@@ -226,9 +226,21 @@ namespace ONE.Ingest
         /// <param name="dateTime">Time related to the value</param>
         /// <param name="value">Numerical data to be stored</param>
         /// /// <param name="stringValue">(Optional) String equivalent of the Numerical data to be stored</param>
-        /// <param name="propertyBag">(Optional) additional data stored as JSON</param>
-        public void IngestData(string telemetryTwinId, DateTime dateTime, double? value, string stringValue= "", string propertyBag = "")
+        /// <param name="detail">(Optional) additional data stored as JSON</param>
+        public void IngestData(string telemetryTwinId, DateTime dateTime, double? value, string stringValue= "", object detail = null)
         {
+            string propertyBag = "";
+            if (detail == null)
+                propertyBag = "";
+            else if (detail is System.Type String)
+            {
+                propertyBag = detail.ToString();
+            }
+            else
+            {
+                propertyBag = JsonConvert.SerializeObject(detail, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+
             IngestData(telemetryTwinId, new TimeSeriesData 
             { 
                 DateTimeUTC = dateTime.ToJsonTicksDateTime(),
@@ -257,7 +269,7 @@ namespace ONE.Ingest
         public bool Enabled { get; set; }
 
         /// <summary>
-        /// Whether the Agent is Elegible to run. AKA it is time to run
+        /// Whether the Agent is Eligible to run. AKA it is time to run.
         /// </summary>
         public bool IsTimeToRun
         {
@@ -409,6 +421,9 @@ namespace ONE.Ingest
             }
         }
 
+        /// <summary>
+        /// Identifies the unique type of the agent.  This must be set by the implementing class for the agent to be properly registered
+        /// </summary>
         public string TwinSubTypeId { get; set; }
 
         private string _configurationJson;
@@ -439,6 +454,7 @@ namespace ONE.Ingest
         /// <summary>
         /// Loads the configuration object from the ConfigurationJSON
         /// </summary>
+        /// <param name="json">The configuration represented as a JSON string</param>
         /// <returns>Whether the load was successful</returns>
         public virtual bool LoadConfiguration(string json)
         {

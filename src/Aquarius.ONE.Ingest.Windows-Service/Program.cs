@@ -14,6 +14,7 @@ using IHost host = Host.CreateDefaultBuilder(args)
         services.AddHostedService<ClientService>();
         services.AddSingleton<ONE.Ingest.WindowsService.Agents.Test.AgentService>();
         services.AddSingleton<ONE.Ingest.WindowsService.Agents.CSV.AgentService>();
+        services.AddSingleton<ONE.Ingest.WindowsService.Agents.OpenWeatherMap.AgentService>();
     })
     .Build();
 

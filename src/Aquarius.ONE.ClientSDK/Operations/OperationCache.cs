@@ -1,6 +1,7 @@
 ﻿using Common.Core.Protobuf.Models;
 using Common.Library.Protobuf.Models;
 using Enterprise.Twin.Protobuf.Models;
+using Newtonsoft.Json;
 using ONE.Common.Library;
 using ONE.Enterprise.Twin;
 using ONE.Utilities;
@@ -652,7 +653,28 @@ namespace ONE.Operations
                 return EnumErrors.ERR_INVALID_PARAMETER_GUID.ToString();
             return GetWorksheetTypeName(column);
         }
-        
+        public override string ToString()
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return base.ToString();
+            }
+        }
+        public static OperationCache Load(string serializedObject)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<OperationCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return null;
+            }
+        }
 
     }
 }

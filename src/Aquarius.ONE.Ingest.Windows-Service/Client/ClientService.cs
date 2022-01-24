@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using Test = ONE.Ingest.WindowsService.Agents.Test;
 using Csv = ONE.Ingest.WindowsService.Agents.CSV;
+using Weather = ONE.Ingest.WindowsService.Agents.OpenWeatherMap;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,17 +18,17 @@ namespace ONE.Ingest.WindowsService.Client
         private readonly ClientSDK _clientSDK;
         private Test.AgentService _testAgentService;
         private Csv.AgentService _csvAgentService;
+        private Weather.AgentService _weatherAgentService;
         public ClientService(
             Test.AgentService testAgentService,
             Csv.AgentService csvAgentService,
+            Weather.AgentService weatherAgentService,
             ILogger<ClientService> logger, 
             ClientSDK clientSDK) =>
-            (_testAgentService, _csvAgentService, _logger, _clientSDK) = (testAgentService, csvAgentService, logger, clientSDK);
+            (_testAgentService, _csvAgentService, _weatherAgentService, _logger, _clientSDK) = (testAgentService, csvAgentService, weatherAgentService, logger, clientSDK);
 
-     
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-
             // Initialize Configuration
             ClientServiceConfiguration clientServiceConfiguration = new ClientServiceConfiguration();
 
@@ -75,7 +76,7 @@ namespace ONE.Ingest.WindowsService.Client
                 if (ingestClient != null)
                 {
                     _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Loading Client Configuration: {Environment.MachineName}");
-                    await ingestClient.LoadAsync(new List<IngestAgent> { _testAgentService, _csvAgentService });
+                    await ingestClient.LoadAsync(new List<IngestAgent> { _testAgentService, _csvAgentService, _weatherAgentService });
                     ingestClient.Logger.IngestLogData($"Loading Client Configuration: {Environment.MachineName}");
                     if (ingestClient.Agents == null || ingestClient.Agents.Count == 0)
                     {
@@ -88,6 +89,11 @@ namespace ONE.Ingest.WindowsService.Client
                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Registering New Agent: {agentName}");
                         ingestClient.Logger.IngestLogData($"Registering New Agent: {agentName}");
                         await ingestClient.RegisterAgentAsync(_csvAgentService, agentName, Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentCsv.RefId);
+
+                        agentName = "OpenWeatherMap Agent";
+                        _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Registering New Agent: {agentName}");
+                        ingestClient.Logger.IngestLogData($"Registering New Agent: {agentName}");
+                        await ingestClient.RegisterAgentAsync(_weatherAgentService, agentName, Enterprise.Twin.Constants.IntrumentCategory.ClientIngestAgentType.ClientIngestAgentOpenWeatherMap.RefId);
                     }
                     if (ingestClient.Agents != null && ingestClient.Agents.Count > 0)
                     {

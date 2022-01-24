@@ -79,7 +79,7 @@ namespace ONE.Operations.Spreadsheet
                 return "";
             return result;
         }
-        public static string GetAggregateQualifer(List<Measurement> measurements, int cascadeRule)
+        public static string GetAggregateQualifier(List<Measurement> measurements, int cascadeRule)
         {
             var dqCount = GetQualifierCount(measurements);
             var maxSymbol = GetMaxSymbol(dqCount);

@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ingest &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+  <title>IngestClientConfiguration &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
       <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
@@ -17,9 +17,7 @@
         <script src="../_static/doctools.js"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
-    <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="IngestClient" href="ingestclient.html" />
-    <link rel="prev" title="Historical Data" href="../historical/data.html" /> 
+    <link rel="search" title="Search" href="../search.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -75,30 +73,10 @@
 <li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Ingest APIs</span></p>
-<ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Ingest</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#class">Class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#child-classes">Child Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#getclientbyidasync">GetClientByIdAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#registerclientasync">RegisterClientAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getallclientsasync">GetAllClientsAsync</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ingest.html">Ingest</a></li>
 <li class="toctree-l1"><a class="reference internal" href="ingestclient.html">IngestClient</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Ingest</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#class">Class</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#child-classes">Child Classes</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#getclientbyidasync">GetClientByIdAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#registerclientasync">RegisterClientAsync</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#getallclientsasync">GetAllClientsAsync</a></li>
-</ul>
-</li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="ingest.html">Ingest</a></li>
 </ul>
 <p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
 <ul>
@@ -131,9 +109,9 @@
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
       <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
-      <li>Ingest</li>
+      <li>IngestClientConfiguration</li>
       <li class="wy-breadcrumbs-aside">
-            <a href="../_sources/ingest/ingest.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/ingest/ingestclientconfiguration.rst.txt" rel="nofollow"> View page source</a>
       </li>
   </ul>
   <hr/>
@@ -141,93 +119,133 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <section id="ingest">
-<h1>Ingest<a class="headerlink" href="#ingest" title="Permalink to this headline"></a></h1>
-<p>The Ingest API is intended to provide an SDK for client applications installed at customer locations to ingest data from local data sources.</p>
+  <section id="ingestclientconfiguration">
+<h1>IngestClientConfiguration<a class="headerlink" href="#ingestclientconfiguration" title="Permalink to this headline"></a></h1>
+<p>This class can be inherited when implementing ingest agents</p>
 <section id="class">
 <h2>Class<a class="headerlink" href="#class" title="Permalink to this headline"></a></h2>
 <blockquote>
 <div><dl class="py class">
-<dt class="sig sig-object py" id="ClientSDK.Ingest">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.</span></span><span class="sig-name descname"><span class="pre">Ingest</span></span><a class="headerlink" href="#ClientSDK.Ingest" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">IngestClient</span></span><a class="headerlink" href="#ClientSDK.Ingest.IngestClient" title="Permalink to this definition"></a></dt>
 <dd></dd></dl>
 
 </div></blockquote>
 </section>
-<section id="child-classes">
-<h2>Child Classes<a class="headerlink" href="#child-classes" title="Permalink to this headline"></a></h2>
-<ul class="simple">
-<li><p><a class="reference internal" href="ingestclient.html"><span class="doc">IngestClient</span></a></p></li>
-<li><p><a class="reference internal" href="ingestagent.html"><span class="doc">IngestAgent</span></a></p></li>
-<li><p><span class="xref std std-doc">/ingest/ingestagentconfiguration</span></p></li>
-</ul>
-</section>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
-<section id="getclientbyidasync">
-<h3>GetClientByIdAsync<a class="headerlink" href="#getclientbyidasync" title="Permalink to this headline"></a></h3>
-<p>Retrieves the IngestClient by the Twin Reference Id</p>
+<section id="loadasync">
+<h3>LoadAsync<a class="headerlink" href="#loadasync" title="Permalink to this headline"></a></h3>
+<p>Loads the definition of the ingest client and all of it’s plugins.</p>
 <ul class="simple">
 <li><p><strong>Required Role(s)</strong>: Any</p></li>
 <li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
 </ul>
 <dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Ingest.GetClientByIdAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">GetClientByIdAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">ingestClientId</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.GetClientByIdAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ingestClientId</strong> (<em>string</em>) – The unique Identifier (GUID) of the Operation Digital Twin related to the spreadsheet.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An IngestClient object that contains all of the configuration for the client.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;IngestClient&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="registerclientasync">
-<h3>RegisterClientAsync<a class="headerlink" href="#registerclientasync" title="Permalink to this headline"></a></h3>
-<p>Creates a Digital Twin for the Ingest Client and does minimal setup</p>
-<ul class="simple">
-<li><p><strong>Required Role(s)</strong>: Any</p></li>
-<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Ingest.RegisterClientAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">RegisterClientAsync</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">string</span> <span class="pre">ingestClientName</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.RegisterClientAsync" title="Permalink to this definition"></a></dt>
-<dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>ingestClientName</strong> (<em>string</em>) – The name of the ingest client.</p>
-</dd>
-<dt class="field-even">Returns</dt>
-<dd class="field-even"><p>An IngestClient object that contains all of the configuration for the client.</p>
-</dd>
-<dt class="field-odd">Return type</dt>
-<dd class="field-odd"><p>Task&lt;IngestClient&gt;</p>
-</dd>
-</dl>
-</dd></dl>
-
-</section>
-<section id="getallclientsasync">
-<h3>GetAllClientsAsync<a class="headerlink" href="#getallclientsasync" title="Permalink to this headline"></a></h3>
-<p>Retrieves a collection of all IngestClients the user has rights to retrieve</p>
-<ul class="simple">
-<li><p><strong>Required Role(s)</strong>: Any</p></li>
-<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
-</ul>
-<dl class="py method">
-<dt class="sig sig-object py" id="ClientSDK.Ingest.GetAllClientsAsync">
-<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">GetAllClientsAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.GetAllClientsAsync" title="Permalink to this definition"></a></dt>
+<dt class="sig sig-object py" id="ClientSDK.Ingest.LoadAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">LoadAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.LoadAsync" title="Permalink to this definition"></a></dt>
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns</dt>
-<dd class="field-odd"><p>A collection of all of the ingest clients the user has access.</p>
+<dd class="field-odd"><p>Whether the load was successful.</p>
 </dd>
 <dt class="field-even">Return type</dt>
-<dd class="field-even"><p>Task&lt;List&lt;IngestClient&gt;&gt;</p>
+<dd class="field-even"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="save">
+<h3>Save<a class="headerlink" href="#save" title="Permalink to this headline"></a></h3>
+<p>Loads the definition of the ingest client, its configuration and all of it’s plugins.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.Save">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">Save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.Save" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the save was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<section id="configurationjson">
+<h3>ConfigurationJson<a class="headerlink" href="#configurationjson" title="Permalink to this headline"></a></h3>
+<p>This property returns the configuration JSON for the Ingest Client.
+If this property is set, the Save() method will need to be called to persist the change.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestClient.ConfigurationJson">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">ConfigurationJson</span></span><a class="headerlink" href="#ClientSDK.Ingest.IngestClient.ConfigurationJson" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The configuration as a JSON string for the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="name">
+<h3>Name<a class="headerlink" href="#name" title="Permalink to this headline"></a></h3>
+<p>This property returns the name of the Ingest Client.
+If this property is set, the Save() method will need to be called to persist the change.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestClient.Name">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">Name</span></span><a class="headerlink" href="#ClientSDK.Ingest.IngestClient.Name" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="plugins">
+<h3>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline"></a></h3>
+<p>This property returns the collection of Plugins fo the Ingest Client.
+This property is populated when the LoadAsync is called.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">Name</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="id1">
+<h3>Plugins<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h3>
+<p>This property returns the collection of Plugins fo the Ingest Client.
+This property is populated when the LoadAsync is called.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id2">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">Name</span></span><a class="headerlink" href="#id2" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DateTime</p>
 </dd>
 </dl>
 </dd></dl>
@@ -247,10 +265,7 @@
 
            </div>
           </div>
-          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
-        <a href="../historical/data.html" class="btn btn-neutral float-left" title="Historical Data" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
-        <a href="ingestclient.html" class="btn btn-neutral float-right" title="IngestClient" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
-    </div>
+          <footer>
 
   <hr/>
 

@@ -19,8 +19,8 @@ namespace ONE.Ingest
         /// <summary>
         /// Loads the configuration object from JSON
         /// </summary>
-        /// <param name="configurationJson"></param>
-        /// <returns>Strongly Typed configuration object</returns>
+        /// <param name="configurationJson">The Configuration represented as a JSON string.</param>
+        /// <returns>Whether the Configuration Json was successfully loaded.</returns>
         public virtual bool Load(string configurationJson)
         {
             try
