@@ -38,7 +38,7 @@ namespace ONE.Common.Historian
                 {
                     var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     var results = apiResponse.Content.TimeSeriesDatas.Items.ToList();
-
+                    
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"GetDataAsync Success" });
                     return results;
                 }

@@ -1,19 +1,19 @@
 Qualifiers
-====
+==========
 
 This is a static helper class to assist with laboratory qualifiers.
 
 Class
-----
+--------
 
  ..  class:: Qualifiers 
     :module: ONE.Operations.Spreadsheet
 
 Concepts
------
+--------
 
 Cascade rule
-^^^^^
+^^^^^^^^^^^^^
 
 CASCADE RULE: Sets when to display the data qualifiers (<,>, ND) with the calculated statistic.  Valid settings are:
 
@@ -23,7 +23,7 @@ CASCADE RULE: Sets when to display the data qualifiers (<,>, ND) with the calcul
 3. Display data qualifier if all of the values contains the qualifier.
 
 Qualifier Rules
-^^^^^
+^^^^^^^^^^^^^
 
 0. Zero
 1. Entered Value 
@@ -99,12 +99,12 @@ When determining compliance with a measure of central tendency (arithmetic mean,
 Methods
 -----
 
-GetAggregateQualifer
+GetAggregateQualifier
 ^^^^^^^^^^^^^^^^^^^^
 
 Gets the qualifier that should be applied to an aggregate result.
 
-.. method:: GetAggregateQualifer(List<Measurement> measurements, int cascadeRule)
+.. method:: GetAggregateQualifier(List<Measurement> measurements, int cascadeRule)
    :module: ONE.Operations.Spreadsheet.RowNumber
 
    :param measurements: A collection of measurements.

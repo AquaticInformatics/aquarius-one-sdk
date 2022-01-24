@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IngestClient &mdash; Aquarius.ONE.SDK 10.0 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> Aquarius.ONE.SDK
+          </a>
+              <div class="version">
+                10.0.0
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Introduction</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../usage.html">Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../getting-started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../clientsdk.html">ClientSDK</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Core Concepts</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/authorization.html">Authorization: Roles &amp; Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/environments.html">Deployment Environments</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/digitaltwin.html">Digital Twins</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/library.html">Global Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../concepts/spreadsheet.html">Spreadsheets</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Authentication &amp; Authorization APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/authentication.html">Authentication</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/core.html">Core (User &amp; Tenants)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/data.html">Enterprise Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/twin.html">Digital Twins</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Common Service APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../common/activities.html">Activity</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/configuration.html">Configuration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/library.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../common/notifications.html">Notification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../enterprise/report.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Data APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../operation/spreadsheet.html">Spreadsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../historical/data.html">Historical Data</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Ingest APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="ingest.html">Ingest</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingestclient.html">IngestClient</a></li>
+<li class="toctree-l1"><a class="reference internal" href="ingest.html">Ingest</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Caching APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../cache/cache.html">CacheHelper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/librarycache.html">Library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationscache.html">Operations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/operationcache.html">Operation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cache/reportcache.html">Report</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Helper APIs</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/environment.html">PlatformEnvironment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/logger.html">Logger</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/poeditor.html">POEditor</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/qualifiers.html">Qualifiers</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../helpers/rownumber.html">RowNumber</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Aquarius.ONE.SDK</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>IngestClient</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/ingest/ingestclient copy.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="ingestclient">
+<h1>IngestClient<a class="headerlink" href="#ingestclient" title="Permalink to this headline"></a></h1>
+<section id="class">
+<h2>Class<a class="headerlink" href="#class" title="Permalink to this headline"></a></h2>
+<blockquote>
+<div><dl class="py class">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestClient">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">IngestClient</span></span><a class="headerlink" href="#ClientSDK.Ingest.IngestClient" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</div></blockquote>
+</section>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<section id="loadasync">
+<h3>LoadAsync<a class="headerlink" href="#loadasync" title="Permalink to this headline"></a></h3>
+<p>Loads the definition of the ingest client and all of it’s plugins.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.LoadAsync">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">LoadAsync</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.LoadAsync" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the load was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="save">
+<h3>Save<a class="headerlink" href="#save" title="Permalink to this headline"></a></h3>
+<p>Loads the definition of the ingest client, its configuration and all of it’s plugins.</p>
+<ul class="simple">
+<li><p><strong>Required Role(s)</strong>: Any</p></li>
+<li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
+</ul>
+<dl class="py method">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.Save">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.</span></span><span class="sig-name descname"><span class="pre">Save</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#ClientSDK.Ingest.Save" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Whether the save was successful.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>Task&lt;bool&gt;</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+<section id="properties">
+<h2>Properties<a class="headerlink" href="#properties" title="Permalink to this headline"></a></h2>
+<section id="configurationjson">
+<h3>ConfigurationJson<a class="headerlink" href="#configurationjson" title="Permalink to this headline"></a></h3>
+<p>This property returns the configuration JSON for the Ingest Client.
+If this property is set, the Save() method will need to be called to persist the change.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestClient.ConfigurationJson">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">ConfigurationJson</span></span><a class="headerlink" href="#ClientSDK.Ingest.IngestClient.ConfigurationJson" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The configuration as a JSON string for the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="name">
+<h3>Name<a class="headerlink" href="#name" title="Permalink to this headline"></a></h3>
+<p>This property returns the name of the Ingest Client.
+If this property is set, the Save() method will need to be called to persist the change.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="ClientSDK.Ingest.IngestClient.Name">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">Name</span></span><a class="headerlink" href="#ClientSDK.Ingest.IngestClient.Name" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="plugins">
+<h3>Plugins<a class="headerlink" href="#plugins" title="Permalink to this headline"></a></h3>
+<p>This property returns the collection of Plugins fo the Ingest Client.
+This property is populated when the LoadAsync is called.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-prename descclassname"><span class="pre">ClientSDK.Ingest.IngestClient.</span></span><span class="sig-name descname"><span class="pre">Name</span></span><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The name of the IngestClient</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>DateTime</p>
+</dd>
+</dl>
+</dd></dl>
+
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2022, Aquatic Informatics.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

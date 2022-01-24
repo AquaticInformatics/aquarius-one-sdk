@@ -1,4 +1,5 @@
-﻿using ONE.Enterprise.Twin;
+﻿using Newtonsoft.Json;
+using ONE.Enterprise.Twin;
 using ONE.Utilities;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,16 +18,16 @@ namespace ONE.Operations
             _clientSDK = clientSDK;
             Operations = new List<OperationCache>();
         }
-        private OperationCache _defaultOperation;
-        public OperationCache DefaultOperation
+        private OperationCache _currentOperation;
+        public OperationCache CurrentOperation
         {
             get
             {
-                return _defaultOperation;
+                return _currentOperation;
             }
             set
             {
-                _defaultOperation = value;
+                _currentOperation = value;
             }
         }
         public async Task<List<OperationCache>> LoadOperationsAsync()
@@ -70,6 +71,28 @@ namespace ONE.Operations
             if (matches.Count() > 0)
                 return matches.First();
             return null;
+        }
+        public override string ToString()
+        {
+            try
+            {
+                return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return base.ToString();
+            }
+        }
+        public static OperationsCache Load(string serializedObject)
+        {
+            try
+            {
+                return JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

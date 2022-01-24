@@ -159,12 +159,14 @@
 <ul class="simple">
 <li><p><a class="reference internal" href="ingestclient.html"><span class="doc">IngestClient</span></a></p></li>
 <li><p><a class="reference internal" href="ingestagent.html"><span class="doc">IngestAgent</span></a></p></li>
+<li><p><span class="xref std std-doc">/ingest/ingestagentconfiguration</span></p></li>
 </ul>
 </section>
 <section id="methods">
 <h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
 <section id="getclientbyidasync">
 <h3>GetClientByIdAsync<a class="headerlink" href="#getclientbyidasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves the IngestClient by the Twin Reference Id</p>
 <ul class="simple">
 <li><p><strong>Required Role(s)</strong>: Any</p></li>
 <li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
@@ -188,6 +190,7 @@
 </section>
 <section id="registerclientasync">
 <h3>RegisterClientAsync<a class="headerlink" href="#registerclientasync" title="Permalink to this headline"></a></h3>
+<p>Creates a Digital Twin for the Ingest Client and does minimal setup</p>
 <ul class="simple">
 <li><p><strong>Required Role(s)</strong>: Any</p></li>
 <li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>
@@ -211,6 +214,7 @@
 </section>
 <section id="getallclientsasync">
 <h3>GetAllClientsAsync<a class="headerlink" href="#getallclientsasync" title="Permalink to this headline"></a></h3>
+<p>Retrieves a collection of all IngestClients the user has rights to retrieve</p>
 <ul class="simple">
 <li><p><strong>Required Role(s)</strong>: Any</p></li>
 <li><p><strong>Resource Authorization</strong>: Access to the digital twin associated to the operation that the report definition is associated.</p></li>

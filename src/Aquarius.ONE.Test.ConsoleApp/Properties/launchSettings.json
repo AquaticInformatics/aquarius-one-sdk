@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "i18nKeys"
+      "commandLineArgs": "data -a GET -g ae6b33bc-97ac-4eaf-a2e6-357dd159169e"
     }
   }
 }

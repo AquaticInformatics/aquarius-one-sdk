@@ -1,3 +1,16 @@
 {
-    "restructuredtext.confPath": "${workspaceFolder}\\docs\\source"
+    "restructuredtext.confPath": "${workspaceFolder}\\docs\\source",
+    "cSpell.words": [
+        "autosummary",
+        "GAVGMEDZ",
+        "GGMMEDZ",
+        "ingestagent",
+        "ingestagentconfiguration",
+        "ingestclient",
+        "rtype",
+        "STATZ",
+        "TNTC",
+        "toctree",
+        "WIMS"
+    ]
 }

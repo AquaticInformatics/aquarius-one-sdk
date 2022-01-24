@@ -140,6 +140,16 @@ namespace ONE.Enterprise.Twin
             long.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out long propertyValue);
             return propertyValue;
         }
+        public static bool GetBoolTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
+        {
+            bool.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out bool propertyValue);
+            return propertyValue;
+        }
+        public static DateTime GetDateTimeTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
+        {
+            DateTime.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out DateTime propertyValue);
+            return propertyValue;
+        }
         public static double GetDoubleTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
         {
             string value = GetTwinDataProperty(digitalTwin, path, propertyName);
@@ -197,6 +207,38 @@ namespace ONE.Enterprise.Twin
             }
             return "";
         }
+        public static List<string> GetTwinDataPropertyAslist(DigitalTwin digitalTwin, string path, string propertyName)
+        {
+            if (digitalTwin != null && !string.IsNullOrEmpty(digitalTwin.TwinData))
+            {
+                JObject twinData = JObject.Parse(digitalTwin.TwinData);
+                if (twinData == null)
+                    return null;
+                var pathItems = path.Split('\\');
+                JObject parentObject = twinData;
+                foreach (var pathItem in pathItems)
+                {
+                    if (!string.IsNullOrEmpty(pathItem))
+                    {
+                        if (parentObject[pathItem] == null || !parentObject[pathItem].HasValues)
+                        {
+                            return new List<string>();
+                        }
+                        parentObject = (JObject)parentObject[pathItem];
+                        if (parentObject == null)
+                            return new List<string>();
+                    }
+                }
+                if (parentObject[propertyName] == null)
+                    return new List<string>();
+                if (parentObject[propertyName] is JArray)
+                {
+                    return parentObject[propertyName].ToObject<List<string>>();
+                }
+            }
+            return new List<string>();
+        }
+
         public static JsonPatchDocument UpdateJsonDataField(DigitalTwin digitalTwin, JsonPatchDocument jsonPatchDocument, JObject existingTwinData, string key, string value)
         {
             if (existingTwinData.ContainsKey(key) && string.IsNullOrEmpty(value))
