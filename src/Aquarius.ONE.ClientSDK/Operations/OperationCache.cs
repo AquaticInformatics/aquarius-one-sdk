@@ -85,6 +85,10 @@ namespace ONE.Operations
         {
             _clientSDK = clientSDK;
         }
+        public ClientSDK GetClientSDK()
+        {
+            return _clientSDK;
+        }
         private ClientSDK _clientSDK { get; set; }
         public string Id {
             get
