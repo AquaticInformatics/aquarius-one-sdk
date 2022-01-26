@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
+using Common.Core.Protobuf.Models;
 
 namespace ONE.Utilities
 {
@@ -36,7 +37,7 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.Client.PostAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
+                var response = await _authentication.HttpJsonClient.PostAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 var respContent = "";
@@ -44,7 +45,7 @@ namespace ONE.Utilities
                 if (response.IsSuccessStatusCode)
                     respContent = await response.Content.ReadAsStringAsync().ConfigureAwait(_continueOnCapturedContext);
                 error.ElapsedMs = elapsedMs;
-                error.Client = (JObject)JToken.FromObject(_authentication.Client);
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpJsonClient);
                 error.Response = (JObject)JToken.FromObject(response);
                 if (string.IsNullOrEmpty(json))
                 {
@@ -108,7 +109,7 @@ namespace ONE.Utilities
                 //form.Add(new StringContent("some comments"), "comment");
                 //form.Add(new StringContent("true"), "isPrimary");
 
-                var response = await _authentication.Client.PostAsync(endpointURL, form);
+                var response = await _authentication.HttpJsonClient.PostAsync(endpointURL, form);
                 watch.Stop();
 
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -117,7 +118,7 @@ namespace ONE.Utilities
                 if (response.IsSuccessStatusCode)
                     respContent = await response.Content.ReadAsStringAsync().ConfigureAwait(_continueOnCapturedContext);
                 error.ElapsedMs = elapsedMs;
-                error.Client = (JObject)JToken.FromObject(_authentication.Client);
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpJsonClient);
                 error.Response = (JObject)JToken.FromObject(response);
 
 
@@ -156,14 +157,14 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.Client.PutAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
+                var response = await _authentication.HttpJsonClient.PutAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 var respContent = "";
                 if (response.IsSuccessStatusCode)
                     respContent = await response.Content.ReadAsStringAsync().ConfigureAwait(_continueOnCapturedContext);
                 error.ElapsedMs = elapsedMs;
-                error.Client = (JObject)JToken.FromObject(_authentication.Client);
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpJsonClient);
                 error.Response = (JObject)JToken.FromObject(response);
                 if (string.IsNullOrEmpty(json))
                 {
@@ -211,13 +212,13 @@ namespace ONE.Utilities
                 var request = new HttpRequestMessage(new HttpMethod("PATCH"), endpointURL);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authentication.Token.access_token);
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _authentication.Client.SendAsync(request).ConfigureAwait(true);
+                var response = await _authentication.HttpJsonClient.SendAsync(request).ConfigureAwait(true);
 
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 error.ElapsedMs = elapsedMs;
 
-                error.Client = (JObject)JToken.FromObject(_authentication.Client);
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpJsonClient);
                 error.Response = (JObject)JToken.FromObject(response);
                 error.Content = json; // JObject.Parse(json);
                 string file = SaveRestCallData("PATCH", error.ToString(), !response.IsSuccessStatusCode);
@@ -250,13 +251,13 @@ namespace ONE.Utilities
             try
             {
 
-                var response = await _authentication.Client.DeleteAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
+                var response = await _authentication.HttpJsonClient.DeleteAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
 
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 error.ElapsedMs = elapsedMs;
 
-                error.Client = (JObject)JToken.FromObject(_authentication.Client);
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpJsonClient);
                 error.Response = (JObject)JToken.FromObject(response);
                 string file = SaveRestCallData("DELETE", error.ToString(), !response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
@@ -317,12 +318,12 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.Client.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
+                var response = await _authentication.HttpJsonClient.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 error.ElapsedMs = elapsedMs;
 
-                error.Client = (JObject)JToken.FromObject(_authentication.Client);
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpJsonClient);
                 error.Response = (JObject)JToken.FromObject(response);
                 error.Content = "";
 
@@ -352,6 +353,57 @@ namespace ONE.Utilities
                 SaveRestCallData("GET", error.ToString(), true);
                 throw;
             }
+
+        }
+
+        public async Task<ServiceResponse> GetRestProtocolBufferAsync(
+            Guid requestId,
+            string endpointURL)
+        {
+            dynamic error = new JObject();
+
+            try
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                var response = await _authentication.HttpProtocolBufferClient.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                error.ElapsedMs = elapsedMs;
+
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpProtocolBufferClient);
+                error.Response = (JObject)JToken.FromObject(response);
+                error.Content = "";
+
+                string file = SaveRestCallData("GET", error.ToString(), !response.IsSuccessStatusCode);
+
+                ApiResponse apiResponse = null;
+                if (response.IsSuccessStatusCode)
+                {
+                    byte[] respContent = await response.Content.ReadAsByteArrayAsync();
+                    apiResponse = ApiResponse.Parser.ParseFrom(respContent);
+
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Success: {endpointURL}" });
+                }
+                else
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumEventLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Failed: {endpointURL}" });
+                return new ServiceResponse
+                {
+                    ResponseMessage = response,
+                    ApiResponse = apiResponse,
+                    ElapsedMs = elapsedMs
+                };
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "RestHelper", Message = $"GetRestJSONAsync Failed - {e.Message}" });
+
+                error.Exception = (JObject)JToken.FromObject(e);
+
+                SaveRestCallData("GET", error.ToString(), true);
+                throw;
+            }
+
         }
 
     }

@@ -31,11 +31,10 @@ namespace ONE.Common.Configuration
             List<configProtobuf.Configuration> configurations = new List<configProtobuf.Configuration>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"common/configuration/v1/entityType/{entityTypeId}/{entityGuid}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/configuration/v1/entityType/{entityTypeId}/{entityGuid}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Configurations.Items.Distinct().ToList();
+                    var results = respContent.ApiResponse.Content.Configurations.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
                         configProtobuf.Configuration configuration = new configProtobuf.Configuration(result);

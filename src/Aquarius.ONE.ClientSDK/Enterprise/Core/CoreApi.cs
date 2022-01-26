@@ -97,12 +97,10 @@ namespace ONE.Enterprise.Core
             }
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/User?expand={expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/User?expand={expand}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Users.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Users.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         users.Add(result);
@@ -152,12 +150,10 @@ namespace ONE.Enterprise.Core
             }
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/User/{userId}?expand={expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/User/{userId}?expand={expand}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Users.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Users.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         user = result;
@@ -267,12 +263,10 @@ namespace ONE.Enterprise.Core
             List<Tenant> tenants = new List<Tenant>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/Tenant").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/Tenant").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Tenants.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Tenants.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         tenants.Add(result);
@@ -295,12 +289,10 @@ namespace ONE.Enterprise.Core
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/Tenant/{tenantId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/Tenant/{tenantId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Tenants.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Tenants.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantAsync Success" });
@@ -428,12 +420,10 @@ namespace ONE.Enterprise.Core
             ProductOffering productOffering = null;
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/ProductOffering/{productOfferingId}{expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/ProductOffering/{productOfferingId}{expand}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ProductOfferings.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.ProductOfferings.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         productOffering = result;
@@ -470,12 +460,10 @@ namespace ONE.Enterprise.Core
             List<ProductOffering> productOfferings = new List<ProductOffering>(); ;
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/ProductOffering{expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/ProductOffering{expand}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ProductOfferings.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.ProductOfferings.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         productOfferings.Add(result);
@@ -629,12 +617,10 @@ namespace ONE.Enterprise.Core
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/Feature/{id}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/Feature/{id}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Features.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Features.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeatureAsync Success" });
@@ -657,12 +643,10 @@ namespace ONE.Enterprise.Core
             List<Feature> features = new List<Feature>(); ;
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/Feature").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/Feature").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Features.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Features.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         features.Add(result);
@@ -737,13 +721,10 @@ namespace ONE.Enterprise.Core
             List<ProductOffering> productOfferings = new List<ProductOffering>(); ;
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/Feature/byUserId/{userId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/Feature/byUserId/{userId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Features.Items.Select(x => x).ToList();
-
+                    var results = respContent.ApiResponse.Content.Features.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Success" });
                     return results;
                 }
@@ -769,11 +750,10 @@ namespace ONE.Enterprise.Core
                 expand = "?expand=feature";
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/role{expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/role{expand}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Roles.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Roles.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         roles.Add(result);
@@ -800,11 +780,10 @@ namespace ONE.Enterprise.Core
                 expand = "?expand=feature";
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/core/v1/role/{id}{expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/role/{id}{expand}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.Roles.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Roles.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRoleAsync Success" });

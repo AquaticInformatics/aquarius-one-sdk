@@ -61,7 +61,8 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 clientSDK.Authentication.Token.expires = tokenEpires;
 
             }
-            clientSDK.Authentication.Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", accessToken);
+            clientSDK.Authentication.HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", accessToken);
+            clientSDK.Authentication.HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", accessToken);
 
 
         }

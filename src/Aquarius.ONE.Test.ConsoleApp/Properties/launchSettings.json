@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "operations -g ae858cee-71db-4143-8bcc-3a89a2390ecb -c clear"
+      "commandLineArgs": "units -n lbs/day"
     }
   }
 }

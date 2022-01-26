@@ -31,11 +31,10 @@ namespace ONE.Enterprise.Report
             List<ReportDefinition> definitions = new List<ReportDefinition>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/definitions?plantId={operationId}&requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/definitions?plantId={operationId}&requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
+                    var results = respContent.ApiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
                         definitions.Add(result);
@@ -63,11 +62,10 @@ namespace ONE.Enterprise.Report
             List<ReportDefinition> definitions = new List<ReportDefinition>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/definitions/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/definitions/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
+                    var results = respContent.ApiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetDefinitionsAsync Success" });
@@ -295,11 +293,10 @@ namespace ONE.Enterprise.Report
             List<ReportDefinitionTag> tags = new List<ReportDefinitionTag>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/report/tags?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/report/tags?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
+                    var results = respContent.ApiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
                         tags.Add(result);
@@ -327,11 +324,10 @@ namespace ONE.Enterprise.Report
             List<ReportDefinitionTag> tags = new List<ReportDefinitionTag>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/report/tags/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/report/tags/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
+                    var results = respContent.ApiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetReportTagAsync Success" });
@@ -437,7 +433,5 @@ namespace ONE.Enterprise.Report
                 throw;
             }
         }
-
-
     }
 }

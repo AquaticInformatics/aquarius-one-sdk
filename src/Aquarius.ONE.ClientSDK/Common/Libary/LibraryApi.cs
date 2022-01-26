@@ -34,13 +34,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"common/library/v1/quantitytype?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/library/v1/quantitytype?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.QuantityTypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.QuantityTypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitsAsync Success" });
                     return result;
                 }
@@ -64,13 +61,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"common/library/v1/unit/{unitId}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/library/v1/unit/{unitId}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var results = apiResponse.Content.Units.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Units.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitsAsync Success" });
@@ -183,13 +177,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"common/library/v1/unit?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/library/v1/unit?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.Units.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Units.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitsAsync Success" });
                     return result;
                 }
@@ -212,13 +203,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var results = apiResponse.Content.Parameters.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.Parameters.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryAPI", Message = $"GetParameterAsync Success" });
@@ -242,13 +230,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.Parameters.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Parameters.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetParametersAsync Success" });
                     return result;
                 }
@@ -512,6 +497,7 @@ namespace ONE.Common.Library
             try
             {
                 var respContent = await _restHelper.GetRestJSONAsync(requestId, $"common/library/v1/i18n?modulecsv={modules}&lang={language}&requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+               
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var result = Converti18nJSontoExtendedTranslations(respContent.Result);
@@ -572,13 +558,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.Agencies.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Agencies.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetAgenciesAsync Success" });
                     return result;
                 }
@@ -599,13 +582,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.Agencies.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Agencies.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetAgencyAsync Success" });
                     if (result.Count == 1)
                         return result[0];
@@ -692,13 +672,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.ParameterAgencyCodeTypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.ParameterAgencyCodeTypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetParameterAgencyCodeTypesAsync Success" });
                     return result;
                 }
@@ -719,13 +696,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.ParameterAgencyCodeTypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.ParameterAgencyCodeTypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetParameterAgencyCodeTypeAsync Success" });
                     if (result.Count == 1)
                         return result[0];
@@ -837,13 +811,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.ParameterAgencyCodes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.ParameterAgencyCodes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetParameterAgencyCodesAsync Success" });
                     return result;
                 }
@@ -864,13 +835,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.ParameterAgencyCodes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.ParameterAgencyCodes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetParameterAgencyCodeAsync Success" });
                     if (result.Count == 1)
                         return result[0];
@@ -982,13 +950,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.UnitAgencyCodeTypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.UnitAgencyCodeTypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitAgencyCodeTypesAsync Success" });
                     return result;
                 }
@@ -1009,13 +974,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.UnitAgencyCodeTypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.UnitAgencyCodeTypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitAgencyCodeTypeAsync Success" });
                     if (result.Count == 1)
                         return result[0];
@@ -1127,13 +1089,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.UnitAgencyCodes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.UnitAgencyCodes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitAgencyCodesAsync Success" });
                     return result;
                 }
@@ -1154,13 +1113,10 @@ namespace ONE.Common.Library
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
-                    var result = apiResponse.Content.UnitAgencyCodes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.UnitAgencyCodes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryApi", Message = $"GetUnitAgencyCodeAsync Success" });
                     if (result.Count == 1)
                         return result[0];

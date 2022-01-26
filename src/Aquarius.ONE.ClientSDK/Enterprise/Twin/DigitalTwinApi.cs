@@ -122,12 +122,10 @@ namespace ONE.Enterprise.Twin
             List<DigitalTwinType> digitalTwinTypes = new List<DigitalTwinType>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/twin/v1/DigitalTwinType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Success" });
                     return result;
                 }
@@ -212,7 +210,6 @@ namespace ONE.Enterprise.Twin
         }
         public async Task<bool> DeleteDigitalTwinSubTypeAsync(string id)
         {
-
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
             try
@@ -238,12 +235,11 @@ namespace ONE.Enterprise.Twin
             List<DigitalTwinSubtype> digitalTwinSubTypes = new List<DigitalTwinSubtype>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinSubType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/twin/v1/DigitalTwinSubType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Success" });
                     return result;
                 }
@@ -270,7 +266,6 @@ namespace ONE.Enterprise.Twin
             digitalTwin.TwinTypeId = twinTypeId;
             digitalTwin.TwinSubTypeId = twinSubTypeId;
             return await CreateAsync(digitalTwin);
-
         }
 
         public async Task<DigitalTwin> CreateAsync(DigitalTwin digitalTwin)
@@ -438,7 +433,6 @@ namespace ONE.Enterprise.Twin
 
         public async Task<bool> DeleteAsync(long twinId)
         {
-
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
             try
@@ -485,12 +479,11 @@ namespace ONE.Enterprise.Twin
             try
             {
                 string url = $"enterprise/twin/v1/DigitalTwin/Ref/{twinRefId}";
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
                     if (results.Count > 0)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetAsync Success" });
@@ -526,12 +519,11 @@ namespace ONE.Enterprise.Twin
                 string url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/Type/{twinTypeId}/Descendants";
                 if (string.IsNullOrEmpty(twinTypeId))
                     url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/Descendants";
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         digitalTwins.Add(result);
@@ -558,12 +550,11 @@ namespace ONE.Enterprise.Twin
                 string url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/SubType/{twinSubTypeId}/Descendants";
                 if (string.IsNullOrEmpty(twinSubTypeId))
                     url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/Descendants";
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         digitalTwins.Add(result);
@@ -587,12 +578,11 @@ namespace ONE.Enterprise.Twin
             List<DigitalTwin> digitalTwins = new List<DigitalTwin>();
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwin/Ref/{twinRefId}/Category/{categoryId}/Descendants").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/twin/v1/DigitalTwin/Ref/{twinRefId}/Category/{categoryId}/Descendants").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = apiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
+                    var results = respContent.ApiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
                         digitalTwins.Add(result);

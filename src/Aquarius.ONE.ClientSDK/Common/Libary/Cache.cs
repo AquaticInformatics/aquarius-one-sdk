@@ -28,7 +28,6 @@ namespace ONE.Common.Library
         {
             try
             {
-
                 var QuantityTypesTask = _clientSDK.Library.GetQuantityTypesAsync();
                 var ParametersTask = _clientSDK.Library.GetParametersAsync();
                 var UnitsTask = _clientSDK.Library.GetUnitsAsync();

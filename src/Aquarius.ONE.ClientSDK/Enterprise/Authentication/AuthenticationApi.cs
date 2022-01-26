@@ -19,36 +19,71 @@ namespace ONE.Enterprise.Authentication
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        public bool AutoRenewToken { get; set; }
         public string UserName { get; set; }
 
         public string Password { get; set; }
         public User User { get; set; }
 
-        private HttpClient _client;
+        private HttpClient _httpJsonClient;
+        private HttpClient _httpProtocolBufferClient;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
         public Token Token { get; set; }
-        public HttpClient Client
+        public HttpClient HttpJsonClient
         {
             get
             {
-                if (_client == null)
+                if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
                 {
-                    _client = new HttpClient();
+                    if (!LoginResourceOwnerAsync(UserName, Password).Result)
+                    {
+                        Token = null;
+                    }
+                        
+                }
+                if (_httpJsonClient == null)
+                {
+                    _httpJsonClient = new HttpClient();
                     if (_environment != null)
-                        _client.BaseAddress = _environment.BaseUri;
-                    _client.Timeout = TimeSpan.FromMinutes(10);
-                    _client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                        _httpJsonClient.BaseAddress = _environment.BaseUri;
+                    _httpJsonClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpJsonClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 }
-                return _client;
+                return _httpJsonClient;
             }
         }
-   
+
+        public HttpClient HttpProtocolBufferClient
+        {
+            get
+            {
+                if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                {
+                    if (!LoginResourceOwnerAsync(UserName, Password).Result)
+                    {
+                        Token = null;
+                    }
+
+                }
+                if (_httpProtocolBufferClient == null)
+                {
+                    _httpProtocolBufferClient = new HttpClient();
+                    if (_environment != null)
+                        _httpProtocolBufferClient.BaseAddress = _environment.BaseUri;
+                    _httpProtocolBufferClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpProtocolBufferClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
+
+                }
+                return _httpProtocolBufferClient;
+            }
+        }
+
         public void Logout()
         {
             Token = null;
-            _client = null;
+            _httpJsonClient = null;
         }
 
         public async Task<bool> LoginResourceOwnerAsync(string userName, string password)
@@ -88,7 +123,7 @@ namespace ONE.Enterprise.Authentication
                 request.Content = new FormUrlEncodedContent(body);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using (var respContent = await Client.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                using (var respContent = await HttpJsonClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                 {
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
@@ -100,7 +135,8 @@ namespace ONE.Enterprise.Authentication
 
                     if (Token != null && !string.IsNullOrEmpty(Token.access_token))
                     {
-                        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
+                        HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
+                        HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
                         UserName = userName;
                         Password = password;
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "AuthenticationApi", Message = $"LoginResourceOwnerAsync Success" });
@@ -120,14 +156,14 @@ namespace ONE.Enterprise.Authentication
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await Client.GetAsync("/connect/userinfo");
+                var response = await HttpJsonClient.GetAsync("/connect/userinfo");
                 var elapsedMs = watch.ElapsedMilliseconds;
 
                 if (!response.IsSuccessStatusCode)
                 {
 
                     dynamic error = new JObject();
-                    error.Client = (JObject)JToken.FromObject(Client);
+                    error.Client = (JObject)JToken.FromObject(HttpJsonClient);
                     error.Response = (JObject)JToken.FromObject(response);
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Failed" });
 
@@ -184,7 +220,7 @@ namespace ONE.Enterprise.Authentication
                 request.Content = new FormUrlEncodedContent(body);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using (var response = await Client.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                using (var response = await HttpJsonClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                 {
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;

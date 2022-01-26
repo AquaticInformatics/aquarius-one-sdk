@@ -61,11 +61,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.Measurements.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Measurements.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ColumnGetByDayAsync Success" });
                     return result;
                 }
@@ -86,11 +85,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.Measurements.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Measurements.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ColumnGetByMonthAsync Success" });
                     return result;
                 }
@@ -111,11 +109,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.Measurements.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.Measurements.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ColumnGetByYearAsync Success" });
                     return result;
                 }
@@ -201,12 +198,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.SpreadsheetComputations.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.SpreadsheetComputations.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ComputationGetOneAsync Success" });
                     if (result.Count == 1)
                         return result[0];
@@ -316,12 +311,11 @@ namespace ONE.Operations.Spreadsheet
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows?requestId={requestId}&startRow={startRow}&endRow={endRow}&columns={columnList}&viewid={viewId}";
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetSpreadsheetRowsAsync Success" });
-                    return apiResponse.Content.Rows;
+                    return respContent.ApiResponse.Content.Rows;
                 }
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetSpreadsheetRowsAsync Failed" });
                 return null;
@@ -339,12 +333,11 @@ namespace ONE.Operations.Spreadsheet
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows/byday/{date.Year}/{date.Month}/{date.Day}?requestId={requestId}&columns={columnList}&viewid={viewId}";
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetRowsByDayAsync Success" });
-                    return apiResponse.Content.Rows;
+                    return respContent.ApiResponse.Content.Rows;
                 }
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetRowsByDayAsync Failed" });
                 return null;
@@ -362,12 +355,11 @@ namespace ONE.Operations.Spreadsheet
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows/bymonth/{date.Year}/{date.Month}?requestId={requestId}&columns={columnList}&viewid={viewId}";
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetRowsByMonthAsync Success" });
-                    return apiResponse.Content.Rows;
+                    return respContent.ApiResponse.Content.Rows;
                 }
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetRowsByMonthAsync Failed" });
                 return null;
@@ -386,12 +378,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.SpreadsheetDefinitions.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.SpreadsheetDefinitions.Items.Select(x => x).ToList();
                     if (result.Count == 1)
                     {
                         Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetSpreadsheetDefinitionAsync Success" });
@@ -415,11 +405,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, worksheetDefinitionEndpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.WorksheetDefinitions.Items.Select(x => x).ToList();
+                    var result = respContent.ApiResponse.Content.WorksheetDefinitions.Items.Select(x => x).ToList();
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetWorksheetDefinitionAsync Success" });
                     return result[0];
                 }
@@ -440,12 +429,10 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var result = apiResponse.Content.RowIndices;
+                    var result = respContent.ApiResponse.Content.RowIndices;
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetRowIndexesAsync Success" });
                     return result;
                 }
