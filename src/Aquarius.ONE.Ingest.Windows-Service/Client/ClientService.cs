@@ -105,6 +105,11 @@ namespace ONE.Ingest.WindowsService.Client
                             {
                                 foreach (var ingestAgent in ingestClient.Agents)
                                 {
+                                    if (ingestClient.IsTimeToCheckConfigurations)
+                                    {
+                                        _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Checking Configuration for Agent: {ingestAgent.Name}");
+                                        await ingestAgent.CheckForUpdatedConfigurationsAsync();
+                                    }
                                     if (ingestAgent.IsTimeToRun)
                                     {
                                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Running Agent: {ingestAgent.Name}");
@@ -119,11 +124,16 @@ namespace ONE.Ingest.WindowsService.Client
                                         _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Uploading Agent Data Complete: {ingestAgent.Name}");
                                         ingestAgent.Logger.IngestLogData("Uploading Agent Data Complete");
                                     }
-                                    ingestAgent.Logger.UploadAsync();
+                                    _ = ingestAgent.Logger.UploadAsync();
                                 }
-                                ingestClient.Logger.UploadAsync();
-
-                                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                                _ = ingestClient.Logger.UploadAsync();
+                                if (ingestClient.IsTimeToCheckConfigurations)
+                                {
+                                    _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Checking Client Configuration");
+                                    await ingestClient.CheckForUpdatedConfigurationsAsync();
+                                }
+                                _logger.LogInformation($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")}: Waiting for Next Cycle in {ingestClient.Configuration.CycleFrequency.TotalSeconds} Seconds");
+                                await Task.Delay(ingestClient.Configuration.CycleFrequency, stoppingToken);
                             }
                             catch (OperationCanceledException)
                             {

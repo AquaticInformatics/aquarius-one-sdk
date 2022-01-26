@@ -162,32 +162,59 @@ namespace ONE.Ingest
             _configurationApi = configurationApi;
             _dataApi = dataApi;
             _digitalTwin = digitalTwin;
-            var configurations = await _configurationApi.GetConfigurationsAsync(5, _digitalTwin.TwinReferenceId);
-            Enabled = Helper.GetBoolTwinDataProperty(_digitalTwin, "Agent", "Enabled");
+            
             LastRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "LastRun");
             NextRun = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "NextRun");
             LastUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "LastUpload");
             NextUpload = Helper.GetDateTimeTwinDataProperty(_digitalTwin, "Agent", "NextUpload");
-            Telemetry = Helper.GetTwinDataPropertyAslist(_digitalTwin, "Agent", "Telemetry");
-            TelemetryTwins = new List<DigitalTwin>();
-            foreach (string telemetryId in Telemetry)
-            {
-                var telemetryTwin = await _digitalTwinApi.GetAsync(telemetryId);
-                if (telemetryTwin == null)
-                    Telemetry.Remove(telemetryId);
-                else
-                {
-                    TelemetryTwins.Add(telemetryTwin);
-                }
 
-            }
-            if (configurations != null && configurations.Count > 0)
-            {
-                _configuration = configurations[0];
-                ConfigurationJson = _configuration.ConfigurationData;
-            }
+            await CheckForUpdatedConfigurationsAsync();
+
             Logger = await IngestLogger.GetByParentAsync(_authentificationApi, _digitalTwinApi, _dataApi, _digitalTwin.TwinReferenceId);
             return false;
+        }
+        /// <summary>
+        /// Checks for new Configurations and loads them into the agent
+        /// </summary>
+        /// <returns>Whether the check was successful</returns>
+        public async Task<bool> CheckForUpdatedConfigurationsAsync(DigitalTwin digitalTwin = null)
+        {
+
+            try
+            {
+                if (digitalTwin != null)
+                    _digitalTwin = digitalTwin;
+                else
+                    _digitalTwin = await _digitalTwinApi.GetAsync(_digitalTwin.TwinReferenceId);
+                _name = _digitalTwin.Name;
+                Enabled = Helper.GetBoolTwinDataProperty(_digitalTwin, "Agent", "Enabled");
+                Telemetry = Helper.GetTwinDataPropertyAslist(_digitalTwin, "Agent", "Telemetry");
+
+                TelemetryTwins = new List<DigitalTwin>();
+                foreach (string telemetryId in Telemetry)
+                {
+                    var telemetryTwin = await _digitalTwinApi.GetAsync(telemetryId);
+                    if (telemetryTwin == null)
+                        Telemetry.Remove(telemetryId);
+                    else
+                    {
+                        TelemetryTwins.Add(telemetryTwin);
+                    }
+
+                }
+
+                var configurations = await _configurationApi.GetConfigurationsAsync(5, _digitalTwin.TwinReferenceId);
+                if (configurations != null && configurations.Count > 0)
+                {
+                    _configuration = configurations[0];
+                    ConfigurationJson = _configuration.ConfigurationData;
+                }
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -275,7 +302,8 @@ namespace ONE.Ingest
         {
             get 
             { 
-                return NextRun < DateTime.Now; 
+
+                return NextRun < DateTime.Now && Enabled; 
             }
         }
 
@@ -288,6 +316,7 @@ namespace ONE.Ingest
             NextRun = dateTime.Add(Configuration.RunFrequency);
             LastRun = dateTime;
         }
+
         /// <summary>
         /// Whether the Agent Data is Elegible to be uploaded. AKA it is time to upload data
         /// </summary>
@@ -295,7 +324,7 @@ namespace ONE.Ingest
         {
             get
             {
-                return NextUpload < DateTime.Now;
+                return NextUpload < DateTime.Now && Enabled;
             }
         }
         /// <summary>
