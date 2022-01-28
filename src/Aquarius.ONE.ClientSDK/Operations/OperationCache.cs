@@ -1,7 +1,9 @@
 ﻿using Common.Core.Protobuf.Models;
 using Common.Library.Protobuf.Models;
 using Enterprise.Twin.Protobuf.Models;
+using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ONE.Common.Library;
 using ONE.Enterprise.Twin;
 using ONE.Utilities;
@@ -365,6 +367,39 @@ namespace ONE.Operations
             DateTime.TryParse(Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, path, key), out DateTime dateTime);
             return dateTime;
         }
+        public async Task<bool> UpdateTwinDataAsync(string key, string value)
+        {
+            JsonPatchDocument jsonPatchDocument = new JsonPatchDocument();
+            var existingTwinData = new JObject();
+            if (!string.IsNullOrEmpty(DigitalTwin.TwinData))
+                existingTwinData = JObject.Parse(DigitalTwin.TwinData);
+            jsonPatchDocument = Helper.UpdateJsonDataField(DigitalTwin, jsonPatchDocument, existingTwinData, key, value);
+            var digitalTwin = await _clientSDK.DigitalTwin.UpdateTwinDataAsync(DigitalTwin.TwinReferenceId, jsonPatchDocument);
+            if (digitalTwin != null)
+            {
+                DigitalTwin = digitalTwin;
+                return true;
+            }
+            return false;
+        }
+        public long GetTwinDataPropertyLong(string path, string key)
+        {
+            return Enterprise.Twin.Helper.GetLongTwinDataProperty(DigitalTwin, path, key);
+        }
+        public double GetTwinDataPropertyDouble(string path, string key)
+        {
+            return Enterprise.Twin.Helper.GetDoubleTwinDataProperty(DigitalTwin, path, key);
+        }
+        public string GetTwinDataPropertyString(string guid, string path, string key)
+        {
+            return Enterprise.Twin.Helper.GetTwinDataProperty(DigitalTwin, path, key);
+        }
+        public DateTime GetTwinDataPropertyDate(string path, string key)
+        {
+            DateTime.TryParse(Enterprise.Twin.Helper.GetTwinDataProperty(DigitalTwin, path, key), out DateTime dateTime);
+            return dateTime;
+        }
+
         public long GetVariableId(string guid)
         {
             DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
