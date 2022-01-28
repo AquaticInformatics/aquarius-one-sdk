@@ -1,4 +1,5 @@
 ﻿using Common.Library.Protobuf.Models;
+using Enterprise.Twin.Protobuf.Models;
 using Newtonsoft.Json;
 using ONE;
 using ONE.Common.Library;
@@ -24,6 +25,9 @@ namespace ONE.Common.Library
         public List<Unit> Units { get; set; }
         public List<I18NKey> I18Nkeys { get; set; }
 
+        public List<DigitalTwinType> DigitalTwinTypes { get; set; }
+        public List<DigitalTwinSubtype> DigitalTwinSubtypes { get; set; }
+
         public async Task<bool> LoadAsync(string culture = "en-US", string modules = "AQI_FOUNDATION_LIBRARY")
         {
             try
@@ -34,14 +38,18 @@ namespace ONE.Common.Library
                 var ParameterAgencyCodeTypesTask = _clientSDK.Library.GetParameterAgencyCodeTypesAsync();
                 var ParameterAgencyCodesTask = _clientSDK.Library.GetParameterAgencyCodesAsync();
                 var I18NkeysTask = _clientSDK.Library.Geti18nKeysAsync(culture, modules);
+                var DigitalTwinTypesTask = _clientSDK.DigitalTwin.GetDigitalTwinTypesAsync();
+                var DigitalTwinSubtypesTask = _clientSDK.DigitalTwin.GetDigitalTwinSubTypesAsync();
 
-                await Task.WhenAll(QuantityTypesTask, ParametersTask, UnitsTask, ParameterAgencyCodeTypesTask, ParameterAgencyCodesTask, I18NkeysTask);
+                await Task.WhenAll(QuantityTypesTask, ParametersTask, UnitsTask, ParameterAgencyCodeTypesTask, ParameterAgencyCodesTask, I18NkeysTask, DigitalTwinTypesTask, DigitalTwinSubtypesTask);
                 QuantityTypes = QuantityTypesTask.Result;
                 Parameters = ParametersTask.Result;
                 Units = UnitsTask.Result;
                 ParameterAgencyCodeTypes = ParameterAgencyCodeTypesTask.Result;
                 ParameterAgencyCodes = ParameterAgencyCodesTask.Result;
                 I18Nkeys = I18NkeysTask.Result;
+                DigitalTwinTypes = DigitalTwinTypesTask.Result;
+                DigitalTwinSubtypes = DigitalTwinSubtypesTask.Result;
 
             }
             catch
