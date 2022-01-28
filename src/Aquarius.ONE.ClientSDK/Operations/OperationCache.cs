@@ -1,5 +1,7 @@
-﻿using Common.Core.Protobuf.Models;
+﻿using Common.Configuration.Protobuf.Models;
+using Common.Core.Protobuf.Models;
 using Common.Library.Protobuf.Models;
+using Enterprise.Core.Protobuf.Models;
 using Enterprise.Twin.Protobuf.Models;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
@@ -29,6 +31,13 @@ namespace ONE.Operations
             FourHourRows = new Dictionary<uint, Row>();
             DailyRows = new Dictionary<uint, Row>();
             MeasurementCache = new Dictionary<string, List<Measurement>>();
+            LocationTwins = new List<DigitalTwin>();
+            ColumnTwins = new List<DigitalTwin>();
+            Users = new List<User>();
+            SpreadsheetComputations = new Dictionary<string, SpreadsheetComputation>();
+            Sheets = new List<Configuration>();
+            Graphs = new List<Configuration>();
+            Dashboards = new List<Configuration>();
         }
         public OperationCache (string serializedObject)
         {
@@ -50,6 +59,15 @@ namespace ONE.Operations
                 Delimiter = operationCache.Delimiter;
                 IsCached = operationCache.IsCached;
 
+                LocationTwins = operationCache.LocationTwins;
+                ColumnTwins = operationCache.ColumnTwins;
+                Users = operationCache.Users;
+
+                SpreadsheetComputations = operationCache.SpreadsheetComputations;
+                Sheets = operationCache.Sheets;
+                Graphs = operationCache.Graphs;
+                Dashboards = operationCache.Dashboards;
+
                 CacheColumns();
             }
             catch
@@ -66,6 +84,13 @@ namespace ONE.Operations
             FourHourRows = new Dictionary<uint, Row>();
             DailyRows = new Dictionary<uint, Row>();
             MeasurementCache = new Dictionary<string, List<Measurement>>();
+            LocationTwins = new List<DigitalTwin>();
+            ColumnTwins = new List<DigitalTwin>();
+            Users = new List<User>();
+            SpreadsheetComputations = new Dictionary<string, SpreadsheetComputation>();
+            Sheets = new List<Configuration>();
+            Graphs = new List<Configuration>();
+            Dashboards = new List<Configuration>();
         }
         public void Unload()
         {
@@ -82,6 +107,14 @@ namespace ONE.Operations
             ColumnsByVarNum = new Dictionary<long, Column>();
             ColumnsById = new Dictionary<long, Column>();
             ColumnsByGuid = new Dictionary<string, Column>();
+
+            LocationTwins = new List<DigitalTwin>();
+            ColumnTwins = new List<DigitalTwin>();
+            Users = new List<User>();
+            SpreadsheetComputations = new Dictionary<string, SpreadsheetComputation>();
+            Sheets = new List<Configuration>();
+            Graphs = new List<Configuration>();
+            Dashboards = new List<Configuration>();
         }
         public void SetClientSDK(ClientSDK clientSDK)
         {
@@ -123,6 +156,8 @@ namespace ONE.Operations
         public List<DigitalTwin> LocationTwins { get; set; }
         public List<DigitalTwin> ColumnTwins { get; set; }
 
+        public List<User> Users { get; set; }
+
         private Dictionary<string, DigitalTwinItem> ItemDictionarybyGuid { get; set; }
         private Dictionary<long, DigitalTwinItem> ItemDictionarybyLong { get; set; }
 
@@ -132,6 +167,12 @@ namespace ONE.Operations
         private Dictionary<string, Column> ColumnsByGuid { get; set; }
 
         public Dictionary<string, List<Measurement>> MeasurementCache {get; set;}
+
+        public Dictionary<string, SpreadsheetComputation> SpreadsheetComputations { get; set; }
+
+        public List<Configuration> Sheets { get; set; }
+        public List<Configuration> Graphs { get; set; }
+        public List<Configuration> Dashboards { get; set; }
 
         private string _delimiter = "\\";
         public string Delimiter
@@ -214,6 +255,11 @@ namespace ONE.Operations
                 var HourlyWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetHour);
                 var FourHourWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
                 var DailyWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
+                var UsersTask = _clientSDK.Core.GetUsersAsync();
+
+                var SheetsTask = _clientSDK.Configuration.GetConfigurationsAsync((int)EnumEntity.EntityWorksheetview, Id);
+                var GraphsTask = _clientSDK.Configuration.GetConfigurationsAsync((int)EnumEntity.EntityGraph, Id);
+                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync((int)EnumEntity.EntityDashboard, "WASTEWATER");
 
                 await Task.WhenAll(
                     ColumnTwinsTask, 
@@ -222,7 +268,12 @@ namespace ONE.Operations
                     FifteenMinuteWorksheetDefinitionTask, 
                     HourlyWorksheetDefinitionTask,
                     FourHourWorksheetDefinitionTask,
-                    DailyWorksheetDefinitionTask);
+                    DailyWorksheetDefinitionTask,
+                    UsersTask,
+                    SheetsTask,
+                    GraphsTask,
+                    DashboardsTask
+                    );
 
                 ColumnTwins = ColumnTwinsTask.Result;
                 LocationTwins = LocationTwinsTask.Result;
@@ -231,6 +282,16 @@ namespace ONE.Operations
                 HourlyWorksheetDefinition = HourlyWorksheetDefinitionTask.Result;
                 FourHourWorksheetDefinition = FourHourWorksheetDefinitionTask.Result;
                 DailyWorksheetDefinition = DailyWorksheetDefinitionTask.Result;
+                Users = UsersTask.Result;
+                Sheets = SheetsTask.Result;
+                Graphs = GraphsTask.Result;
+                Dashboards = DashboardsTask.Result;
+
+                SpreadsheetComputations = new Dictionary<string, SpreadsheetComputation>();
+                await LoadComputations(FifteenMinuteWorksheetDefinition);
+                await LoadComputations(HourlyWorksheetDefinition);
+                await LoadComputations(FourHourWorksheetDefinition);
+                await LoadComputations(DailyWorksheetDefinition);
 
             }
             catch
@@ -243,6 +304,26 @@ namespace ONE.Operations
             AddChildren(DigitalTwinItem, allChildTwins);
             IsCached = true;
             CacheColumns();
+            return true;
+        }
+        private async Task<bool> LoadComputations(WorksheetDefinition sourceWorksheetDefinition)
+        {
+            if (sourceWorksheetDefinition != null)
+            {
+                for (int x = 0; x < sourceWorksheetDefinition.Columns.Count; x++)
+                {
+                    var sourceColumn = sourceWorksheetDefinition.Columns[x];
+
+                    if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
+                    {
+                        SpreadsheetComputation sourceSpreadsheetComputation = await _clientSDK.Spreadsheet.ComputationGetOneAsync(DigitalTwin.TwinReferenceId, sourceWorksheetDefinition.EnumWorksheet, sourceColumn.DataSourceBinding.BindingId);
+                        if (sourceSpreadsheetComputation != null)
+                        {
+                            SpreadsheetComputations.Add(sourceColumn.DataSourceBinding.BindingId, sourceSpreadsheetComputation);
+                        }
+                    }
+                }
+            }
             return true;
         }
         public void CacheColumns()
@@ -267,6 +348,27 @@ namespace ONE.Operations
                 long.TryParse(variableId, out var varNumValue);
                 if (varNumValue != 0 && !ColumnsByVarNum.ContainsKey(varNumValue))
                     ColumnsByVarNum.Add(varNumValue, column);
+            }
+        }
+        public User GetUser(string userId)
+        {
+            if (Users == null)
+                return null;
+            try
+            {
+                var matches = Users.Where(p => String.Equals(p.Id, userId, StringComparison.CurrentCulture));
+                if (matches.Count() > 0)
+                {
+                    return matches.First();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch
+            {
+                return null;
             }
         }
         public Column GetColumnByIdentifier(string sId)
