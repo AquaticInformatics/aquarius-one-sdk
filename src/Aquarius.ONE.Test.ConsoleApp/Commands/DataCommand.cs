@@ -3,7 +3,7 @@ using ONE.Utilities;
 using ONE;
 using System;
 using System.Threading.Tasks;
-using TimeSeries.Data.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace Aquarius.ONE.Test.ConsoleApp.Commands
 {

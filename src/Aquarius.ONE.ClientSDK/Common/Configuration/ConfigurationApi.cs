@@ -4,8 +4,8 @@ using ONE.Utilities;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
-using Common.Core.Protobuf.Models;
-using configProtobuf = Common.Configuration.Protobuf.Models;
+using ONE.Models.CSharp;
+using proto = ONE.Models.CSharp;
 using Newtonsoft.Json.Linq;
 
 namespace ONE.Common.Configuration
@@ -23,12 +23,12 @@ namespace ONE.Common.Configuration
         private RestHelper _restHelper;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
-        public async Task<List<configProtobuf.Configuration>> GetConfigurationsAsync(int entityTypeId, string entityGuid)
+        public async Task<List<proto.Configuration>> GetConfigurationsAsync(int entityTypeId, string entityGuid)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            List<configProtobuf.Configuration> configurations = new List<configProtobuf.Configuration>();
+            List<proto.Configuration> configurations = new List<proto.Configuration>();
             try
             {
                 var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/configuration/v1/entityType/{entityTypeId}/{entityGuid}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
@@ -37,7 +37,7 @@ namespace ONE.Common.Configuration
                     var results = respContent.ApiResponse.Content.Configurations.Items.Distinct().ToList();
                     foreach (var result in results)
                     {
-                        configProtobuf.Configuration configuration = new configProtobuf.Configuration(result);
+                        proto.Configuration configuration = new proto.Configuration(result);
                         configurations.Add(configuration);
                     }
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Success" });
@@ -56,7 +56,7 @@ namespace ONE.Common.Configuration
             }
         }
 
-        public async Task<bool> CreateConfigurationAsync(configProtobuf.Configuration configuration)
+        public async Task<bool> CreateConfigurationAsync(proto.Configuration configuration)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -92,7 +92,7 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
-        public async Task<bool> UpdateConfigurationAsync(configProtobuf.Configuration configuration)
+        public async Task<bool> UpdateConfigurationAsync(proto.Configuration configuration)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 

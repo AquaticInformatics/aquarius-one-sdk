@@ -6,7 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Utilities
 {

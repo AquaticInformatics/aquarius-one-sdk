@@ -4,8 +4,7 @@ using ONE.Utilities;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
-using TimeSeries.Data.Protobuf.Models;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Common.Historian
 

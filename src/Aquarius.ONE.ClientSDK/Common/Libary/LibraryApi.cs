@@ -5,9 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using ONE.Utilities;
 using Google.Protobuf.WellKnownTypes;
-using Enterprise.Twin.Protobuf.Models;
-using Common.Library.Protobuf.Models;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Common.Library
 {

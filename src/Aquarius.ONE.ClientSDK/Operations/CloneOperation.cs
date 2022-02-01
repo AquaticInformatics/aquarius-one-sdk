@@ -1,18 +1,14 @@
-﻿using Common.Computation.Protobuf.Models;
-using Common.Configuration.Protobuf.Models;
-using Common.Core.Protobuf.Models;
-using Enterprise.Twin.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
 using ONE.Operations.Spreadsheet;
 using ONE.Utilities;
-using Operations.Spreadsheet.Protobuf.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using static ONE.Operations.Spreadsheet.WorksheetViewConfiguration;
-using compProtobuf = Common.Computation.Protobuf.Models;
+using proto = ONE.Models.CSharp;
 
 namespace ONE.Operations
 {
@@ -361,7 +357,7 @@ namespace ONE.Operations
                     destinationSpreadsheetComputation.Binding = new ComputationBinding();
                     foreach (var inputvariable in sourceSpreadsheetComputation.Computation.InputVariables)
                     {
-                        destinationSpreadsheetComputation.Computation.InputVariables.Add(new compProtobuf.Variable { Name = inputvariable.Name });
+                        destinationSpreadsheetComputation.Computation.InputVariables.Add(new proto.Variable { Name = inputvariable.Name });
                     }
                     foreach (var sourceComputationVariableBinding in sourceSpreadsheetComputation.Binding.InputVariableBindings)
                     {

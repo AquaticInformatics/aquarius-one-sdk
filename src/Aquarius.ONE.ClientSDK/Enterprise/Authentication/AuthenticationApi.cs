@@ -6,7 +6,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using ONE.Utilities;
 using Newtonsoft.Json;
-using Enterprise.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Enterprise.Authentication
 {

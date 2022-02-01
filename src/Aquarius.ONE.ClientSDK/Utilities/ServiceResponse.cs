@@ -1,4 +1,4 @@
-﻿using Common.Core.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using System.Net.Http;
 
 namespace ONE.Utilities

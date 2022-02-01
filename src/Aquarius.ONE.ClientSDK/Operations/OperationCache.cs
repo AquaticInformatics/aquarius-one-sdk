@@ -1,15 +1,10 @@
-﻿using Common.Configuration.Protobuf.Models;
-using Common.Core.Protobuf.Models;
-using Common.Library.Protobuf.Models;
-using Enterprise.Core.Protobuf.Models;
-using Enterprise.Twin.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.Common.Library;
 using ONE.Enterprise.Twin;
 using ONE.Utilities;
-using Operations.Spreadsheet.Protobuf.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,7 +43,13 @@ namespace ONE.Operations
                 DigitalTwinItem = operationCache.DigitalTwinItem;
                 ItemDictionarybyGuid = operationCache.ItemDictionarybyGuid;
                 ItemDictionarybyLong = operationCache.ItemDictionarybyLong;
-                
+
+                SpreadsheetDefinition = operationCache.SpreadsheetDefinition;
+                FifteenMinuteWorksheetDefinition = operationCache.FifteenMinuteWorksheetDefinition;
+                HourlyWorksheetDefinition = operationCache.HourlyWorksheetDefinition;
+                FourHourWorksheetDefinition = operationCache.FourHourWorksheetDefinition;
+                DailyWorksheetDefinition = operationCache.DailyWorksheetDefinition;
+
                 FifteenMinuteRows = operationCache.FifteenMinuteRows;
                 HourlyRows = operationCache.HourlyRows;
                 FourHourRows = operationCache.FourHourRows;
@@ -77,6 +78,10 @@ namespace ONE.Operations
         public OperationCache()
         {
             DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
+            FifteenMinuteWorksheetDefinition = new WorksheetDefinition();
+            HourlyWorksheetDefinition = new WorksheetDefinition();
+            FourHourWorksheetDefinition = new WorksheetDefinition();
+            DailyWorksheetDefinition = new WorksheetDefinition();
             ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
             ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
             FifteenMinuteRows = new Dictionary<uint, Row>();
@@ -95,6 +100,11 @@ namespace ONE.Operations
         public void Unload()
         {
             DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
+            SpreadsheetDefinition = new SpreadsheetDefinition();
+            FifteenMinuteWorksheetDefinition = new WorksheetDefinition();
+            HourlyWorksheetDefinition = new WorksheetDefinition();
+            FourHourWorksheetDefinition = new WorksheetDefinition();
+            DailyWorksheetDefinition = new WorksheetDefinition();
             ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
             ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
             FifteenMinuteRows = new Dictionary<uint, Row>();

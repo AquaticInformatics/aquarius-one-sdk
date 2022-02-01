@@ -5,8 +5,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Linq;
 using System.IO;
-using Enterprise.Report.Protobuf.Models;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 using Newtonsoft.Json.Linq;
 
 namespace ONE.Enterprise.Report

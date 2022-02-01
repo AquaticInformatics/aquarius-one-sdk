@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ONE.Utilities;
 using System.Collections.Generic;
-using Operations.Spreadsheet.Protobuf.Models;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Operations.Spreadsheet
 {

@@ -1,4 +1,4 @@
-﻿using Enterprise.Twin.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;

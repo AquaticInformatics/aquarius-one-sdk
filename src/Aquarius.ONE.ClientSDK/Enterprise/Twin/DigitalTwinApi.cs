@@ -6,8 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Enterprise.Twin.Protobuf.Models;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Enterprise.Twin
 {

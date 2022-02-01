@@ -4,7 +4,6 @@ using ONE.Common.Library;
 using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
 using ONE.Enterprise.Twin;
-using ONE.Ingest;
 using ONE.Operations.Spreadsheet;
 using ONE.PoEditor;
 using ONE.Utilities;
@@ -20,7 +19,6 @@ namespace ONE
         public DigitalTwinApi DigitalTwin { get; set; }
         public SpreadsheetApi Spreadsheet { get; set; }
         public DataApi Data { get; set; }
-        public IngestApi Ingest { get; set; }
         public UserHelper UserHelper { get; set; }
         public CacheHelper CacheHelper { get; set; }
         public PoEditorApi PoEditor { get; set; }
@@ -78,8 +76,6 @@ namespace ONE
             Data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper);
             Data.Event += Logger.Logger_Event;
             
-            Ingest = new IngestApi(Authentication, Core, DigitalTwin, Configuration, Data);
-
             PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext);
             poEditor.Event += Logger.Logger_Event;
         }

@@ -1,4 +1,4 @@
-﻿using Enterprise.Twin.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 
 namespace ONE.Enterprise.Twin
 {

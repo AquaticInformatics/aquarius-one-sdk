@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 using System.Data;
 using System.Reflection;
 using System.Threading.Tasks;
-using Enterprise.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 
 namespace ONE.Enterprise.Core
 {

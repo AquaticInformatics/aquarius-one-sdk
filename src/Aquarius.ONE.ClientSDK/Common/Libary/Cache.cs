@@ -1,5 +1,4 @@
-﻿using Common.Library.Protobuf.Models;
-using Enterprise.Twin.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using Newtonsoft.Json;
 using ONE;
 using ONE.Common.Library;

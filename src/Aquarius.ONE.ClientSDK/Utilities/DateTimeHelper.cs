@@ -1,8 +1,7 @@
 ﻿using System;
-using Common.Core.Protobuf.Models;
+using ONE.Models.CSharp;
 using Newtonsoft.Json;
 using NodaTime;
-using Operations.Spreadsheet.Protobuf.Models;
 
 namespace ONE.Utilities
 {

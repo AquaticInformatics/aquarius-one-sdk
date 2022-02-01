@@ -1,4 +1,4 @@
-﻿using Operations.Spreadsheet.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using System.Collections.Generic;
 
 namespace ONE.Operations.Spreadsheet

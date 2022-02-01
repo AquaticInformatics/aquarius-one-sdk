@@ -1,6 +1,6 @@
 ﻿using CommandLine;
-using Common.Library.Protobuf.Models;
 using ONE;
+using ONE.Models.CSharp;
 using System;
 using System.Threading.Tasks;
 

@@ -1,4 +1,4 @@
-﻿using Enterprise.Twin.Protobuf.Models;
+﻿using ONE.Models.CSharp;
 using System.Collections.Generic;
 
 namespace ONE.Enterprise.Twin
