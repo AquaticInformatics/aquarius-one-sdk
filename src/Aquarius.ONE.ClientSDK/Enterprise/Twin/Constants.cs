@@ -249,7 +249,7 @@ namespace ONE.Enterprise.Twin
                     {
                         return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
                     }
-                    public const string RefId = "049ea0cb-3a66-497d-b722-f59ac0d48745";
+                    public const string RefId = "285e8e04-74d5-4a86-b1d6-c6223175bc5f";
                 }
                 public static class ClientIngestAgentCsv
                 {
@@ -257,7 +257,7 @@ namespace ONE.Enterprise.Twin
                     {
                         return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
                     }
-                    public const string RefId = "285e8e04-74d5-4a86-b1d6-c6223175bc5f";
+                    public const string RefId = "049ea0cb-3a66-497d-b722-f59ac0d48745";
                 }
             }
 
