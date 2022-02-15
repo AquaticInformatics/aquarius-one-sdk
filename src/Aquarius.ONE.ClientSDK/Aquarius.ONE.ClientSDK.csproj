@@ -10,7 +10,7 @@
     <Authors>Aquatic Informatics</Authors>
     <Company>Aquatic Informatics</Company>
     <Description>Aquatic Informatics Aquarius Client SDK for the Standard 2.0 Framework.</Description>
-    <Copyright>2022 Aquatic Informatics</Copyright>
+    <Copyright>Copyright © 2022, Aquatic Informatics</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/AquaticInformatics/aquarius-one-sdk</PackageProjectUrl>
