@@ -41,30 +41,22 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 return null;
             return configuration.AppSettings.Settings[key].Value;
         }
-        public static void LoadConfig(ClientSDK clientSDK)
+        public static ClientSDK LoadConfig(ClientSDK clientSDK)
         {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             string accessToken = "";
             if (configuration.AppSettings.Settings["AccessToken"] != null)
                 accessToken = configuration.AppSettings.Settings["AccessToken"].Value;
-
+            string environment = "";
             if (configuration.AppSettings.Settings["Environment"] != null)
-                SetEnvironment(clientSDK, configuration.AppSettings.Settings["Environment"].Value);
-            else
-                clientSDK.Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature);
-            if (clientSDK.Authentication.Token == null)
-                clientSDK.Authentication.Token = new Token();
-            clientSDK.Authentication.Token.access_token = accessToken;
+                environment = configuration.AppSettings.Settings["Environment"].Value;
+
+            DateTime tokenExpires = DateTime.MinValue;
             if (configuration.AppSettings.Settings["TokenExpires"] != null)
-            {
-                DateTime.TryParse(configuration.AppSettings.Settings["TokenExpires"].Value, out DateTime tokenEpires);
-                clientSDK.Authentication.Token.expires = tokenEpires;
-
-            }
-            clientSDK.Authentication.HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", accessToken);
-            clientSDK.Authentication.HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", accessToken);
-
-
+                DateTime.TryParse(configuration.AppSettings.Settings["TokenExpires"].Value, out tokenExpires);
+            
+            return new ClientSDK(configuration.AppSettings.Settings["Environment"].Value, accessToken);
+            
         }
         public static void SetEnvironment(ClientSDK clientSDK, string environment)
         {

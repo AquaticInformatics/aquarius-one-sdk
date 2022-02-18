@@ -36,9 +36,10 @@ namespace Aquarius.ONE.Test.ConsoleApp
             }
             try
             {
+
+                clientSDK = CommandHelper.LoadConfig(clientSDK);
                 clientSDK.LogRestfulCalls = true;
 
-                CommandHelper.LoadConfig(clientSDK);
                 if (!clientSDK.Authentication.IsAuthenticated)
                 {
                     Console.WriteLine("User not Authenticated");

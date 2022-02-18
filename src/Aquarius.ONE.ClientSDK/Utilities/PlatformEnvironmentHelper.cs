@@ -16,7 +16,21 @@ namespace ONE.Utilities
             }
             else
             {
-                return null;
+                switch (name)
+                {
+                    case "AqiIntegration":
+                    case "2":
+                        return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiIntegration);
+                    case "AqiStage":
+                    case "3":
+                        return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiStage);
+                    case "AqiUSProduction":
+                    case "4":
+                        return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiUSProduction);
+                    default:
+                        return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature);
+                }
+
             }
         }
         public static PlatformEnvironment GetPlatformEnvironment(EnumPlatformEnvironment enumPlatformEnvironment)

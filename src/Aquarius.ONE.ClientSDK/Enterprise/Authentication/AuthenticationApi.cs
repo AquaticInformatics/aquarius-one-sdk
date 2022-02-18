@@ -21,14 +21,11 @@ namespace ONE.Enterprise.Authentication
         private bool _continueOnCapturedContext;
         public bool AutoRenewToken { get; set; }
         public string UserName { get; set; }
-
         public string Password { get; set; }
         public User User { get; set; }
-
         private HttpClient _httpJsonClient;
         private HttpClient _httpProtocolBufferClient;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-
         public Token Token { get; set; }
         public HttpClient HttpJsonClient
         {

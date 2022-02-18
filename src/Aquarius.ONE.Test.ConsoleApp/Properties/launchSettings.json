@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "operations -t 357f5e82-0bf8-420c-b9f3-67d1d6e2a28f -i \"C:\\Users\\swood\\Downloads\\Hach US Production Export\\Gresham.json\""
+      "commandLineArgs": "units"
     }
   }
 }
