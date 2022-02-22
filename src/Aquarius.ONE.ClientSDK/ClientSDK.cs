@@ -1,6 +1,7 @@
 ﻿using ONE.Common.Configuration;
 using ONE.Common.Historian;
 using ONE.Common.Library;
+using ONE.Common.Notification;
 using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
 using ONE.Enterprise.Twin;
@@ -19,6 +20,7 @@ namespace ONE
         public ConfigurationApi Configuration { get; set; }
         public LibraryApi Library { get; set; }
         public DigitalTwinApi DigitalTwin { get; set; }
+        public NotificationApi Notification { get; set; }
         public SpreadsheetApi Spreadsheet { get; set; }
         public DataApi Data { get; set; }
         public UserHelper UserHelper { get; set; }
@@ -84,6 +86,9 @@ namespace ONE
 
             DigitalTwin = new DigitalTwinApi(Environment, ContinueOnCapturedContext, _restHelper);
             DigitalTwin.Event += Logger.Logger_Event;
+
+            Notification = new NotificationApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Notification.Event += Logger.Logger_Event;
 
             Spreadsheet = new SpreadsheetApi(Environment, ContinueOnCapturedContext, _restHelper);
             Spreadsheet.Event += Logger.Logger_Event;

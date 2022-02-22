@@ -37,7 +37,11 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.HttpJsonClient.PostAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpJsonClient(endpointURL).PostAsync(_authentication.GetLocalUri(endpointURL), new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpJsonClient.PostAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 var respContent = "";
@@ -109,7 +113,11 @@ namespace ONE.Utilities
                 //form.Add(new StringContent("some comments"), "comment");
                 //form.Add(new StringContent("true"), "isPrimary");
 
-                var response = await _authentication.HttpJsonClient.PostAsync(endpointURL, form);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpJsonClient(endpointURL).PostAsync(_authentication.GetLocalUri(endpointURL), form).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpJsonClient.PostAsync(endpointURL, form);
                 watch.Stop();
 
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -157,7 +165,11 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.HttpJsonClient.PutAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpJsonClient(endpointURL).PutAsync(_authentication.GetLocalUri(endpointURL), new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpJsonClient.PutAsync(endpointURL, new StringContent(json, Encoding.UTF8, "application/json")).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 var respContent = "";
@@ -210,9 +222,15 @@ namespace ONE.Utilities
             {
                 //  For Framework Only
                 var request = new HttpRequestMessage(new HttpMethod("PATCH"), endpointURL);
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    request = new HttpRequestMessage(new HttpMethod("PATCH"), _authentication.GetLocalUri(endpointURL));
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", _authentication.Token.access_token);
                 request.Content = new StringContent(json, Encoding.UTF8, "application/json");
-                var response = await _authentication.HttpJsonClient.SendAsync(request).ConfigureAwait(true);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpJsonClient(endpointURL).SendAsync(request).ConfigureAwait(true);
+                else
+                    response = await _authentication.HttpJsonClient.SendAsync(request).ConfigureAwait(true);
 
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -251,7 +269,11 @@ namespace ONE.Utilities
             try
             {
 
-                var response = await _authentication.HttpJsonClient.DeleteAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpJsonClient(endpointURL).DeleteAsync(_authentication.GetLocalUri(endpointURL)).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpJsonClient.DeleteAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
 
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -318,7 +340,11 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.HttpJsonClient.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpJsonClient(endpointURL).GetAsync(_authentication.GetLocalUri(endpointURL)).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpJsonClient.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 error.ElapsedMs = elapsedMs;
@@ -366,7 +392,11 @@ namespace ONE.Utilities
             {
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
-                var response = await _authentication.HttpProtocolBufferClient.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpProtocolBufferClient(endpointURL).GetAsync(_authentication.GetLocalUri(endpointURL)).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpProtocolBufferClient.GetAsync(endpointURL).ConfigureAwait(_continueOnCapturedContext);
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
                 error.ElapsedMs = elapsedMs;

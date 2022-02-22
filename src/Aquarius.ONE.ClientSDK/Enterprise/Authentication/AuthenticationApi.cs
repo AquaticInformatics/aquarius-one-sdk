@@ -51,7 +51,23 @@ namespace ONE.Enterprise.Authentication
                 return _httpJsonClient;
             }
         }
+        public HttpClient GetLocalHttpJsonClient(string endpointURL)
+        {
+            if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+            {
+                if (!LoginResourceOwnerAsync(UserName, Password).Result)
+                {
+                    Token = null;
+                }
 
+            }
+            var httpClient = new HttpClient();
+            if (_environment != null)
+                httpClient.BaseAddress = new Uri($"{_environment.BaseUri}:{GetLocalHttpPort(endpointURL)}/");
+            httpClient.Timeout = TimeSpan.FromMinutes(10);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            return httpClient;
+        }
         public HttpClient HttpProtocolBufferClient
         {
             get
@@ -76,7 +92,73 @@ namespace ONE.Enterprise.Authentication
                 return _httpProtocolBufferClient;
             }
         }
+        public HttpClient GetLocalHttpProtocolBufferClient(string endpointURL)
+        {
+            if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+            {
+                if (!LoginResourceOwnerAsync(UserName, Password).Result)
+                {
+                    Token = null;
+                }
 
+            }
+            var httpClient = new HttpClient();
+            if (_environment != null)
+                httpClient.BaseAddress = new Uri($"{_environment.BaseUri}:{GetLocalHttpPort(endpointURL)}/");
+            httpClient.Timeout = TimeSpan.FromMinutes(10);
+            httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
+            return httpClient;
+        }
+        public int GetLocalHttpPort(string uri)
+        {
+            if (string.IsNullOrEmpty(uri))
+                return 0;
+            uri = uri.ToUpper();
+            if (uri.Contains("COMMON/COMPUTATION"))
+                return 9006;
+            if (uri.Contains("COMMON/NOTIFICATION"))
+                return 9004;
+            if (uri.Contains("COMMON/TIMEZONE"))
+                return 9001;
+            if (uri.Contains("COMMON/ACTIVITY"))
+                return 8918;
+            if (uri.Contains("COMMON/LIBRARY"))
+                return 9201;
+            if (uri.Contains("ENTERPRISE/TWIN"))
+                return 8900;
+            if (uri.Contains("ENTERPRISE/CORE"))
+                return 9100;
+            if (uri.Contains("ENTERPRISE/REPORT"))
+                return 9090;
+            if (uri.Contains("OPERATIONS/SPREADSHEET"))
+                return 9502;
+            return 0;
+        }
+        public string GetLocalUri(string uri)
+        {
+            if (string.IsNullOrEmpty(uri))
+                return "";
+            string uppercaseUri = uri.ToUpper();
+            if (uppercaseUri.Contains("COMMON/COMPUTATION"))
+                return uri.Substring(20);
+            if (uppercaseUri.Contains("COMMON/NOTIFICATION"))
+                return uri.Substring(23);
+            if (uppercaseUri.Contains("COMMON/TIMEZONE"))
+                return uri.Substring(20);
+            if (uppercaseUri.Contains("COMMON/ACTIVITY"))
+                return uri.Substring(20);
+            if (uppercaseUri.Contains("COMMON/LIBRARY"))
+                return uri.Substring(18);
+            if (uppercaseUri.Contains("ENTERPRISE/TWIN"))
+                return uri.Substring(19);
+            if (uppercaseUri.Contains("ENTERPRISE/CORE"))
+                return uri.Substring(19);
+            if (uppercaseUri.Contains("ENTERPRISE/REPORT"))
+                return uri.Substring(21);
+            if (uppercaseUri.Contains("OPERATIONS/SPREADSHEET"))
+                return uri.Substring(26);
+            return "";
+        }
         public void Logout()
         {
             Token = null;

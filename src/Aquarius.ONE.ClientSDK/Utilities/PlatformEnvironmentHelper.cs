@@ -55,6 +55,15 @@ namespace ONE.Utilities
                     {
                         new PlatformEnvironment
                         {
+                            Name = "Local",
+                            PlatformEnvironmentEnum = EnumPlatformEnvironment.Local,
+                            BaseUri = new Uri("https://localhost"),
+                            AuthenticationUri = new Uri("https://localhost:8262/"),
+                            PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
+
+                        },
+                        new PlatformEnvironment
+                        {
                             Name = "Sprint",
                             PlatformEnvironmentEnum = EnumPlatformEnvironment.Sprint,
                             BaseUri = new Uri("https://api-eu-sprint.hachtest.com/"),

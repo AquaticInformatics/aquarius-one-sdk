@@ -8,6 +8,7 @@
         Stage,
         USProduction,
         EUProduction,
+        Local,
         AqiFeature,
         AqiIntegration,
         AqiStage,
