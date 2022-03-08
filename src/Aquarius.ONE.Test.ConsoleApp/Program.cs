@@ -68,6 +68,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
                     ParameterCommand,
                     QuantityTypesCommand,
                     RolesCommand,
+                    UIDefinitionCommand,
                     UnitCommand,
                     UserInfoCommand
                     >(args).WithParsedAsync<ICommand>(t => t.Execute(clientSDK));

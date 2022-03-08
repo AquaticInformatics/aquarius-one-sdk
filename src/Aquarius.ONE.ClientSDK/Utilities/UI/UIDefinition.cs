@@ -7,18 +7,19 @@ namespace ONE.Utilities.UI
 {
     public class UIDefinition
     {
-        public virtual bool Load(string json)
+        public UIDefinition(string json)
         {
             try
             {
-                var apiResponse = JsonConvert.DeserializeObject<UIDefinition>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                var result = JsonConvert.DeserializeObject<UIDefinition>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                attributes = result.attributes;
             }
             catch
             {
-                return false;
+                attributes = new List<Attribute>();
             }
-            return true;
         }
+       
         public List<Attribute> attributes { get; set; }
         public override string ToString()
         {

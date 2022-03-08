@@ -14,4 +14,8 @@
     <ProjectReference Include="..\Aquarius.ONE.ClientSDK\Aquarius.ONE.ClientSDK.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestFiles\" />
+  </ItemGroup>
+
 </Project>

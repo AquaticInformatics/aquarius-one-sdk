@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "notificationtopics -a Create"
+      "commandLineArgs": "ui -f C:\\git\\aquarius-one-sdk\\src\\Aquarius.ONE.Test.ConsoleApp\\TestFiles\\UIDefinition.json"
     }
   }
 }
