@@ -232,7 +232,7 @@ namespace ONE.Common.Notification
                 throw;
             }
         }
-        public async Task<List<NotificationTemplate>> GetNotificationTemplatesAsync(string topicId, string cultureCode)
+        public async Task<List<NotificationTemplate>> GetNotificationTemplatesAsync(string topicId = "", string cultureCode = "")
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
