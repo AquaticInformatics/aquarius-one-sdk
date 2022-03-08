@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="2.3.0" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.2" />
+    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="2.4.1" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.3" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="NodaTime" Version="3.0.9" />
   </ItemGroup>
