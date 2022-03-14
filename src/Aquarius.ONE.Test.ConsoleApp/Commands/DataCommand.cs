@@ -37,18 +37,17 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     }
                 case "CREATE":
                     {
-                        TimeSeriesDatas timeSeriesDatas = new TimeSeriesDatas();
-                        timeSeriesDatas.Items.Add(new TimeSeriesData
+                        HistorianDatas historianDatas = new HistorianDatas();
+                        historianDatas.Items.Add(new HistorianData
                         {
                             DateTimeUTC = DateTimeHelper.ToJsonTicksDateTime(DateTime.Now),
                             Id = System.Guid.NewGuid().ToString(),
-                            TelemetryTwinRefId = Guid,
                             PropertyBag = "",
                             Value = 5,
                             StringValue = "<10"
 
                         });
-                        var result = await clientSDK.Data.SaveDataAsync(Guid, timeSeriesDatas);
+                        var result = await clientSDK.Data.SaveDataAsync(Guid, historianDatas);
                         if (result == null)
                             return 0;
                         else
