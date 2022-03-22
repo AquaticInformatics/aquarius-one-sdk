@@ -25,18 +25,25 @@ namespace ONE.Common.Historian
         private List<HistorianData> ConvertToHistorianDataList(TimeSeriesDatas timeSeriesDatas)
         {
             List<HistorianData> historianDatas = new List<HistorianData>();
-            if (timeSeriesDatas != null && timeSeriesDatas.Items != null)
-            foreach (var timeSeriesData in timeSeriesDatas.Items)
+            if (timeSeriesDatas != null && timeSeriesDatas.Items != null && timeSeriesDatas.Items.Count > 0)
             {
-                historianDatas.Add(new HistorianData 
+                try
                 {
-                     DateTimeUTC = timeSeriesData.DateTimeUTC,
-                     Id = timeSeriesData.Id,
-                     PropertyBag = timeSeriesData.PropertyBag,
-                     RecordAuditInfo = timeSeriesData.RecordAuditInfo,
-                     StringValue = timeSeriesData.StringValue,
-                     Value = timeSeriesData.Value
-                });
+                    foreach (var timeSeriesData in timeSeriesDatas.Items)
+                    {
+                        historianDatas.Add(new HistorianData
+                        {
+                            DateTimeUTC = timeSeriesData.DateTimeUTC,
+                            Id = timeSeriesData.Id,
+                            PropertyBag = timeSeriesData.PropertyBag,
+                            RecordAuditInfo = timeSeriesData.RecordAuditInfo,
+                            StringValue = timeSeriesData.StringValue ?? "",
+                            Value = timeSeriesData.Value
+                        });
+                    }
+                }
+                catch (Exception ex)
+                { }
             }
             return historianDatas;
         }
@@ -45,19 +52,24 @@ namespace ONE.Common.Historian
             TimeSeriesDatas timeSeriesDatas = new TimeSeriesDatas();
             if (historianDatas != null && historianDatas.Items != null)
             {
-                foreach (var historianData in historianDatas.Items)
+                try
                 {
-                    timeSeriesDatas.Items.Add(new TimeSeriesData
+                    foreach (var historianData in historianDatas.Items)
                     {
-                        DateTimeUTC = historianData.DateTimeUTC,
-                        Id = historianData.Id,
-                        PropertyBag = historianData.PropertyBag,
-                        RecordAuditInfo = historianData.RecordAuditInfo,
-                        StringValue = historianData.StringValue,
-                        TelemetryTwinRefId = telemetryTwinRefId,
-                        Value = historianData.Value
-                    });
+                        timeSeriesDatas.Items.Add(new TimeSeriesData
+                        {
+                            DateTimeUTC = historianData.DateTimeUTC,
+                            Id = historianData.Id,
+                            PropertyBag = historianData.PropertyBag ?? "",
+                            RecordAuditInfo = historianData.RecordAuditInfo,
+                            StringValue = historianData.StringValue ?? "",
+                            TelemetryTwinRefId = telemetryTwinRefId,
+                            Value = historianData.Value
+                        });
+                    }
                 }
+                catch (Exception ex)
+                { }
             }
             return timeSeriesDatas;
         }
@@ -93,30 +105,28 @@ namespace ONE.Common.Historian
             }
         }
 
-        public async Task<List<HistorianData>> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
+        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             var endpoint = $"timeseries/data/v1/{telemetryTwinRefId}/timeSeriesData";
+            if (historianDatas == null || historianDatas.Items == null || historianDatas.Items.Count == 0)
+                return true;
             var timeseriesDatas = ConvertToTimeSeriesDatas(telemetryTwinRefId, historianDatas);
             var json = JsonConvert.SerializeObject(timeseriesDatas, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    var results = ConvertToHistorianDataList(respContent.ApiResponse.Content.TimeSeriesDatas);
-
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Success" });
-                    return results;
+                    return true;
                 }
                 else
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Failed" });
-                    return null;
+                    return false;
                 }
 
             }

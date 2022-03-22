@@ -7,6 +7,9 @@ using ONE.Models.CSharp;
 
 namespace Aquarius.ONE.Test.ConsoleApp.Commands
 {
+
+    // data -a create -g 8202c17a-30c0-454c-81fd-8ac8699401a7
+
     [Verb("data", HelpText = "Manage Data.")]
     public class DataCommand: ICommand
     {

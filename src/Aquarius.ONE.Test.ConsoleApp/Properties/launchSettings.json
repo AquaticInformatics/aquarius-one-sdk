@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "ui -f C:\\git\\aquarius-one-sdk\\src\\Aquarius.ONE.Test.ConsoleApp\\TestFiles\\UIDefinition.json"
+      "commandLineArgs": "data -a create -g 8202c17a-30c0-454c-81fd-8ac8699401a7"
     }
   }
 }
