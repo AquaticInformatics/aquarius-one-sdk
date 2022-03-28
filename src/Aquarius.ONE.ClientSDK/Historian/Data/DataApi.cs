@@ -34,7 +34,6 @@ namespace ONE.Common.Historian
                         historianDatas.Add(new HistorianData
                         {
                             DateTimeUTC = timeSeriesData.DateTimeUTC,
-                            Id = timeSeriesData.Id,
                             PropertyBag = timeSeriesData.PropertyBag,
                             RecordAuditInfo = timeSeriesData.RecordAuditInfo,
                             StringValue = timeSeriesData.StringValue ?? "",
@@ -59,7 +58,6 @@ namespace ONE.Common.Historian
                         timeSeriesDatas.Items.Add(new TimeSeriesData
                         {
                             DateTimeUTC = historianData.DateTimeUTC,
-                            Id = historianData.Id,
                             PropertyBag = historianData.PropertyBag ?? "",
                             RecordAuditInfo = historianData.RecordAuditInfo,
                             StringValue = historianData.StringValue ?? "",

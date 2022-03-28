@@ -44,7 +44,6 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                         historianDatas.Items.Add(new HistorianData
                         {
                             DateTimeUTC = DateTimeHelper.ToJsonTicksDateTime(DateTime.Now),
-                            Id = System.Guid.NewGuid().ToString(),
                             PropertyBag = "",
                             Value = 5,
                             StringValue = "<10"
