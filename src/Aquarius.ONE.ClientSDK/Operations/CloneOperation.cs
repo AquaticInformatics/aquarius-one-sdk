@@ -149,16 +149,8 @@ namespace ONE.Operations
                 {
                     destinationWorksheetViewConfiguration.headers.Add(ConvertViewHeader(sourceToDestinationColumnNumberMap, sourceHeader));
                 }
-                Configuration destinationConfiguration = new Configuration
-                {
-                    ConfigurationData = destinationWorksheetViewConfiguration.ToString(),
-                    FilterById = destinationOperationId,
-                    IsPublic = true,
-                    EnumEntity = EnumEntity.EntityWorksheetview,
-                    Name = sourceConfiguration.Name
-                };
-                await _clientSDK.Configuration.CreateConfigurationAsync(destinationConfiguration);
 
+                await _clientSDK.Configuration.CreateConfigurationAsync(destinationOperationId, ONE.Common.Configuration.Constants.ConfigurationTypes.Worksheets, destinationWorksheetViewConfiguration.ToString(), true);
             }
             return true;
         }

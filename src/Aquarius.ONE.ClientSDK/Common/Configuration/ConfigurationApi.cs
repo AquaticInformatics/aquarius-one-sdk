@@ -190,19 +190,18 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
-        public async Task<bool> CreateConfigurationAsync(string authTwinRefId, string configurationTypeId, string configurationData)
+        public async Task<bool> CreateConfigurationAsync(string authTwinRefId, string configurationTypeId, string configurationData, bool isPublic)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             var endpoint = $"common/configuration/v2/";
 
-
             dynamic jObject = new JObject();
             jObject["AuthTwinRefId"] = authTwinRefId;
             jObject["ConfigurationTypeId"] = configurationTypeId;
             jObject["ConfigurationData"] = configurationData;
-
+            jObject["isPublic"] = isPublic;
 
             var json = JsonConvert.SerializeObject(jObject);
 

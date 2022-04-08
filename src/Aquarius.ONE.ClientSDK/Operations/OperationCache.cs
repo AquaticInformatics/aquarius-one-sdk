@@ -266,10 +266,9 @@ namespace ONE.Operations
                 var FourHourWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
                 var DailyWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
                 var UsersTask = _clientSDK.Core.GetUsersAsync();
-
-                var SheetsTask = _clientSDK.Configuration.GetConfigurationsAsync((int)EnumEntity.EntityWorksheetview, Id);
-                var GraphsTask = _clientSDK.Configuration.GetConfigurationsAsync((int)EnumEntity.EntityGraph, Id);
-                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync((int)EnumEntity.EntityDashboard, "WASTEWATER");
+                var SheetsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Worksheets, Id);
+                var GraphsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Graphs, Id);
+                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Dashboards, Id);
 
                 await Task.WhenAll(
                     ColumnTwinsTask, 
