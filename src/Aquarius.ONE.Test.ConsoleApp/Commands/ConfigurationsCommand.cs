@@ -1,28 +1,24 @@
 ﻿using CommandLine;
 using ONE;
-using ONE.Enterprise.Authentication;
+using ONE.Common.Configuration;
 using ONE.Utilities.UI;
 using System;
-using System.Configuration;
-using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using ONE.Common.Configuration;
 
 
 namespace Aquarius.ONE.Test.ConsoleApp.Commands
 {
-    [Verb("configs", HelpText = "Loads Configurations.")]
+    [Verb("config", HelpText = "Loads Configurations.")]
     public class ConfigurationsCommand : ICommand
     {
-        //[Option('f', "filename", Required = true, HelpText = "Filename")]
-        //public string Filename { get; set; }
+        [Option('t', "twinRefId", Required = true, HelpText = "TwinRefId")]
+        public string TwinRefId { get; set; }
 
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
-            var v1Config = await clientSDK.Configuration.GetConfigurationsAsync(5, "d3c3eeb9-cea7-4a45-8b27-a09ff9fb8035");
-            var v2Config = await clientSDK.Configuration.GetConfigurationsAsync(Constants.ConfigurationTypes.Worksheets, "d3c3eeb9-cea7-4a45-8b27-a09ff9fb8035");
-
+            var v1Config = await clientSDK.Configuration.GetConfigurationsAsync(5, TwinRefId);
+            var v2Config = await clientSDK.Configuration.GetConfigurationsAsync(Constants.ConfigurationTypes.Worksheets, TwinRefId);
 
             if (v1Config.Any() && v2Config.Any())
             {
@@ -47,22 +43,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     Console.WriteLine(configString);
                     Console.WriteLine();
                 }
-
             }
-
-
-            //await clientSDK.Configuration.CreateConfigurationAsync();
-
-
-            //if (!File.Exists(Filename))
-            //    return 0;
-            //else
-            //{
-            //    string json = File.ReadAllText(Filename);
-            //    UIDefinition uIDefinition = new UIDefinition(json);
-            //    Console.WriteLine(uIDefinition.ToString());
-            //    return 1;
-            //}
 
             return 1;
         }
