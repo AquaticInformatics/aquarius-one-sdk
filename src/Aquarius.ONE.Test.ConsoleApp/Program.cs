@@ -70,7 +70,8 @@ namespace Aquarius.ONE.Test.ConsoleApp
                     RolesCommand,
                     UIDefinitionCommand,
                     UnitCommand,
-                    UserInfoCommand
+                    UserInfoCommand,
+                    ConfigurationsCommand
                     >(args).WithParsedAsync<ICommand>(t => t.Execute(clientSDK));
             }
             catch (Exception ex)
