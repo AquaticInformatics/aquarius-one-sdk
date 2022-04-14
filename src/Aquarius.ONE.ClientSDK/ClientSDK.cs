@@ -34,6 +34,23 @@ namespace ONE
             Logger = new EventLogger();
             InstantiateAPIs();
         }
+
+        public ClientSDK(string environment)
+        {
+            Logger = new EventLogger();
+            InstantiateAPIs();
+            Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
+        }
+
+        public ClientSDK(string environment, string username, string password)
+        {
+            Logger = new EventLogger();
+            InstantiateAPIs();
+            Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
+
+            _ = Authentication.LoginResourceOwnerAsync(username, password).Result;
+        }
+
         public ClientSDK(string environment, string token, DateTime? expiration = null)
         {
             Logger = new EventLogger();
