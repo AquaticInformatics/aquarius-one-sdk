@@ -35,20 +35,35 @@ namespace ONE
             InstantiateAPIs();
         }
 
-        public ClientSDK(string environment)
+        public ClientSDK(EnumPlatformEnvironment environment)
         {
             Logger = new EventLogger();
             InstantiateAPIs();
             Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
         }
 
-        public ClientSDK(string environment, string username, string password)
+        public ClientSDK(EnumPlatformEnvironment environment, string username, string password)
         {
             Logger = new EventLogger();
             InstantiateAPIs();
             Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
 
             _ = Authentication.LoginResourceOwnerAsync(username, password).Result;
+        }
+
+        public ClientSDK(EnumPlatformEnvironment environment, string token, DateTime? expiration = null)
+        {
+            Logger = new EventLogger();
+            InstantiateAPIs();
+            Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
+            if (expiration == null || expiration == DateTime.MinValue)
+                expiration = DateTime.Now.AddHours(12);
+            Authentication.Token = new Token();
+            if (!string.IsNullOrEmpty(token))
+                Authentication.Token.access_token = token;
+            Authentication.Token.expires = (DateTime)expiration;
+            Authentication.HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            Authentication.HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
         public ClientSDK(string environment, string token, DateTime? expiration = null)
