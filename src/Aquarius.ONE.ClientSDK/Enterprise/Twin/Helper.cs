@@ -39,14 +39,16 @@ namespace ONE.Enterprise.Twin
             if (operationDigitalTwin != null)
             {
                 OperationDigitalTwinItem = new DigitalTwinItem(operationDigitalTwin);
+
                 //Load Location Structure
-                var locationDigitalTwins = await _digitalTwinApi.GetDescendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.SpaceCategory.LocationType.RefId);
+                var locationDigitalTwins = await _digitalTwinApi.GetDescendantsByCategoryAsync(operationDigitalTwin.TwinReferenceId, Constants.SpaceCategory.Id);
 
                 //Load Column Telemetry Twins
                 var columnDigitalTwins = await _digitalTwinApi.GetDescendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.TelemetryCategory.ColumnType.RefId);
 
                 //Merge the Twins
                 var allChildTwins = locationDigitalTwins.Union(columnDigitalTwins).ToList();
+
                 //Create Twin Hierarchy
                 AddChildren(OperationDigitalTwinItem, allChildTwins);
                 return true;

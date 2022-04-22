@@ -71,7 +71,8 @@ namespace Aquarius.ONE.Test.ConsoleApp
                     UIDefinitionCommand,
                     UnitCommand,
                     UserInfoCommand,
-                    ConfigurationsCommand
+                    ConfigurationsCommand,
+                    GetTelemetryPathCommand
                     >(args).WithParsedAsync<ICommand>(t => t.Execute(clientSDK));
             }
             catch (Exception ex)
