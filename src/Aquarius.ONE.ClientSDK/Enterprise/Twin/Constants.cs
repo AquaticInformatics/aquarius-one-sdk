@@ -119,7 +119,7 @@ namespace ONE.Enterprise.Twin
                     public const string RefId = "36f8befe-1a75-4c0d-a618-e4885ca6beb2";
                 }
             }
-            public static class LocationType
+            public static class WastewaterLocationType
             {
                 public static bool Is(DigitalTwin digitalTwin)
                 {

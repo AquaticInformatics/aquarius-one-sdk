@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "data -a create -g 8202c17a-30c0-454c-81fd-8ac8699401a7"
+      "commandLineArgs": "telemetrypath -o 7da962f4-ff4a-43d5-abf9-3667efc03e68 -t c9b72240-dea3-4b23-bccf-b1bf1c117f1d"
     }
   }
 }
