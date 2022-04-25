@@ -255,7 +255,7 @@ namespace ONE.Enterprise.Twin
 
         /********************* DigitalTwins *********************/
 
-        public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = Constants.SpaceCategory.WastewaterLocationType.RefId, string twinSubTypeId = Constants.SpaceCategory.WastewaterLocationType.OtherSubType.RefId)
+        public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = Constants.SpaceCategory.LocationType.RefId, string twinSubTypeId = Constants.SpaceCategory.LocationType.OtherSubType.RefId)
         {
             DigitalTwin digitalTwin = new DigitalTwin();
             digitalTwin.ParentTwinReferenceId = parentId;
