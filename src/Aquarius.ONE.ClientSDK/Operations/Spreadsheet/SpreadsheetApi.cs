@@ -501,7 +501,7 @@ namespace ONE.Operations.Spreadsheet
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/definition/columns?requestId={requestId}";
-            var json = JsonConvert.SerializeObject(worksheetDefinition);
+            var json = JsonConvert.SerializeObject(worksheetDefinition, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
@@ -528,7 +528,7 @@ namespace ONE.Operations.Spreadsheet
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/definition/columns?requestId={requestId}";
-            var json = JsonConvert.SerializeObject(worksheetDefinition);
+            var json = JsonConvert.SerializeObject(worksheetDefinition, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             try
             {
                 var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
