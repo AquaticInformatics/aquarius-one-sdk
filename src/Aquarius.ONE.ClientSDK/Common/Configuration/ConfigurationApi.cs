@@ -260,7 +260,7 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
-        public async Task<bool> UpdateConfigurationAsync(string id, string configurationTypeId, string configurationData, int version)
+        public async Task<bool> UpdateConfigurationAsync(string id, string configurationTypeId, string configurationData, bool isPublic)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -271,8 +271,8 @@ namespace ONE.Common.Configuration
             dynamic jObject = new JObject();
             jObject["ConfigurationTypeId"] = configurationTypeId;
             jObject["ConfigurationData"] = configurationData;
-            jObject["Version"] = version;
-
+            jObject["Version"] = 0;
+            jObject["isPublic"] = isPublic;
 
             var json = JsonConvert.SerializeObject(jObject);
 
