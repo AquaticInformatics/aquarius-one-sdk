@@ -22,55 +22,7 @@ namespace ONE.Common.Historian
         private RestHelper _restHelper;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
-        private List<HistorianData> ConvertToHistorianDataList(TimeSeriesDatas timeSeriesDatas)
-        {
-            List<HistorianData> historianDatas = new List<HistorianData>();
-            if (timeSeriesDatas != null && timeSeriesDatas.Items != null && timeSeriesDatas.Items.Count > 0)
-            {
-                try
-                {
-                    foreach (var timeSeriesData in timeSeriesDatas.Items)
-                    {
-                        historianDatas.Add(new HistorianData
-                        {
-                            DateTimeUTC = timeSeriesData.DateTimeUTC,
-                            PropertyBag = timeSeriesData.PropertyBag,
-                            RecordAuditInfo = timeSeriesData.RecordAuditInfo,
-                            StringValue = timeSeriesData.StringValue ?? "",
-                            Value = timeSeriesData.Value
-                        });
-                    }
-                }
-                catch (Exception ex)
-                { }
-            }
-            return historianDatas;
-        }
-        private TimeSeriesDatas ConvertToTimeSeriesDatas(string telemetryTwinRefId, HistorianDatas historianDatas)
-        {
-            TimeSeriesDatas timeSeriesDatas = new TimeSeriesDatas();
-            if (historianDatas != null && historianDatas.Items != null)
-            {
-                try
-                {
-                    foreach (var historianData in historianDatas.Items)
-                    {
-                        timeSeriesDatas.Items.Add(new TimeSeriesData
-                        {
-                            DateTimeUTC = historianData.DateTimeUTC,
-                            PropertyBag = historianData.PropertyBag ?? "",
-                            RecordAuditInfo = historianData.RecordAuditInfo,
-                            StringValue = historianData.StringValue ?? "",
-                            TelemetryTwinRefId = telemetryTwinRefId,
-                            Value = historianData.Value
-                        });
-                    }
-                }
-                catch (Exception ex)
-                { }
-            }
-            return timeSeriesDatas;
-        }
+        
         public async Task<List<HistorianData>> GetDataAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -103,7 +55,34 @@ namespace ONE.Common.Historian
                 throw;
             }
         }
+        public async Task<HistorianData> GetOneDataAsync(string telemetryTwinRefId, DateTime dateTime)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            var requestId = Guid.NewGuid();
+
+            List<HistorianData> historianData = new List<HistorianData>();
+            try
+            {
+                string eDateTime = dateTime.ToString("MM/dd/yyyy HH:mm:ss");
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"/historian/data/v1/{telemetryTwinRefId}/{eDateTime}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    foreach (var historianDataItem in respContent.ApiResponse.Content.HistorianDatas.Items)
+                    {
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"GetDataAsync Success" });
+                        return historianDataItem;
+                    }
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"GetDataAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"GetDataAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
         public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -116,6 +95,86 @@ namespace ONE.Common.Historian
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Success" });
+                    return true;
+                }
+                else
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Failed" });
+                    return false;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"SaveDataAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<bool> UpdateDataAsync(string telemetryTwinRefId, HistorianData historianData)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            string eDateTime = historianData.DateTimeUTC.ToDateTime().ToString("MM/dd/yyyy HH:mm:ss");
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
+            if (historianData == null)
+                return true;
+            var json = JsonConvert.SerializeObject(historianData, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            try
+            {
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Success" });
+                    return true;
+                }
+                else
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Failed" });
+                    return false;
+                }
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"SaveDataAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<bool> DeleteManyAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate)
+        {
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            string sDate = startDate.ToString("MM/dd/yyyy HH:mm:ss");
+            string eDate = endDate.ToString("MM/dd/yyyy HH:mm:ss");
+            try
+            {
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"/historian/data/v1/{telemetryTwinRefId}?startTime={startDate}&endTime={endDate}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryAPI", Message = $"DeleteParameterAgencyCodeAsync Success" });
+                else
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryAPI", Message = $"DeleteParameterAgencyCodeAsync Failed" });
+                return respContent.ResponseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteParameterAgencyCodeAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        public async Task<bool> FlushAsync(string telemetryTwinRefId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}/Flush";
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"SaveDataAsync Success" });

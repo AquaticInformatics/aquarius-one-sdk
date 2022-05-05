@@ -81,6 +81,28 @@ namespace ONE.Operations.Spreadsheet
             return null;
             
         }
+        public static Cell GetCellWithLatestCellDataAndNotes(Row row, uint columnNumber)
+        {
+            var cell = GetCellByColumnByNumber(row, columnNumber);
+            Cell newCell = new Cell();
+            if (cell != null)
+            {
+                if (newCell.Notes != null && newCell.Notes.Count > 0)
+                {
+                    foreach (var note in newCell.Notes)
+                    {
+                        newCell.Notes.Add(note);
+                    }
+                }
+                if (cell.CellDatas != null && cell.CellDatas.Count > 0)
+                {
+                    newCell.CellDatas.Add(cell.CellDatas[0]);
+                }
+                return newCell;
+            }
+            return null;
+
+        }
         public static Cell GetCellByColumnByNumber(Row row, uint columnNumber)
         {
             if (row != null && row.Cells.Count > 0)
