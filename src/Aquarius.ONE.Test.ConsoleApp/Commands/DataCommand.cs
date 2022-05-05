@@ -50,7 +50,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
                         });
                         var result = await clientSDK.Data.SaveDataAsync(Guid, historianDatas);
-                        if (result == null)
+                        if (result)
                             return 0;
                         else
                         {

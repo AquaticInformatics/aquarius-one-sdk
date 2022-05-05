@@ -82,13 +82,14 @@ namespace ONE.Common.Historian
             {
                 string sDate = startDate.ToString("MM/dd/yyyy HH:mm:ss");
                 string eDate = endDate.ToString("MM/dd/yyyy HH:mm:ss");
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"timeSeries/data/v1/{telemetryTwinRefId}/timeSeriesData?startDate={sDate}&endDate={eDate}&requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"/historian/data/v1/{telemetryTwinRefId}?startTime={startDate}&endTime={endDate}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    var results = ConvertToHistorianDataList(respContent.ApiResponse.Content.TimeSeriesDatas);
+                    foreach (var historianDataItem in respContent.ApiResponse.Content.HistorianDatas.Items)
+                        historianData.Add(historianDataItem);
                     
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"GetDataAsync Success" });
-                    return results;
+                    return historianData;
                 }
                 else
                 {
@@ -108,11 +109,10 @@ namespace ONE.Common.Historian
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            var endpoint = $"timeseries/data/v1/{telemetryTwinRefId}/timeSeriesData";
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
             if (historianDatas == null || historianDatas.Items == null || historianDatas.Items.Count == 0)
                 return true;
-            var timeseriesDatas = ConvertToTimeSeriesDatas(telemetryTwinRefId, historianDatas);
-            var json = JsonConvert.SerializeObject(timeseriesDatas, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            var json = JsonConvert.SerializeObject(historianDatas, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
