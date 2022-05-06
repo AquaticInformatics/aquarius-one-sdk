@@ -1,6 +1,7 @@
 ﻿using CommandLine;
 using ONE;
 using ONE.Models.CSharp;
+using ONE.Operations.Spreadsheet;
 using System;
 using System.Threading.Tasks;
 
@@ -16,6 +17,10 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         public uint Type { get; set; }
         [Option('r', "row", Required = true, HelpText = "Row number")]
         public uint RowNumber { get; set; }
+        [Option('c', "column", Required = true, HelpText = "Column number")]
+        public uint ColumnNumber { get; set; }
+        [Option('a', "action", Required = true, HelpText = "Action")]
+        public string Action { get; set; }
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
             Console.WriteLine($"OperationId: {Guid}");
@@ -39,8 +44,23 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
             }
             var rows = await clientSDK.Spreadsheet.GetRowsAsync(Guid, worksheetType, RowNumber, RowNumber);
-            
-            return 1;
+
+            switch (Action.ToUpper())
+            {
+                default:
+                    return 1;
+                case "CELL":
+                    if (rows.Items != null && rows.Items.Count > 0)
+                    {
+                        var cell = Helper.GetCellWithLatestCellDataAndNotes(rows.Items[RowNumber], ColumnNumber);
+
+                    }
+                    else
+                    {
+                        return 0;
+                    }
+                    return 1;
+            }
         }
     }
 }

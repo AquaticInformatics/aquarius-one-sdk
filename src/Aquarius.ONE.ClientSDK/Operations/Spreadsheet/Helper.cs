@@ -87,9 +87,9 @@ namespace ONE.Operations.Spreadsheet
             Cell newCell = new Cell();
             if (cell != null)
             {
-                if (newCell.Notes != null && newCell.Notes.Count > 0)
+                if (cell.Notes != null && cell.Notes.Count > 0)
                 {
-                    foreach (var note in newCell.Notes)
+                    foreach (var note in cell.Notes)
                     {
                         newCell.Notes.Add(note);
                     }
