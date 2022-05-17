@@ -1,7 +1,9 @@
-﻿using ONE.Common.Configuration;
+﻿using ONE.Common.Activity;
+using ONE.Common.Configuration;
 using ONE.Common.Historian;
 using ONE.Common.Library;
 using ONE.Common.Notification;
+using ONE.Common.Schedule;
 using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
 using ONE.Enterprise.Twin;
@@ -19,6 +21,8 @@ namespace ONE
         public CoreApi Core { get; set; }
         public ConfigurationApi Configuration { get; set; }
         public LibraryApi Library { get; set; }
+        public ScheduleApi Schedule { get; set; }
+        public ActivityApi Activity { get; set; }
         public DigitalTwinApi DigitalTwin { get; set; }
         public NotificationApi Notification { get; set; }
         public SpreadsheetApi Spreadsheet { get; set; }
@@ -83,6 +87,12 @@ namespace ONE
 
             Library = new LibraryApi(Environment, ContinueOnCapturedContext, _restHelper);
             Library.Event += Logger.Logger_Event;
+
+            Schedule = new ScheduleApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Schedule.Event += Logger.Logger_Event;
+
+            Activity = new ActivityApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Activity.Event += Logger.Logger_Event;
 
             DigitalTwin = new DigitalTwinApi(Environment, ContinueOnCapturedContext, _restHelper);
             DigitalTwin.Event += Logger.Logger_Event;

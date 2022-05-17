@@ -155,14 +155,14 @@ namespace ONE.Common.Historian
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"/historian/data/v1/{telemetryTwinRefId}?startTime={startDate}&endTime={endDate}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryAPI", Message = $"DeleteManyAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"DeleteManyAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "LibraryAPI", Message = $"DeleteManyAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = $"DeleteManyAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteManyAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"DeleteManyAsync Failed - {e.Message}" });
                 throw;
             }
         }
