@@ -6,7 +6,6 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Text;
-using ONE.Models.CSharp;
 using Proto = ONE.Models.CSharp;
 
 namespace ONE.Common.Activity
@@ -111,7 +110,7 @@ namespace ONE.Common.Activity
             }
         }
 
-        public async Task<bool> SaveActivitiesAsync(Activities activities)
+        public async Task<bool> SaveActivitiesAsync(Proto.Activities activities)
         {
             if (activities == null || !activities.Items.Any())
                 return true;
@@ -136,7 +135,7 @@ namespace ONE.Common.Activity
             }
         }
 
-        public async Task<bool> UpdateActivitiesAsync(Activities activities)
+        public async Task<bool> UpdateActivitiesAsync(Proto.Activities activities)
         {
             if (activities == null || !activities.Items.Any())
                 return true;

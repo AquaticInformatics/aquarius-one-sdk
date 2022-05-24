@@ -5,7 +5,7 @@
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
 	  <VersionPrefix>11.8.0</VersionPrefix>
 	  <!--For Feature packages update the VersionSuffix with the Jira ticket number-->
-	  <VersionSuffix>Alpha-2</VersionSuffix>
+	  <VersionSuffix></VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Aquatic Informatics</Authors>
     <Company>Aquatic Informatics</Company>
