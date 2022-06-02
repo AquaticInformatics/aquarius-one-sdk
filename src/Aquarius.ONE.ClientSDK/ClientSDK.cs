@@ -73,7 +73,7 @@ namespace ONE
             Authentication = new AuthenticationApi(_environment, ContinueOnCapturedContext);
             Authentication.Event += Logger.Logger_Event;
 
-            _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls);
+            _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls, ThrowAPIErrors);
             _restHelper.Event += Logger.Logger_Event;
 
             Core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper);
@@ -112,5 +112,7 @@ namespace ONE
         public bool ContinueOnCapturedContext { get; set; }
 
         public bool LogRestfulCalls { get; set; }
+
+        public bool ThrowAPIErrors { get; set; }
     }
 }
