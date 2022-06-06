@@ -1,5 +1,6 @@
 ﻿
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -14,14 +15,18 @@ namespace ONE.Utilities
         public RestApiException(ServiceResponse serviceResponse)
         {
            _serviceResponse = serviceResponse;
+            Data.Add("ElapsedMs", serviceResponse.ElapsedMs);
+            Data.Add("ReasonPhrase", _serviceResponse.ResponseMessage.ReasonPhrase);
+            Data.Add("StatusCode", _serviceResponse.ResponseMessage.StatusCode);
         }
+        
         public override string Message
         {
             get
             {
                 if (_serviceResponse == null)
                     return "unknown HTTP Error";
-                return _serviceResponse.ResponseMessage.ReasonPhrase;
+                return ((int)_serviceResponse.ResponseMessage.StatusCode).ToString();
             }
         }
     }

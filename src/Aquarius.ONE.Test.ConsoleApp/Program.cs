@@ -17,7 +17,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
             if (args.Length == 0)
             {
                 // Set Environment
-
+                clientSDK = CommandHelper.SetThrowAPIErrors(clientSDK);
                 var result = CommandHelper.SetEnvironment(clientSDK);
                 if (result == null)
                     return 1;
@@ -31,15 +31,15 @@ namespace Aquarius.ONE.Test.ConsoleApp
                 result = await LoginAsync(clientSDK);
                 if (result == true)
                     return 0;
-               
+
                 return 1;
             }
+          
             try
             {
 
-                clientSDK = CommandHelper.LoadConfig(clientSDK);
+                clientSDK = CommandHelper.LoadConfig();
                 clientSDK.LogRestfulCalls = true;
-
                 if (!clientSDK.Authentication.IsAuthenticated)
                 {
                     Console.WriteLine("User not Authenticated");
@@ -77,7 +77,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.ToString());
                 return 1;
             }
 

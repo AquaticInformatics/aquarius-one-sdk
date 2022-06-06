@@ -38,8 +38,9 @@ namespace ONE
             Logger = new EventLogger();
             InstantiateAPIs();
         }
-        public ClientSDK(string environment, string token, DateTime? expiration = null)
+        public ClientSDK(string environment, string token, DateTime? expiration = null, bool throwApiErrors = false)
         {
+            ThrowAPIErrors = throwApiErrors;
             Logger = new EventLogger();
             InstantiateAPIs();
             Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);

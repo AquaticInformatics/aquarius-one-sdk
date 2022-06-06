@@ -16,6 +16,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             SetConfiguration(configuration, "TokenCreated", clientSDK.Authentication.Token.created.ToString("MM/dd/yyyy HH:mm:ss"));
             SetConfiguration(configuration, "TokenExpires", clientSDK.Authentication.Token.expires.ToString("MM/dd/yyyy HH:mm:ss"));
             SetConfiguration(configuration, "Environment", clientSDK.Environment.PlatformEnvironmentEnum.ToString());
+            SetConfiguration(configuration, "ThrowAPIErrors", clientSDK.ThrowAPIErrors.ToString());
             configuration.Save(ConfigurationSaveMode.Full);
         }
         public static void SetConfiguration(Configuration configuration, string key, string value)
@@ -41,7 +42,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 return null;
             return configuration.AppSettings.Settings[key].Value;
         }
-        public static ClientSDK LoadConfig(ClientSDK clientSDK)
+        public static ClientSDK LoadConfig()
         {
             Configuration configuration = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
             string accessToken = "";
@@ -54,8 +55,10 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             DateTime tokenExpires = DateTime.MinValue;
             if (configuration.AppSettings.Settings["TokenExpires"] != null)
                 DateTime.TryParse(configuration.AppSettings.Settings["TokenExpires"].Value, out tokenExpires);
-            
-            return new ClientSDK(configuration.AppSettings.Settings["Environment"].Value, accessToken);
+            bool throwAPIErrors = false;
+            if (configuration.AppSettings.Settings["ThrowAPIErrors"] != null)
+                bool.TryParse(configuration.AppSettings.Settings["ThrowAPIErrors"].Value, out throwAPIErrors);
+            return new ClientSDK(configuration.AppSettings.Settings["Environment"].Value, accessToken, null, throwAPIErrors);
             
         }
         public static void SetEnvironment(ClientSDK clientSDK, string environment)
@@ -78,6 +81,16 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     clientSDK.Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature);
                     break;
             }
+        }
+        public static ClientSDK SetThrowAPIErrors(ClientSDK clientSDK)
+        {
+            Console.WriteLine("Throw REST API Errors");
+            Console.WriteLine("1: No - Return values as null");
+            Console.WriteLine("2: Yes - Throw REST Errors as Exceptions");
+            var throwApiErrors = Console.ReadLine().ToUpper();
+            if (throwApiErrors == "2")
+                clientSDK.ThrowAPIErrors = true;
+            return clientSDK;
         }
         public static bool? SetEnvironment(ClientSDK clientSDK)
         {

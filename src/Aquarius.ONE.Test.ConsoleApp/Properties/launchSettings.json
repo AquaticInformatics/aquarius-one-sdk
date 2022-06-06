@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "rows -t 4 -a cell -r 44686 -c 48006 -g 85a95b79-60c7-4982-bf79-549047cc8ee8"
+      "commandLineArgs": "data -a get -g hello"
     }
   }
 }

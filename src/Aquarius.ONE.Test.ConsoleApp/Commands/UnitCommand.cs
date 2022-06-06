@@ -18,6 +18,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         public string Name { get; set; }
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
+            
             if (!string.IsNullOrEmpty(Guid) || !string.IsNullOrEmpty(Name) || Id > 0)
             {
                 
