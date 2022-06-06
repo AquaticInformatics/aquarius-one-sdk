@@ -12,7 +12,7 @@ namespace ONE.Utilities
 {
     public class RestHelper
     {
-        public RestHelper(AuthenticationApi authentication, PlatformEnvironment environment, bool continueOnCapturedContext, bool logRestfulCalls, bool throwAPIErrors)
+        public RestHelper(AuthenticationApi authentication, PlatformEnvironment environment, bool continueOnCapturedContext, bool logRestfulCalls, bool throwAPIErrors = false)
         {
             _authentication = authentication;
             _environment = environment;
