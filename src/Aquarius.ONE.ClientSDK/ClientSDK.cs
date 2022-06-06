@@ -38,8 +38,9 @@ namespace ONE
             Logger = new EventLogger();
             InstantiateAPIs();
         }
-        public ClientSDK(string environment, string token, DateTime? expiration = null)
+        public ClientSDK(string environment, string token, DateTime? expiration = null, bool throwApiErrors = false)
         {
+            ThrowAPIErrors = throwApiErrors;
             Logger = new EventLogger();
             InstantiateAPIs();
             Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
@@ -73,7 +74,7 @@ namespace ONE
             Authentication = new AuthenticationApi(_environment, ContinueOnCapturedContext);
             Authentication.Event += Logger.Logger_Event;
 
-            _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls);
+            _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls, ThrowAPIErrors);
             _restHelper.Event += Logger.Logger_Event;
 
             Core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper);
@@ -112,5 +113,7 @@ namespace ONE
         public bool ContinueOnCapturedContext { get; set; }
 
         public bool LogRestfulCalls { get; set; }
+
+        public bool ThrowAPIErrors { get; set; }
     }
 }
