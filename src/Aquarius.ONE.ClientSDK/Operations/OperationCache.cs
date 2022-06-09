@@ -58,8 +58,8 @@ namespace ONE.Operations
                 Delimiter = operationCache.Delimiter;
                 IsCached = operationCache.IsCached;
 
-                LocationTwins = operationCache.LocationTwins;
-                ColumnTwins = operationCache.ColumnTwins;
+                LocationTwins = operationCache.LocationTwins ?? new List<DigitalTwin>();
+                ColumnTwins = operationCache.ColumnTwins ?? new List<DigitalTwin>();
                 Users = operationCache.Users;
 
                 SpreadsheetComputations = operationCache.SpreadsheetComputations;
@@ -327,7 +327,7 @@ namespace ONE.Operations
                     if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
                     {
                         SpreadsheetComputation sourceSpreadsheetComputation = await _clientSDK.Spreadsheet.ComputationGetOneAsync(DigitalTwin.TwinReferenceId, sourceWorksheetDefinition.EnumWorksheet, sourceColumn.DataSourceBinding.BindingId);
-                        if (sourceSpreadsheetComputation != null)
+                        if (sourceSpreadsheetComputation != null && !SpreadsheetComputations.ContainsKey(sourceColumn.DataSourceBinding.BindingId))
                         {
                             SpreadsheetComputations.Add(sourceColumn.DataSourceBinding.BindingId, sourceSpreadsheetComputation);
                         }

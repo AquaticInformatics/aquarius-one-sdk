@@ -3,6 +3,7 @@
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
       "commandLineArgs": "operations -c clear"
+      //operations -c clear
     }
   }
 }
