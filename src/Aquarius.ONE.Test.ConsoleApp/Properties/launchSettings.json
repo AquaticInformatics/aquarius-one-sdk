@@ -2,7 +2,7 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": "data -a get -g hello"
+      "commandLineArgs": "operations -c clear"
     }
   }
 }
