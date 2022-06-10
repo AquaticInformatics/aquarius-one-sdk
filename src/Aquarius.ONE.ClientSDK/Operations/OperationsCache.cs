@@ -75,19 +75,16 @@ namespace ONE.Operations
                 _clientSDK.Authentication.User = await _clientSDK.UserHelper.GetUserFromUserInfoAsync(result);
             }
             var operationTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, Constants.SpaceCategory.OperationType.RefId);
-            var cacheTasks = new List<Task>();
+
             foreach (var operationTwin in operationTwins)
             {
                 var operationCache = new OperationCache(_clientSDK, operationTwin);
                 Operations.Add(operationCache);
+                
                 if (loadAllOperationCaches)
-                {
-                    var cacheTask = operationCache.LoadAsync();
-                    cacheTasks.Add(cacheTask);
-                }
+                    await operationCache.LoadAsync();
             }
-            if (loadAllOperationCaches && cacheTasks.Count > 0)
-                await Task.WhenAll(cacheTasks);
+            
             Operations = Operations.OrderBy(p => p.Name).ToList();
             return Operations;
         }
