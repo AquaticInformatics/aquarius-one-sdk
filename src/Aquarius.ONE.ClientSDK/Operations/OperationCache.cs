@@ -285,8 +285,8 @@ namespace ONE.Operations
                     DashboardsTask
                     );
 
-                ColumnTwins = ColumnTwinsTask.Result;
-                LocationTwins = LocationTwinsTask.Result;
+                ColumnTwins = ColumnTwinsTask.Result ?? new List<DigitalTwin>();
+                LocationTwins = LocationTwinsTask.Result ?? new List<DigitalTwin>();
                 SpreadsheetDefinition = SpreadsheetDefinitionTask.Result;
                 FifteenMinuteWorksheetDefinition = FifteenMinuteWorksheetDefinitionTask.Result;
                 HourlyWorksheetDefinition = HourlyWorksheetDefinitionTask.Result;
