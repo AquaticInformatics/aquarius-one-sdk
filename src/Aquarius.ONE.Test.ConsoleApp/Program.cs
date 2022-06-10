@@ -12,6 +12,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
         static async Task<int> Main(string[] args)
         {
             ClientSDK clientSDK = new ClientSDK();
+
             clientSDK.Logger.Event += new EventHandler<ClientApiLoggerEventArgs>(SdkEvent);
             // If no arguments prompt for login
             if (args.Length == 0)
@@ -40,6 +41,7 @@ namespace Aquarius.ONE.Test.ConsoleApp
 
                 clientSDK = CommandHelper.LoadConfig();
                 clientSDK.LogRestfulCalls = true;
+
                 if (!clientSDK.Authentication.IsAuthenticated)
                 {
                     Console.WriteLine("User not Authenticated");

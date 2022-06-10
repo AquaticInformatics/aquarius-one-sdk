@@ -1,4 +1,4 @@
-﻿using ONE.Common.Activity;
+using ONE.Common.Activity;
 using ONE.Common.Configuration;
 using ONE.Common.Historian;
 using ONE.Common.Library;

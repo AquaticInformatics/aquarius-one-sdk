@@ -41,8 +41,6 @@ namespace ONE.Operations
                 var operationCache = JsonConvert.DeserializeObject<OperationCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                 DigitalTwin = operationCache.DigitalTwin;
                 DigitalTwinItem = operationCache.DigitalTwinItem;
-                ItemDictionarybyGuid = operationCache.ItemDictionarybyGuid;
-                ItemDictionarybyLong = operationCache.ItemDictionarybyLong;
 
                 SpreadsheetDefinition = operationCache.SpreadsheetDefinition;
                 FifteenMinuteWorksheetDefinition = operationCache.FifteenMinuteWorksheetDefinition;
@@ -60,8 +58,8 @@ namespace ONE.Operations
                 Delimiter = operationCache.Delimiter;
                 IsCached = operationCache.IsCached;
 
-                LocationTwins = operationCache.LocationTwins;
-                ColumnTwins = operationCache.ColumnTwins;
+                LocationTwins = operationCache.LocationTwins ?? new List<DigitalTwin>();
+                ColumnTwins = operationCache.ColumnTwins ?? new List<DigitalTwin>();
                 Users = operationCache.Users;
 
                 SpreadsheetComputations = operationCache.SpreadsheetComputations;
@@ -69,6 +67,9 @@ namespace ONE.Operations
                 Graphs = operationCache.Graphs;
                 Dashboards = operationCache.Dashboards;
 
+                var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
+
+                AddChildren(DigitalTwinItem, allOperationDecendentTwins);
                 CacheColumns();
             }
             catch
@@ -284,8 +285,8 @@ namespace ONE.Operations
                     DashboardsTask
                     );
 
-                ColumnTwins = ColumnTwinsTask.Result;
-                LocationTwins = LocationTwinsTask.Result;
+                ColumnTwins = ColumnTwinsTask.Result ?? new List<DigitalTwin>();
+                LocationTwins = LocationTwinsTask.Result ?? new List<DigitalTwin>();
                 SpreadsheetDefinition = SpreadsheetDefinitionTask.Result;
                 FifteenMinuteWorksheetDefinition = FifteenMinuteWorksheetDefinitionTask.Result;
                 HourlyWorksheetDefinition = HourlyWorksheetDefinitionTask.Result;
@@ -308,9 +309,9 @@ namespace ONE.Operations
                 return false;
             }
             //Merge the Twins
-            var allChildTwins = LocationTwins.Union(ColumnTwins).ToList();
+            var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
             
-            AddChildren(DigitalTwinItem, allChildTwins);
+            AddChildren(DigitalTwinItem, allOperationDecendentTwins);
             IsCached = true;
             CacheColumns();
             return true;
@@ -326,7 +327,7 @@ namespace ONE.Operations
                     if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
                     {
                         SpreadsheetComputation sourceSpreadsheetComputation = await _clientSDK.Spreadsheet.ComputationGetOneAsync(DigitalTwin.TwinReferenceId, sourceWorksheetDefinition.EnumWorksheet, sourceColumn.DataSourceBinding.BindingId);
-                        if (sourceSpreadsheetComputation != null)
+                        if (sourceSpreadsheetComputation != null && !SpreadsheetComputations.ContainsKey(sourceColumn.DataSourceBinding.BindingId))
                         {
                             SpreadsheetComputations.Add(sourceColumn.DataSourceBinding.BindingId, sourceSpreadsheetComputation);
                         }
@@ -418,7 +419,7 @@ namespace ONE.Operations
                 return null;
             if (ColumnsById.ContainsKey(id))
                 return ColumnsById[id];
-            Column column = ONE.Operations.Spreadsheet.Helper.GetColumnByNumber(FifteenMinuteWorksheetDefinition, id);
+            Column column = Spreadsheet.Helper.GetColumnByNumber(FifteenMinuteWorksheetDefinition, id);
             if (column != null)
                 return column;
             column = ONE.Operations.Spreadsheet.Helper.GetColumnByNumber(HourlyWorksheetDefinition, id);
@@ -595,7 +596,7 @@ namespace ONE.Operations
             return GetWorksheetType(digitalTwin);
         }
 
-        private void AddChildren(DigitalTwinItem digitalTwinTreeItem, List<DigitalTwin> digitalTwins)
+        public void AddChildren(DigitalTwinItem digitalTwinTreeItem, List<DigitalTwin> digitalTwins)
         {
             var childDigitalTwins = digitalTwins.Where(p => p.ParentId == digitalTwinTreeItem.DigitalTwin.Id);
             foreach (DigitalTwin digitalTwin in childDigitalTwins)

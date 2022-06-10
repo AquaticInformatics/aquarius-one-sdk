@@ -29,6 +29,8 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
+            // Import Cache File
+            
             if (!string.IsNullOrEmpty(ImportFileName))
             {
                 if (!File.Exists(ImportFileName))
@@ -67,14 +69,12 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     return 0;
                 }
             }
-            else if (string.IsNullOrEmpty(ExportFileName))
+
+            //Export Single Operation
+
+            else if (!string.IsNullOrEmpty(ExportFileName) && !string.IsNullOrEmpty(Guid))
             {
                 
-                if (string.IsNullOrEmpty(Guid))
-                {
-                    Console.WriteLine($"Operation Id not specified");
-                    return 0;
-                }
                 try
                 {
                     await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync();
@@ -97,6 +97,25 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     return 0;
                 }
             }
+            // Export All Operations
+            else if (!string.IsNullOrEmpty(ExportFileName))
+            {
+
+                try
+                {
+                    await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync(true);
+                    if (!Directory.Exists(Path.GetDirectoryName(ExportFileName)))
+                        Directory.CreateDirectory(Path.GetDirectoryName(ExportFileName));
+                    File.WriteAllText(ExportFileName, clientSDK.CacheHelper.OperationsCache.ToString());
+                    Console.WriteLine($"Export Successful");
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error Exporting: {ex.Message}");
+                    return 0;
+                }
+            }
             else
             {
                 // Clear the client cache if requested
@@ -107,7 +126,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 if (string.IsNullOrEmpty(serializedCache))
                 {
                     // If cache is empty, load all operation twins and cache
-                    await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync();
+                    await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync(true);
                     serializedCache = clientSDK.CacheHelper.OperationsCache.ToString();
                     CommandHelper.SetConfiguration("OperationsCache", serializedCache);
                 }
@@ -118,7 +137,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 // If there are no operations, (An empty collection of operations) try reloading
                 if (operationsCache.Operations.Count == 0)
                 {
-                    await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync();
+                    await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync(true);
                     serializedCache = clientSDK.CacheHelper.OperationsCache.ToString();
                     CommandHelper.SetConfiguration("OperationsCache", serializedCache);
                     operationsCache = new OperationsCache(serializedCache);
@@ -129,6 +148,8 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     foreach (var operation in operationsCache.Operations)
                     {
                         Console.WriteLine($"{operation.Id}: {operation.Name}");
+                        foreach (var colTwin in operation.ColumnTwins)
+                            Console.WriteLine(operation.GetTelemetryPath(colTwin.TwinReferenceId, true));
                     }
                 }
 

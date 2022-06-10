@@ -25,6 +25,8 @@ namespace ONE.Operations
                 foreach (var operationCache in Operations)
                 {
                     operationCache.SetClientSDK(clientSDK);
+                    var allOperationDecendentTwins = operationCache.LocationTwins.Union(operationCache.ColumnTwins).ToList();
+                    operationCache.AddChildren(operationCache.DigitalTwinItem, allOperationDecendentTwins);
                     operationCache.CacheColumns();
                 }
             }
@@ -37,6 +39,8 @@ namespace ONE.Operations
                 Operations = operationsCache.Operations;
                 foreach (var operationCache in Operations)
                 {
+                    var allOperationDecendentTwins = operationCache.LocationTwins.Union(operationCache.ColumnTwins).ToList();
+                    operationCache.AddChildren(operationCache.DigitalTwinItem, allOperationDecendentTwins);
                     operationCache.CacheColumns();
                 }
             }
@@ -63,7 +67,7 @@ namespace ONE.Operations
         {
             Operations = new List<OperationCache>();
         }
-        public async Task<List<OperationCache>> LoadOperationsAsync()
+        public async Task<List<OperationCache>> LoadOperationsAsync(bool loadAllOperationCaches = false)
         {
             if (_clientSDK.Authentication.User == null)
             {
@@ -71,10 +75,16 @@ namespace ONE.Operations
                 _clientSDK.Authentication.User = await _clientSDK.UserHelper.GetUserFromUserInfoAsync(result);
             }
             var operationTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, Constants.SpaceCategory.OperationType.RefId);
+
             foreach (var operationTwin in operationTwins)
             {
-                Operations.Add(new OperationCache(_clientSDK, operationTwin));
+                var operationCache = new OperationCache(_clientSDK, operationTwin);
+                Operations.Add(operationCache);
+                
+                if (loadAllOperationCaches)
+                    await operationCache.LoadAsync();
             }
+            
             Operations = Operations.OrderBy(p => p.Name).ToList();
             return Operations;
         }
