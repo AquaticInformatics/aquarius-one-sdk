@@ -24,13 +24,16 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         [Option('e', "export", Required = false, HelpText = "Export Operation")]
         public string ExportFileName { get; set; }
 
+        [Option('p', "exportpath", Required = false, HelpText = "Export Each Operation Separately")]
+        public string ExportPath { get; set; }
+
         [Option('i', "import", Required = false, HelpText = "Import Operation")]
         public string ImportFileName { get; set; }
 
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
             // Import Cache File
-            
+
             if (!string.IsNullOrEmpty(ImportFileName))
             {
                 if (!File.Exists(ImportFileName))
@@ -74,11 +77,11 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
             else if (!string.IsNullOrEmpty(ExportFileName) && !string.IsNullOrEmpty(Guid))
             {
-                
+
                 try
                 {
                     await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync();
-                    
+
                     OperationCache operationCache = clientSDK.CacheHelper.OperationsCache.GetOperationById(Guid);
                     if (operationCache == null)
                     {
@@ -107,6 +110,30 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                     if (!Directory.Exists(Path.GetDirectoryName(ExportFileName)))
                         Directory.CreateDirectory(Path.GetDirectoryName(ExportFileName));
                     File.WriteAllText(ExportFileName, clientSDK.CacheHelper.OperationsCache.ToString());
+                    Console.WriteLine($"Export Successful");
+                    return 0;
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error Exporting: {ex.Message}");
+                    return 0;
+                }
+            }
+            // Export Each Operation Separately
+            else if (!string.IsNullOrEmpty(ExportPath))
+            {
+                try
+                {
+                    await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync(false);
+                    if (!Directory.Exists(Path.GetDirectoryName(ExportPath)))
+                        Directory.CreateDirectory(Path.GetDirectoryName(ExportPath));
+                    foreach (var operationCache in clientSDK.CacheHelper.OperationsCache.Operations)
+                    {
+                        await operationCache.LoadAsync();
+                        File.WriteAllText(Path.Combine(ExportPath, operationCache.Id + ".json"), operationCache.ToString());
+
+                    }
+                    
                     Console.WriteLine($"Export Successful");
                     return 0;
                 }
