@@ -911,7 +911,7 @@ namespace ONE.Operations
         {
             try
             {
-                return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                return JsonExtensions.SerializeObjectNoCache(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             }
             catch
             {
