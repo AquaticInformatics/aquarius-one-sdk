@@ -6,16 +6,19 @@ using System.Data;
 using System.Reflection;
 using System.Threading.Tasks;
 using ONE.Models.CSharp;
+using ONE.Enterprise.Authentication;
 
 namespace ONE.Enterprise.Core
 {
     public class UserHelper
     {
-        public UserHelper(CoreApi coreApi)
+        public UserHelper(AuthenticationApi authenticationApi, CoreApi coreApi)
         {
             _coreApi = coreApi;
+            _authenticationApi = authenticationApi;
         }
         private CoreApi _coreApi;
+        private AuthenticationApi _authenticationApi;
         public static User GetByUserName(string username, List<User> users)
         {
             if (users == null || string.IsNullOrEmpty(username))
@@ -48,7 +51,22 @@ namespace ONE.Enterprise.Core
             }
             return userHasRole;
         }
-    
+        public async Task<User> LoadCurrentUserAsync()
+        {
+            try
+            {
+                var result = await _authenticationApi.GetUserInfoAsync();
+                var user = await GetUserFromUserInfoAsync(result);
+                if (user != null)
+                    _authenticationApi.User = user;
+
+                return user;
+            }
+            catch
+            {
+                return null;
+            }
+        }
         public async Task<User> GetUserFromUserInfoAsync(string userInfoJson, CoreApi.EnumUserExpand enumUserExpand = CoreApi.EnumUserExpand.role_feature)
         {
             JObject userInfo = JObject.Parse(userInfoJson);

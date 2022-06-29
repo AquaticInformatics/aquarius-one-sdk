@@ -80,7 +80,7 @@ namespace ONE
             Core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper);
             Core.Event += Logger.Logger_Event;
 
-            UserHelper = new UserHelper(Core);
+            UserHelper = new UserHelper(Authentication, Core);
             CacheHelper = new CacheHelper(this);
 
             Configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper);
