@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using ONE.Utilities;
 using Newtonsoft.Json;
 using ONE.Models.CSharp;
+using ONE.Enterprise.Core;
 
 namespace ONE.Enterprise.Authentication
 {
@@ -259,7 +260,7 @@ namespace ONE.Enterprise.Authentication
                 throw;
             }
         }
-
+        
         public async Task<string> GetTokenAsync(string userName, string password)
         {
             var body = new Dictionary<string, string>
