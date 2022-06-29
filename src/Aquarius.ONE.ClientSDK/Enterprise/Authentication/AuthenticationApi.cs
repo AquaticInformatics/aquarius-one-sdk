@@ -325,7 +325,7 @@ namespace ONE.Enterprise.Authentication
         {
             get
             {
-                return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now;
+                return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now.AddMinutes(1);
             }
         }
     }
