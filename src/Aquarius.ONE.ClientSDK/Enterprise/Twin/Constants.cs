@@ -1,4 +1,5 @@
-﻿using ONE.Models.CSharp;
+﻿using System;
+using ONE.Models.CSharp;
 
 namespace ONE.Enterprise.Twin
 {
@@ -228,14 +229,14 @@ namespace ONE.Enterprise.Twin
                     public const string RefId = "02d6fd74-f610-428f-8dd6-2789960e7fd7";
                 }
             }
-            public static class ClientIngestAgentType
+            public static class ClientIngestReaderType
             {
                 public static bool Is(DigitalTwin digitalTwin)
                 {
                     return digitalTwin.TwinTypeId != null && digitalTwin.TwinTypeId.ToUpper() == RefId.ToUpper();
                 }
                 public const string RefId = "3209ac8f-640b-4f68-a74b-08b670187182";
-                public static class ClientIngestAgentTest
+                public static class ClientIngestReaderTest
                 {
                     public static bool Is(DigitalTwin digitalTwin)
                     {
@@ -243,7 +244,7 @@ namespace ONE.Enterprise.Twin
                     }
                     public const string RefId = "cafd1356-7e06-44d9-9f28-3a897fbc4cf8";
                 }
-                public static class ClientIngestAgentOpenWeatherMap
+                public static class ClientIngestReaderOpenWeatherMap
                 {
                     public static bool Is(DigitalTwin digitalTwin)
                     {
@@ -251,7 +252,7 @@ namespace ONE.Enterprise.Twin
                     }
                     public const string RefId = "285e8e04-74d5-4a86-b1d6-c6223175bc5f";
                 }
-                public static class ClientIngestAgentCsv
+                public static class ClientIngestReaderCsv
                 {
                     public static bool Is(DigitalTwin digitalTwin)
                     {
@@ -261,6 +262,33 @@ namespace ONE.Enterprise.Twin
                 }
             }
 
+            [Obsolete("Use ClientIngestReaderType instead", false)]
+            public static class ClientIngestAgentType
+            {
+                public static bool Is(DigitalTwin digitalTwin) => ClientIngestReaderType.Is(digitalTwin);
+                public const string RefId = ClientIngestReaderType.RefId;
+
+                [Obsolete("Use ClientIngestReaderTest instead", false)]
+                public static class ClientIngestAgentTest
+                {
+                    public static bool Is(DigitalTwin digitalTwin) =>
+                        ClientIngestReaderType.ClientIngestReaderTest.Is(digitalTwin);
+                    public const string RefId = ClientIngestReaderType.ClientIngestReaderTest.RefId;
+                }
+                [Obsolete("Use ClientIngestReaderOpenWeatherMap instead", false)]
+                public static class ClientIngestAgentOpenWeatherMap
+                {
+                    public static bool Is(DigitalTwin digitalTwin) => ClientIngestReaderType.ClientIngestReaderOpenWeatherMap.Is(digitalTwin);
+                    public const string RefId = ClientIngestReaderType.ClientIngestReaderOpenWeatherMap.RefId;
+                }
+                [Obsolete("Use ClientIngestReaderCsv instead", false)]
+                public static class ClientIngestAgentCsv
+                {
+                    public static bool Is(DigitalTwin digitalTwin) =>
+                        ClientIngestReaderType.ClientIngestReaderCsv.Is(digitalTwin);
+                    public const string RefId = ClientIngestReaderType.ClientIngestReaderCsv.RefId;
+                }
+            }
         }
         public static class TelemetryCategory
         {
