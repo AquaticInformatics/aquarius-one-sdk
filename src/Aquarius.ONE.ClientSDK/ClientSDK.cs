@@ -53,6 +53,20 @@ namespace ONE
             Authentication.HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", token);
             Authentication.HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", token);
         }
+        public ClientSDK(string environment, bool throwApiErrors = false)
+        {
+            ThrowAPIErrors = throwApiErrors;
+            Logger = new EventLogger();
+            InstantiateAPIs();
+            Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(environment);
+        }
+        public ClientSDK(EnumPlatformEnvironment platformEnvironment, bool throwApiErrors = false)
+        {
+            ThrowAPIErrors = throwApiErrors;
+            Logger = new EventLogger();
+            InstantiateAPIs();
+            Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(platformEnvironment);
+        }
         private PlatformEnvironment _environment { get; set; }
         public PlatformEnvironment Environment
         {
