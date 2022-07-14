@@ -69,6 +69,8 @@ namespace ONE.Operations
 
                 var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
 
+                ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
+                ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
                 AddChildren(DigitalTwinItem, allOperationDecendentTwins);
                 CacheColumns();
             }
