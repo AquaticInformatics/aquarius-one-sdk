@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using ONE.Utilities;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using System.Linq;
 using ONE.Models.CSharp;
 
 
@@ -23,31 +22,50 @@ namespace ONE.Common.Schedule
         private RestHelper _restHelper;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
-        
-        public async Task<List<ONE.Models.CSharp.Schedule>> GetSchedulesAsync(string twinRefId, string createdById, DateTime startDate, DateTime endDate, string scheduleTypeId)
+        public async Task<List<ONE.Models.CSharp.Schedule>> GetSchedulesAsync(string authTwinRefId, bool? includeAuthTwinChildren, string scheduleTypeId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            string sDate = startDate.ToString("MM/dd/yyyy HH:mm:ss");
-            string eDate = endDate.ToString("MM/dd/yyyy HH:mm:ss");
+            string endPointUrl = $"/common/schedule/v1/schedules/{authTwinRefId}";
+            if (includeAuthTwinChildren != null)
+            {
+                endPointUrl += $"?{includeAuthTwinChildren}";
+            }
+
+            if (!string.IsNullOrWhiteSpace(scheduleTypeId))
+            {
+                endPointUrl += includeAuthTwinChildren == null ? $"?{scheduleTypeId}" : $"&{scheduleTypeId}";
+            }
+
             List<ONE.Models.CSharp.Schedule> schedules = new List<ONE.Models.CSharp.Schedule>();
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"/common/schedule/v1/schedule?twinRefId={twinRefId}&createdById={createdById}&startDate={sDate}&endDate={eDate}&scheduleTypeId={scheduleTypeId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId,endPointUrl).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    foreach (var schedule in respContent.ApiResponse.Content.Schedules.Items)
-                        schedules.Add(schedule);
-                    
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"GetSchedulesAsync Success" });
+                    schedules.AddRange(respContent.ApiResponse.Content.Schedules.Items);
+
+                    Event(null, new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumEventLevel.Trace, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", Message = $"GetSchedulesAsync Success"
+                    });
+
                     return schedules;
                 }
-                else
-                {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"GetSchedulesAsync Failed" });
-                    return null;
-                }
+
+                Event(null, new ClientApiLoggerEventArgs 
+                    { EventLevel = EnumEventLevel.Warn, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", 
+                        Message = $"GetSchedulesAsync Failed"
+                    });
+
+                return null;
             }
             catch (Exception e)
             {
@@ -60,20 +78,35 @@ namespace ONE.Common.Schedule
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
+            var endPointUrl = $"common/schedule/v1/{scheduleId}";
 
-            List<HistorianData> historianData = new List<HistorianData>();
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"/common/schedule/v1/schedule/{scheduleId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     foreach (var schedule in respContent.ApiResponse.Content.Schedules.Items)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"GetOneScheduleAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs
+                        {
+                            EventLevel = EnumEventLevel.Trace, 
+                            HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                            ElapsedMs = watch.ElapsedMilliseconds, 
+                            Module = "ScheduleApi", 
+                            Message = $"GetOneScheduleAsync Success"
+                        });
                         return schedule;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"GetOneScheduleAsync Failed" });
+
+                Event(null, new ClientApiLoggerEventArgs
+                {
+                    EventLevel = EnumEventLevel.Warn, 
+                    HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    ElapsedMs = watch.ElapsedMilliseconds, 
+                    Module = "ScheduleApi",
+                    Message = $"GetOneScheduleAsync Failed"
+                });
                 return null;
             }
             catch (Exception e)
@@ -86,25 +119,38 @@ namespace ONE.Common.Schedule
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
-            var requestId = Guid.NewGuid();
-            var endpoint = $"/common/schedule/v1/schedule";
             if (schedule == null)
                 return true;
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"/common/schedule/v1/";
             var json = JsonConvert.SerializeObject(schedule, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"SaveScheduleAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumEventLevel.Trace, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", 
+                        Message = $"SaveScheduleAsync Success"
+                    });
                     return true;
                 }
-                else
-                {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"SaveScheduleAsync Failed" });
-                    return false;
-                }
 
+                Event(null, new ClientApiLoggerEventArgs 
+                    { 
+                        EventLevel = EnumEventLevel.Warn, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", 
+                        Message = $"SaveScheduleAsync Failed"
+                    });
+                return false;
             }
             catch (Exception e)
             {
@@ -112,29 +158,41 @@ namespace ONE.Common.Schedule
                 throw;
             }
         }
+
         public async Task<bool> UpdateScheduleAsync(ONE.Models.CSharp.Schedule schedule)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            var requestId = Guid.NewGuid();
-            var endpoint = $"/common/schedule/v1/schedule";
             if (schedule == null)
                 return true;
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"/common/schedule/v1/{schedule.Id}";
             var json = JsonConvert.SerializeObject(schedule, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             try
             {
                 var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"UpdateScheduleAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumEventLevel.Trace, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", 
+                        Message = $"UpdateScheduleAsync Success"
+                    });
                     return true;
                 }
-                else
-                {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"UpdateScheduleAsync Failed" });
-                    return false;
-                }
 
+                Event(null, new ClientApiLoggerEventArgs
+                {
+                    EventLevel = EnumEventLevel.Warn, 
+                    HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    ElapsedMs = watch.ElapsedMilliseconds, 
+                    Module = "ScheduleApi", 
+                    Message = $"UpdateScheduleAsync Failed"
+                });
+                return false;
             }
             catch (Exception e)
             {
@@ -142,19 +200,40 @@ namespace ONE.Common.Schedule
                 throw;
             }
         }
+
         public async Task<bool> DeleteScheduleAsync(string scheduleId)
         {
 
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
+            var endpoint = $"/common/schedule/v1/{scheduleId}";
+
             try
             {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"/common/schedule/v1/schedule/{scheduleId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"DeleteScheduleAsync Success" });
-                else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"DeleteScheduleAsync Failed" });
-                return respContent.ResponseMessage.IsSuccessStatusCode;
+                {
+                    Event(null, new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumEventLevel.Trace, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", 
+                        Message = $"DeleteScheduleAsync Success"
+                    });
+
+                    return true;
+                }
+                
+                Event(null, new ClientApiLoggerEventArgs
+                {
+                    EventLevel = EnumEventLevel.Warn, 
+                    HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    ElapsedMs = watch.ElapsedMilliseconds, 
+                    Module = "ScheduleApi", 
+                    Message = $"DeleteScheduleAsync Failed"
+                });
+                return false;
             }
             catch (Exception e)
             {
@@ -162,35 +241,45 @@ namespace ONE.Common.Schedule
                 throw;
             }
         }
-        public async Task<object> GetOccurrancesAsync(string id, string twinRefId, string createdById, DateTime startDate, DateTime endDate, string scheduleTypeId)
+        public async Task<List<ScheduleOccurrence>> GetOccurrencesAsync(ScheduleRecurrencePattern pattern, DateTime afterDate, DateTime beforeDate)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            string sDate = startDate.ToString("MM/dd/yyyy HH:mm:ss");
-            string eDate = endDate.ToString("MM/dd/yyyy HH:mm:ss");
-            var endpoint = $"/common/schedule/v1/schedule/{id}/occurrences?twinRefId={twinRefId}&createdById={createdById}&startDate={sDate}&endDate={eDate}&scheduleTypeId={scheduleTypeId}";
+            var endpoint = $"/common/schedule/v1/occurrences?afterDate={afterDate:O}&beforeDate={beforeDate:O}";
+
 
             try
             {
-                var respContent = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
-                /*
+                List<Models.CSharp.ScheduleOccurrence> scheduleOccurrences = new List<ONE.Models.CSharp.ScheduleOccurrence>();
+                var json = JsonConvert.SerializeObject(pattern, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                var respContent = await _restHelper.PostRestJSONAsync(requestId,json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    foreach (var schedule in respContent.ApiResponse.Content.Schedules.Items)
-                        schedules.Add(schedule);
+                    scheduleOccurrences.AddRange(respContent.ApiResponse.Content.ScheduleOccurrences.Items);
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"GetSchedulesAsync Success" });
-                    return schedules;
-                }
-                else
-                */
-                {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ScheduleApi", Message = $"GetOccurrancesAsync Failed" });
-                    return null;
+                    Event(null, new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumEventLevel.Trace, 
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        ElapsedMs = watch.ElapsedMilliseconds, 
+                        Module = "ScheduleApi", Message = $"GetOccurrencesAsync Success"
+                    });
+                    return scheduleOccurrences;
                 }
                 
+                Event(null, new ClientApiLoggerEventArgs
+                {
+                    EventLevel = EnumEventLevel.Warn, 
+                    HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    ElapsedMs = watch.ElapsedMilliseconds, 
+                    Module = "ScheduleApi", 
+                    Message = $"GetOccurrencesAsync Failed"
+                });
+                    return null;
             }
+
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetOccurrancesAsync Failed - {e.Message}" });
