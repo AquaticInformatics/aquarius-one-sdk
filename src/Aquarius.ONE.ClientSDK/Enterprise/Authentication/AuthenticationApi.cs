@@ -174,11 +174,11 @@ namespace ONE.Enterprise.Authentication
             {
                 {
                     "client_id",
-                    "VSTestClient"
+                    "SDK.PasswordShortLife"
                 },
                 {
                     "client_secret",
-                    "0CCBB786-9412-4088-BC16-78D3A10158B7"
+                    "D9FA4A66-31BD-4B0A-9186-87894DFC3232"
                 },
                 {
                     "grant_type",
@@ -325,6 +325,11 @@ namespace ONE.Enterprise.Authentication
         {
             get
             {
+                bool b = Token.expires >= DateTime.Now.AddMinutes(1);
+
+                //DateTime.Compare()
+
+
                 return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now.AddMinutes(1);
             }
         }

@@ -4,6 +4,7 @@ using ONE.Enterprise.Twin;
 using ONE.Operations;
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -82,17 +83,24 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 {
                     await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync();
 
-                    OperationCache operationCache = clientSDK.CacheHelper.OperationsCache.GetOperationById(Guid);
-                    if (operationCache == null)
-                    {
-                        Console.WriteLine($"Operation Id not valid {Guid}");
-                        return 0;
-                    }
-                    if (!Directory.Exists(Path.GetDirectoryName(ExportFileName)))
-                        Directory.CreateDirectory(Path.GetDirectoryName(ExportFileName));
-                    File.WriteAllText(ExportFileName, operationCache.ToString());
-                    Console.WriteLine($"Export Successful");
-                    return 0;
+                    Thread.Sleep(5001);
+
+                    var result = clientSDK.Authentication.IsAuthenticated;
+
+                    return 1;
+
+
+                    //OperationCache operationCache = clientSDK.CacheHelper.OperationsCache.GetOperationById(Guid);
+                    //if (operationCache == null)
+                    //{
+                    //    Console.WriteLine($"Operation Id not valid {Guid}");
+                    //    return 0;
+                    //}
+                    //if (!Directory.Exists(Path.GetDirectoryName(ExportFileName)))
+                    //    Directory.CreateDirectory(Path.GetDirectoryName(ExportFileName));
+                    //File.WriteAllText(ExportFileName, operationCache.ToString());
+                    //Console.WriteLine($"Export Successful");
+                    //return 0;
                 }
                 catch (Exception ex)
                 {
@@ -124,6 +132,12 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             {
                 try
                 {
+
+                    Thread.Sleep(240000);
+
+                    var result = clientSDK.Authentication.IsAuthenticated;
+
+
                     await clientSDK.CacheHelper.OperationsCache.LoadOperationsAsync(false);
                     if (!Directory.Exists(Path.GetDirectoryName(ExportPath)))
                         Directory.CreateDirectory(Path.GetDirectoryName(ExportPath));

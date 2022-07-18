@@ -58,8 +58,10 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
             bool throwAPIErrors = false;
             if (configuration.AppSettings.Settings["ThrowAPIErrors"] != null)
                 bool.TryParse(configuration.AppSettings.Settings["ThrowAPIErrors"].Value, out throwAPIErrors);
-            return new ClientSDK(configuration.AppSettings.Settings["Environment"].Value, accessToken, null, throwAPIErrors);
-            
+
+            //return new ClientSDK(configuration.AppSettings.Settings["Environment"].Value, accessToken, null, throwAPIErrors);
+            return new ClientSDK(configuration.AppSettings.Settings["Environment"].Value, accessToken, tokenExpires, throwAPIErrors);
+
         }
         public static void SetEnvironment(ClientSDK clientSDK, string environment)
         {

@@ -2,7 +2,8 @@
   "profiles": {
     "Aquarius.ONE.Test.ConsoleApp": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      "commandLineArgs": "operations -p c:\\rio"
+      //"commandLineArgs": ""
     }
   }
 }
