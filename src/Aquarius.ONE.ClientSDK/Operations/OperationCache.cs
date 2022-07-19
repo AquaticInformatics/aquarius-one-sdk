@@ -34,7 +34,7 @@ namespace ONE.Operations
             Graphs = new List<Configuration>();
             Dashboards = new List<Configuration>();
         }
-        public OperationCache (string serializedObject)
+        public OperationCache(string serializedObject)
         {
             try
             {
@@ -52,9 +52,9 @@ namespace ONE.Operations
                 HourlyRows = operationCache.HourlyRows;
                 FourHourRows = operationCache.FourHourRows;
                 DailyRows = operationCache.DailyRows;
-                
+
                 MeasurementCache = operationCache.MeasurementCache;
-                
+
                 Delimiter = operationCache.Delimiter;
                 IsCached = operationCache.IsCached;
 
@@ -138,7 +138,8 @@ namespace ONE.Operations
             return _clientSDK;
         }
         private ClientSDK _clientSDK { get; set; }
-        public string Id {
+        public string Id
+        {
             get
             {
                 if (DigitalTwin != null)
@@ -179,7 +180,7 @@ namespace ONE.Operations
         private Dictionary<long, Column> ColumnsById { get; set; }
         private Dictionary<string, Column> ColumnsByGuid { get; set; }
 
-        public Dictionary<string, List<Measurement>> MeasurementCache {get; set;}
+        public Dictionary<string, List<Measurement>> MeasurementCache { get; set; }
 
         public Dictionary<string, SpreadsheetComputation> SpreadsheetComputations { get; set; }
 
@@ -218,7 +219,7 @@ namespace ONE.Operations
                         FourHourRows.Add(row.RowNumber, row);
                     break;
                 case EnumWorksheet.WorksheetDaily:
-                   
+
                     if (!DailyRows.ContainsKey(row.RowNumber))
                         HourlyRows.Add(row.RowNumber, row);
                     break;
@@ -251,8 +252,8 @@ namespace ONE.Operations
             }
             return null;
         }
-        
-        
+
+
         public bool IsCached { get; set; }
         public async Task<bool> LoadAsync()
         {
@@ -271,13 +272,13 @@ namespace ONE.Operations
                 var UsersTask = _clientSDK.Core.GetUsersAsync();
                 var SheetsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Worksheets, Id);
                 var GraphsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Graphs, Id);
-                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Dashboards, Id);
+                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync(Common.Configuration.Constants.ConfigurationTypes.Dashboards, Id, Constants.OrganizationCategory.TenantType.RefId);
 
                 await Task.WhenAll(
-                    ColumnTwinsTask, 
-                    LocationTwinsTask, 
-                    SpreadsheetDefinitionTask, 
-                    FifteenMinuteWorksheetDefinitionTask, 
+                    ColumnTwinsTask,
+                    LocationTwinsTask,
+                    SpreadsheetDefinitionTask,
+                    FifteenMinuteWorksheetDefinitionTask,
                     HourlyWorksheetDefinitionTask,
                     FourHourWorksheetDefinitionTask,
                     DailyWorksheetDefinitionTask,
@@ -312,7 +313,7 @@ namespace ONE.Operations
             }
             //Merge the Twins
             var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
-            
+
             AddChildren(DigitalTwinItem, allOperationDecendentTwins);
             IsCached = true;
             CacheColumns();
@@ -387,7 +388,7 @@ namespace ONE.Operations
         {
             if (string.IsNullOrEmpty(sId))
                 return null;
-            
+
             uint.TryParse(sId, out var uId);
             if (uId != 0)
             {
@@ -451,7 +452,7 @@ namespace ONE.Operations
                 return matches.First();
             return null;
         }
-  
+
         public long GetColumnTwinDataPropertyLong(string guid, string path, string key)
         {
             DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
@@ -527,8 +528,8 @@ namespace ONE.Operations
         }
         public Column GetColumnByVariableId(long variableId)
         {
-           if (ColumnsByVariable.ContainsKey(variableId))
-               return ColumnsByVariable[variableId];
+            if (ColumnsByVariable.ContainsKey(variableId))
+                return ColumnsByVariable[variableId];
             return null;
         }
         public Column GetColumnByVarNum(long varNum)
@@ -627,7 +628,7 @@ namespace ONE.Operations
             else
                 return ColumnTwins[idx].TwinReferenceId;
         }
-        
+
         public string GetWimsVarType(Column column)
         {
             var workSheetType = GetWorksheetType(column);
@@ -898,7 +899,7 @@ namespace ONE.Operations
             }
             return EnumErrors.ERR_NOT_IMPLEMENTED.ToString();
         }
-       
+
         public string GetWorksheetTypeName(string guid)
         {
             if (!IsCached)
@@ -920,7 +921,7 @@ namespace ONE.Operations
                 return base.ToString();
             }
         }
-        
+
 
     }
 }

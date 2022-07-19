@@ -53,7 +53,7 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
-        public async Task<List<proto.Configuration>> GetConfigurationsAsync(string configurationTypeId, string authTwinRefId, string context = "")
+        public async Task<List<proto.Configuration>> GetConfigurationsAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "")
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -61,7 +61,8 @@ namespace ONE.Common.Configuration
             List<proto.Configuration> configurations = new List<proto.Configuration>();
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/configuration/v2/?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&context={context}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/configuration/v2/?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&descendantTwinTypeId={descendantTwinTypeId}&context={context}")
+                                                                    .ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var results = respContent.ApiResponse.Content.Configurations.Items.Distinct().ToList();
@@ -85,15 +86,15 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
-        public async Task<List<proto.Configuration>> GetConfigurationsAdminAsync(string configurationTypeId, string authTwinRefId, string context = "", string ownerId = "", bool? isPublic = null )
+        public async Task<List<proto.Configuration>> GetConfigurationsAdminAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "", string ownerId = "", bool? isPublic = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
             List<proto.Configuration> configurations = new List<proto.Configuration>();
-            string url = $"common/configuration/v2/admin?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&context={context}&ownerId={ownerId}";
+            string url = $"common/configuration/v2/admin?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&descendantTwinTypeId={descendantTwinTypeId}&context={context}&ownerId={ownerId}";
             if (isPublic != null)
-                url = $"common/configuration/v2/admin?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&context={context}&ownerId={ownerId}?isPublic={isPublic}";
+                url = $"common/configuration/v2/admin?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&descendantTwinTypeId={descendantTwinTypeId}&context={context}&ownerId={ownerId}?isPublic={isPublic}";
             try
             {
                 var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
@@ -160,8 +161,8 @@ namespace ONE.Common.Configuration
 
             var requestId = Guid.NewGuid();
             var endpoint = $"common/configuration/v1/";
-            
-           
+
+
             dynamic jObject = new JObject();
             jObject["configurationData"] = configuration.ConfigurationData;
             jObject["enumEntity"] = (int)configuration.EnumEntity;
