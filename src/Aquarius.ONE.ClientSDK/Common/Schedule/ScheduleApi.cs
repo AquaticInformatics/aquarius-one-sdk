@@ -57,13 +57,14 @@ namespace ONE.Common.Schedule
                     return schedules;
                 }
 
-                Event(null, new ClientApiLoggerEventArgs 
-                    { EventLevel = EnumEventLevel.Warn, 
-                        HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                        ElapsedMs = watch.ElapsedMilliseconds, 
-                        Module = "ScheduleApi", 
-                        Message = $"GetSchedulesAsync Failed"
-                    });
+                Event(null, new ClientApiLoggerEventArgs
+                { 
+                    EventLevel = EnumEventLevel.Warn,
+                    HttpStatusCode = respContent.ResponseMessage.StatusCode,
+                    ElapsedMs = watch.ElapsedMilliseconds,
+                    Module = "ScheduleApi",
+                    Message = $"GetSchedulesAsync Failed"
+                });
 
                 return null;
             }
