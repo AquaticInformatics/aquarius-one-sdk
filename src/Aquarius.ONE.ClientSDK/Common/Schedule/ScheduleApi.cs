@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ONE.Utilities;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -258,7 +259,13 @@ namespace ONE.Common.Schedule
                 
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    scheduleOccurrences.AddRange(respContent.ApiResponse.Content.ScheduleOccurrences.Items);
+
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    var results = apiResponse?.Content.ScheduleOccurrences.Items;
+                    if (results != null)
+                    {
+                        scheduleOccurrences.AddRange(results);
+                    }
 
                     Event(null, new ClientApiLoggerEventArgs
                     {
