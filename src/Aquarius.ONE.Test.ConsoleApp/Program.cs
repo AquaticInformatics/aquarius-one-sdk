@@ -3,6 +3,7 @@ using CommandLine;
 using ONE;
 using ONE.Utilities;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Aquarius.ONE.Test.ConsoleApp
@@ -106,13 +107,24 @@ namespace Aquarius.ONE.Test.ConsoleApp
             }
             if (await clientSDK.Authentication.LoginResourceOwnerAsync(username, password))
             {
-                Console.WriteLine($"Login Successful!");
-                Console.WriteLine($"Access Token: {clientSDK.Authentication.Token.access_token}");
-                Console.WriteLine($"Expires: {clientSDK.Authentication.Token.expires.ToString("MM/dd/yyyy HH:mm:ss")}");
-                Console.WriteLine($"Login Successful!");
-                CommandHelper.SaveConfig(clientSDK);
-                var result = await clientSDK.Authentication.GetUserInfoAsync();
-                return true;
+
+                var config1 = await clientSDK.Configuration.GetConfigurationAsync("9AAA4AA9-C63A-4483-B535-003FB2840F0B");
+
+                // wait 16 minutes... in milliseconds
+                Thread.Sleep(960000);
+
+                var config2 = await clientSDK.Configuration.GetConfigurationAsync("9AAA4AA9-C63A-4483-B535-003FB2840F0B");
+
+
+
+
+                //Console.WriteLine($"Login Successful!");
+                //Console.WriteLine($"Access Token: {clientSDK.Authentication.Token.access_token}");
+                //Console.WriteLine($"Expires: {clientSDK.Authentication.Token.expires.ToString("MM/dd/yyyy HH:mm:ss")}");
+                //Console.WriteLine($"Login Successful!");
+                //CommandHelper.SaveConfig(clientSDK);
+                //var result = await clientSDK.Authentication.GetUserInfoAsync();
+                //return true;
             }
             return false;
         }
