@@ -314,5 +314,193 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
+
+        public async Task<List<proto.ConfigurationNote>> GetConfigurationNotesAsync(string configurationId, DateTime startDate, DateTime endDate, string tagString="", string noteContains="")
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+
+            List<proto.ConfigurationNote> configurationNotes = new List<proto.ConfigurationNote>();
+ 
+            string endpointUrl = $"common/configuration/v2/notes/{configurationId}?startDate={startDate}&endDate={endDate}";
+
+            if (!string.IsNullOrWhiteSpace(tagString))
+            {
+                endpointUrl += $"&{tagString}";
+            }
+            if (!string.IsNullOrWhiteSpace(noteContains))
+            {
+                endpointUrl += $"&{noteContains}";
+            }
+
+            try
+            {
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpointUrl).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    var results = respContent.ApiResponse.Content.ConfigurationNotes.Items.Distinct().ToList();
+                    foreach (var result in results)
+                    {
+                        proto.ConfigurationNote configurationNote = new proto.ConfigurationNote(result);
+                        configurationNotes.Add(configurationNote);
+                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Success" });
+                    return configurationNotes;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"GetConfigurationNotesAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        public async Task<List<proto.ConfigurationNote>> GetConfigurationNotesLastAsync(string configurationTypeId, string authTwinRefId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+
+            List<proto.ConfigurationNote> configurationNotes = new List<proto.ConfigurationNote>();
+
+            string endpointUrl = $"common/configuration/v2/notes/last?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}";
+
+            try
+            {
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpointUrl).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    var results = respContent.ApiResponse.Content.ConfigurationNotes.Items.Distinct().ToList();
+                    foreach (var result in results)
+                    {
+                        proto.ConfigurationNote configurationNote = new proto.ConfigurationNote(result);
+                        configurationNotes.Add(configurationNote);
+                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Success" });
+                    return configurationNotes;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"GetConfigurationNotesAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        public async Task<List<proto.ConfigurationTag>> GetConfigurationTagsAsync(string configurationId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+
+            List<proto.ConfigurationTag> configurationTags = new List<proto.ConfigurationTag>();
+
+            string endpointUrl = $"common/configuration/v2/notes/{configurationId}/uniquetags";
+
+            try
+            {
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpointUrl).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    var results = respContent.ApiResponse.Content.ConfigurationTags.Items.Distinct().ToList();
+                    foreach (var result in results)
+                    {
+                        ConfigurationTag configurationTag = new proto.ConfigurationTag(result);
+                        configurationTags.Add(configurationTag);
+                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Success" });
+                    return configurationTags;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"GetConfigurationTagsAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        public async Task<bool> CreateConfigurationNoteAsync(ConfigurationNote configurationNote)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"common/configuration/v2/notes";
+
+            var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Success" });
+                    return true;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed" });
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"CreateConfigurationNoteAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        public async Task<bool> UpdateConfigurationNoteAsync(ConfigurationNote configurationNote)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"common/configuration/v2/notes";
+
+            var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            try
+            {
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Success" });
+                    return true;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Failed" });
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"UpdateConfigurationNoteAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteConfigurationNotesAsync(string configurationId, string noteId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            try
+            {
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"common/configuration/v2/notes/{configurationId}?noteId={noteId}").ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"DeleteConfigurationAsync Success" });
+                else
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"DeleteConfigurationAsync Failed" });
+                return respContent.ResponseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"DeleteConfigurationNotesAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
     }
 }
