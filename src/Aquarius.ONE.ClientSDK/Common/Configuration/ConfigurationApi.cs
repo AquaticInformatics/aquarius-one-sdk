@@ -327,11 +327,11 @@ namespace ONE.Common.Configuration
 
             if (!string.IsNullOrWhiteSpace(tagString))
             {
-                endpointUrl += $"&{tagString}";
+                endpointUrl += $"&tagString={tagString}";
             }
             if (!string.IsNullOrWhiteSpace(noteContains))
             {
-                endpointUrl += $"&{noteContains}";
+                endpointUrl += $"&noteContains={noteContains}";
             }
 
             try
@@ -434,6 +434,34 @@ namespace ONE.Common.Configuration
             var endpoint = $"common/configuration/v2/notes";
 
             var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Success" });
+                    return true;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed" });
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"CreateConfigurationNoteAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+
+        public async Task<bool> ImportConfigurationNotesAsync(ConfigurationNotes configurationNotes)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+            var endpoint = $"common/configuration/v2/notes/import";
+
+            var json = JsonConvert.SerializeObject(configurationNotes, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
             try
             {
