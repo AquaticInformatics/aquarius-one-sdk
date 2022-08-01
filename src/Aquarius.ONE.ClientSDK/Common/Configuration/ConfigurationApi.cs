@@ -191,6 +191,61 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
+
+        /// <summary>
+        /// Create a configuration, defaults to the latest version of the api.
+        /// </summary>
+        /// <param name="configuration">configuration to be updated</param>
+        /// <param name="apiVersion">version of the api to use, set to 0 to use the latest version</param>
+        /// <returns>Boolean value indicating whether the configuration was successfully created or not</returns>
+        public async Task<bool> CreateConfigurationAsync(proto.Configuration configuration, int apiVersion)
+        {
+            switch (apiVersion)
+            {
+                case 1:
+                    return await CreateConfigurationAsync(configuration);
+                default:
+                    return await CreateConfigurationV2Async(configuration);
+            }
+        }
+
+        private async Task<bool> CreateConfigurationV2Async(proto.Configuration configuration)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            const string endpoint = "common/configuration/v2/";
+
+            try
+            {
+                var respContent = await _restHelper.PostRestProtobufAsync(configuration, endpoint).ConfigureAwait(_continueOnCapturedContext);
+
+                var message = "CreateConfigurationV2Async Success";
+                var eventLevel = EnumEventLevel.Trace;
+                var success = true;
+
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    message = "CreateConfigurationV2Async Failed";
+                    eventLevel = EnumEventLevel.Warn;
+                    success = false;
+                }
+
+                Event(null,
+                    new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = eventLevel, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi",
+                        Message = message
+                    });
+                
+                return success;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"CreateConfigurationV2Async Failed - {e.Message}" });
+                throw;
+            }
+        }
+
         public async Task<bool> CreateConfigurationAsync(string authTwinRefId, string configurationTypeId, string configurationData, bool isPublic)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -261,6 +316,61 @@ namespace ONE.Common.Configuration
                 throw;
             }
         }
+
+        /// <summary>
+        /// Update a configuration, defaults to the latest version of the api.
+        /// </summary>
+        /// <param name="configuration">configuration to be updated</param>
+        /// <param name="apiVersion">version of the api to use, set to 0 to use the latest version</param>
+        /// <returns>Boolean value indicating whether the configuration was successfully updated or not</returns>
+        public async Task<bool> UpdateConfigurationAsync(proto.Configuration configuration, int apiVersion)
+        {
+            switch (apiVersion)
+            {
+                case 1:
+                    return await UpdateConfigurationAsync(configuration);
+                default:
+                    return await UpdateConfigurationV2Async(configuration);
+            }
+        }
+
+        private async Task<bool> UpdateConfigurationV2Async(proto.Configuration configuration)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var endpoint = $"common/configuration/v2/{configuration.Id}";
+
+            try
+            {
+                var respContent = await _restHelper.PutRestProtobufAsync(configuration, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                
+                var message = "UpdateConfigurationV2Async Success";
+                var eventLevel = EnumEventLevel.Trace;
+                var success = true;
+
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    message = "UpdateConfigurationV2Async Failed";
+                    eventLevel = EnumEventLevel.Warn;
+                    success = false;
+                }
+
+                Event(null,
+                    new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = eventLevel, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi",
+                        Message = message
+                    });
+
+                return success;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ConfigurationApi", Message = $"UpdateConfigurationV2Async Failed - {e.Message}" });
+                throw;
+            }
+        }
+
         public async Task<bool> UpdateConfigurationAsync(string id, string configurationTypeId, string configurationData, bool isPublic)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -276,6 +386,11 @@ namespace ONE.Common.Configuration
             jObject["isPublic"] = isPublic;
 
             var json = JsonConvert.SerializeObject(jObject);
+
+            //var configuration = new proto.Configuration
+            //    { Id = id, ConfigurationTypeId = configurationTypeId, ConfigurationData = configurationData, Version = 0, IsPublic = isPublic };
+
+            //return await UpdateConfigurationAsync(configuration, 0);
 
             try
             {
