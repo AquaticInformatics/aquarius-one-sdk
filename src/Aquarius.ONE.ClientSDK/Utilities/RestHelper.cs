@@ -105,10 +105,12 @@ namespace ONE.Utilities
                     ? _authentication.GetLocalUri(endpointUrl)
                     : endpointUrl;
                 var client = _environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local
-                    ? _authentication.GetLocalHttpProtocolBufferClient(uri)
+                    ? _authentication.GetLocalHttpProtocolBufferClient(endpointUrl)
                     : _authentication.HttpProtocolBufferClient;
 
-                var response = await client.PostAsync(uri, new ByteArrayContent(protobuf.ToByteArray())).ConfigureAwait(_continueOnCapturedContext);
+                var body = new ByteArrayContent(protobuf.ToByteArray());
+                body.Headers.ContentType = new MediaTypeHeaderValue("application/protobuf");
+                var response = await client.PostAsync(uri, body).ConfigureAwait(_continueOnCapturedContext);
                 
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -118,7 +120,7 @@ namespace ONE.Utilities
                 
                 error.ElapsedMs = elapsedMs;
                 error.Client = (JObject)JToken.FromObject(client);
-                error.Response = respContent;
+                error.Response = respContent.ToString();
                 error.Content = protobuf == null ? "" : protobuf.ToString();
 
                 string file = SaveRestCallData("POST", error.ToString(), !response.IsSuccessStatusCode);
@@ -303,10 +305,12 @@ namespace ONE.Utilities
                     ? _authentication.GetLocalUri(endpointUrl)
                     : endpointUrl;
                 var client = _environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local
-                    ? _authentication.GetLocalHttpProtocolBufferClient(uri)
+                    ? _authentication.GetLocalHttpProtocolBufferClient(endpointUrl)
                     : _authentication.HttpProtocolBufferClient;
 
-                var response = await client.PutAsync(uri, new ByteArrayContent(protobuf.ToByteArray())).ConfigureAwait(_continueOnCapturedContext);
+                var body = new ByteArrayContent(protobuf.ToByteArray());
+                body.Headers.ContentType = new MediaTypeHeaderValue("application/protobuf");
+                var response = await client.PutAsync(uri, body).ConfigureAwait(_continueOnCapturedContext);
 
                 watch.Stop();
                 var elapsedMs = watch.ElapsedMilliseconds;
@@ -316,7 +320,7 @@ namespace ONE.Utilities
 
                 error.ElapsedMs = elapsedMs;
                 error.Client = (JObject)JToken.FromObject(client);
-                error.Response = respContent;
+                error.Response = respContent.ToString();
                 error.Content = protobuf == null ? "" : protobuf.ToString();
 
                 string file = SaveRestCallData("PUT", error.ToString(), !response.IsSuccessStatusCode);

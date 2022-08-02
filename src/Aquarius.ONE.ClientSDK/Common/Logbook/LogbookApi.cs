@@ -21,13 +21,6 @@ namespace ONE.Common.Logbook
         }
 
         /// <summary>
-        /// Get logbooks associated to a particular operation
-        /// </summary>
-        /// <param name="operationId">Identifier of the operation to which the logbook is to be associated</param>
-        /// <returns>A list of logbooks</returns>
-        public async Task<List<Proto.Configuration>> GetLogbooksAsync(string operationId) => await _configurationApi.GetConfigurationsAsync(LogbookTypeId, operationId);
-
-        /// <summary>
         /// Create a named logbook that is associated to a particular operation.
         /// </summary>
         /// <param name="name"></param>
@@ -43,6 +36,13 @@ namespace ONE.Common.Logbook
         }
 
         /// <summary>
+        /// Get logbooks associated to a particular operation
+        /// </summary>
+        /// <param name="operationId">Identifier of the operation to which the logbook is to be associated</param>
+        /// <returns>A list of logbooks</returns>
+        public async Task<List<Proto.Configuration>> GetLogbooksAsync(string operationId) => await _configurationApi.GetConfigurationsAsync(LogbookTypeId, operationId);
+
+        /// <summary>
         /// Update the name or isPublic setting of a logbook.
         /// </summary>
         /// <param name="logbookId"></param>
@@ -51,7 +51,7 @@ namespace ONE.Common.Logbook
         /// <returns>Boolean value indicating whether creation of the logbook was successful</returns>
         public async Task<bool> UpdateLogbookAsync(string logbookId, string name, bool isPublic)
         {
-            // Need to get the existing logbook so we can maintain privileges and other properties that are note editable via this method.
+            // Need to get the existing logbook so we can maintain privileges and other properties that are not editable via this method.
             var existingLogbook = await _configurationApi.GetConfigurationAsync(logbookId);
 
             if (existingLogbook == null)
@@ -75,6 +75,40 @@ namespace ONE.Common.Logbook
         }
 
         /// <summary>
+        /// Retrieves the entryTime of the latest entry for each logbook available to the user on the provided operation.
+        /// If there is an error an empty dictionary will be returned.
+        /// </summary>
+        /// <param name="operationId">Identifier of the operation that contains the logbooks being queried</param>
+        /// <returns>Dictionary containing the logbookId and dateTime of the last entry in that logbook</returns>
+        public async Task<Dictionary<string, DateTime>> GetEntryTimeOfLatestEntriesAsync(string operationId) =>
+            (await _configurationApi.GetConfigurationNotesLastAsync(LogbookTypeId, operationId))?.ToDictionary(n => n.ConfigurationId, v => v.NoteTime.ToDateTime()) ??
+            new Dictionary<string, DateTime>();
+
+        /// <summary>
+        /// Retrieves unique tags associated with a specific logbook, if there are no tags on a logbook or there is an error an empty list will be returned.
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook for which to retrieve tags</param>
+        /// <returns>A list of strings that are tags associated to the provided logbook</returns>
+        public async Task<IEnumerable<string>> GetUniqueTagsAsync(string logbookId) =>
+            (await _configurationApi.GetConfigurationTagsAsync(logbookId))?.Select(t => t.Tag) ?? new List<string>();
+
+        /// <summary>
+        /// Create an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
+        /// <param name="entry">Text of the entry to be created</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
+        /// <returns>Boolean indicating successful creation of the logbookEntry</returns>
+        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, params string[] tags)
+        {
+            var logbookEntry = new ConfigurationNote
+                { ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToJsonTicksDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) } };
+
+            return await _configurationApi.CreateConfigurationNoteAsync(logbookEntry);
+        }
+
+        /// <summary>
         /// Retrieves entries belonging to a specific logbook for a specified time span.  Results can be further filtered using the tagString and noteContains parameters.
         /// </summary>
         /// <param name="logbookId">Identifier of the logbook for which to retrieve entries</param>
@@ -87,40 +121,6 @@ namespace ONE.Common.Logbook
             string noteContains = "") => await _configurationApi.GetConfigurationNotesAsync(logbookId, startDate, endDate, tagString, noteContains);
 
         /// <summary>
-        /// Retrieves the entryTime of the latest note for each logbook available to the user on the provided operation.
-        /// If there is an error an empty dictionary will be returned.
-        /// </summary>
-        /// <param name="operationId">Identifier of the operation that contains the logbooks being queried</param>
-        /// <returns>Dictionary containing the logbookId and dateTime of the last note in that logbook</returns>
-        public async Task<Dictionary<string, DateTime>> GetDateTimeOfLastNoteForMyLogbooksAsync(string operationId) =>
-            (await _configurationApi.GetConfigurationNotesLastAsync(LogbookTypeId, operationId))?.ToDictionary(n => n.ConfigurationId, v => v.NoteTime.ToDateTime()) ??
-            new Dictionary<string, DateTime>();
-
-        /// <summary>
-        /// Retrieves unique tags associated with a specific logbook, if there are no tags on a logbook or there is an error an empty list will be returned.
-        /// </summary>
-        /// <param name="logbookId">Identifier of the logbook for which to retrieve tags</param>
-        /// <returns>A list of strings that are tags associated to the provided logbook</returns>
-        public async Task<IEnumerable<string>> GetUniqueLogbookTagsAsync(string logbookId) =>
-            (await _configurationApi.GetConfigurationTagsAsync(logbookId))?.Select(t => t.Tag) ?? new List<string>();
-
-        /// <summary>
-        /// Create an entry in a logbook
-        /// </summary>
-        /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
-        /// <param name="entry">Text of the entry to be created</param>
-        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
-        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
-        /// <returns>Boolean indicating successful creation of the logbookEntry</returns>
-        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, IEnumerable<string> tags)
-        {
-            var logbookEntry = new ConfigurationNote
-                { ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToJsonTicksDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) } };
-
-            return await _configurationApi.CreateConfigurationNoteAsync(logbookEntry);
-        }
-
-        /// <summary>
         /// Edit an entry in a logbook
         /// </summary>
         /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
@@ -129,7 +129,7 @@ namespace ONE.Common.Logbook
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
         /// <returns>Boolean indicating successful creation of the logbookEntry</returns>
-        public async Task<bool> UpdateLogbookNoteAsync(string logbookId, string entryId, string entry, DateTime entryTime, IEnumerable<string> tags)
+        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
             {
@@ -146,6 +146,6 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Identifier of the logbook containing the entry to be deleted</param>
         /// <param name="entryId">Identifier of the entry to be deleted or 'all' to delete all entries in a logbook</param>
         /// <returns>Boolean value indicating successful deletion of the entry or entries</returns>
-        public async Task<bool> DeleteLogbookNoteAsync(string logbookId, string entryId) => await _configurationApi.DeleteConfigurationNotesAsync(logbookId, entryId);
+        public async Task<bool> DeleteLogbookEntryAsync(string logbookId, string entryId) => await _configurationApi.DeleteConfigurationNotesAsync(logbookId, entryId);
     }
 }
