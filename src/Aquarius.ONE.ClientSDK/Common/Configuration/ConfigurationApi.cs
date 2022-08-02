@@ -193,11 +193,11 @@ namespace ONE.Common.Configuration
         }
 
         /// <summary>
-        /// Create a configuration, defaults to the latest version of the api.
+        /// Create a configuration, allows specification of a specific api version, defaults to the latest version of the api.
         /// </summary>
         /// <param name="configuration">configuration to be updated</param>
         /// <param name="apiVersion">version of the api to use, set to 0 to use the latest version</param>
-        /// <returns>Boolean value indicating whether the configuration was successfully created or not</returns>
+        /// <returns>Boolean value indicating whether or not the configuration was successfully created</returns>
         public async Task<bool> CreateConfigurationAsync(proto.Configuration configuration, int apiVersion)
         {
             switch (apiVersion)
@@ -318,11 +318,11 @@ namespace ONE.Common.Configuration
         }
 
         /// <summary>
-        /// Update a configuration, defaults to the latest version of the api.
+        /// Update a configuration, allows specification of a specific api version, defaults to the latest version of the api.
         /// </summary>
         /// <param name="configuration">configuration to be updated</param>
         /// <param name="apiVersion">version of the api to use, set to 0 to use the latest version</param>
-        /// <returns>Boolean value indicating whether the configuration was successfully updated or not</returns>
+        /// <returns>Boolean value indicating whether or not the configuration was successfully updated</returns>
         public async Task<bool> UpdateConfigurationAsync(proto.Configuration configuration, int apiVersion)
         {
             switch (apiVersion)
