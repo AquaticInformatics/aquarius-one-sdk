@@ -23,10 +23,10 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Create a named logbook that is associated to a particular operation.
         /// </summary>
-        /// <param name="name"></param>
-        /// <param name="operationId"></param>
-        /// <param name="isPublic"></param>
-        /// <returns>Boolean value indicating whether creation of the logbook was successful</returns>
+        /// <param name="name">Name of the logbook</param>
+        /// <param name="operationId">Identifier of the operation to which the logbook is to be associated</param>
+        /// <param name="isPublic">IsPublic flag for the logbook</param>
+        /// <returns>Boolean value indicating whether or not the logbook was successfully created</returns>
         public async Task<bool> CreateLogbookAsync(string operationId, string name, bool isPublic)
         {
             var logbook = new Proto.Configuration
@@ -38,17 +38,17 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Get logbooks associated to a particular operation
         /// </summary>
-        /// <param name="operationId">Identifier of the operation to which the logbook is to be associated</param>
+        /// <param name="operationId">Identifier of the operation with which the logbooks are associated</param>
         /// <returns>A list of logbooks</returns>
         public async Task<List<Proto.Configuration>> GetLogbooksAsync(string operationId) => await _configurationApi.GetConfigurationsAsync(LogbookTypeId, operationId);
 
         /// <summary>
-        /// Update the name or isPublic setting of a logbook.
+        /// Update the name or isPublic flag on a logbook.
         /// </summary>
-        /// <param name="logbookId"></param>
-        /// <param name="name"></param>
-        /// <param name="isPublic"></param>
-        /// <returns>Boolean value indicating whether creation of the logbook was successful</returns>
+        /// <param name="logbookId">Identifier of the logbook to be edited</param>
+        /// <param name="name">New name of the logbook</param>
+        /// <param name="isPublic">New isPublic flag for the logbook</param>
+        /// <returns>Boolean value indicating whether or not the logbook was successfully updated</returns>
         public async Task<bool> UpdateLogbookAsync(string logbookId, string name, bool isPublic)
         {
             // Need to get the existing logbook so we can maintain privileges and other properties that are not editable via this method.
@@ -67,7 +67,7 @@ namespace ONE.Common.Logbook
         /// Deletes all notes in a logbook then deletes the logbook.
         /// </summary>
         /// <param name="logbookId">Identifier of the logbook to be deleted</param>
-        /// <returns>True if the logbook was deleted, otherwise false</returns>
+        /// <returns>Boolean value indicating whether or not the logbook was successfully deleted</returns>
         public async Task<bool> DeleteLogbookAsync(string logbookId)
         {
             await _configurationApi.DeleteConfigurationNotesAsync(logbookId, "all");
@@ -99,7 +99,7 @@ namespace ONE.Common.Logbook
         /// <param name="entry">Text of the entry to be created</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
-        /// <returns>Boolean indicating successful creation of the logbookEntry</returns>
+        /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
         public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
@@ -128,7 +128,7 @@ namespace ONE.Common.Logbook
         /// <param name="entry">Text of the entry to be created, this text replaces any existing entry text</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
-        /// <returns>Boolean indicating successful creation of the logbookEntry</returns>
+        /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
         public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
@@ -145,7 +145,7 @@ namespace ONE.Common.Logbook
         /// </summary>
         /// <param name="logbookId">Identifier of the logbook containing the entry to be deleted</param>
         /// <param name="entryId">Identifier of the entry to be deleted or 'all' to delete all entries in a logbook</param>
-        /// <returns>Boolean value indicating successful deletion of the entry or entries</returns>
+        /// <returns>Boolean value indicating whether or not the entry or entries were successfully deleted</returns>
         public async Task<bool> DeleteLogbookEntryAsync(string logbookId, string entryId) => await _configurationApi.DeleteConfigurationNotesAsync(logbookId, entryId);
     }
 }

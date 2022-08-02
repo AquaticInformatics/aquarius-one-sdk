@@ -387,11 +387,6 @@ namespace ONE.Common.Configuration
 
             var json = JsonConvert.SerializeObject(jObject);
 
-            //var configuration = new proto.Configuration
-            //    { Id = id, ConfigurationTypeId = configurationTypeId, ConfigurationData = configurationData, Version = 0, IsPublic = isPublic };
-
-            //return await UpdateConfigurationAsync(configuration, 0);
-
             try
             {
                 var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
