@@ -52,23 +52,23 @@ namespace ONE.Enterprise.Authentication
                 return _httpJsonClient;
             }
         }
-        public HttpClient GetLocalHttpJsonClient(string endpointURL)
-        {
-            if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
-            {
-                if (!LoginResourceOwnerAsync(UserName, Password).Result)
-                {
-                    Token = null;
-                }
 
-            }
+        public HttpClient GetLocalHttpJsonClient(string endpointUrl)
+        {
             var httpClient = new HttpClient();
             if (_environment != null)
-                httpClient.BaseAddress = new Uri($"{_environment.BaseUri}:{GetLocalHttpPort(endpointURL)}/");
+                httpClient.BaseAddress = new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
             httpClient.Timeout = TimeSpan.FromMinutes(10);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            if ((Token == null || Token.expires < DateTime.UtcNow) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                Token = LocalLoginAsync().Result;
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token?.access_token);
+
             return httpClient;
         }
+
         public HttpClient HttpProtocolBufferClient
         {
             get
@@ -93,73 +93,74 @@ namespace ONE.Enterprise.Authentication
                 return _httpProtocolBufferClient;
             }
         }
-        public HttpClient GetLocalHttpProtocolBufferClient(string endpointURL)
+        public HttpClient GetLocalHttpProtocolBufferClient(string endpointUrl)
         {
-            if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
-            {
-                if (!LoginResourceOwnerAsync(UserName, Password).Result)
-                {
-                    Token = null;
-                }
-
-            }
             var httpClient = new HttpClient();
+            
             if (_environment != null)
-                httpClient.BaseAddress = new Uri($"{_environment.BaseUri}:{GetLocalHttpPort(endpointURL)}/");
+                httpClient.BaseAddress = new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
             httpClient.Timeout = TimeSpan.FromMinutes(10);
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
+
+            if ((Token == null || Token.expires < DateTime.UtcNow) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                Token = LocalLoginAsync().Result;
+
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token?.access_token);
+
             return httpClient;
         }
+
+        private const string ActivityPath = "COMMON/ACTIVITY";
+        private const string ComputationPath = "COMMON/COMPUTATION";
+        private const string ConfigurationPath = "COMMON/CONFIGURATION";
+        private const string LibraryPath = "COMMON/LIBRARY";
+        private const string NotificationPath = "COMMON/NOTIFICATION";
+        private const string TimezonePath = "COMMON/TIMEZONE";
+        private const string TwinPath = "ENTERPRISE/TWIN";
+        private const string CorePath = "ENTERPRISE/CORE";
+        private const string ReportPath = "ENTERPRISE/REPORT";
+        private const string SpreadsheetPath = "OPERATIONS/SPREADSHEET";
+
         public int GetLocalHttpPort(string uri)
         {
             if (string.IsNullOrEmpty(uri))
                 return 0;
             uri = uri.ToUpper();
-            if (uri.Contains("COMMON/COMPUTATION"))
-                return 9006;
-            if (uri.Contains("COMMON/NOTIFICATION"))
-                return 9004;
-            if (uri.Contains("COMMON/TIMEZONE"))
-                return 9001;
-            if (uri.Contains("COMMON/ACTIVITY"))
+            if (uri.Contains(ActivityPath))
                 return 8918;
-            if (uri.Contains("COMMON/LIBRARY"))
+            if (uri.Contains(ComputationPath))
+                return 9006;
+            if (uri.Contains(ConfigurationPath))
+                return 9010;
+            if (uri.Contains(LibraryPath))
                 return 9201;
-            if (uri.Contains("ENTERPRISE/TWIN"))
+            if (uri.Contains(NotificationPath))
+                return 9004;
+            if (uri.Contains(TimezonePath))
+                return 9001;
+            if (uri.Contains(TwinPath))
                 return 8900;
-            if (uri.Contains("ENTERPRISE/CORE"))
+            if (uri.Contains(CorePath))
                 return 9100;
-            if (uri.Contains("ENTERPRISE/REPORT"))
+            if (uri.Contains(ReportPath))
                 return 9090;
-            if (uri.Contains("OPERATIONS/SPREADSHEET"))
+            if (uri.Contains(SpreadsheetPath))
                 return 9502;
             return 0;
         }
+
         public string GetLocalUri(string uri)
         {
             if (string.IsNullOrEmpty(uri))
                 return "";
-            string uppercaseUri = uri.ToUpper();
-            if (uppercaseUri.Contains("COMMON/COMPUTATION"))
-                return uri.Substring(20);
-            if (uppercaseUri.Contains("COMMON/NOTIFICATION"))
-                return uri.Substring(23);
-            if (uppercaseUri.Contains("COMMON/TIMEZONE"))
-                return uri.Substring(20);
-            if (uppercaseUri.Contains("COMMON/ACTIVITY"))
-                return uri.Substring(20);
-            if (uppercaseUri.Contains("COMMON/LIBRARY"))
-                return uri.Substring(18);
-            if (uppercaseUri.Contains("ENTERPRISE/TWIN"))
-                return uri.Substring(19);
-            if (uppercaseUri.Contains("ENTERPRISE/CORE"))
-                return uri.Substring(19);
-            if (uppercaseUri.Contains("ENTERPRISE/REPORT"))
-                return uri.Substring(21);
-            if (uppercaseUri.Contains("OPERATIONS/SPREADSHEET"))
-                return uri.Substring(26);
+            
+            if (uri.Contains("v1"))
+                return uri.Substring(uri.IndexOf("v1", StringComparison.InvariantCultureIgnoreCase) + 3); // remove the v1 segment from the local uri
+            if (uri.Contains("v2"))
+                return uri.Substring(uri.IndexOf("v2", StringComparison.InvariantCultureIgnoreCase)); // keep the v2 segment in the local uri
             return "";
         }
+
         public void Logout()
         {
             Token = null;
@@ -230,6 +231,53 @@ namespace ONE.Enterprise.Authentication
 
             return IsAuthenticated;
         }
+
+        private async Task<Token> LocalLoginAsync()
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            
+            var body = new Dictionary<string, string>
+            {
+                { "client_id", "VSTestClient" }, { "client_secret", "0CCBB786-9412-4088-BC16-78D3A10158B7" }, { "grant_type", "password" }, { "scope", "FFAccessAPI openid" },
+                { "username", UserName }, { "password", Password }
+            };
+
+            const string endpointUrl = "/connect/token";
+
+            using (var request = new HttpRequestMessage(HttpMethod.Post, endpointUrl))
+            {
+                request.Content = new FormUrlEncodedContent(body);
+                request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+
+                var localAuthClient = new HttpClient();
+                localAuthClient.BaseAddress = _environment.AuthenticationUri;
+
+                using (var respContent = await localAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                {
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    var json = await respContent.Content.ReadAsStringAsync();
+                    if (json.Length > 0)
+                        Token = JsonConvert.DeserializeObject<Token>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+                    var message = "LocalLoginAsync success";
+                    var eventLevel = EnumEventLevel.Trace;
+
+                    if (!respContent.IsSuccessStatusCode)
+                    {
+                        message = "LocalLoginAsync failure";
+                        eventLevel = EnumEventLevel.Warn;
+                    }
+
+                    Event(null,
+                        new ClientApiLoggerEventArgs
+                            { EventLevel = eventLevel, HttpStatusCode = respContent.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = message });
+                }
+            }
+
+            return Token;
+        }
+
         public async Task<string> GetUserInfoAsync()
         {
             try

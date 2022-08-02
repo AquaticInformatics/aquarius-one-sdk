@@ -1,12 +1,13 @@
-﻿using ONE.Enterprise.Authentication;
+﻿using Google.Protobuf;
 using Newtonsoft.Json.Linq;
+using ONE.Enterprise.Authentication;
+using ONE.Models.CSharp;
 using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using ONE.Models.CSharp;
 
 namespace ONE.Utilities
 {
@@ -91,6 +92,66 @@ namespace ONE.Utilities
                 throw;
             }
         }
+
+        public async Task<ServiceResponse> PostRestProtobufAsync(IMessage protobuf, string endpointUrl)
+        {
+            dynamic error = new JObject();
+
+            try
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                var uri = _environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local
+                    ? _authentication.GetLocalUri(endpointUrl)
+                    : endpointUrl;
+                var client = _environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local
+                    ? _authentication.GetLocalHttpProtocolBufferClient(endpointUrl)
+                    : _authentication.HttpProtocolBufferClient;
+
+                var body = new ByteArrayContent(protobuf.ToByteArray());
+                body.Headers.ContentType = new MediaTypeHeaderValue("application/protobuf");
+                var response = await client.PostAsync(uri, body).ConfigureAwait(_continueOnCapturedContext);
+                
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                
+                var respContent = new ApiResponse();
+                respContent.MergeFrom(await response.Content.ReadAsByteArrayAsync().ConfigureAwait(_continueOnCapturedContext));
+                
+                error.ElapsedMs = elapsedMs;
+                error.Client = (JObject)JToken.FromObject(client);
+                error.Response = respContent.ToString();
+                error.Content = protobuf == null ? "" : protobuf.ToString();
+
+                string file = SaveRestCallData("POST", error.ToString(), !response.IsSuccessStatusCode);
+
+                var message = $"PostRestProtobufAsync Success: {uri}";
+                var eventLevel = EnumEventLevel.Trace;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    message = $"PostRestProtobufAsync Failed: {uri}";
+                    eventLevel = EnumEventLevel.Warn;
+                }
+
+                Event(null,
+                    new ClientApiLoggerEventArgs
+                        { File = file, EventLevel = eventLevel, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = message });
+
+                if (_throwAPIErrors && !response.IsSuccessStatusCode)
+                    throw new RestApiException(new ServiceResponse { ResponseMessage = response, ApiResponse = respContent, ElapsedMs = elapsedMs });
+
+                return new ServiceResponse { ResponseMessage = response, ApiResponse = respContent, ElapsedMs = elapsedMs };
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "RestHelper", Message = $"PostRestProtobufAsync Failed - {e.Message}" });
+                error.Exception = (JObject)JToken.FromObject(e);
+                SaveRestCallData("POST", error.ToString(), true);
+                throw;
+            }
+        }
+
         public async Task<ServiceResponse> UploadFileAsync(Guid requestId,
            string filePath,
            string endpointURL)
@@ -231,6 +292,66 @@ namespace ONE.Utilities
                 throw;
             }
         }
+
+        public async Task<ServiceResponse> PutRestProtobufAsync(IMessage protobuf, string endpointUrl)
+        {
+            dynamic error = new JObject();
+
+            try
+            {
+                var watch = System.Diagnostics.Stopwatch.StartNew();
+
+                var uri = _environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local
+                    ? _authentication.GetLocalUri(endpointUrl)
+                    : endpointUrl;
+                var client = _environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local
+                    ? _authentication.GetLocalHttpProtocolBufferClient(endpointUrl)
+                    : _authentication.HttpProtocolBufferClient;
+
+                var body = new ByteArrayContent(protobuf.ToByteArray());
+                body.Headers.ContentType = new MediaTypeHeaderValue("application/protobuf");
+                var response = await client.PutAsync(uri, body).ConfigureAwait(_continueOnCapturedContext);
+
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                
+                var respContent = new ApiResponse();
+                respContent.MergeFrom(await response.Content.ReadAsByteArrayAsync().ConfigureAwait(_continueOnCapturedContext));
+
+                error.ElapsedMs = elapsedMs;
+                error.Client = (JObject)JToken.FromObject(client);
+                error.Response = respContent.ToString();
+                error.Content = protobuf == null ? "" : protobuf.ToString();
+
+                string file = SaveRestCallData("PUT", error.ToString(), !response.IsSuccessStatusCode);
+
+                var message = $"PutRestProtobufAsync Success: {uri}";
+                var eventLevel = EnumEventLevel.Trace;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    message = $"PutRestProtobufAsync Failed: {uri}";
+                    eventLevel = EnumEventLevel.Warn;
+                }
+
+                Event(null,
+                    new ClientApiLoggerEventArgs
+                        { File = file, EventLevel = eventLevel, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = message });
+
+                if (_throwAPIErrors && !response.IsSuccessStatusCode)
+                    throw new RestApiException(new ServiceResponse { ResponseMessage = response, ApiResponse = respContent, ElapsedMs = elapsedMs });
+
+                return new ServiceResponse { ResponseMessage = response, ApiResponse = respContent, ElapsedMs = elapsedMs };
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "RestHelper", Message = $"PutRestProtobufAsync Failed - {e.Message}" });
+                error.Exception = (JObject)JToken.FromObject(e);
+                SaveRestCallData("PUT", error.ToString(), true);
+                throw;
+            }
+        }
+
         public async Task<ServiceResponse> PatchRestJSONAsync(
             Guid requestId,
             string json,

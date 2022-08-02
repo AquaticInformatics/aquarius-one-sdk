@@ -2,6 +2,7 @@ using ONE.Common.Activity;
 using ONE.Common.Configuration;
 using ONE.Common.Historian;
 using ONE.Common.Library;
+using ONE.Common.Logbook;
 using ONE.Common.Notification;
 using ONE.Common.Schedule;
 using ONE.Enterprise.Authentication;
@@ -20,6 +21,7 @@ namespace ONE
         public AuthenticationApi Authentication { get; set; }
         public CoreApi Core { get; set; }
         public ConfigurationApi Configuration { get; set; }
+        public LogbookApi Logbook { get; set; }
         public LibraryApi Library { get; set; }
         public ScheduleApi Schedule { get; set; }
         public ActivityApi Activity { get; set; }
@@ -99,6 +101,9 @@ namespace ONE
 
             Configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper);
             Configuration.Event += Logger.Logger_Event;
+
+            // This is a wrapper around the ConfigurationApi no events are logged directly
+            Logbook = new LogbookApi(Environment, ContinueOnCapturedContext, _restHelper);
 
             Library = new LibraryApi(Environment, ContinueOnCapturedContext, _restHelper);
             Library.Event += Logger.Logger_Event;
