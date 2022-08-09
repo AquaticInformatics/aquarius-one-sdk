@@ -7,6 +7,7 @@ using ONE.Common.Notification;
 using ONE.Common.Schedule;
 using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
+using ONE.Enterprise.Report;
 using ONE.Enterprise.Twin;
 using ONE.Operations.Spreadsheet;
 using ONE.PoEditor;
@@ -32,6 +33,7 @@ namespace ONE
         public UserHelper UserHelper { get; set; }
         public CacheHelper CacheHelper { get; set; }
         public PoEditorApi PoEditor { get; set; }
+        public ReportApi Report { get; set; }
         private RestHelper _restHelper { get; set; }
         public EventLogger Logger { get; set; }
 
@@ -119,6 +121,9 @@ namespace ONE
 
             Notification = new NotificationApi(Environment, ContinueOnCapturedContext, _restHelper);
             Notification.Event += Logger.Logger_Event;
+
+            Report = new ReportApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Report.Event += Logger.Logger_Event;
 
             Spreadsheet = new SpreadsheetApi(Environment, ContinueOnCapturedContext, _restHelper);
             Spreadsheet.Event += Logger.Logger_Event;
