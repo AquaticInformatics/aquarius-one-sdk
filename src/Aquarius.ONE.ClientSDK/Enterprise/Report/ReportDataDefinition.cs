@@ -15,7 +15,7 @@ namespace ONE.Enterprise.Report
             DateTime.TryParse(definition.endTime, out DateTime eValue);
             EndTime = eValue;
 
-            DateTime.TryParse(definition.endTime, out DateTime sValue);
+            DateTime.TryParse(definition.startTime, out DateTime sValue);
             StartTime = sValue;
 
             PlantId = definition.plantId;
