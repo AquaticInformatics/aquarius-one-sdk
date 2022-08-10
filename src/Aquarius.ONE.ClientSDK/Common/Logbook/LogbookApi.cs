@@ -133,9 +133,9 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Edit an entry in a logbook
         /// </summary>
-        /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
+        /// <param name="logbookId">Identifier of the logbook in which to update the entry</param>
         /// <param name="entryId">Identifier of the entry to be edited</param>
-        /// <param name="entry">Text of the entry to be created, this text replaces any existing entry text</param>
+        /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
         /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
