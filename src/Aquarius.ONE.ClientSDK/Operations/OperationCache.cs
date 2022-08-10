@@ -262,7 +262,7 @@ namespace ONE.Operations
 
             try
             {
-                var ColumnTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 4);
+                var ColumnTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(Id, Constants.TelemetryCategory.ColumnType.RefId);
                 var LocationTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
                 var SpreadsheetDefinitionTask = _clientSDK.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
                 var FifteenMinuteWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
