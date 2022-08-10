@@ -1,5 +1,6 @@
 ﻿using CommandLine;
 using ONE;
+using ONE.Enterprise.Report;
 using ONE.Models.CSharp;
 using ONE.Operations.Spreadsheet;
 using System;
@@ -22,8 +23,8 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 return 0;
             foreach (var report in reports)
             {
-
-                Console.WriteLine($"{report.Id}: {report.Name}: {report.ReportDefinitionJson}");
+                var def = new ReportDataDefinition(report.ReportDefinitionJson);
+                Console.WriteLine($"{def.StartTime} {report.Id}: {report.Name}: {report.ReportDefinitionJson}");
             }
             return 1;
 
