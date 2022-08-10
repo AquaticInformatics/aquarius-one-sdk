@@ -85,6 +85,16 @@ namespace ONE.Common.Logbook
             new Dictionary<string, DateTime>();
 
         /// <summary>
+        /// Retrieves the latest entry for each logbook available to the user on the provided operation.
+        /// If there is an error an empty dictionary will be returned.
+        /// </summary>
+        /// <param name="operationId">Identifier of the operation that contains the logbooks being queried</param>
+        /// <returns>Dictionary containing the logbookId and the last entry in that logbook</returns>
+        public async Task<Dictionary<string, ConfigurationNote>> GetLatestEntriesAsync(string operationId) =>
+            (await _configurationApi.GetConfigurationNotesLastAsync(LogbookTypeId, operationId))?.ToDictionary(n => n.ConfigurationId, v => v) ??
+            new Dictionary<string, ConfigurationNote>();
+
+        /// <summary>
         /// Retrieves unique tags associated with a specific logbook, if there are no tags on a logbook or there is an error an empty list will be returned.
         /// </summary>
         /// <param name="logbookId">Identifier of the logbook for which to retrieve tags</param>
