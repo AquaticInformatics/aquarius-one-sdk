@@ -12,26 +12,39 @@ namespace ONE.Common.Logbook
 
         private Dictionary<string, LogbookCache> LogbookCaches { get; } = new Dictionary<string, LogbookCache>();
         
-        public LogbooksCache(ClientSDK clientSdk)
+        public LogbooksCache(ClientSDK clientSdk, string serializedCache = "")
         {
             _clientSdk = clientSdk;
+
+            if (string.IsNullOrEmpty(serializedCache)) return;
+
+            var cache = Load(serializedCache);
+
+            if (cache == null)
+                throw new ArgumentException("Serialized cache could not be deserialized");
+
+            OperationIds = cache.OperationIds;
+            LogbookCaches = cache.LogbookCaches;
         }
 
         public List<string> OperationIds { get; } = new List<string>();
 
+        /// <summary>
+        /// Clears and resets the operationIds that this cache can contain data for
+        /// </summary>
+        /// <param name="operationIds"></param>
         public void SetOperations(params string[] operationIds)
         {
             OperationIds.Clear();
 
             foreach (var operationId in operationIds)
-            {
-                if (Guid.TryParse(operationId, out _))
-                    OperationIds.Add(operationId);
-
-                throw new ArgumentOutOfRangeException(nameof(operationId), operationId, "OperationId must be a guid");
-            }
+                AddOperation(operationId);
         }
 
+        /// <summary>
+        /// Adds an operation to the list of operations maintained by this cache
+        /// </summary>
+        /// <param name="operationId">Id of teh operation to add</param>
         public void AddOperation(string operationId)
         {
             if (Guid.TryParse(operationId, out _))
@@ -43,7 +56,8 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Create logbookCaches for multiple operations and load the logbook data
         /// </summary>
-        /// <param name="operationIds">Identifiers of the operations for which to create caches and load data, the provided array will overwrite any existing OperationIds.  If none are provided the existing OperationIds will be used</param>
+        /// <param name="operationIds">Identifiers of the operations for which to create caches and load data, the provided array will overwrite <see cref="OperationIds"/>.
+        /// If no parameters are provided then <see cref="OperationIds"/> will be used</param>
         public async Task<bool> LoadAllLogbookCachesAsync(params string[] operationIds)
         {
             try
@@ -64,9 +78,9 @@ namespace ONE.Common.Logbook
         }
 
         /// <summary>
-        /// Create logbookCaches for multiple operations and load the logbook data
+        /// Create logbookCaches for a single operation and load the logbook data
         /// </summary>
-        /// <param name="operationId">Identifiers of the operations for which to create caches and load data</param>
+        /// <param name="operationId">Identifier of the operations for which to create a cache and load data, provided operationId is added to <see cref="OperationIds"/></param>
         public async Task<bool> LoadLogbookCacheByOperationAsync(string operationId)
         {
             try
@@ -112,6 +126,7 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Loads logbookEntries for all logbooks in all operations in the cache
         /// </summary>
+        /// <param name="operationId"></param>
         /// <param name="startDate"></param>
         /// <param name="endDate"></param>
         public async Task<bool> LoadEntriesByOperationAsync(string operationId, DateTime startDate, DateTime endDate)
