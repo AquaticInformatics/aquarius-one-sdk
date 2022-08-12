@@ -25,23 +25,25 @@ namespace ONE.Common.Logbook
 
             var cache = Load(serializedCache);
 
-            if (cache == null)
+            if (_clientSdk.ThrowAPIErrors && cache == null)
                 throw new ArgumentException("Serialized cache could not be deserialized");
 
-            OperationId = cache.OperationId;
-            Logbooks = cache.Logbooks;
-            Tags = cache.Tags;
-            LogbookEntries = cache.LogbookEntries;
+            OperationId = cache?.OperationId ?? string.Empty;
+            Logbooks = cache?.Logbooks ?? new Dictionary<string, Proto.Configuration>();
+            Tags = cache?.Tags ?? new Dictionary<string, List<string>>();
+            LogbookEntries = cache?.LogbookEntries ?? new Dictionary<string, List<ConfigurationNote>>();
         }
 
         public string OperationId { get; private set; }
 
-        public void SetOperationId(string operationId)
+        public bool SetOperationId(string operationId)
         {
             if (Guid.TryParse(operationId, out _))
                 OperationId = operationId;
+            else
+                return ErrorResponse(new ArgumentException("OperationId must be a guid"), false);
 
-            throw new ArgumentOutOfRangeException(nameof(operationId), operationId, "OperationId must be a guid");
+            return true;
         }
 
         /// <summary>
@@ -50,20 +52,21 @@ namespace ONE.Common.Logbook
         /// <param name="operationId">Identifier of the operation for which to load data, uses <see cref="OperationId"/> if not set and will overwrite the existing OperationId if set.</param>
         public async Task<bool> LoadLogbooksAsync(string operationId = "")
         {
+            if (string.IsNullOrEmpty(operationId) && string.IsNullOrEmpty(OperationId))
+                return ErrorResponse(new ArgumentException("No operationId was provided or previously set"), false);
+
+            if (!string.IsNullOrEmpty(operationId) && !SetOperationId(operationId))
+                return ErrorResponse(new ArgumentException("Failed to set OperationId, ensure that it is a valid guid"), false);
+
             try
             {
-                if (string.IsNullOrEmpty(operationId) && string.IsNullOrEmpty(OperationId)) return false;
-
-                if (!string.IsNullOrEmpty(operationId))
-                    SetOperationId(operationId);
-
                 Logbooks = (await _clientSdk.Logbook.GetLogbooksAsync(OperationId)).ToDictionary(k => k.Id, v => v);
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return ErrorResponse(ex, false);
             }
         }
 
@@ -72,19 +75,14 @@ namespace ONE.Common.Logbook
         /// </summary>
         /// <param name="startDate">loads logbookEntries on or after this date</param>
         /// <param name="endDate">load logbookEntries before this date</param>
-        public async Task<bool> LoadLogbookEntriesAsync(DateTime startDate, DateTime endDate)
+        public async Task<Dictionary<string, bool>> LoadLogbookEntriesAsync(DateTime startDate, DateTime endDate)
         {
-            try
-            {
-                foreach (var logbookId in Logbooks.Keys)
-                    await LoadEntriesByLogbookAsync(logbookId, startDate, endDate);
+            var loaded = new Dictionary<string, bool>();
+            
+            foreach (var logbookId in Logbooks.Keys)
+                loaded.Add(logbookId, await LoadEntriesByLogbookAsync(logbookId, startDate, endDate));
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            return loaded;
         }
 
         /// <summary>
@@ -95,6 +93,9 @@ namespace ONE.Common.Logbook
         /// <param name="endDate">load logbookEntries before this date</param>
         public async Task<bool> LoadEntriesByLogbookAsync(string logbookId, DateTime startDate, DateTime endDate)
         {
+            if (!Logbooks.ContainsKey(logbookId))
+                return ErrorResponse(UnloadedException(logbookId), false);
+
             try
             {
                 LogbookEntries[logbookId] = await _clientSdk.Logbook.GetLogbookEntriesAsync(logbookId, startDate, endDate);
@@ -108,9 +109,9 @@ namespace ONE.Common.Logbook
 
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-                return false;
+                return ErrorResponse(ex, false);
             }
         }
 
@@ -118,13 +119,8 @@ namespace ONE.Common.Logbook
         /// Retrieve a logbook from the cache by Id
         /// </summary>
         /// <param name="logbookId">Id of the logbook to retrieve</param>
-        public Proto.Configuration GetLogbook(string logbookId)
-        {
-            if (string.IsNullOrEmpty(logbookId) || !Logbooks.ContainsKey(logbookId))
-                return null;
-
-            return Logbooks[logbookId];
-        }
+        public Proto.Configuration GetLogbook(string logbookId) =>
+            ValidLogbook(logbookId) ? Logbooks[logbookId] : ErrorResponse<Proto.Configuration>(UnloadedException(logbookId), null);
 
         /// <summary>
         /// Gets all logbooks in the cache
@@ -141,19 +137,17 @@ namespace ONE.Common.Logbook
         /// Retrieve a list of unique tags associated to a specific logbook
         /// </summary>
         /// <param name="logbookId">Id of the logbook containing the tags to be retrieved</param>
-        public List<string> GetUniqueTags(string logbookId)
-        {
-            if (string.IsNullOrEmpty(logbookId) || !LogbookEntries.ContainsKey(logbookId))
-                return null;
-
-            return Tags[logbookId];
-        }
+        public List<string> GetUniqueTags(string logbookId) => ValidLogbook(logbookId)
+            ? Tags[logbookId]
+            : ErrorResponse<List<string>>(UnloadedException(logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook.
         /// </summary>
         /// <param name="logbookId">Id of the logbook containing the logbookEntries to retrieve</param>
-        public List<ConfigurationNote> GetLogbookEntries(string logbookId) => LogbookEntries.ContainsKey(logbookId) ? LogbookEntries[logbookId] : new List<ConfigurationNote>();
+        public List<ConfigurationNote> GetLogbookEntries(string logbookId) => ValidLogbook(logbookId)
+            ? LogbookEntries[logbookId]
+            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook within a specific time range.
@@ -161,27 +155,27 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Id of the logbook containing the logbookEntries to retrieve</param>
         /// <param name="startDate">returns logbookEntries on or after this date</param>
         /// <param name="endDate">returns logbookEntries before this date</param>
-        public List<ConfigurationNote> GetEntriesByDate(string logbookId, DateTime startDate, DateTime endDate) => LogbookEntries.ContainsKey(logbookId)
+        public List<ConfigurationNote> GetEntriesByDate(string logbookId, DateTime startDate, DateTime endDate) => ValidLogbook(logbookId)
             ? LogbookEntries[logbookId].Where(e => e.NoteTime.ToDateTime() >= startDate && e.NoteTime.ToDateTime() < endDate).ToList()
-            : new List<ConfigurationNote>();
+            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook containing specific tags.
         /// </summary>
         /// <param name="logbookId">Id of the logbook containing the logbookEntries to retrieve</param>
         /// <param name="tags">tags to filter by, entries must contain all provided tags</param>
-        public List<ConfigurationNote> GetEntriesByTags(string logbookId, params string[] tags) => !LogbookEntries.ContainsKey(logbookId)
-            ? new List<ConfigurationNote>()
-            : tags.Aggregate(LogbookEntries[logbookId], (current, tag) => current.Where(n => n.Tags.Select(ct => ct.Tag).Contains(tag)).ToList());
+        public List<ConfigurationNote> GetEntriesByTags(string logbookId, params string[] tags) => ValidLogbook(logbookId)
+            ? tags.Aggregate(LogbookEntries[logbookId], (current, tag) => current.Where(n => n.Tags.Select(ct => ct.Tag).Contains(tag)).ToList())
+            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook containing a specific string.
         /// </summary>
         /// <param name="logbookId">Id of the logbook containing the logbookEntries to retrieve</param>
         /// <param name="searchText">text string to search for, this is case insensitive</param>
-        public List<ConfigurationNote> GetEntriesByText(string logbookId, string searchText) => !LogbookEntries.ContainsKey(logbookId)
-            ? new List<ConfigurationNote>()
-            : LogbookEntries[logbookId].Where(n => n.Note.ToLower().Contains(searchText.ToLower())).ToList();
+        public List<ConfigurationNote> GetEntriesByText(string logbookId, string searchText) => ValidLogbook(logbookId)
+            ? LogbookEntries[logbookId].Where(n => n.Note.ToLower().Contains(searchText.ToLower())).ToList()
+            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
 
         public void ClearCache()
         {
@@ -196,22 +190,35 @@ namespace ONE.Common.Logbook
             {
                 return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             }
-            catch
+            catch (Exception ex)
             {
-                return base.ToString();
+                return ErrorResponse(ex, base.ToString());
             }
         }
 
-        public static LogbookCache Load(string serializedObject)
+        public LogbookCache Load(string serializedObject)
         {
             try
             {
                 return JsonConvert.DeserializeObject<LogbookCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             }
-            catch
+            catch (Exception ex)
             {
-                return null;
+                return ErrorResponse<LogbookCache>(ex, null);
             }
+        }
+
+        private bool ValidLogbook(string logbookId) =>
+            !string.IsNullOrEmpty(logbookId) && Logbooks.ContainsKey(logbookId) && LogbookEntries.ContainsKey(logbookId) && Tags.ContainsKey(logbookId);
+
+        private static Exception UnloadedException(string logbookId) => new ArgumentException($"Logbook ({logbookId}) is either not loaded or not part of this operation");
+
+        private T ErrorResponse<T>(Exception exception, T result)
+        {
+            if (_clientSdk.ThrowAPIErrors)
+                throw exception;
+
+            return result;
         }
     }
 }

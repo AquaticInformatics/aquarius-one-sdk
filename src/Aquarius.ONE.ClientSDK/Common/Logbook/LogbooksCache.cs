@@ -20,11 +20,11 @@ namespace ONE.Common.Logbook
 
             var cache = Load(serializedCache);
 
-            if (cache == null)
+            if (_clientSdk.ThrowAPIErrors && cache == null)
                 throw new ArgumentException("Serialized cache could not be deserialized");
 
-            OperationIds = cache.OperationIds;
-            LogbookCaches = cache.LogbookCaches;
+            OperationIds = cache?.OperationIds ?? new List<string>();
+            LogbookCaches = cache?.LogbookCaches ?? new Dictionary<string, LogbookCache>();
         }
 
         public List<string> OperationIds { get; } = new List<string>();
@@ -32,128 +32,112 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Clears and resets the operationIds that this cache can contain data for
         /// </summary>
-        /// <param name="operationIds"></param>
-        public void SetOperations(params string[] operationIds)
+        /// <param name="operationIds">Identifiers for the operations associated to the data contained in this cache</param>
+        public List<bool> SetOperations(params string[] operationIds)
         {
             OperationIds.Clear();
 
-            foreach (var operationId in operationIds)
-                AddOperation(operationId);
+            return operationIds.Select(AddOperation).ToList();
         }
 
         /// <summary>
         /// Adds an operation to the list of operations maintained by this cache
         /// </summary>
-        /// <param name="operationId">Id of teh operation to add</param>
-        public void AddOperation(string operationId)
+        /// <param name="operationId">Id of the operation to add</param>
+        public bool AddOperation(string operationId)
         {
             if (Guid.TryParse(operationId, out _))
-                OperationIds.Add(operationId);
+            {
+                if (!OperationIds.Contains(operationId))
+                    OperationIds.Add(operationId);
+            }
+            else
+                ErrorResponse(new ArgumentException("OperationId must be a guid"), false);
 
-            throw new ArgumentOutOfRangeException(nameof(operationId), operationId, "OperationId must be a guid");
+            return true;
         }
 
         /// <summary>
         /// Create logbookCaches for multiple operations and load the logbook data
         /// </summary>
-        /// <param name="operationIds">Identifiers of the operations for which to create caches and load data, the provided array will overwrite <see cref="OperationIds"/>.
-        /// If no parameters are provided then <see cref="OperationIds"/> will be used</param>
-        public async Task<bool> LoadAllLogbookCachesAsync(params string[] operationIds)
+        /// <param name="operationIds">Identifiers of the operations for which to create caches and load data. If no parameters are provided then <see cref="OperationIds"/> will be used,
+        /// otherwise, the provided array will overwrite <see cref="OperationIds"/>.</param>
+        public async Task<Dictionary<string, bool>> LoadAllLogbookCachesAsync(params string[] operationIds)
         {
-            try
-            {
-                if (operationIds.Length == 0 && !OperationIds.Any()) return false;
+            var loaded = new Dictionary<string, bool>();
 
-                SetOperations(operationIds);
+            if (operationIds.Length == 0 && !OperationIds.Any())
+                return ErrorResponse(new ArgumentException("No operations were provided or previously set"), loaded);
 
-                foreach (var operationId in OperationIds)
-                    await LoadLogbookCacheByOperationAsync(operationId);
+            if (SetOperations(operationIds).Any(b => !b))
+                ErrorResponse<Dictionary<string, bool>>(new ArgumentException("Failed to set one or more operations, please ensure the provided ids are all guids"), null);
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            foreach (var operationId in OperationIds)
+                loaded.Add(operationId, await LoadLogbookCacheByOperationAsync(operationId));
+
+            return loaded;
         }
 
         /// <summary>
-        /// Create logbookCaches for a single operation and load the logbook data
+        /// Create a logbookCache for a single operation and load the logbook data, the operationId is also added to <see cref="OperationIds"/>
         /// </summary>
-        /// <param name="operationId">Identifier of the operations for which to create a cache and load data, provided operationId is added to <see cref="OperationIds"/></param>
+        /// <param name="operationId">Identifier of the operation for which to create a cache and load data, provided operationId is added to <see cref="OperationIds"/></param>
         public async Task<bool> LoadLogbookCacheByOperationAsync(string operationId)
         {
-            try
-            {
-                if (string.IsNullOrEmpty(operationId)) return false;
+            if (!AddOperation(operationId))
+                return ErrorResponse(new ArgumentException($"Failed to add operation ({operationId})"), false);
 
-                AddOperation(operationId);
+            var cache = new LogbookCache(_clientSdk);
+            var loaded = await cache.LoadLogbooksAsync(operationId);
 
-                var cache = new LogbookCache(_clientSdk);
-                var loaded = await cache.LoadLogbooksAsync(operationId);
+            if (loaded)
+                LogbookCaches.Add(operationId, cache);
+            else
+                return ErrorResponse(new ApplicationException($"Failed to load logbooks for operation ({operationId})"), false);
 
-                if (loaded)
-                    LogbookCaches.Add(operationId, cache);
-
-                return loaded;
-            }
-            catch
-            {
-                return false;
-            }
+            return true;
         }
 
         /// <summary>
         /// Loads logbookEntries for all logbooks in all operations in the cache
         /// </summary>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        public async Task<bool> LoadEntriesForAllOperationsAsync(DateTime startDate, DateTime endDate)
+        /// <param name="startDate">loads logbookEntries on or after this date</param>
+        /// <param name="endDate">load logbookEntries before this date</param>
+        public async Task<Dictionary<string, bool>> LoadEntriesForAllOperationsAsync(DateTime startDate, DateTime endDate)
         {
-            try
-            {
-                foreach (var kvp in LogbookCaches)
-                    await LoadEntriesByOperationAsync(kvp.Key, startDate, endDate);
+            var loaded = new Dictionary<string, bool>();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+            foreach (var kvp in LogbookCaches)
+                loaded.Add(kvp.Key, await LoadEntriesByOperationAsync(kvp.Key, startDate, endDate));
+
+            return loaded;
         }
 
         /// <summary>
-        /// Loads logbookEntries for all logbooks in all operations in the cache
+        /// Loads logbookEntries for all logbooks in a specific operation in the cache
         /// </summary>
-        /// <param name="operationId"></param>
-        /// <param name="startDate"></param>
-        /// <param name="endDate"></param>
-        public async Task<bool> LoadEntriesByOperationAsync(string operationId, DateTime startDate, DateTime endDate)
-        {
-            try
-            {
-                return await LogbookCaches[operationId].LoadLogbookEntriesAsync(startDate, endDate);
-            }
-            catch
-            {
-                return false;
-            }
-        }
+        /// <param name="operationId">Identifier of the operation for which to load logbookEntry data</param>
+        /// <param name="startDate">loads logbookEntries on or after this date</param>
+        /// <param name="endDate">load logbookEntries before this date</param>
+        public async Task<bool> LoadEntriesByOperationAsync(string operationId, DateTime startDate, DateTime endDate) => ValidOperation(operationId)
+            ? (await LogbookCaches[operationId].LoadLogbookEntriesAsync(startDate, endDate)).All(x => x.Value)
+            : ErrorResponse(NotInCacheException(operationId), false);
 
-        public LogbookCache GetLogbookCache(string operationId)
-        {
-            if (string.IsNullOrEmpty(operationId) || !LogbookCaches.ContainsKey(operationId))
-                return null;
+        /// <summary>
+        /// Retrieve the logbookCache for a specific operation
+        /// </summary>
+        /// <param name="operationId">Identifier of the operation associated to teh cache to be retrieved</param>
+        public LogbookCache GetLogbookCache(string operationId) =>
+            ValidOperation(operationId) ? LogbookCaches[operationId] : ErrorResponse<LogbookCache>(NotInCacheException(operationId), null);
 
-            return LogbookCaches[operationId];
-        }
+        /// <summary>
+        /// Retrieve all logbookCaches contained in this cache
+        /// </summary>
+        public List<LogbookCache> GetLogbookCaches() => LogbookCaches.Values.ToList();
 
         public void ClearCache() => LogbookCaches.Clear();
 
         public void ClearCacheByOperation(string operationId) => LogbookCaches.Remove(operationId);
-
-        public List<LogbookCache> GetLogbookCaches() => LogbookCaches.Values.ToList();
 
         public override string ToString()
         {
@@ -161,22 +145,34 @@ namespace ONE.Common.Logbook
             {
                 return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             }
-            catch
+            catch (Exception ex)
             {
-                return base.ToString();
+                return ErrorResponse(ex, base.ToString());
             }
         }
 
-        public static LogbooksCache Load(string serializedObject)
+        public LogbooksCache Load(string serializedObject)
         {
             try
             {
                 return JsonConvert.DeserializeObject<LogbooksCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             }
-            catch
+            catch (Exception ex)
             {
-                return null;
+                return ErrorResponse<LogbooksCache>(ex, null);
             }
+        }
+
+        private bool ValidOperation(string operationId) => !string.IsNullOrEmpty(operationId) && OperationIds.Contains(operationId) && LogbookCaches.ContainsKey(operationId);
+
+        private static Exception NotInCacheException(string operationId) => new ArgumentException($"Operation ({operationId}) is not part of this cache");
+
+        private T ErrorResponse<T>(Exception exception, T result)
+        {
+            if (_clientSdk.ThrowAPIErrors)
+                throw exception;
+
+            return result;
         }
     }
 }
