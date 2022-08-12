@@ -10,7 +10,7 @@ namespace ONE.Common.Logbook
     {
         private readonly ClientSDK _clientSdk;
 
-        private Dictionary<string, LogbookCache> LogbookCaches { get; } = new Dictionary<string, LogbookCache>();
+        [JsonProperty] private Dictionary<string, LogbookCache> LogbookCaches { get; } = new Dictionary<string, LogbookCache>();
         
         public LogbooksCache(ClientSDK clientSdk, string serializedCache = "")
         {

@@ -13,9 +13,9 @@ namespace ONE.Common.Logbook
     {
         private readonly ClientSDK _clientSdk;
 
-        private Dictionary<string, Proto.Configuration> Logbooks { get; set; } = new Dictionary<string, Proto.Configuration>();
-        private Dictionary<string, List<string>> Tags { get; } = new Dictionary<string, List<string>>();
-        private Dictionary<string, List<ConfigurationNote>> LogbookEntries { get; } = new Dictionary<string, List<ConfigurationNote>>();
+        [JsonProperty] private Dictionary<string, Proto.Configuration> Logbooks { get; set; } = new Dictionary<string, Proto.Configuration>();
+        [JsonProperty] private Dictionary<string, List<string>> Tags { get; } = new Dictionary<string, List<string>>();
+        [JsonProperty] private Dictionary<string, List<ConfigurationNote>> LogbookEntries { get; } = new Dictionary<string, List<ConfigurationNote>>();
 
         public LogbookCache(ClientSDK clientSdk, string serializedCache = "")
         {
