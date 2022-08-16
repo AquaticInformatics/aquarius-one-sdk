@@ -36,7 +36,7 @@ namespace ONE.Enterprise.Report
             {
                 if (_currentReportColumns == null && Columns != null)
                 {
-                    Dictionary<string, string> _currentReportColumns = new Dictionary<string, string>();
+                    _currentReportColumns = new Dictionary<string, string>();
                     foreach (var column in Columns)
                         _currentReportColumns.Add(column.id, column.header);
                 }
