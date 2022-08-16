@@ -32,7 +32,7 @@ namespace ONE.Enterprise.Report
                 }
 
         private ReportDataDefinition _currentReportDataDefinition;
-        private ReportDataDefinition CurrentReportDataDefinition
+        public ReportDataDefinition CurrentReportDataDefinition
         {
             get
             {
