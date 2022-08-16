@@ -18,6 +18,31 @@ namespace ONE.Enterprise.Report
         public List<ReportDefinition> ReportDefinitions { get; set; }
         public bool IsCached { get; set; }
 
+        private ReportDefinition _currentReportDefinition;
+        public ReportDefinition CurrentReportDefinition {
+            get
+            { 
+                return _currentReportDefinition; 
+            }
+            set
+            {
+                _currentReportDefinition = value;
+                _currentReportDataDefinition = null;
+            }
+                }
+
+        private ReportDataDefinition _currentReportDataDefinition;
+        private ReportDataDefinition CurrentReportDataDefinition
+        {
+            get
+            {
+                if (_currentReportDataDefinition == null && _currentReportDefinition != null)
+                    _currentReportDataDefinition = new ReportDataDefinition(_currentReportDefinition.ReportDefinitionJson);
+                return _currentReportDataDefinition;
+            }
+
+        }
+        
         public async Task<bool> LoadAsync()
         {
             if (IsCached)
