@@ -1,6 +1,7 @@
 ﻿using ONE.Models.CSharp;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -17,7 +18,15 @@ namespace ONE.Enterprise.Report
         }
         public List<ReportDefinition> ReportDefinitions { get; set; }
         public bool IsCached { get; set; }
-
+        public ReportDefinition GetReportDefinition(string guid)
+        {
+            if (string.IsNullOrEmpty(guid) || ReportDefinitions == null || ReportDefinitions.Count == 0)
+                return null;
+            var matches = ReportDefinitions.Where(c => c.Id.ToUpper() == guid.ToUpper());
+            if (matches.Count() > 0)
+                return matches.First();
+            return null;
+        }
         private ReportDefinition _currentReportDefinition;
         public ReportDefinition CurrentReportDefinition {
             get
