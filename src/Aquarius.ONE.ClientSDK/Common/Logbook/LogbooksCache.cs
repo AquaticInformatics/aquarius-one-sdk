@@ -36,6 +36,7 @@ namespace ONE.Common.Logbook
         public List<bool> SetOperations(params string[] operationIds)
         {
             OperationIds.Clear();
+            ClearCache();
 
             return operationIds.Select(AddOperation).ToList();
         }
@@ -69,7 +70,7 @@ namespace ONE.Common.Logbook
             if (operationIds.Length == 0 && !OperationIds.Any())
                 return ErrorResponse(new ArgumentException("No operations were provided or previously set"), loaded);
 
-            if (SetOperations(operationIds).Any(b => !b))
+            if (operationIds.Length > 0 && SetOperations(operationIds).Any(b => !b))
                 ErrorResponse<Dictionary<string, bool>>(new ArgumentException("Failed to set one or more operations, please ensure the provided ids are all guids"), null);
 
             foreach (var operationId in OperationIds)
@@ -91,7 +92,7 @@ namespace ONE.Common.Logbook
             var loaded = await cache.LoadLogbooksAsync(operationId);
 
             if (loaded)
-                LogbookCaches.Add(operationId, cache);
+                LogbookCaches[operationId] = cache;
             else
                 return ErrorResponse(new ApplicationException($"Failed to load logbooks for operation ({operationId})"), false);
 
@@ -126,7 +127,7 @@ namespace ONE.Common.Logbook
         /// <summary>
         /// Retrieve the logbookCache for a specific operation
         /// </summary>
-        /// <param name="operationId">Identifier of the operation associated to teh cache to be retrieved</param>
+        /// <param name="operationId">Identifier of the operation associated to the cache to be retrieved</param>
         public LogbookCache GetLogbookCache(string operationId) =>
             ValidOperation(operationId) ? LogbookCaches[operationId] : ErrorResponse<LogbookCache>(NotInCacheException(operationId), null);
 
