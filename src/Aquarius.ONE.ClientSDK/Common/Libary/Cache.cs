@@ -58,6 +58,70 @@ namespace ONE.Common.Library
 
             return true;
         }
+        public string GetI18nKeyValue(string key, string defaultValue = "")
+        {
+            try
+            {
+                var matches = I18Nkeys.Where(p => String.Equals(p.Key, key, StringComparison.CurrentCulture));
+                if (matches.Count() > 0)
+                {
+                    var item = matches.First();
+                    return item.Value;
+                }
+                else
+                {
+                    return defaultValue;
+                }
+            }
+            catch
+            {
+                return defaultValue;
+            }
+        }
+        public DigitalTwinType GetDigitalTwinType(string digitalTwinTypeId)
+        {
+            if (DigitalTwinTypes == null || string.IsNullOrEmpty(digitalTwinTypeId))
+                return null;
+            var matches = DigitalTwinTypes.Where(p => p.Id != null && String.Equals(p.Id.ToUpper(), digitalTwinTypeId.ToUpper(), StringComparison.CurrentCulture));
+            if (matches.Count() > 0)
+            {
+                return matches.First();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public string GetDigitalTwinTypeName(string digitalTwinSubtypeId)
+        {
+            var digitalTwinType = GetDigitalTwinType(digitalTwinSubtypeId);
+            if (digitalTwinType == null)
+                return "";
+            return I18NKeyHelper.GetValue(digitalTwinType.I18NKeyName, digitalTwinType.I18NKeyName);
+
+        }
+        public DigitalTwinSubtype GetDigitalTwinSubType(string digitalTwinSubtypeId)
+        {
+            if (DigitalTwinSubtypes == null || string.IsNullOrEmpty(digitalTwinSubtypeId))
+                return null;
+            var matches = DigitalTwinSubtypes.Where(p => p.Id != null && String.Equals(p.Id.ToUpper(), digitalTwinSubtypeId.ToUpper(), StringComparison.CurrentCulture));
+            if (matches.Count() > 0)
+            {
+                return matches.First();
+            }
+            else
+            {
+                return null;
+            }
+        }
+        public string GetDigitalTwinSubtypeName(string digitalTwinSubtypeId)
+        {
+            var digitalTwinSubtype = GetDigitalTwinSubType(digitalTwinSubtypeId);
+            if (digitalTwinSubtype == null)
+                return "";
+            return I18NKeyHelper.GetValue(digitalTwinSubtype.I18NKeyName, digitalTwinSubtype.I18NKeyName);
+
+        }
         public ParameterAgencyCodeType GetParameterAgencyCodeType(string id)
         {
             if (ParameterAgencyCodeTypes == null || string.IsNullOrEmpty(id))
