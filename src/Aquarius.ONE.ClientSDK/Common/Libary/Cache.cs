@@ -92,12 +92,12 @@ namespace ONE.Common.Library
                 return null;
             }
         }
-        public string GetDigitalTwinTypeName(string digitalTwinSubtypeId)
+        public string GetDigitalTwinTypeName(string digitalTwinTypeId)
         {
-            var digitalTwinType = GetDigitalTwinType(digitalTwinSubtypeId);
+            var digitalTwinType = GetDigitalTwinType(digitalTwinTypeId);
             if (digitalTwinType == null)
                 return "";
-            return I18NKeyHelper.GetValue(digitalTwinType.I18NKeyName, digitalTwinType.I18NKeyName);
+            return GetI18nKeyValue(digitalTwinType.I18NKeyName, digitalTwinType.I18NKeyName);
 
         }
         public DigitalTwinSubtype GetDigitalTwinSubType(string digitalTwinSubtypeId)
@@ -119,7 +119,7 @@ namespace ONE.Common.Library
             var digitalTwinSubtype = GetDigitalTwinSubType(digitalTwinSubtypeId);
             if (digitalTwinSubtype == null)
                 return "";
-            return I18NKeyHelper.GetValue(digitalTwinSubtype.I18NKeyName, digitalTwinSubtype.I18NKeyName);
+            return GetI18nKeyValue(digitalTwinSubtype.I18NKeyName, digitalTwinSubtype.I18NKeyName);
 
         }
         public ParameterAgencyCodeType GetParameterAgencyCodeType(string id)
