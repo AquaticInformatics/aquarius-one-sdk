@@ -33,6 +33,7 @@ namespace ONE.Operations
             Sheets = new List<Configuration>();
             Graphs = new List<Configuration>();
             Dashboards = new List<Configuration>();
+            ReportCache = new Enterprise.Report.Cache(_clientSDK, DigitalTwin.TwinReferenceId);
         }
         public OperationCache(string serializedObject)
         {
@@ -137,6 +138,7 @@ namespace ONE.Operations
         {
             return _clientSDK;
         }
+        public Enterprise.Report.Cache ReportCache { get; set; }
         private ClientSDK _clientSDK { get; set; }
         public string Id
         {
@@ -255,7 +257,7 @@ namespace ONE.Operations
 
 
         public bool IsCached { get; set; }
-        public async Task<bool> LoadAsync()
+        public async Task<bool> LoadAsync(bool loadChildCaches = false)
         {
             if (IsCached)
                 return true;
@@ -305,6 +307,9 @@ namespace ONE.Operations
                 await LoadComputations(HourlyWorksheetDefinition);
                 await LoadComputations(FourHourWorksheetDefinition);
                 await LoadComputations(DailyWorksheetDefinition);
+
+                if (loadChildCaches)
+                    await ReportCache.LoadAsync();
 
             }
             catch

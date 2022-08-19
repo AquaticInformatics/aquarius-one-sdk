@@ -28,5 +28,20 @@ namespace ONE.Enterprise.Report
         public DateTime StartTime { get; set; }
         public EnumRelativeDateRange RelativeDateRange { get; set; }
         public bool RemoveEmptyRows { get; set; }
+
+        private Dictionary<string, string> _currentReportColumns;
+        public Dictionary<string, string> CurrentReportColumns
+        {
+            get
+            {
+                if (_currentReportColumns == null && Columns != null)
+                {
+                    _currentReportColumns = new Dictionary<string, string>();
+                    foreach (var column in Columns)
+                        _currentReportColumns.Add(column.id, column.header);
+                }
+                return _currentReportColumns;
+            }
+        }
     }
 }
