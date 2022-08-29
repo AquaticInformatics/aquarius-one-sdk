@@ -38,7 +38,8 @@ namespace ONE.Enterprise.Report
                 {
                     _currentReportColumns = new Dictionary<string, string>();
                     foreach (var column in Columns)
-                        _currentReportColumns.Add(column.id, column.header);
+                        if (!_currentReportColumns.ContainsKey(column.id))
+                            _currentReportColumns.Add(column.id, column.header);
                 }
                 return _currentReportColumns;
             }
