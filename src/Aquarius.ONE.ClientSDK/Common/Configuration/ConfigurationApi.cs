@@ -433,7 +433,7 @@ namespace ONE.Common.Configuration
 
             List<proto.ConfigurationNote> configurationNotes = new List<proto.ConfigurationNote>();
  
-            string endpointUrl = $"common/configuration/v2/notes/{configurationId}?startDate={startDate}&endDate={endDate}";
+            string endpointUrl = $"common/configuration/v2/notes/{configurationId}?startDate={startDate:O}&endDate={endDate:O}";
 
             if (!string.IsNullOrWhiteSpace(tagString))
             {
