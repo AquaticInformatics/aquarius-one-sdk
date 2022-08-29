@@ -27,6 +27,19 @@ namespace ONE.Common.Library
         public List<DigitalTwinType> DigitalTwinTypes { get; set; }
         public List<DigitalTwinSubtype> DigitalTwinSubtypes { get; set; }
 
+        public void LoadFromCache(string serializedObject)
+        {
+            var cache =  JsonConvert.DeserializeObject<Cache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            QuantityTypes = cache.QuantityTypes;
+            Parameters = cache.Parameters;
+            Units = cache.Units;
+            ParameterAgencyCodeTypes = cache.ParameterAgencyCodeTypes;
+            ParameterAgencyCodes = cache.ParameterAgencyCodes;
+            I18Nkeys = cache.I18Nkeys;
+            DigitalTwinTypes = cache.DigitalTwinTypes;
+            DigitalTwinSubtypes = cache.DigitalTwinSubtypes;
+            I18NKeyHelper.I18NKeyList = I18Nkeys;
+        }
         public async Task<bool> LoadAsync(string culture = "en-US", string modules = "AQI_FOUNDATION_LIBRARY")
         {
             try
@@ -49,7 +62,7 @@ namespace ONE.Common.Library
                 I18Nkeys = I18NkeysTask.Result;
                 DigitalTwinTypes = DigitalTwinTypesTask.Result;
                 DigitalTwinSubtypes = DigitalTwinSubtypesTask.Result;
-
+                I18NKeyHelper.I18NKeyList = I18Nkeys;
             }
             catch
             {

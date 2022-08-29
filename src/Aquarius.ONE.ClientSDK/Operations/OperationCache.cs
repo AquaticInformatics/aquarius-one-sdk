@@ -67,7 +67,7 @@ namespace ONE.Operations
                 Sheets = operationCache.Sheets;
                 Graphs = operationCache.Graphs;
                 Dashboards = operationCache.Dashboards;
-
+                ReportCache = operationCache.ReportCache;
                 var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
 
                 ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
