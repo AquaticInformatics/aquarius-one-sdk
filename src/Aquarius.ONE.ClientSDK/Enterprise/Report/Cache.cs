@@ -16,6 +16,8 @@ namespace ONE.Enterprise.Report
             _clientSDK = clientSDK;
             _operationId = operationId;
         }
+        public Cache()
+        { }
         public List<ReportDefinition> ReportDefinitions { get; set; }
         public bool IsCached { get; set; }
         public ReportDefinition GetReportDefinition(string guid)

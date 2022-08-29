@@ -100,6 +100,7 @@ namespace ONE.Operations
             Sheets = new List<Configuration>();
             Graphs = new List<Configuration>();
             Dashboards = new List<Configuration>();
+            ReportCache = new Enterprise.Report.Cache();
         }
         public void Unload()
         {
@@ -129,6 +130,7 @@ namespace ONE.Operations
             Sheets = new List<Configuration>();
             Graphs = new List<Configuration>();
             Dashboards = new List<Configuration>();
+            ReportCache = new Enterprise.Report.Cache();
         }
         public void SetClientSDK(ClientSDK clientSDK)
         {
