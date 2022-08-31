@@ -432,8 +432,14 @@ namespace ONE.Common.Configuration
             var requestId = Guid.NewGuid();
 
             List<proto.ConfigurationNote> configurationNotes = new List<proto.ConfigurationNote>();
- 
-            string endpointUrl = $"common/configuration/v2/notes/{configurationId}?startDate={startDate}&endDate={endDate}";
+
+            if (startDate.Kind == DateTimeKind.Local)
+                startDate = startDate.ToUniversalTime();
+
+            if (endDate.Kind == DateTimeKind.Local)
+                endDate = endDate.ToUniversalTime();
+            
+            string endpointUrl = $"common/configuration/v2/notes/{configurationId}?startDate={startDate:O}&endDate={endDate:O}";
 
             if (!string.IsNullOrWhiteSpace(tagString))
             {
