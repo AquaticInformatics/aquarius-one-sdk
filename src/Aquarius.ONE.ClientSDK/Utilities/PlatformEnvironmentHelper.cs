@@ -16,15 +16,31 @@ namespace ONE.Utilities
             }
             else
             {
-                switch (name)
+                if (string.IsNullOrEmpty(name))
+                    return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature);
+                switch (name.ToUpper())
                 {
-                    case "AqiIntegration":
+                    case "INTEGRATION":
+                    case "ONEINTEGRATION":
+                    case "ONE INTEGRATION":
+                    case "AQIINTEGRATION":
+                    case "AQI INTEGRATION":
                     case "2":
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiIntegration);
-                    case "AqiStage":
+                    case "AQISTAGE":
+                    case "AQI STAGE":
+                    case "ONESTAGE":
+                    case "ONE STAGE":
+                    case "STAGE":
                     case "3":
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiStage);
-                    case "AqiUSProduction":
+                    case "AQIUSPRODUCTION":
+                    case "AQI US PRODUCTION":
+                    case "ONE US PRODUCTION":
+                    case "ONEUSPRODUCTION":
+                    case "USPRODUCTION":
+                    case "US PRODUCTION":
+                    case "PRODUCTION":
                     case "4":
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiUSProduction);
                     default:
@@ -60,60 +76,6 @@ namespace ONE.Utilities
                             BaseUri = new Uri("http://localhost:1111"),
                             AuthenticationUri = new Uri("https://localhost:8262/"),
                             PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
-
-                        },
-                        new PlatformEnvironment
-                        {
-                            Name = "Sprint",
-                            PlatformEnvironmentEnum = EnumPlatformEnvironment.Sprint,
-                            BaseUri = new Uri("https://api-eu-sprint.hachtest.com/"),
-                            AuthenticationUri = new Uri("https://ffaa-eu-sprint.hachtest.com"),
-                            PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
-
-                        },
-                        new PlatformEnvironment
-                        {
-                            Name = "Integration",
-                            PlatformEnvironmentEnum = EnumPlatformEnvironment.Integration,
-                            BaseUri = new Uri("https://api-eu-integration.hachtest.com/"),
-                            AuthenticationUri = new Uri("https://ffaa-eu-integration.hachtest.com"),
-                            PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
-
-                        },
-                        new PlatformEnvironment
-                        {
-                            Name = "Feature",
-                            PlatformEnvironmentEnum = EnumPlatformEnvironment.Feature,
-                            BaseUri = new Uri("https://api-eu-feature.hachtest.com/"),
-                            AuthenticationUri = new Uri("https://ffaa-eu-feature.hachtest.com"),
-                            PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
-
-                        },
-                        new PlatformEnvironment
-                        {
-                            Name = "US Production",
-                            PlatformEnvironmentEnum = EnumPlatformEnvironment.USProduction,
-                            BaseUri = new Uri("https://api-us.fsn.hach.com/"),
-                            AuthenticationUri = new Uri("https://api-us.fsn.hach.com/"),
-                            PoEditorProjectName = "FOUNDATION_LIBRARY"
-
-                        },
-                        new PlatformEnvironment
-                        {
-                            Name = "EU Production",
-                            PlatformEnvironmentEnum = EnumPlatformEnvironment.EUProduction,
-                            BaseUri = new Uri("https://api-eu.fsn.hach.com/"),
-                            AuthenticationUri = new Uri("https://api-eu.fsn.hach.com/"),
-                            PoEditorProjectName = "FOUNDATION_LIBRARY"
-
-                        },
-                        new PlatformEnvironment
-                        {
-                            Name = "Stage",
-                            PlatformEnvironmentEnum = EnumPlatformEnvironment.Stage,
-                            BaseUri = new Uri("https://api-eu-stage.hach-claros.com/"),
-                            AuthenticationUri = new Uri("https://api-eu-stage.hach-claros.com/"),
-                            PoEditorProjectName = "FOUNDATION_LIBRARY"
 
                         },
                         new PlatformEnvironment
