@@ -4,7 +4,7 @@
     "Debug": {
       "commandName": "Executable",
       "executablePath": "C:\\git\\aquarius-one-sdk\\src\\Aquarius.ONE.Test.ConsoleApp\\bin\\Debug\\net6.0\\Aquarius.ONE.Test.ConsoleApp.exe",
-      "commandLineArgs": "report -g 4493f5dd-6709-4103-8e3d-d6d9436d8a55",
+      "commandLineArgs": "userinfo",
       "workingDirectory": "C:\\git\\aquarius-one-sdk\\src\\Aquarius.ONE.Test.ConsoleApp\\bin\\Debug\\net6.0\\"
     }
   }

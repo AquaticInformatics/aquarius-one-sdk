@@ -34,6 +34,14 @@ namespace ONE.Common.Library
                 return "";
             }
         }
+        public static string GetShortValue(string key)
+        {
+            return GetValue("SHORT", key);
+        }
+        public static string GetLongValue(string key)
+        {
+            return GetValue("LONG", key);
+        }
         public static DataTable GetDataTable()
         {
             DataTable dataTable = new DataTable("Translations");

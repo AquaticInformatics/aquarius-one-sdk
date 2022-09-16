@@ -19,7 +19,8 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 return 0;
             else
             {
-                Console.WriteLine(result);
+                clientSDK.Authentication.User = await clientSDK.UserHelper.GetUserFromUserInfoAsync(result);
+                Console.WriteLine($"Accepted TCS: {clientSDK.Authentication.User.IsAcceptedTcs}");
                 return 1;
             }
         }

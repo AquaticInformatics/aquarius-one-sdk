@@ -459,7 +459,15 @@ namespace ONE.Operations
                 return matches.First();
             return null;
         }
-
+        public DigitalTwin GetLocationTwinByGuid(string guid)
+        {
+            if (string.IsNullOrEmpty(guid) || LocationTwins == null || LocationTwins.Count == 0)
+                return null;
+            var matches = LocationTwins.Where(c => c.TwinReferenceId.ToUpper() == guid.ToUpper());
+            if (matches.Count() > 0)
+                return matches.First();
+            return null;
+        }
         public long GetColumnTwinDataPropertyLong(string guid, string path, string key)
         {
             DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
@@ -532,6 +540,17 @@ namespace ONE.Operations
         public long GetVariableId(DigitalTwin columnTwin)
         {
             return Enterprise.Twin.Helper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
+        }
+        public long GetVariableNum(string guid)
+        {
+            DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
+            if (columnTwin == null)
+                return 0;
+            return Enterprise.Twin.Helper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
+        }
+        public long GetVariableNum(DigitalTwin columnTwin)
+        {
+            return Enterprise.Twin.Helper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
         }
         public Column GetColumnByVariableId(long variableId)
         {
