@@ -229,6 +229,22 @@ namespace ONE.Enterprise.Twin
                     public const string RefId = "02d6fd74-f610-428f-8dd6-2789960e7fd7";
                 }
             }
+            public static class ClientUtilityType
+            {
+                public static bool Is(DigitalTwin digitalTwin)
+                {
+                    return digitalTwin.TwinTypeId != null && digitalTwin.TwinTypeId.ToUpper() == RefId.ToUpper();
+                }
+                public const string RefId = "21b4d9dc-48e0-4717-a487-6e92e0d8fcdb";
+                public static class WimsDataConversionServiceSubType
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "51cf4cd3-962a-48fb-a092-ae9fa003ca59";
+                }
+            }
             public static class ClientIngestReaderType
             {
                 public static bool Is(DigitalTwin digitalTwin)
@@ -302,7 +318,31 @@ namespace ONE.Enterprise.Twin
                 }
                 public const string RefId = "2a471801-f462-4248-8567-b128ae261fe7";
             }
-            public static class HistorianType
+            public static class HistorianLogType
+            {
+                public static bool Is(DigitalTwin digitalTwin)
+                {
+                    return digitalTwin.TwinTypeId != null && digitalTwin.TwinTypeId.ToUpper() == RefId.ToUpper();
+                }
+                public const string RefId = "af952a3d-93b8-4d03-9b90-7f65d898de38";
+                public static class WimsDataConversionClientSubType
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "30a5e6e5-e603-408a-944e-975f4ecc9950";
+                }
+                public static class WimsDataConversionOperationSubType
+                {
+                    public static bool Is(DigitalTwin digitalTwin)
+                    {
+                        return digitalTwin.TwinSubTypeId != null && digitalTwin.TwinSubTypeId.ToUpper() == RefId.ToUpper();
+                    }
+                    public const string RefId = "a2df97e0-16ac-4dae-8bbd-b509d127cb73";
+                }
+            }
+                public static class HistorianType
             {
                 public static bool Is(DigitalTwin digitalTwin)
                 {
