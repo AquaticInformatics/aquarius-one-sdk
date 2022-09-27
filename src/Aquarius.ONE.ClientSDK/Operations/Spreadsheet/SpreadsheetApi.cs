@@ -522,7 +522,6 @@ namespace ONE.Operations.Spreadsheet
                 throw;
             }
         }
-
         public async Task<WorksheetDefinition> WorksheetUpdateColumnAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, WorksheetDefinition worksheetDefinition)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -546,6 +545,38 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"WorksheetUpdateColumnAsync Failed - {e.Message}" });
+                throw;
+            }
+        }
+        
+        /// <summary>
+        /// Removes a column from an existing Worksheet Definition
+        /// </summary>
+        /// <param name="operationTwinReferenceId">The GUID identifier of the operation</param>
+        /// <param name="worksheetType">Worksheet type</param>
+        /// <param name="columnId">The GUID identifier of the column to delete</param>
+        /// <returns>True if successful</returns>
+        public async Task<bool> WorksheetDeleteColumnAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, string columnId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/definition/columns/{columnId}?requestId={requestId}";
+
+            try
+            {
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"WorksheetDeleteColumnAsync Success" });
+                    return true;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"WorksheetDeleteColumnAsync Failed" });
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"WorksheetDeleteColumnAsync Failed - {e.Message}" });
                 throw;
             }
         }
