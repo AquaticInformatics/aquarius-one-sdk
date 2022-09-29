@@ -131,7 +131,7 @@ namespace ONE.Common.Logbook
         /// Get the most recent entry for each logbook in the cache.
         /// </summary>
         public Dictionary<string, ConfigurationNote> GetLatestEntryPerLogbook() =>
-            LogbookEntries.ToDictionary(k => k.Key, v => v.Value.OrderByDescending(n => n.NoteTime.ToDateTime()).First());
+            LogbookEntries.ToDictionary(k => k.Key, v => v.Value.OrderByDescending(n => n.NoteTime.ToDateTime()).FirstOrDefault());
 
         /// <summary>
         /// Retrieve a list of unique tags associated to a specific logbook
