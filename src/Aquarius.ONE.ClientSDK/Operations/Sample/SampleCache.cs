@@ -36,7 +36,8 @@ namespace ONE.Operations.Sample
             _clientSdk = clientSdk;
             _jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
-            if (string.IsNullOrEmpty(serializedCache)) return;
+            if (string.IsNullOrEmpty(serializedCache)) 
+                return;
 
             var cache = Load(serializedCache);
 
@@ -54,7 +55,7 @@ namespace ONE.Operations.Sample
         /// </summary>
         public bool SetOperationId(string operationId)
         {
-            if (Guid.TryParse(operationId, out var guidId))
+            if (!Guid.TryParse(operationId, out var guidId))
                 return ErrorResponse(new ArgumentException("OperationId must be a guid"), false);
 
             var changed = string.IsNullOrEmpty(OperationId) || guidId != Guid.Parse(OperationId);
@@ -69,12 +70,12 @@ namespace ONE.Operations.Sample
         }
 
         /// <summary>
-        /// Load Activity data for an operation.
+        /// Load data for an operation.
         /// </summary>
-        /// <param name="startDate">Loads activities on or after this date.</param>
-        /// <param name="endDate">Loads activities before this date.</param>
+        /// <param name="startDate">Loads data on or after this date.</param>
+        /// <param name="endDate">Loads data before this date.</param>
         /// <param name="operationId">Identifier of the operation for which to load data, uses <see cref="OperationId"/> if not set and will overwrite the existing OperationId if set.</param>
-        public async Task<bool> LoadActivitiesAsync(DateTime startDate, DateTime endDate, string operationId = "")
+        public async Task<bool> LoadAsync(DateTime startDate, DateTime endDate, string operationId = "")
         {
             if (string.IsNullOrEmpty(operationId) && string.IsNullOrEmpty(OperationId))
                 return ErrorResponse(new ArgumentException("No operationId was provided or previously set"), false);
@@ -103,12 +104,15 @@ namespace ONE.Operations.Sample
         }
 
         /// <summary>
-        /// Retrieve an activity from the cache by Id.
+        /// Retrieve data from the cache by activity Id.
         /// </summary>
-        /// <param name="activityId">Id of the activity to retrieve</param>
-        public Proto.Activity GetActivity(string activityId) => ValidActivity(activityId)
-            ? Activities[activityId]
-            : ErrorResponse<Proto.Activity>(UnloadedException(activityId), null);
+        public Proto.Activity GetByActivity(string activityId)
+        {
+            if (!ValidActivity(activityId))
+                return ErrorResponse<Proto.Activity>(UnloadedException(activityId), null);
+
+            return Activities[Guid.Parse(activityId).ToString()];
+        }
 
         /// <summary>
         /// Gets all activities in the cache.
@@ -126,8 +130,8 @@ namespace ONE.Operations.Sample
             {
                 var activities = Activities.Values.AsQueryable();
 
-                if (!string.IsNullOrEmpty(activityTypeId))
-                    activities = activities.Where(x => x.ActivityTypeId == activityTypeId);
+                if (Guid.TryParse(activityTypeId, out var aId))
+                    activities = activities.Where(x => x.ActivityTypeId == aId.ToString());
 
                 if (statusCode.HasValue)
                     activities = activities.Where(x => x.StatusCode == statusCode.Value);
@@ -141,8 +145,8 @@ namespace ONE.Operations.Sample
                 if (endDate.HasValue)
                     activities = activities.Where(x => x.ScheduledEnd.ToDateTime() < endDate.Value);
 
-                if (!string.IsNullOrEmpty(scheduleId))
-                    activities = activities.Where(x => x.ScheduleId == scheduleId);
+                if (Guid.TryParse(scheduleId, out var sId))
+                    activities = activities.Where(x => x.ScheduleId == sId.ToString());
 
                 return activities.ToList();
             }
@@ -190,7 +194,15 @@ namespace ONE.Operations.Sample
             }
         }
 
-        private bool ValidActivity(string activityId) => !string.IsNullOrEmpty(activityId) && Activities.ContainsKey(activityId);
+        private bool ValidActivity(string activityId)
+        {
+            if (!Guid.TryParse(activityId, out var guidId))
+                return false;
+
+            var normalized = guidId.ToString();
+
+            return Activities.ContainsKey(normalized);
+        }
 
         private static Exception UnloadedException(string activityId) => new ArgumentException($"Activity ({activityId}) is either not loaded or not part of this operation");
 
