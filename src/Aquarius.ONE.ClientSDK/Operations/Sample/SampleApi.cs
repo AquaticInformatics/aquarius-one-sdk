@@ -4,7 +4,6 @@ using System.Net;
 using System.Threading.Tasks;
 using ONE.Models.CSharp;
 using ONE.Utilities;
-using Proto = ONE.Models.CSharp;
 
 namespace ONE.Operations.Sample
 {
@@ -25,7 +24,7 @@ namespace ONE.Operations.Sample
             _clientSdk = clientSdk;
         }
 
-        public async Task<List<Proto.Activity>> GetSamplesAsync(string authTwinRefId, 
+        public async Task<List<Activity>> GetActivitiesAsync(string authTwinRefId, 
             string activityTypeId = null, int? statusCode = null, int? priorityCode = null,
             DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null)
         {
@@ -37,12 +36,12 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetSamplesAsync Failed - {ex.Message}"));
+                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivitiesAsync Failed - {ex.Message}"));
                 throw;
             }
         }
 
-        public async Task<List<Proto.Activity>> GetSampleAsync(string activityId, bool includeDescendants = false)
+        public async Task<List<Activity>> GetActivityAsync(string activityId, bool includeDescendants = false)
         {
             try
             {
@@ -50,12 +49,12 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetSampleAsync Failed - {ex.Message}"));
+                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivityAsync Failed - {ex.Message}"));
                 throw;
             }
         }
 
-        public async Task<bool> UpdateSamplesAsync(List<Proto.Activity> activities)
+        public async Task<bool> UpdateActivitiesAsync(List<Activity> activities)
         {
             try
             {
@@ -65,7 +64,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateSamplesAsync Failed - {ex.Message}"));
+                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateActivitiesAsync Failed - {ex.Message}"));
                 throw;
             }
         }
