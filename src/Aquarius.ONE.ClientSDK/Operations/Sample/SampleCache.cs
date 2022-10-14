@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using ONE.Utilities;
 using Proto = ONE.Models.CSharp;
 
@@ -19,22 +20,29 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// The operation Id of cached data.
         /// </summary>
+        [JsonProperty]
         public string OperationId { get; private set; }
 
         /// <summary>
         /// The start date of cached data.
         /// </summary>
+        [JsonProperty]
         public DateTime? StartDate { get; private set; }
 
         /// <summary>
         /// The end date of cached data.
         /// </summary>
+        [JsonProperty]
         public DateTime? EndDate { get; private set; }
 
         public SampleCache(ClientSDK clientSdk, string serializedCache = "")
         {
             _clientSdk = clientSdk;
-            _jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            _jsonSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            };
 
             if (string.IsNullOrEmpty(serializedCache)) 
                 return;

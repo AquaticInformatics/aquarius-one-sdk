@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 
 namespace ONE.Operations.Sample
 {
@@ -19,7 +20,11 @@ namespace ONE.Operations.Sample
         public SamplesCache(ClientSDK clientSdk, string serializedCache = "")
         {
             _clientSdk = clientSdk;
-            _jsonSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
+            _jsonSettings = new JsonSerializerSettings
+            {
+                ContractResolver = new CamelCasePropertyNamesContractResolver(),
+                NullValueHandling = NullValueHandling.Ignore
+            };
 
             if (string.IsNullOrEmpty(serializedCache)) 
                 return;
