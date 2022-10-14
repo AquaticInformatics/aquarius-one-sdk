@@ -13,9 +13,10 @@ namespace ONE.Operations.Sample
         private readonly JsonSerializerSettings _jsonSettings;
 
         [JsonProperty]
-        private Dictionary<string, SampleCache> SampleCaches { get; } = new Dictionary<string, SampleCache>();
+        private Dictionary<string, SampleCache> SampleCaches { get; set; } = new Dictionary<string, SampleCache>();
 
-        public List<string> OperationIds { get; } = new List<string>();
+        [JsonProperty]
+        public List<string> OperationIds { get; private set; } = new List<string>();
 
         public SamplesCache(ClientSDK clientSdk, string serializedCache = "")
         {
