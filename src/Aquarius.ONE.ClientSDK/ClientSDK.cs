@@ -14,6 +14,7 @@ using ONE.PoEditor;
 using ONE.Utilities;
 using System;
 using System.Net.Http.Headers;
+using ONE.Operations.Sample;
 
 namespace ONE
 {
@@ -34,6 +35,7 @@ namespace ONE
         public CacheHelper CacheHelper { get; set; }
         public PoEditorApi PoEditor { get; set; }
         public ReportApi Report { get; set; }
+        public SampleApi Sample { get; set; }
         private RestHelper _restHelper { get; set; }
         public EventLogger Logger { get; set; }
 
@@ -129,6 +131,9 @@ namespace ONE
             Spreadsheet.Event += Logger.Logger_Event;
 
             Data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Data.Event += Logger.Logger_Event;
+
+            Sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, this);
             Data.Event += Logger.Logger_Event;
             
             PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext);
