@@ -190,7 +190,7 @@ namespace ONE.Operations.Sample
             }
         }
 
-        private SampleCache Load(string serializedCache)
+        public SampleCache Load(string serializedCache)
         {
             try
             {
