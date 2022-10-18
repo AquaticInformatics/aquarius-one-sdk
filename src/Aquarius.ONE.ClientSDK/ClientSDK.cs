@@ -9,6 +9,7 @@ using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
 using ONE.Enterprise.Report;
 using ONE.Enterprise.Twin;
+using ONE.Operations.Sample;
 using ONE.Operations.Spreadsheet;
 using ONE.PoEditor;
 using ONE.Utilities;
@@ -138,6 +139,7 @@ namespace ONE
             
             PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext);
             poEditor.Event += Logger.Logger_Event;
+
         }
         public bool ContinueOnCapturedContext { get; set; }
 
