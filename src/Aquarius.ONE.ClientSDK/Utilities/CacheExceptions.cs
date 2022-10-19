@@ -1,10 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+
 
 namespace ONE.Utilities
 {
-    public class CacheExceptions
+    public static class CacheExceptions
     {
         
         public static Exception UnloadedException(string entityName, string entityId)

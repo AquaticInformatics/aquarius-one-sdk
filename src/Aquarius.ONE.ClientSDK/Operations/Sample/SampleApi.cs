@@ -2,10 +2,7 @@
 using System.Collections.Generic;
 using ONE.Utilities;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Linq;
 using System.Net;
-using System.Text;
 using ONE.Models.CSharp;
 
 namespace ONE.Operations.Sample
@@ -79,11 +76,9 @@ namespace ONE.Operations.Sample
             var requestId = Guid.NewGuid();
             var endpoint = $"/operations/sample/v1/analyte";
 
-            var json = JsonConvert.SerializeObject(analyte, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PostRestProtobufAsync(analyte, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SampleApi", Message = $"CreateAnalyteAsync Success" });
@@ -107,11 +102,9 @@ namespace ONE.Operations.Sample
             var requestId = Guid.NewGuid();
             var endpoint = $"/operations/sample/v1/testgroup";
 
-            var json = JsonConvert.SerializeObject(testGroup, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PostRestProtobufAsync(testGroup, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SampleApi", Message = $"CreateTestGroupAsync Success" });

@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using ONE.Models.CSharp;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using ONE.Utilities;
-using Proto = ONE.Models.CSharp;
 
 
 namespace ONE.Operations.Sample
@@ -18,9 +15,9 @@ namespace ONE.Operations.Sample
         private readonly ClientSDK _clientSdk;
         private readonly JsonSerializerSettings _jsonSettings;
 
-        [JsonProperty] private Dictionary<string, Proto.Activity> Activities { get; set; } = new Dictionary<string, Proto.Activity>();
-        [JsonProperty] private Dictionary<string, Proto.Analyte> Analytes { get; set; } = new Dictionary<string, Proto.Analyte>();
-        [JsonProperty] private Dictionary<string, Proto.TestAnalyteGroup> TestGroups { get; set; } = new Dictionary<string, Proto.TestAnalyteGroup>();
+        [JsonProperty] private Dictionary<string, Activity> Activities { get; set; } = new Dictionary<string, Activity>();
+        [JsonProperty] private Dictionary<string, Analyte> Analytes { get; set; } = new Dictionary<string, Analyte>();
+        [JsonProperty] private Dictionary<string, TestAnalyteGroup> TestGroups { get; set; } = new Dictionary<string, TestAnalyteGroup>();
 
         /// <summary> 
         /// The operation Id of cached data. 
@@ -60,8 +57,8 @@ namespace ONE.Operations.Sample
             OperationId = cache?.OperationId ?? string.Empty;
             StartDate = cache?.StartDate;
             EndDate = cache?.EndDate;
-            Activities = cache?.Activities ?? new Dictionary<string, Proto.Activity>();
-            Analytes = cache?.Analytes ?? new Dictionary<string, Proto.Analyte>();
+            Activities = cache?.Activities ?? new Dictionary<string, Activity>();
+            Analytes = cache?.Analytes ?? new Dictionary<string, Analyte>();
             TestGroups = cache?.TestGroups ?? new Dictionary<string, TestAnalyteGroup>();
         }
 
@@ -123,10 +120,10 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// Retrieve data from the cache by activity Id.
         /// </summary>
-        public Proto.Activity GetByActivity(string activityId)
+        public Activity GetByActivity(string activityId)
         {
             if (!ValidActivity(activityId))
-                return ErrorResponse<Proto.Activity>(CacheExceptions.UnloadedException("Activity", activityId), null);
+                return ErrorResponse<Activity>(CacheExceptions.UnloadedException("Activity", activityId), null);
 
             return Activities[Guid.Parse(activityId).ToString()];
         }
@@ -134,12 +131,12 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// Gets all activities in the cache.
         /// </summary>
-        public List<Proto.Activity> GetAllActivities() => Activities.Values.ToList();
+        public List<Activity> GetAllActivities() => Activities.Values.ToList();
 
         /// <summary>
         /// Gets activities in the cache based on input criteria.
         /// </summary>
-        public List<Proto.Activity> QueryActivities(string activityTypeId = null, int? statusCode = null,
+        public List<Activity> QueryActivities(string activityTypeId = null, int? statusCode = null,
             int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null,
             string scheduleId = null)
         {
@@ -169,7 +166,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                return ErrorResponse<List<Proto.Activity>>(ex, null);
+                return ErrorResponse<List<Activity>>(ex, null);
             }
         }
 
@@ -177,25 +174,25 @@ namespace ONE.Operations.Sample
         /// Retrieve an analyte from the cache by Id
         /// </summary>
         /// <param name="analyteId">Id of the analyte to retrieve</param>
-        public Proto.Analyte GetAnalyte(string analyteId) =>
-            IsValidAnalyte(analyteId) ? Analytes[analyteId] : ErrorResponse<Proto.Analyte>(CacheExceptions.UnloadedException("Analyte", analyteId), null);
+        public Analyte GetAnalyte(string analyteId) =>
+            IsValidAnalyte(analyteId) ? Analytes[analyteId] : ErrorResponse<Analyte>(CacheExceptions.UnloadedException("Analyte", analyteId), null);
 
         /// <summary>
         /// Gets all Analytes in the cache
         /// </summary>
-        public List<Proto.Analyte> GetAnalytes() => Analytes.Values.ToList();
+        public List<Analyte> GetAnalytes() => Analytes.Values.ToList();
 
         /// <summary>
         /// Retrieve a TestGroup from the cache by Id
         /// </summary>
         /// <param name="testGroupId">Id of the analyte to retrieve</param>
-        public Proto.TestAnalyteGroup GetTestGroup(string testGroupId) =>
-           IsValidTestGroup(testGroupId) ? TestGroups[testGroupId] : ErrorResponse<Proto.TestAnalyteGroup>(CacheExceptions.UnloadedException("TestGroup", testGroupId), null);
+        public TestAnalyteGroup GetTestGroup(string testGroupId) =>
+           IsValidTestGroup(testGroupId) ? TestGroups[testGroupId] : ErrorResponse<TestAnalyteGroup>(CacheExceptions.UnloadedException("TestGroup", testGroupId), null);
 
         /// <summary>
         /// Gets all TestGroups in the cache
         /// </summary>
-        public List<Proto.TestAnalyteGroup> GetTestGroups() => TestGroups.Values.ToList();
+        public List<TestAnalyteGroup> GetTestGroups() => TestGroups.Values.ToList();
 
 
         /// <summary> 
@@ -240,19 +237,29 @@ namespace ONE.Operations.Sample
 
         private bool ValidActivity(string activityId)
         {
-            if (!Guid.TryParse(activityId, out var guidId))
-                return false;
+            if (!IsValidGuid(activityId)) return false;
 
-            var normalized = guidId.ToString();
-
-            return Activities.ContainsKey(normalized);
+            return Activities.ContainsKey(activityId);
         }
 
-        private bool IsValidAnalyte(string analyteId) =>
-            !string.IsNullOrEmpty(analyteId) && Analytes.ContainsKey(analyteId);
+        private bool IsValidGuid(string id)
+        {
+             return Guid.TryParse(id, out var guidId);
+        }
 
-        private bool IsValidTestGroup(string testGroupId) =>
-            !string.IsNullOrEmpty(testGroupId) && TestGroups.ContainsKey(testGroupId);
+        private bool IsValidAnalyte(string analyteId)
+        {
+            if (!IsValidGuid(analyteId)) return false;
+            return !string.IsNullOrEmpty(analyteId) && Analytes.ContainsKey(analyteId);
+        }
+            
+
+        private bool IsValidTestGroup(string testGroupId)
+        {
+            if (!IsValidGuid(testGroupId)) return false;
+            return !string.IsNullOrEmpty(testGroupId) && TestGroups.ContainsKey(testGroupId);
+        }
+            
 
         private T ErrorResponse<T>(Exception exception, T result)
         {
