@@ -115,11 +115,14 @@ namespace ONE.Enterprise.Authentication
         private const string ConfigurationPath = "COMMON/CONFIGURATION";
         private const string LibraryPath = "COMMON/LIBRARY";
         private const string NotificationPath = "COMMON/NOTIFICATION";
+        private const string SchedulePath = "COMMON/SCHEDULE";
         private const string TimezonePath = "COMMON/TIMEZONE";
         private const string TwinPath = "ENTERPRISE/TWIN";
         private const string CorePath = "ENTERPRISE/CORE";
         private const string ReportPath = "ENTERPRISE/REPORT";
         private const string SpreadsheetPath = "OPERATIONS/SPREADSHEET";
+        private const string SamplePath = "OPERATIONS/SAMPLE";
+        private const string HistorianDataPath = "HISTORIAN/DATA";
 
         public int GetLocalHttpPort(string uri)
         {
@@ -136,6 +139,8 @@ namespace ONE.Enterprise.Authentication
                 return 9201;
             if (uri.Contains(NotificationPath))
                 return 9004;
+            if (uri.Contains(SchedulePath))
+                return 6161;
             if (uri.Contains(TimezonePath))
                 return 9001;
             if (uri.Contains(TwinPath))
@@ -146,6 +151,10 @@ namespace ONE.Enterprise.Authentication
                 return 9090;
             if (uri.Contains(SpreadsheetPath))
                 return 9502;
+            if (uri.Contains(SamplePath))
+                return 5611;
+            if (uri.Contains(HistorianDataPath))
+                return 8998;
             return 0;
         }
 
@@ -155,7 +164,7 @@ namespace ONE.Enterprise.Authentication
                 return "";
             
             if (uri.Contains("v1"))
-                return uri.Substring(uri.IndexOf("v1", StringComparison.InvariantCultureIgnoreCase) + 3); // remove the v1 segment from the local uri
+                return uri.Substring(uri.IndexOf("v1", StringComparison.InvariantCultureIgnoreCase) + 2); // remove the v1 segment from the local uri
             if (uri.Contains("v2"))
                 return uri.Substring(uri.IndexOf("v2", StringComparison.InvariantCultureIgnoreCase)); // keep the v2 segment in the local uri
             return "";
