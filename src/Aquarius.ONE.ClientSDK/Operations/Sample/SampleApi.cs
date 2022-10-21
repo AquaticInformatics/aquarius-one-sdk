@@ -69,6 +69,11 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Creates an analyte
+        /// </summary>
+        /// <param name="analyte">Analyte to be created</param>
+        /// <returns>Boolean value indicating whether or not the analyte was successfully created</returns>
         public async Task<bool> CreateAnalyteAsync(Analyte analyte)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -95,6 +100,12 @@ namespace ONE.Operations.Sample
             }
         }
 
+
+        /// <summary>
+        /// Creates a testGroup
+        /// </summary>
+        /// <param name="testGroup">TestGroup to be created</param>
+        /// <returns>Boolean value indicating whether or not the testgroup was successfully created</returns>
         public async Task<bool> CreateTestGroupAsync(TestAnalyteGroup testGroup)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -121,6 +132,12 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Retrieve all analytes associated to a specific authTwinRefId
+        /// </summary>
+        /// <param name="authTwinRefId">Reference id of the digital twin </param>
+        /// <param name="includeInactive">Optional boolean value to include inactive analytes</param>
+        /// <returns>List of analytes</returns>
         public async Task<List<Analyte>> GetAnalytesAsync(string authTwinRefId, bool? includeInactive = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -171,6 +188,11 @@ namespace ONE.Operations.Sample
         }
 
 
+        /// <summary>
+        /// Retrieves an analyte based on the provided analyte id.
+        /// </summary>
+        /// <param name="analyteId">Id of the analyte to retrieve</param>
+        /// <returns>Analyte object</returns>
         public async Task<Analyte> GetOneAnalyteAsync(string analyteId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -214,6 +236,11 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Retrieve all testgroups associated to a specific authTwinRefId
+        /// </summary>
+        /// <param name="authTwinRefId">Reference id of the digital twin </param>
+        /// <returns>List of testgroups</returns>
         public async Task<List<TestAnalyteGroup>> GetTestGroupsAsync(string authTwinRefId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -260,6 +287,11 @@ namespace ONE.Operations.Sample
         }
 
 
+        /// <summary>
+        /// Retrieves a TestGroup based on the provided TestGroup id.
+        /// </summary>
+        /// <param name="testGroupId">Id of the TestGroup to retrieve</param>
+        /// <returns>TestGroup object</returns>
         public async Task<TestAnalyteGroup> GetOneTestGroupAsync(string testGroupId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();

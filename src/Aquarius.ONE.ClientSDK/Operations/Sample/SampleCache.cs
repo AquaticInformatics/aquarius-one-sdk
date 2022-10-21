@@ -185,7 +185,7 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// Retrieve a TestGroup from the cache by Id
         /// </summary>
-        /// <param name="testGroupId">Id of the analyte to retrieve</param>
+        /// <param name="testGroupId">Id of the TestGroup to retrieve</param>
         public TestAnalyteGroup GetTestGroup(string testGroupId) =>
            IsValidTestGroup(testGroupId) ? TestGroups[testGroupId] : ErrorResponse<TestAnalyteGroup>(CacheExceptions.UnloadedException("TestGroup", testGroupId), null);
 
@@ -223,6 +223,9 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Loads SampleCache object
+        /// </summary>
         public SampleCache Load(string serializedCache)
         {
             try
