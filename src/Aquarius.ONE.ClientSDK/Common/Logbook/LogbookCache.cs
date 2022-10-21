@@ -26,7 +26,7 @@ namespace ONE.Common.Logbook
             var cache = Load(serializedCache);
 
             if (_clientSdk.ThrowAPIErrors && cache == null)
-                throw new ArgumentException("Serialized cache could not be deserialized");
+                throw CacheExceptions.NotDeserializedCacheException();
 
             OperationId = cache?.OperationId ?? string.Empty;
             Logbooks = cache?.Logbooks ?? new Dictionary<string, Proto.Configuration>();
@@ -41,7 +41,7 @@ namespace ONE.Common.Logbook
             if (Guid.TryParse(operationId, out _))
                 OperationId = operationId;
             else
-                return ErrorResponse(new ArgumentException("OperationId must be a guid"), false);
+                return ErrorResponse(CacheExceptions.IdMustBeGuidException("OperationId"), false);
 
             return true;
         }
@@ -94,7 +94,7 @@ namespace ONE.Common.Logbook
         public async Task<bool> LoadEntriesByLogbookAsync(string logbookId, DateTime startDate, DateTime endDate)
         {
             if (!Logbooks.ContainsKey(logbookId))
-                return ErrorResponse(UnloadedException(logbookId), false);
+                return ErrorResponse(CacheExceptions.UnloadedException("Logbook", logbookId), false);
 
             try
             {
@@ -120,7 +120,7 @@ namespace ONE.Common.Logbook
         /// </summary>
         /// <param name="logbookId">Id of the logbook to retrieve</param>
         public Proto.Configuration GetLogbook(string logbookId) =>
-            ValidLogbook(logbookId) ? Logbooks[logbookId] : ErrorResponse<Proto.Configuration>(UnloadedException(logbookId), null);
+            ValidLogbook(logbookId) ? Logbooks[logbookId] : ErrorResponse<Proto.Configuration>(CacheExceptions.UnloadedException("Logbook", logbookId), null);
 
         /// <summary>
         /// Gets all logbooks in the cache
@@ -139,7 +139,7 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Id of the logbook containing the tags to be retrieved</param>
         public List<string> GetUniqueTags(string logbookId) => ValidLogbook(logbookId)
             ? Tags[logbookId]
-            : ErrorResponse<List<string>>(UnloadedException(logbookId), null);
+            : ErrorResponse<List<string>>(CacheExceptions.UnloadedException("Logbook", logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook.
@@ -147,7 +147,7 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Id of the logbook containing the logbookEntries to retrieve</param>
         public List<ConfigurationNote> GetLogbookEntries(string logbookId) => ValidLogbook(logbookId)
             ? LogbookEntries[logbookId]
-            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
+            : ErrorResponse<List<ConfigurationNote>>(CacheExceptions.UnloadedException("Logbook", logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook within a specific time range.
@@ -157,7 +157,7 @@ namespace ONE.Common.Logbook
         /// <param name="endDate">returns logbookEntries before this date</param>
         public List<ConfigurationNote> GetEntriesByDate(string logbookId, DateTime startDate, DateTime endDate) => ValidLogbook(logbookId)
             ? LogbookEntries[logbookId].Where(e => e.NoteTime.ToDateTime() >= startDate && e.NoteTime.ToDateTime() < endDate).ToList()
-            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
+            : ErrorResponse<List<ConfigurationNote>>(CacheExceptions.UnloadedException("Logbook", logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook containing specific tags.
@@ -166,7 +166,7 @@ namespace ONE.Common.Logbook
         /// <param name="tags">tags to filter by, entries must contain all provided tags</param>
         public List<ConfigurationNote> GetEntriesByTags(string logbookId, params string[] tags) => ValidLogbook(logbookId)
             ? tags.Aggregate(LogbookEntries[logbookId], (current, tag) => current.Where(n => n.Tags.Select(ct => ct.Tag).Contains(tag)).ToList())
-            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
+            : ErrorResponse<List<ConfigurationNote>>(CacheExceptions.UnloadedException("Logbook", logbookId), null);
 
         /// <summary>
         /// Get all logbookEntries in the cache for a specific logbook containing a specific string.
@@ -175,7 +175,7 @@ namespace ONE.Common.Logbook
         /// <param name="searchText">text string to search for, this is case insensitive</param>
         public List<ConfigurationNote> GetEntriesByText(string logbookId, string searchText) => ValidLogbook(logbookId)
             ? LogbookEntries[logbookId].Where(n => n.Note.ToLower().Contains(searchText.ToLower())).ToList()
-            : ErrorResponse<List<ConfigurationNote>>(UnloadedException(logbookId), null);
+            : ErrorResponse<List<ConfigurationNote>>(CacheExceptions.UnloadedException("Logbook", logbookId), null);
 
         public void ClearCache()
         {
@@ -210,8 +210,6 @@ namespace ONE.Common.Logbook
 
         private bool ValidLogbook(string logbookId) =>
             !string.IsNullOrEmpty(logbookId) && Logbooks.ContainsKey(logbookId) && LogbookEntries.ContainsKey(logbookId) && Tags.ContainsKey(logbookId);
-
-        private static Exception UnloadedException(string logbookId) => new ArgumentException($"Logbook ({logbookId}) is either not loaded or not part of this operation");
 
         private T ErrorResponse<T>(Exception exception, T result)
         {

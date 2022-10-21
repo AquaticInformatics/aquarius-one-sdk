@@ -1,11 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using ONE.Models.CSharp;
+using ONE.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using ONE.Utilities;
-using Proto = ONE.Models.CSharp;
+
 
 namespace ONE.Operations.Sample
 {
@@ -14,12 +15,13 @@ namespace ONE.Operations.Sample
         private readonly ClientSDK _clientSdk;
         private readonly JsonSerializerSettings _jsonSettings;
 
-        [JsonProperty]
-        private Dictionary<string, Proto.Activity> Activities { get; set; } = new Dictionary<string, Proto.Activity>();
+        [JsonProperty] private Dictionary<string, Activity> Activities { get; set; } = new Dictionary<string, Activity>();
+        [JsonProperty] private Dictionary<string, Analyte> Analytes { get; set; } = new Dictionary<string, Analyte>();
+        [JsonProperty] private Dictionary<string, TestAnalyteGroup> TestGroups { get; set; } = new Dictionary<string, TestAnalyteGroup>();
 
-        /// <summary>
-        /// The operation Id of cached data.
-        /// </summary>
+        /// <summary> 
+        /// The operation Id of cached data. 
+        /// </summary> 
         [JsonProperty]
         public string OperationId { get; private set; }
 
@@ -44,27 +46,29 @@ namespace ONE.Operations.Sample
                 NullValueHandling = NullValueHandling.Ignore
             };
 
-            if (string.IsNullOrEmpty(serializedCache)) 
+            if (string.IsNullOrEmpty(serializedCache))
                 return;
 
             var cache = Load(serializedCache);
 
             if (_clientSdk.ThrowAPIErrors && cache == null)
-                throw new ArgumentException("Serialized cache could not be deserialized");
+                throw CacheExceptions.NotDeserializedCacheException();
 
             OperationId = cache?.OperationId ?? string.Empty;
             StartDate = cache?.StartDate;
             EndDate = cache?.EndDate;
-            Activities = cache?.Activities ?? new Dictionary<string, Proto.Activity>();
+            Activities = cache?.Activities ?? new Dictionary<string, Activity>();
+            Analytes = cache?.Analytes ?? new Dictionary<string, Analyte>();
+            TestGroups = cache?.TestGroups ?? new Dictionary<string, TestAnalyteGroup>();
         }
 
-        /// <summary>
-        /// Sets the operation Id.
-        /// </summary>
+        /// <summary> 
+        /// Sets the operation Id. 
+        /// </summary> 
         public bool SetOperationId(string operationId)
         {
             if (!Guid.TryParse(operationId, out var guidId))
-                return ErrorResponse(new ArgumentException("OperationId must be a guid"), false);
+                return ErrorResponse(CacheExceptions.IdMustBeGuidException("OperationId"), false);
 
             var changed = string.IsNullOrEmpty(OperationId) || guidId != Guid.Parse(OperationId);
 
@@ -96,8 +100,10 @@ namespace ONE.Operations.Sample
 
             try
             {
-                Activities = 
-                    (await _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate)) 
+                Analytes = (await _clientSdk.Sample.GetAnalytesAsync(OperationId)).ToDictionary(k => k.Id, v => v);
+                TestGroups = (await _clientSdk.Sample.GetTestGroupsAsync(OperationId)).ToDictionary(k => k.Id, v => v);
+                Activities =
+                    (await _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate))
                     .ToDictionary(k => k.Id, v => v);
 
                 StartDate = startDate;
@@ -114,10 +120,10 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// Retrieve data from the cache by activity Id.
         /// </summary>
-        public Proto.Activity GetByActivity(string activityId)
+        public Activity GetByActivity(string activityId)
         {
             if (!ValidActivity(activityId))
-                return ErrorResponse<Proto.Activity>(UnloadedException(activityId), null);
+                return ErrorResponse<Activity>(CacheExceptions.UnloadedException("Activity", activityId), null);
 
             return Activities[Guid.Parse(activityId).ToString()];
         }
@@ -125,13 +131,13 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// Gets all activities in the cache.
         /// </summary>
-        public List<Proto.Activity> GetAllActivities() => Activities.Values.ToList();
+        public List<Activity> GetAllActivities() => Activities.Values.ToList();
 
         /// <summary>
         /// Gets activities in the cache based on input criteria.
         /// </summary>
-        public List<Proto.Activity> QueryActivities(string activityTypeId = null, int? statusCode = null, 
-            int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null, 
+        public List<Activity> QueryActivities(string activityTypeId = null, int? statusCode = null,
+            int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null,
             string scheduleId = null)
         {
             try
@@ -160,24 +166,51 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                return ErrorResponse<List<Proto.Activity>>(ex, null);
+                return ErrorResponse<List<Activity>>(ex, null);
             }
         }
 
         /// <summary>
-        /// Clear the cache.
+        /// Retrieve an analyte from the cache by Id
         /// </summary>
+        /// <param name="analyteId">Id of the analyte to retrieve</param>
+        public Analyte GetAnalyte(string analyteId) =>
+            IsValidAnalyte(analyteId) ? Analytes[analyteId] : ErrorResponse<Analyte>(CacheExceptions.UnloadedException("Analyte", analyteId), null);
+
+        /// <summary>
+        /// Gets all Analytes in the cache
+        /// </summary>
+        public List<Analyte> GetAnalytes() => Analytes.Values.ToList();
+
+        /// <summary>
+        /// Retrieve a TestGroup from the cache by Id
+        /// </summary>
+        /// <param name="testGroupId">Id of the TestGroup to retrieve</param>
+        public TestAnalyteGroup GetTestGroup(string testGroupId) =>
+           IsValidTestGroup(testGroupId) ? TestGroups[testGroupId] : ErrorResponse<TestAnalyteGroup>(CacheExceptions.UnloadedException("TestGroup", testGroupId), null);
+
+        /// <summary>
+        /// Gets all TestGroups in the cache
+        /// </summary>
+        public List<TestAnalyteGroup> GetTestGroups() => TestGroups.Values.ToList();
+
+
+        /// <summary> 
+        /// Clear the cache. 
+        /// </summary> 
         public void ClearCache()
         {
             Activities.Clear();
+            Analytes.Clear();
+            TestGroups.Clear();
             OperationId = string.Empty;
             StartDate = null;
             EndDate = null;
         }
 
-        /// <summary>
-        /// Get the serialized cache.
-        /// </summary>
+        /// <summary> 
+        /// Get the serialized cache. 
+        /// </summary> 
         public override string ToString()
         {
             try
@@ -190,6 +223,9 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Loads SampleCache object
+        /// </summary>
         public SampleCache Load(string serializedCache)
         {
             try
@@ -204,15 +240,29 @@ namespace ONE.Operations.Sample
 
         private bool ValidActivity(string activityId)
         {
-            if (!Guid.TryParse(activityId, out var guidId))
-                return false;
+            if (!IsValidGuid(activityId)) return false;
 
-            var normalized = guidId.ToString();
-
-            return Activities.ContainsKey(normalized);
+            return Activities.ContainsKey(activityId);
         }
 
-        private static Exception UnloadedException(string activityId) => new ArgumentException($"Activity ({activityId}) is either not loaded or not part of this operation");
+        private bool IsValidGuid(string id)
+        {
+             return Guid.TryParse(id, out var guidId);
+        }
+
+        private bool IsValidAnalyte(string analyteId)
+        {
+            if (!IsValidGuid(analyteId)) return false;
+            return !string.IsNullOrEmpty(analyteId) && Analytes.ContainsKey(analyteId);
+        }
+            
+
+        private bool IsValidTestGroup(string testGroupId)
+        {
+            if (!IsValidGuid(testGroupId)) return false;
+            return !string.IsNullOrEmpty(testGroupId) && TestGroups.ContainsKey(testGroupId);
+        }
+            
 
         private T ErrorResponse<T>(Exception exception, T result)
         {
