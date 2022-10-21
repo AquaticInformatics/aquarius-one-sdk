@@ -1,9 +1,9 @@
 ﻿using CommandLine;
-using ONE.Utilities;
 using ONE;
+using ONE.Models.CSharp;
+using ONE.Shared.Time;
 using System;
 using System.Threading.Tasks;
-using ONE.Models.CSharp;
 
 namespace Aquarius.ONE.Test.ConsoleApp.Commands
 {
@@ -43,7 +43,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                         HistorianDatas historianDatas = new HistorianDatas();
                         historianDatas.Items.Add(new HistorianData
                         {
-                            DateTimeUTC = DateTimeHelper.ToJsonTicksDateTime(DateTime.Now),
+                            DateTimeUTC = DateTime.Now.ToOneDateTime(),
                             PropertyBag = "",
                             Value = 5,
                             StringValue = "<10"

@@ -1,5 +1,6 @@
 ﻿using ONE.Common.Configuration;
 using ONE.Models.CSharp;
+using ONE.Shared.Time;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
@@ -113,7 +114,7 @@ namespace ONE.Common.Logbook
         public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
-                { ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToJsonTicksDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) } };
+                { ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToOneDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) } };
 
             return await _configurationApi.CreateConfigurationNoteAsync(logbookEntry);
         }
@@ -143,7 +144,7 @@ namespace ONE.Common.Logbook
         {
             var logbookEntry = new ConfigurationNote
             {
-                Id = entryId, ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToJsonTicksDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
+                Id = entryId, ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToOneDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
             };
 
             return await _configurationApi.UpdateConfigurationNoteAsync(logbookEntry);

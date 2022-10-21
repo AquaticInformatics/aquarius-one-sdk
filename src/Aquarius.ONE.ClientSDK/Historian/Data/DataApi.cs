@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using ONE.Utilities;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using System.Linq;
+﻿using Newtonsoft.Json;
 using ONE.Models.CSharp;
+using ONE.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace ONE.Common.Historian
 
@@ -118,7 +117,7 @@ namespace ONE.Common.Historian
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            string eDateTime = historianData.DateTimeUTC.ToDateTime().ToString("MM/dd/yyyy HH:mm:ss");
+            
             var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
             if (historianData == null)
                 return true;
