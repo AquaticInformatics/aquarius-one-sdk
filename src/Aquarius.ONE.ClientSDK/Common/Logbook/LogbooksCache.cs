@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -86,7 +87,7 @@ namespace ONE.Common.Logbook
         public async Task<bool> LoadLogbookCacheByOperationAsync(string operationId)
         {
             if (!AddOperation(operationId))
-                return ErrorResponse(new ArgumentException($"Failed to add operation ({operationId})"), false);
+                return ErrorResponse(CacheExceptions.FailedToAddException(operationId), false);
 
             var cache = new LogbookCache(_clientSdk);
             var loaded = await cache.LoadLogbooksAsync(operationId);
@@ -122,14 +123,14 @@ namespace ONE.Common.Logbook
         /// <param name="endDate">load logbookEntries before this date</param>
         public async Task<bool> LoadEntriesByOperationAsync(string operationId, DateTime startDate, DateTime endDate) => ValidOperation(operationId)
             ? (await LogbookCaches[operationId].LoadLogbookEntriesAsync(startDate, endDate)).All(x => x.Value)
-            : ErrorResponse(NotInCacheException(operationId), false);
+            : ErrorResponse(CacheExceptions.NotInCacheException(operationId), false);
 
         /// <summary>
         /// Retrieve the logbookCache for a specific operation
         /// </summary>
         /// <param name="operationId">Identifier of the operation associated to the cache to be retrieved</param>
         public LogbookCache GetLogbookCache(string operationId) =>
-            ValidOperation(operationId) ? LogbookCaches[operationId] : ErrorResponse<LogbookCache>(NotInCacheException(operationId), null);
+            ValidOperation(operationId) ? LogbookCaches[operationId] : ErrorResponse<LogbookCache>(CacheExceptions.NotInCacheException(operationId), null);
 
         /// <summary>
         /// Retrieve all logbookCaches contained in this cache
@@ -165,8 +166,6 @@ namespace ONE.Common.Logbook
         }
 
         private bool ValidOperation(string operationId) => !string.IsNullOrEmpty(operationId) && OperationIds.Contains(operationId) && LogbookCaches.ContainsKey(operationId);
-
-        private static Exception NotInCacheException(string operationId) => new ArgumentException($"Operation ({operationId}) is not part of this cache");
 
         private T ErrorResponse<T>(Exception exception, T result)
         {
