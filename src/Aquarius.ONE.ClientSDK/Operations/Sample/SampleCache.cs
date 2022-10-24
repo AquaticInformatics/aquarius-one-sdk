@@ -17,6 +17,7 @@ namespace ONE.Operations.Sample
 
         [JsonProperty] private Dictionary<string, Activity> Activities { get; set; } = new Dictionary<string, Activity>();
         [JsonProperty] private Dictionary<string, Analyte> Analytes { get; set; } = new Dictionary<string, Analyte>();
+        [JsonProperty] private Dictionary<string, Schedule> Schedules { get; set; } = new Dictionary<string, Schedule>();
         [JsonProperty] private Dictionary<string, TestAnalyteGroup> TestGroups { get; set; } = new Dictionary<string, TestAnalyteGroup>();
 
         /// <summary> 
@@ -102,6 +103,7 @@ namespace ONE.Operations.Sample
             {
                 Analytes = (await _clientSdk.Sample.GetAnalytesAsync(OperationId)).ToDictionary(k => k.Id, v => v);
                 TestGroups = (await _clientSdk.Sample.GetTestGroupsAsync(OperationId)).ToDictionary(k => k.Id, v => v);
+                Schedules = (await _clientSdk.Schedule.GetSchedulesAsync(OperationId, null, "")).ToDictionary(k => k.Id, v => v);
                 Activities =
                     (await _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate))
                     .ToDictionary(k => k.Id, v => v);
@@ -126,6 +128,45 @@ namespace ONE.Operations.Sample
                 return ErrorResponse<Activity>(CacheExceptions.UnloadedException("Activity", activityId), null);
 
             return Activities[Guid.Parse(activityId).ToString()];
+        }
+
+        /// <summary>
+        /// Determine if entity is scheduled for use from the cache by entity type (Analyte/TestGroup) and entity Id.
+        /// </summary>
+        /// <param name="entityId">Id of the entity to determine</param>
+        /// <param name="entityType">Entity type: Analyte or TestGroup to determine</param>
+        public bool IsScheduledForUse(string entityType, string entityId)
+        {
+            if (!IsValidEntity(entityType, entityId))
+                return ErrorResponse(CacheExceptions.UnloadedException(entityType, entityId), false);
+
+            List<string> testGroupIdsWithEntity = new List<string>();
+
+            if (string.Equals(entityType, "Analyte", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Check if any testGroup have entityId (AnalyteId)
+                testGroupIdsWithEntity = TestGroups.Values.Where(t => t.Analytes.Any(a => a.Id == entityId.ToString())).Select(t => t.Id).ToList();
+
+                if (testGroupIdsWithEntity.Count == 0)
+                    return false;
+
+            }
+            else if (string.Equals(entityType, "TestGroup", StringComparison.InvariantCultureIgnoreCase))
+            {
+                // Add entityId (TestGroupId) to check further if TestGroup is scheduled or not
+                testGroupIdsWithEntity.Add(entityId.ToString());
+            }
+
+            foreach (var schedule in Schedules.Values)
+            {
+                var schedulePropertyBag = JsonConvert.DeserializeObject<SchedulePropertyBag>(schedule.PropertyBag);
+
+                // Handling the null if the TestGroup becomes inactive
+                if (testGroupIdsWithEntity.Contains(schedulePropertyBag.TestGroup?.Id.ToString()))
+                    return true;
+            }
+
+            return false;
         }
 
         /// <summary>
@@ -245,9 +286,17 @@ namespace ONE.Operations.Sample
             return Activities.ContainsKey(activityId);
         }
 
+        private bool IsValidEntity(string entityType, string entityId)
+        {
+            if (!IsValidGuid(entityId)) return false;
+            return string.Equals(entityType, "Analyte", StringComparison.InvariantCultureIgnoreCase) ||
+                        string.Equals(entityType, "TestGroup", StringComparison.InvariantCultureIgnoreCase);
+
+        }
+
         private bool IsValidGuid(string id)
         {
-             return Guid.TryParse(id, out var guidId);
+            return Guid.TryParse(id, out var guidId);
         }
 
         private bool IsValidAnalyte(string analyteId)
@@ -255,14 +304,14 @@ namespace ONE.Operations.Sample
             if (!IsValidGuid(analyteId)) return false;
             return !string.IsNullOrEmpty(analyteId) && Analytes.ContainsKey(analyteId);
         }
-            
+
 
         private bool IsValidTestGroup(string testGroupId)
         {
             if (!IsValidGuid(testGroupId)) return false;
             return !string.IsNullOrEmpty(testGroupId) && TestGroups.ContainsKey(testGroupId);
         }
-            
+
 
         private T ErrorResponse<T>(Exception exception, T result)
         {
@@ -271,5 +320,15 @@ namespace ONE.Operations.Sample
 
             return result;
         }
+    }
+
+    public class SchedulePropertyBag
+    {
+        public TestGroup TestGroup { get; set; }
+    }
+
+    public class TestGroup
+    {
+        public Guid Id { get; set; }
     }
 }
