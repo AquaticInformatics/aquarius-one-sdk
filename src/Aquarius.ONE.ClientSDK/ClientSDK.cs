@@ -16,7 +16,6 @@ using ONE.Utilities;
 using System;
 using System.Net.Http.Headers;
 
-
 namespace ONE
 {
     public class ClientSDK

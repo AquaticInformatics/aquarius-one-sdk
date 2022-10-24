@@ -1,9 +1,9 @@
 ﻿using Newtonsoft.Json;
+using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ONE.Utilities;
 
 namespace ONE.Common.Logbook
 {
