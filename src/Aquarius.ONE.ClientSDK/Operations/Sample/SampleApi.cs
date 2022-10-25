@@ -100,7 +100,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateAnalyteAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -134,7 +136,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateTestGroupAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -177,7 +181,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateAnalyteAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -215,7 +221,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteAnalyteAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -256,7 +264,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetAnalytesAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return null;
             }
         }
 
@@ -291,7 +301,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneAnalyteAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return null;
             }
         }
 
@@ -334,7 +346,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateTestGroupAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return true;
             }
         }
 
@@ -373,7 +387,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteTestGroupAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -407,7 +423,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetTestGroupsAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return null;
             }
         }
 
@@ -443,7 +461,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneTestGroupAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return null;
             }
         }
 
@@ -478,7 +498,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsAnalyteScheduledForUseAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -513,7 +535,9 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsTestGroupScheduledForUseAsync Failed - {e.Message}"));
-                throw e;
+                if (_clientSdk.ThrowAPIErrors)
+                    throw;
+                return false;
             }
         }
 
