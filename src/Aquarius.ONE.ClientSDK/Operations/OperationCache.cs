@@ -492,10 +492,7 @@ namespace ONE.Operations
         public DateTime GetColumnTwinDataPropertyDate(string guid, string path, string key)
         {
             DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
-            if (columnTwin == null)
-                return DateTime.MinValue;
-            DateTime.TryParse(Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, path, key), out DateTime dateTime);
-            return dateTime;
+            return columnTwin == null ? DateTime.MinValue : Helper.GetDateTimeTwinDataProperty(columnTwin, path, key);
         }
         public async Task<bool> UpdateTwinDataAsync(string key, string value)
         {
@@ -524,11 +521,7 @@ namespace ONE.Operations
         {
             return Enterprise.Twin.Helper.GetTwinDataProperty(DigitalTwin, path, key);
         }
-        public DateTime GetTwinDataPropertyDate(string path, string key)
-        {
-            DateTime.TryParse(Enterprise.Twin.Helper.GetTwinDataProperty(DigitalTwin, path, key), out DateTime dateTime);
-            return dateTime;
-        }
+        public DateTime GetTwinDataPropertyDate(string path, string key) => Helper.GetDateTimeTwinDataProperty(DigitalTwin, path, key);
 
         public long GetVariableId(string guid)
         {

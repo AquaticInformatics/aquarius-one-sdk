@@ -1,7 +1,8 @@
-﻿using ONE.Models.CSharp;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ONE.Models.CSharp;
+using ONE.Shared.Time;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -149,7 +150,7 @@ namespace ONE.Enterprise.Twin
         }
         public static DateTime GetDateTimeTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
         {
-            DateTime.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out DateTime propertyValue);
+            DateTimeHelper.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out DateTime propertyValue);
             return propertyValue;
         }
         public static double GetDoubleTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
