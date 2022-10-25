@@ -4,6 +4,7 @@ using ONE.Utilities;
 using System.Threading.Tasks;
 using System.Net;
 using ONE.Models.CSharp;
+using System.Linq;
 
 namespace ONE.Operations.Sample
 {
@@ -90,12 +91,16 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "CreateAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return respContent.ResponseMessage.IsSuccessStatusCode;
+          
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                    return ErrorResponse(respContent, false);
+
+                return true;
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateAnalyteAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
@@ -120,16 +125,25 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "CreateTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return respContent.ResponseMessage.IsSuccessStatusCode;
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                    return ErrorResponse(respContent, false);
+
+                return true;
 
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateTestGroupAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
+        /// <summary>
+        /// Updates an analyte
+        /// </summary>
+        /// <param name="analyte">Analyte to be updated</param>
+        /// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are updated associated with the analyte</param>
+        /// <returns>Boolean value indicating whether or not the analyte was successfully updated</returns>
         public async Task<bool> UpdateAnalyteAsync(Analyte analyte, DateTime? effectiveDate = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -138,7 +152,7 @@ namespace ONE.Operations.Sample
 
             if (effectiveDate.HasValue)
             {
-                endpoint += $"?{effectiveDate.Value.ToString("O")}";
+                endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
             }
 
             try
@@ -153,7 +167,7 @@ namespace ONE.Operations.Sample
                 {
                     message = "UpdateAnalyteAsync Failed";
                     eventLevel = EnumEventLevel.Warn;
-                    success = false;
+                    success = ErrorResponse(respContent, false);
                 }
 
                 Event(null, CreateLoggerArgs(eventLevel, message, respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
@@ -163,10 +177,16 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateAnalyteAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
+        /// <summary>
+        /// Deletes an existing analyte
+        /// </summary>
+        /// <param name="analyteId">Id of the analyte to be deleted</param>
+        /// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are deleted associated with the analyte</param>
+        /// <returns>Boolean value indicating whether or not the analyte was successfully deleted</returns>
         public async Task<bool> DeleteAnalyteAsync(string analyteId, DateTime? effectiveDate = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -176,7 +196,7 @@ namespace ONE.Operations.Sample
 
             if (effectiveDate.HasValue)
             {
-                endpoint += $"?{effectiveDate.Value.ToString("O")}";
+                endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
             }
 
             try
@@ -187,12 +207,15 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return respContent.ResponseMessage.IsSuccessStatusCode;
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                    return ErrorResponse(respContent, false);
+
+                return true;
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteAnalyteAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
@@ -228,12 +251,12 @@ namespace ONE.Operations.Sample
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetAnalytesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return null;
+                return ErrorResponse<List<Analyte>>(respContent, null);
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetAnalytesAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
@@ -263,17 +286,22 @@ namespace ONE.Operations.Sample
                 }
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-                return null;
+                return ErrorResponse<Analyte>(respContent, null);
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneAnalyteAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
 
-
+        /// <summary>
+        /// Updates an testGroup
+        /// </summary>
+        /// <param name="testGroup">TestGroup to be updated</param>
+        /// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are updated associated with the testGroup</param>
+        /// <returns>Boolean value indicating whether or not the testgroup was successfully updated</returns>
         public async Task<bool> UpdateTestGroupAsync(TestAnalyteGroup testGroup, DateTime? effectiveDate = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -281,7 +309,7 @@ namespace ONE.Operations.Sample
 
             if (effectiveDate.HasValue)
             {
-                endpoint += $"?{effectiveDate.Value.ToString("O")}";
+                endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
             }
 
             try
@@ -296,7 +324,7 @@ namespace ONE.Operations.Sample
                 {
                     message = "UpdateTestGroupAsync Failed";
                     eventLevel = EnumEventLevel.Warn;
-                    success = false;
+                    success = ErrorResponse(respContent, false);
                 }
 
                 Event(null, CreateLoggerArgs(eventLevel, message, respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
@@ -306,10 +334,16 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateTestGroupAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
+        /// <summary>
+        /// Deletes an existing testGroup
+        /// </summary>
+        /// <param name="testGroupId">Id of the testGroup to be deleted</param>
+        /// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are deleted associated with the testGroup</param>
+        /// <returns>Boolean value indicating whether or not the testGroup was successfully deleted</returns>
         public async Task<bool> DeleteTestGroupAsync(string testGroupId, DateTime? effectiveDate = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -319,7 +353,7 @@ namespace ONE.Operations.Sample
 
             if (effectiveDate.HasValue)
             {
-                endpoint += $"?{effectiveDate.Value.ToString("O")}";
+                endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
             }
 
             try
@@ -331,12 +365,15 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return respContent.ResponseMessage.IsSuccessStatusCode;
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                    return ErrorResponse(respContent, false);
+
+                return true;
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteTestGroupAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
@@ -365,13 +402,12 @@ namespace ONE.Operations.Sample
                 }
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetTestGroupsAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-                return null;
+                return ErrorResponse<List<TestAnalyteGroup>>(respContent, null);
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetTestGroupsAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
@@ -402,20 +438,24 @@ namespace ONE.Operations.Sample
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return null;
+                return ErrorResponse<TestAnalyteGroup>(respContent, null);
             }
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneTestGroupAsync Failed - {e.Message}"));
-                throw;
+                throw e;
             }
         }
 
-        public async Task<bool> IsScheduledForUseAsync(string authTwinRefId, string entityType, string entityId)
+        /// <summary>
+        /// Determine if analyte is scheduled for use
+        /// </summary>
+        /// <param name="analyteId">Id of the analyte to determine</param>
+        public async Task<bool> IsAnalyteScheduledForUseAsync(string authTwinRefId, string analyteId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endPointUrl = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType={entityType}&EntityId={entityId}";
+            var endPointUrl = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType=Analyte&EntityId={analyteId}";
 
             try
             {
@@ -424,22 +464,67 @@ namespace ONE.Operations.Sample
                 {
                     foreach (var keyValue in respContent.ApiResponse.Content.KeyValues.Items)
                     {
-                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "IsScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "IsAnalyteScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                         if (bool.TryParse(keyValue.Value, out var value))
                             return value;
                         return false;
                     }
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsAnalyteScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return false;
+                return ErrorResponse(respContent, false);
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsScheduledForUseAsync Failed - {e.Message}"));
-                throw;
+                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsAnalyteScheduledForUseAsync Failed - {e.Message}"));
+                throw e;
             }
+        }
+
+        /// <summary>
+        /// Determine if testgroup is scheduled for use
+        /// </summary>
+        /// <param name="testGroupId">Id of the testgroup to determine</param>
+        public async Task<bool> IsTestGroupScheduledForUseAsync(string authTwinRefId, string testGroupId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endPointUrl = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType=TestGroup&EntityId={testGroupId}";
+
+            try
+            {
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    foreach (var keyValue in respContent.ApiResponse.Content.KeyValues.Items)
+                    {
+                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "IsTestGroupScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        if (bool.TryParse(keyValue.Value, out var value))
+                            return value;
+                        return false;
+                    }
+                }
+
+                Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsTestGroupScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+
+                return ErrorResponse(respContent, false);
+            }
+            catch (Exception e)
+            {
+                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsTestGroupScheduledForUseAsync Failed - {e.Message}"));
+                throw e;
+            }
+        }
+
+        private T ErrorResponse<T>(ServiceResponse respContent, T result)
+        {
+            string exceptionMessage = respContent.ApiResponse?.Errors?.FirstOrDefault()?.Detail ?? $"Unknown Error with status code {respContent.ResponseMessage.StatusCode}";
+
+            if (_clientSdk.ThrowAPIErrors)
+                throw new Exception(exceptionMessage);
+
+            return result;
         }
 
         private ClientApiLoggerEventArgs CreateLoggerArgs(EnumEventLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
