@@ -1,4 +1,5 @@
 ﻿using ONE.Models.CSharp;
+using ONE.Shared.Time;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,23 +120,23 @@ namespace ONE.Operations.Spreadsheet
         {
             if (dateAsObject == null)
                 return DateTime.MinValue;
-            DateTime.TryParse(dateAsObject.ToString(), out DateTime date);
-            if (date == DateTime.MinValue)
-            {
-                double.TryParse(dateAsObject.ToString(), out double oaDate);
-                if (oaDate > 0)
-                {
-                    try
-                    {
-                        date = DateTime.FromOADate(oaDate);
-                    }
-                    catch
-                    {
-                        return DateTime.MinValue;
-                    }
 
+            if (DateTimeHelper.TryParse(dateAsObject.ToString(), out var date))
+                return date;
+
+            double.TryParse(dateAsObject.ToString(), out double oaDate);
+            if (oaDate > 0)
+            {
+                try
+                {
+                    date = DateTime.FromOADate(oaDate);
+                }
+                catch
+                {
+                    return DateTime.MinValue;
                 }
             }
+
             return date;
         }
         public static object GetDoubleValue(string value)

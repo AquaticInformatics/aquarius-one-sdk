@@ -1,9 +1,8 @@
 ﻿using ONE;
-using ONE.Enterprise.Authentication;
+using ONE.Shared.Time;
 using ONE.Utilities;
 using System;
 using System.Configuration;
-using System.Net.Http.Headers;
 
 namespace Aquarius.ONE.Test.ConsoleApp.Commands
 {
@@ -54,7 +53,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
             DateTime tokenExpires = DateTime.MinValue;
             if (configuration.AppSettings.Settings["TokenExpires"] != null)
-                DateTime.TryParse(configuration.AppSettings.Settings["TokenExpires"].Value, out tokenExpires);
+                DateTimeHelper.TryParse(configuration.AppSettings.Settings["TokenExpires"].Value, out tokenExpires);
             bool throwAPIErrors = false;
             if (configuration.AppSettings.Settings["ThrowAPIErrors"] != null)
                 bool.TryParse(configuration.AppSettings.Settings["ThrowAPIErrors"].Value, out throwAPIErrors);

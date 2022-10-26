@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
-	  <VersionPrefix>13.15.1</VersionPrefix>
+	  <VersionPrefix>13.15.2</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
 	  <VersionSuffix></VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>

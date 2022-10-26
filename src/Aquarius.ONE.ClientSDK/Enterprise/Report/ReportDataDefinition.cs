@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
+using ONE.Shared.Time;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace ONE.Enterprise.Report
 {
@@ -12,10 +12,10 @@ namespace ONE.Enterprise.Report
             var definition = JsonConvert.DeserializeObject<ReportDefinitionJson>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
             Columns = definition.columns;
             
-            DateTime.TryParse(definition.endTime, out DateTime eValue);
+            DateTimeHelper.TryParse(definition.endTime, out DateTime eValue);
             EndTime = eValue;
 
-            DateTime.TryParse(definition.startTime, out DateTime sValue);
+            DateTimeHelper.TryParse(definition.startTime, out DateTime sValue);
             StartTime = sValue;
 
             PlantId = definition.plantId;
