@@ -17,6 +17,7 @@ namespace ONE.Operations.Sample
 
         [JsonProperty] private Dictionary<string, Activity> Activities { get; set; } = new Dictionary<string, Activity>();
         [JsonProperty] private Dictionary<string, Analyte> Analytes { get; set; } = new Dictionary<string, Analyte>();
+        [JsonProperty] private Dictionary<string, Schedule> Schedules { get; set; } = new Dictionary<string, Schedule>();
         [JsonProperty] private Dictionary<string, TestAnalyteGroup> TestGroups { get; set; } = new Dictionary<string, TestAnalyteGroup>();
 
         /// <summary> 
@@ -102,6 +103,7 @@ namespace ONE.Operations.Sample
             {
                 Analytes = (await _clientSdk.Sample.GetAnalytesAsync(OperationId)).ToDictionary(k => k.Id, v => v);
                 TestGroups = (await _clientSdk.Sample.GetTestGroupsAsync(OperationId)).ToDictionary(k => k.Id, v => v);
+                Schedules = (await _clientSdk.Schedule.GetSchedulesAsync(OperationId, null, "")).ToDictionary(k => k.Id, v => v);
                 Activities =
                     (await _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate))
                     .ToDictionary(k => k.Id, v => v);
@@ -126,6 +128,39 @@ namespace ONE.Operations.Sample
                 return ErrorResponse<Activity>(CacheExceptions.UnloadedException("Activity", activityId), null);
 
             return Activities[Guid.Parse(activityId).ToString()];
+        }
+
+        /// <summary>
+        /// Determine if analyte is scheduled for use from the cache.
+        /// </summary>
+        /// <param name="analyteId">Id of the analyte to determine</param>
+        public bool IsAnalyteScheduledForUse(string analyteId)
+        {
+            List<string> testGroupIdsWithEntity = new List<string>();
+
+                // Check if any testGroup have entityId (AnalyteId)
+                testGroupIdsWithEntity = TestGroups.Values.Where(t => t.Analytes.Any(a => a.Id == analyteId.ToString())).Select(t => t.Id).ToList();
+
+                if (testGroupIdsWithEntity.Count == 0)
+                    return false;
+
+            return IsAnyTestGroupUsedInSchedule(testGroupIdsWithEntity);
+        }
+
+
+
+        /// <summary>
+        /// Determine if testgroup is scheduled for use from the cache.
+        /// </summary>
+        /// <param name="testGroupId">Id of the testgroup to determine</param>
+        public bool IsTestGroupScheduledForUse(string testGroupId)
+        {
+             List<string> testGroupIdsWithEntity = new List<string>();
+
+            // Add entityId (TestGroupId) to check further if TestGroup is scheduled or not
+            testGroupIdsWithEntity.Add(testGroupId.ToString());
+
+            return IsAnyTestGroupUsedInSchedule(testGroupIdsWithEntity);
         }
 
         /// <summary>
@@ -247,7 +282,7 @@ namespace ONE.Operations.Sample
 
         private bool IsValidGuid(string id)
         {
-             return Guid.TryParse(id, out var guidId);
+            return Guid.TryParse(id, out var guidId);
         }
 
         private bool IsValidAnalyte(string analyteId)
@@ -255,14 +290,14 @@ namespace ONE.Operations.Sample
             if (!IsValidGuid(analyteId)) return false;
             return !string.IsNullOrEmpty(analyteId) && Analytes.ContainsKey(analyteId);
         }
-            
+
 
         private bool IsValidTestGroup(string testGroupId)
         {
             if (!IsValidGuid(testGroupId)) return false;
             return !string.IsNullOrEmpty(testGroupId) && TestGroups.ContainsKey(testGroupId);
         }
-            
+
 
         private T ErrorResponse<T>(Exception exception, T result)
         {
@@ -271,5 +306,29 @@ namespace ONE.Operations.Sample
 
             return result;
         }
+
+        private bool IsAnyTestGroupUsedInSchedule(List<string> testGroupIdsWithEntity)
+        {
+            foreach (var schedule in Schedules.Values)
+            {
+                var schedulePropertyBag = JsonConvert.DeserializeObject<SchedulePropertyBag>(schedule.PropertyBag);
+
+                // Handling the null if the TestGroup becomes inactive
+                if (testGroupIdsWithEntity.Contains(schedulePropertyBag.TestGroup?.Id.ToString()))
+                    return true;
+            }
+
+            return false;
+        }
+    }
+
+    public class SchedulePropertyBag
+    {
+        public TestGroup TestGroup { get; set; }
+    }
+
+    public class TestGroup
+    {
+        public Guid Id { get; set; }
     }
 }
