@@ -106,8 +106,8 @@ namespace ONE
             Configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Configuration.Event += Logger.Logger_Event;
 
-            // This is a wrapper around the ConfigurationApi no events are logged directly
-            Logbook = new LogbookApi(Environment, ContinueOnCapturedContext, _restHelper);
+            // This is a wrapper around the ConfigurationApi no events are logged directly and no other properties are required
+            Logbook = new LogbookApi(Configuration);
 
             Library = new LibraryApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Library.Event += Logger.Logger_Event;
@@ -133,7 +133,7 @@ namespace ONE
             Data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Data.Event += Logger.Logger_Event;
 
-            Sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, this);
+            Sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, Activity, ThrowAPIErrors);
             Data.Event += Logger.Logger_Event;
             
             PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext, ThrowAPIErrors);
