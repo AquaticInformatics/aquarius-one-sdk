@@ -18,13 +18,15 @@ namespace ONE.PoEditor
     /// </summary>
     public class PoEditorApi
     {
-        public PoEditorApi(PlatformEnvironment environment, bool continueOnCapturedContext)
+        public PoEditorApi(PlatformEnvironment environment, bool continueOnCapturedContext, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        private readonly bool _throwAPIErrors;
         private const string BaseUrl = "https://api.poeditor.com/v2";
         private const string PoEditorApiKey = "16e260278fde2bccf2b871b1586706c3";
 
@@ -106,7 +108,9 @@ namespace ONE.PoEditor
             catch (Exception ex)
             {
                 Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "PoEditorUtility", Message = $"GetProjectsAsync Failed - {ex.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -154,7 +158,9 @@ namespace ONE.PoEditor
             catch (Exception ex)
             {
                 Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "PoEditorUtility", Message = $"GetTranslationsAsync Failed - {ex.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -219,7 +225,9 @@ namespace ONE.PoEditor
             catch (Exception ex)
             {
                 Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "PoEditorUtility", Message = $"UpdateLanguageAsync Failed - {ex.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return 0;
             }
         }
 

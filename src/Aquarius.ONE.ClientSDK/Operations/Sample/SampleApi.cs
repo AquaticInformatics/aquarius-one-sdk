@@ -91,11 +91,8 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "CreateAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-          
-                if (!respContent.ResponseMessage.IsSuccessStatusCode)
-                    return ErrorResponse(respContent, false);
 
-                return true;
+                return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
@@ -127,10 +124,7 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "CreateTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                if (!respContent.ResponseMessage.IsSuccessStatusCode)
-                    return ErrorResponse(respContent, false);
-
-                return true;
+                return respContent.ResponseMessage.IsSuccessStatusCode;
 
             }
             catch (Exception e)
@@ -171,7 +165,7 @@ namespace ONE.Operations.Sample
                 {
                     message = "UpdateAnalyteAsync Failed";
                     eventLevel = EnumEventLevel.Warn;
-                    success = ErrorResponse(respContent, false);
+                    success = false;
                 }
 
                 Event(null, CreateLoggerArgs(eventLevel, message, respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
@@ -213,10 +207,7 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                if (!respContent.ResponseMessage.IsSuccessStatusCode)
-                    return ErrorResponse(respContent, false);
-
-                return true;
+                return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
@@ -259,7 +250,7 @@ namespace ONE.Operations.Sample
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetAnalytesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return ErrorResponse<List<Analyte>>(respContent, null);
+                return null;
             }
             catch (Exception e)
             {
@@ -296,7 +287,7 @@ namespace ONE.Operations.Sample
                 }
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-                return ErrorResponse<Analyte>(respContent, null);
+                return null;
             }
             catch (Exception e)
             {
@@ -336,7 +327,7 @@ namespace ONE.Operations.Sample
                 {
                     message = "UpdateTestGroupAsync Failed";
                     eventLevel = EnumEventLevel.Warn;
-                    success = ErrorResponse(respContent, false);
+                    success = false;
                 }
 
                 Event(null, CreateLoggerArgs(eventLevel, message, respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
@@ -379,10 +370,7 @@ namespace ONE.Operations.Sample
                         ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
                         : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                if (!respContent.ResponseMessage.IsSuccessStatusCode)
-                    return ErrorResponse(respContent, false);
-
-                return true;
+                return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
@@ -418,7 +406,7 @@ namespace ONE.Operations.Sample
                 }
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetTestGroupsAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-                return ErrorResponse<List<TestAnalyteGroup>>(respContent, null);
+                return null;
             }
             catch (Exception e)
             {
@@ -456,7 +444,7 @@ namespace ONE.Operations.Sample
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return ErrorResponse<TestAnalyteGroup>(respContent, null);
+                return null;
             }
             catch (Exception e)
             {
@@ -493,7 +481,7 @@ namespace ONE.Operations.Sample
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsAnalyteScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return ErrorResponse(respContent, false);
+                return false;
             }
             catch (Exception e)
             {
@@ -530,7 +518,7 @@ namespace ONE.Operations.Sample
 
                 Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsTestGroupScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
-                return ErrorResponse(respContent, false);
+                return false;
             }
             catch (Exception e)
             {
@@ -539,16 +527,6 @@ namespace ONE.Operations.Sample
                     throw;
                 return false;
             }
-        }
-
-        private T ErrorResponse<T>(ServiceResponse respContent, T result)
-        {
-            string exceptionMessage = respContent.ApiResponse?.Errors?.FirstOrDefault()?.Detail ?? $"Unknown Error with status code {respContent.ResponseMessage.StatusCode}";
-
-            if (_clientSdk.ThrowAPIErrors)
-                throw new Exception(exceptionMessage);
-
-            return result;
         }
 
         private ClientApiLoggerEventArgs CreateLoggerArgs(EnumEventLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs

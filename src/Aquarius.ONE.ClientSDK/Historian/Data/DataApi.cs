@@ -10,14 +10,16 @@ namespace ONE.Common.Historian
 {
     public class DataApi
     {
-        public DataApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public DataApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        private readonly bool _throwAPIErrors;
         private RestHelper _restHelper;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
@@ -51,7 +53,9 @@ namespace ONE.Common.Historian
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"GetDataAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<HistorianData> GetOneDataAsync(string telemetryTwinRefId, DateTime dateTime)
@@ -79,7 +83,9 @@ namespace ONE.Common.Historian
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"GetOneDataAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
@@ -109,7 +115,9 @@ namespace ONE.Common.Historian
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"SaveDataAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> UpdateDataAsync(string telemetryTwinRefId, HistorianData historianData)
@@ -140,7 +148,9 @@ namespace ONE.Common.Historian
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"UpdateDataAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> DeleteManyAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate)
@@ -162,7 +172,9 @@ namespace ONE.Common.Historian
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"DeleteManyAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> FlushAsync(string telemetryTwinRefId)
@@ -189,7 +201,9 @@ namespace ONE.Common.Historian
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DataApi", Message = $"FlushAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
     }

@@ -15,13 +15,14 @@ namespace ONE.Common.Activity
         private readonly PlatformEnvironment _environment;
         private readonly bool _continueOnCapturedContext;
         private readonly RestHelper _restHelper;
+        private readonly bool _throwAPIErrors;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
-        public ActivityApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public ActivityApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
-            _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
 
         public async Task<List<Proto.Activity>> GetActivitiesAsync(string authTwinRefId = null, bool? includeActivityDescendants = null, bool? includeAuthTwinDescendants = null, string activityTypeId = null,
@@ -83,7 +84,9 @@ namespace ONE.Common.Activity
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivitiesAsync Failed - {e.Message}"));
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -106,7 +109,9 @@ namespace ONE.Common.Activity
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneActivityAsync Failed - {e.Message}"));
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -131,7 +136,9 @@ namespace ONE.Common.Activity
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"SaveActivitiesAsync Failed - {e.Message}"));
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -156,7 +163,9 @@ namespace ONE.Common.Activity
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateActivitiesAsync Failed - {e.Message}"));
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -178,7 +187,9 @@ namespace ONE.Common.Activity
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteActivityAsync Failed - {e.Message}"));
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 

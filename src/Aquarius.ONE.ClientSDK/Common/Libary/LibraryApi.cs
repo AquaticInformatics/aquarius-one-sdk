@@ -12,15 +12,17 @@ namespace ONE.Common.Library
     public class LibraryApi
     {
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        public LibraryApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public LibraryApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private RestHelper _restHelper;
+        private readonly bool _throwAPIErrors;
 
  
         /********************* Quantity Types *********************/
@@ -45,7 +47,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -75,7 +79,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return null;
             }
         }
         public async Task<Unit> CreateUnitAsync(Unit unit)
@@ -109,7 +115,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateUnitAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Unit> UpdateUnitAsync(Unit unit)
@@ -143,7 +151,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"UpdateUnitAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteUnitAsync(string id)
@@ -163,7 +173,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteUnitAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
         public async Task<List<Unit>> GetUnitsAsync()
@@ -188,7 +200,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -217,7 +231,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetParameterAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<Parameter>> GetParametersAsync()
@@ -241,7 +257,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetParametersAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Parameter> CreateParameterAsync(Parameter parameter)
@@ -275,7 +293,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateUnitAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Parameter> UpdateParameterAsync(Parameter parameter)
@@ -309,7 +329,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"UpdateUnitAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteParameterAsync(string id)
@@ -329,7 +351,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteParameterAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
         /********************* i18n *********************/
@@ -508,7 +532,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"Geti18nKeysAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -544,7 +570,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateAgencyAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
 
         }
@@ -569,7 +597,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetAgenciesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Agency> GetAgencyAsync(string id)
@@ -594,7 +624,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetAgencyAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Agency> UpdateAgencyAsync(Agency agency)
@@ -623,7 +655,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"UpdateAgencyAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -659,7 +693,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateParameterAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<ParameterAgencyCodeType>> GetParameterAgencyCodeTypesAsync()
@@ -683,7 +719,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetParameterAgencyCodeTypesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ParameterAgencyCodeType> GetParameterAgencyCodeTypeAsync(string id)
@@ -708,7 +746,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetParameterAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ParameterAgencyCodeType> UpdateParameterAgencyCodeTypeAsync(ParameterAgencyCodeType parameterAgencyCodeType)
@@ -742,7 +782,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"UpdateParameterAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteParameterAgencyCodeTypeAsync(string id)
@@ -762,7 +804,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteParameterAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
 
@@ -798,7 +842,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateParameterAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<ParameterAgencyCode>> GetParameterAgencyCodesAsync(string parameterAgencyCodeTypeId = null)
@@ -822,7 +868,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetParameterAgencyCodesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ParameterAgencyCode> GetParameterAgencyCodeAsync(string id)
@@ -847,7 +895,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetParameterAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ParameterAgencyCode> UpdateParameterAgencyCodeAsync(ParameterAgencyCode parameterAgencyCode)
@@ -881,7 +931,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"UpdateParameterAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteParameterAgencyCodeAsync(string id)
@@ -901,7 +953,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteParameterAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
 
@@ -937,7 +991,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateUnitAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<UnitAgencyCodeType>> GetUnitAgencyCodeTypesAsync()
@@ -961,7 +1017,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitAgencyCodeTypesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<UnitAgencyCodeType> GetUnitAgencyCodeTypeAsync(string id)
@@ -986,7 +1044,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<UnitAgencyCodeType> UpdateUnitAgencyCodeTypeAsync(UnitAgencyCodeType unitAgencyCodeType)
@@ -1020,7 +1080,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"UpdateUnitAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteUnitAgencyCodeTypeAsync(string id)
@@ -1040,7 +1102,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteUnitAgencyCodeTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
 
@@ -1076,7 +1140,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"CreateUnitAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<UnitAgencyCode>> GetUnitAgencyCodesAsync()
@@ -1100,7 +1166,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitAgencyCodesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<UnitAgencyCode> GetUnitAgencyCodeAsync(string id)
@@ -1125,7 +1193,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryApi", Message = $"GetUnitAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<UnitAgencyCode> UpdateUnitAgencyCodeAsync(UnitAgencyCode unitAgencyCode)
@@ -1159,7 +1229,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"UpdateUnitAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteUnitAgencyCodeAsync(string id)
@@ -1179,7 +1251,9 @@ namespace ONE.Common.Library
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "LibraryAPI", Message = $"DeleteUnitAgencyCodeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
     }

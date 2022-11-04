@@ -131,6 +131,8 @@ namespace ONE.Operations
             }
             catch
             {
+                if (_clientSDK.ThrowAPIErrors)
+                    throw;
                 return null;
             }
         }
