@@ -7,19 +7,21 @@ using System.Threading.Tasks;
 using ONE.Utilities;
 using Newtonsoft.Json;
 using ONE.Models.CSharp;
-using ONE.Enterprise.Core;
+
 
 namespace ONE.Enterprise.Authentication
 {
     public class AuthenticationApi
     {
-        public AuthenticationApi(PlatformEnvironment environment, bool continueOnCapturedContext)
+        public AuthenticationApi(PlatformEnvironment environment, bool continueOnCapturedContext, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        private readonly bool _throwAPIErrors;
         public bool AutoRenewToken { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
@@ -314,7 +316,9 @@ namespace ONE.Enterprise.Authentication
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "AuthenticationAPI" });
-                throw;
+                if (_throwAPIErrors)
+                    throw;
+                return null;
             }
         }
         

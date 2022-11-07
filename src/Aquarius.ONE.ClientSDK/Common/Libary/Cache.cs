@@ -1,11 +1,8 @@
 ﻿using ONE.Models.CSharp;
 using Newtonsoft.Json;
-using ONE;
-using ONE.Common.Library;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace ONE.Common.Library
@@ -66,6 +63,8 @@ namespace ONE.Common.Library
             }
             catch
             {
+                if (_clientSDK.ThrowAPIErrors)
+                    throw;
                 return false;
             }
 
@@ -88,6 +87,8 @@ namespace ONE.Common.Library
             }
             catch
             {
+                if (_clientSDK.ThrowAPIErrors)
+                    throw;
                 return defaultValue;
             }
         }
@@ -293,6 +294,8 @@ namespace ONE.Common.Library
             }
             catch
             {
+                if (_clientSDK.ThrowAPIErrors)
+                    throw;
                 return base.ToString();
             }
         }

@@ -11,15 +11,17 @@ namespace ONE.Enterprise.Core
 {
     public class CoreApi
     {
-        public CoreApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public CoreApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private RestHelper _restHelper;
+        private readonly bool _throwAPIErrors;
         
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
         public enum EnumUserExpand
@@ -81,7 +83,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateUserAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<User>> GetUsersAsync(EnumUserExpand userExpand = EnumUserExpand.none)
@@ -113,7 +117,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetUsersAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -133,7 +139,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteUserAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -166,7 +174,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetUserAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         // **************************** Tenant Methods                *********************************
@@ -204,7 +214,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateTenantAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> AddTenantProductOfferingAsync(string tenantId, string productOfferingId)
@@ -228,7 +240,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"AddTenantProductOfferingAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> RemoveTenantProductOfferingAsync(string tenantId, string productOfferingId)
@@ -252,7 +266,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"AddTenantProductOfferingAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<List<Tenant>> GetTenantsAsync()
@@ -279,7 +295,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetTenantsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Tenant> GetTenantAsync(string tenantId)
@@ -304,7 +322,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetTenantAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> UpdateTenantAsync(Tenant tenant)
@@ -335,7 +355,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateTenantAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> DeleteTenantAsync(string id)
@@ -354,7 +376,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteTenantAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public enum EnumProductOfferingExpand
@@ -396,7 +420,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ProductOffering> GetProductOfferingAsync(string productOfferingId, EnumProductOfferingExpand productOfferingExpand = EnumProductOfferingExpand.None)
@@ -436,7 +462,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<ProductOffering>> GetProductOfferingsAsync(EnumProductOfferingExpand productOfferingExpand = EnumProductOfferingExpand.None)
@@ -476,7 +504,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ProductOffering> UpdateProductOfferingAsync(ProductOffering productOffering)
@@ -508,7 +538,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteProductOfferingAsync(string id)
@@ -528,7 +560,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         // **************************** User Feature Methods       *********************************
@@ -563,7 +597,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateFeatureAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -587,7 +623,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> DeleteFeatureReferenceAsync(string featureId, EnumNavigationProperty enumNavigationProperty, string referenceId)
@@ -607,7 +645,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<Feature> GetFeatureAsync(string id)
@@ -632,7 +672,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetFeatureAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<Feature>> GetFeaturesAsync()
@@ -659,7 +701,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetFeaturesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Feature> UpdateFeatureAsync(Feature feature)
@@ -690,7 +734,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateFeatureAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteFeatureAsync(string id)
@@ -710,7 +756,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteFeatureAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<List<Feature>> GetUserFeaturesAsync(string userId)
@@ -733,7 +781,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -766,7 +816,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetRolesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Role> GetRoleAsync(string id, bool expandFeature = false)
@@ -795,7 +847,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetRoleAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteRolesAsync(string roleId)
@@ -814,7 +868,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteRolesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         // **************************** User Maintenance Methods       *********************************
@@ -842,7 +898,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"SendUserNameToEmailAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> ResendInvitationAsync(string userId)
@@ -864,7 +922,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"ResendInvitationAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> UserRequestPasswordResetAsync(string userName)
@@ -893,7 +953,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserRequestPasswordResetAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> UserPasswordUpdateAsync(string userId, string existingPassword, string newPassword)
@@ -923,7 +985,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserPasswordUpdateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -951,7 +1015,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UnlockUserAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> ActivateUserAsync(string userName, string password, string userToken)
@@ -982,7 +1048,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"ActivateUserAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> UserCreateRoleRefAsync(string userId, string roleId)
@@ -1009,7 +1077,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserCreateRoleRefAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> UserDeleteRoleRefAsync(string userId, string roleId)
@@ -1036,7 +1106,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserRemoveRoleAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<List<User>> GetGlobalUsersAsync(string expand)
@@ -1066,7 +1138,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetGlobalUsersAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -1096,7 +1170,9 @@ namespace ONE.Enterprise.Core
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateUserAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 

@@ -14,11 +14,14 @@ namespace ONE.Common.Logbook
     {
         private readonly ConfigurationApi _configurationApi;
 
+        public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
+
         private const string LogbookTypeId = "c3f5b20a-62d3-4dd2-8430-c0ead8d70a59";
 
-        public LogbookApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public LogbookApi(ConfigurationApi configurationApi)
         {
-            _configurationApi = new ConfigurationApi(environment, continueOnCapturedContext, restHelper);
+            _configurationApi = configurationApi;
+             
         }
 
         /// <summary>

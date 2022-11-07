@@ -159,7 +159,7 @@ namespace ONE.Enterprise.Twin
             double.TryParse(value, out double propertyValue);
             return propertyValue;
         }
-        public static double GetIntTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
+        public static int GetIntTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
         {
             string value = GetTwinDataProperty(digitalTwin, path, propertyName);
             int.TryParse(value, out int propertyValue);
