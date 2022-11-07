@@ -4,7 +4,6 @@ using ONE.Utilities;
 using System.Threading.Tasks;
 using System.Net;
 using ONE.Models.CSharp;
-using System.Linq;
 using ONE.Common.Activity;
 
 namespace ONE.Operations.Sample
@@ -70,7 +69,9 @@ namespace ONE.Operations.Sample
             catch (Exception ex)
             {
                 Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivitiesAsync Failed - {ex.Message}"));
-                throw;
+                if (_throwAPIErrors)
+                    throw;
+                return null;
             }
         }
 
@@ -93,7 +94,9 @@ namespace ONE.Operations.Sample
             catch (Exception ex)
             {
                 Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivityAsync Failed - {ex.Message}"));
-                throw;
+                if (_throwAPIErrors)
+                    throw;
+                return null;
             }
         }
 
@@ -115,7 +118,9 @@ namespace ONE.Operations.Sample
             catch (Exception ex)
             {
                 Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateActivitiesAsync Failed - {ex.Message}"));
-                throw;
+                if (_throwAPIErrors)
+                    throw;
+                return false;
             }
         }
 
