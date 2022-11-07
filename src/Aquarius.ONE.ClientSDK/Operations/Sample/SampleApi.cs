@@ -16,7 +16,7 @@ namespace ONE.Operations.Sample
         private readonly bool _throwAPIErrors;
 
         private readonly RestHelper _restHelper;
-        private ActivityApi _activityApi;
+        private readonly ActivityApi _activityApi;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
         public SampleApi(PlatformEnvironment environment, bool continueOnCapturedContext,
@@ -601,7 +601,7 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateSampleScheduleAsync Failed - {e.Message}"));
-                if (_clientSdk.ThrowAPIErrors)
+                if (_throwAPIErrors)
                     throw;
 
                 return null;
@@ -639,7 +639,7 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateSampleScheduleAsync Failed - {e.Message}"));
-                if (_clientSdk.ThrowAPIErrors)
+                if (_throwAPIErrors)
                     throw;
 
                 return false;
@@ -676,7 +676,7 @@ namespace ONE.Operations.Sample
             catch (Exception e)
             {
                 Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteSampleScheduleAsync Failed - {e.Message}"));
-                if (_clientSdk.ThrowAPIErrors)
+                if (_throwAPIErrors)
                     throw;
 
                 return false;
@@ -685,9 +685,9 @@ namespace ONE.Operations.Sample
 
         private T ErrorResponse<T>(ServiceResponse respContent, T result)
         {
-            string exceptionMessage = respContent.ApiResponse?.Errors?.FirstOrDefault()?.Detail ?? $"Unknown Error with status code {respContent.ResponseMessage.StatusCode}";
+            var exceptionMessage = respContent.ApiResponse?.Errors?.FirstOrDefault()?.Detail ?? $"Unknown Error with status code {respContent.ResponseMessage.StatusCode}";
 
-            if (_clientSdk.ThrowAPIErrors)
+            if (_throwAPIErrors)
                 throw new Exception(exceptionMessage);
 
             return result;

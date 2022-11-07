@@ -102,12 +102,23 @@ namespace ONE.Operations.Sample
 
             try
             {
-                Analytes = (await _clientSdk.Sample.GetAnalytesAsync(OperationId)).ToDictionary(k => k.Id, v => v);
-                TestGroups = (await _clientSdk.Sample.GetTestGroupsAsync(OperationId)).ToDictionary(k => k.Id, v => v);
-                Schedules = (await _clientSdk.Schedule.GetSchedulesAsync(OperationId, null, "")).ToDictionary(k => k.Id, v => v);
-                Activities =
-                    (await _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate))
-                    .ToDictionary(k => k.Id, v => v);
+                var analytesTask = _clientSdk.Sample.GetAnalytesAsync(OperationId);
+                var testGroupsTask = _clientSdk.Sample.GetTestGroupsAsync(OperationId);
+                var schedulesTask = _clientSdk.Schedule.GetSchedulesAsync(OperationId, null, "");
+                var activitiesTask = _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate);
+
+                var tasks = new Task[]
+                {
+                    analytesTask, testGroupsTask, schedulesTask, activitiesTask
+                };
+
+
+                Task.WaitAll(tasks.ToArray());
+
+                Analytes = analytesTask.Result.ToDictionary(k => k.Id, v => v);
+                TestGroups = testGroupsTask.Result.ToDictionary(k => k.Id, v => v);
+                Schedules = schedulesTask.Result.ToDictionary(k => k.Id, v => v);
+                Activities = activitiesTask.Result.ToDictionary(k => k.Id, v => v);
 
                 StartDate = startDate;
                 EndDate = endDate;
