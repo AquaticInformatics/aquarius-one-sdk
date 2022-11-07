@@ -61,6 +61,7 @@ namespace ONE.Operations.Sample
             Activities = cache?.Activities ?? new Dictionary<string, Activity>();
             Analytes = cache?.Analytes ?? new Dictionary<string, Analyte>();
             TestGroups = cache?.TestGroups ?? new Dictionary<string, TestAnalyteGroup>();
+            Schedules = cache?.Schedules ?? new Dictionary<string, Schedule>();
         }
 
         /// <summary> 
@@ -146,8 +147,6 @@ namespace ONE.Operations.Sample
 
             return IsAnyTestGroupUsedInSchedule(testGroupIdsWithEntity);
         }
-
-
 
         /// <summary>
         /// Determine if testgroup is scheduled for use from the cache.
@@ -238,6 +237,7 @@ namespace ONE.Operations.Sample
             Activities.Clear();
             Analytes.Clear();
             TestGroups.Clear();
+            Schedules.Clear();
             OperationId = string.Empty;
             StartDate = null;
             EndDate = null;
@@ -291,13 +291,11 @@ namespace ONE.Operations.Sample
             return !string.IsNullOrEmpty(analyteId) && Analytes.ContainsKey(analyteId);
         }
 
-
         private bool IsValidTestGroup(string testGroupId)
         {
             if (!IsValidGuid(testGroupId)) return false;
             return !string.IsNullOrEmpty(testGroupId) && TestGroups.ContainsKey(testGroupId);
         }
-
 
         private T ErrorResponse<T>(Exception exception, T result)
         {
