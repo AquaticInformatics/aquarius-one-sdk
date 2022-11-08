@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ONE.Utilities;
 using System.Threading.Tasks;
 using System.Net;
@@ -624,7 +625,7 @@ namespace ONE.Operations.Sample
         public async Task<bool> UpdateSampleScheduleAsync(Guid sampleScheduleId, Schedule schedule)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var endpoint = $"/operations/sample/v1/sample/{sampleScheduleId}";
+            var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}";
 
             try
             {
@@ -661,7 +662,7 @@ namespace ONE.Operations.Sample
         public async Task<bool> DeleteSampleScheduleAsync(Guid sampleScheduleId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var endpoint = $"/operations/sample/v1/sample/{sampleScheduleId}";
+            var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}";
 
             try
             {
