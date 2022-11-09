@@ -12,14 +12,16 @@ namespace ONE.Enterprise.Twin
 {
     public class DigitalTwinApi
     {
-        public DigitalTwinApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public DigitalTwinApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        private bool _throwAPIErrors;
         private RestHelper _restHelper;
 
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
@@ -56,7 +58,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<DigitalTwinType> UpdateDigitalTwinTypeAsync(DigitalTwinType digitalTwinType)
@@ -90,7 +94,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteDigitalTwinTypeAsync(string id)
@@ -110,7 +116,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<List<DigitalTwinType>> GetDigitalTwinTypesAsync()
@@ -134,7 +142,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -170,7 +180,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<DigitalTwinSubtype> UpdateDigitalTwinSubTypeAsync(DigitalTwinSubtype digitalTwinSubType)
@@ -204,7 +216,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteDigitalTwinSubTypeAsync(string id)
@@ -223,7 +237,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<List<DigitalTwinSubtype>> GetDigitalTwinSubTypesAsync()
@@ -248,7 +264,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -298,7 +316,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"CreateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -328,7 +348,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -352,7 +374,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"MoveAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> MoveAsync(long id, long parentId)
@@ -375,7 +399,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"MoveAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<DigitalTwin> UpdateTwinDataAsync(string twinReferenceId, JsonPatchDocument twinData)
@@ -400,7 +426,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateTwinDataAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> UpdateTwinDataManyAsync(Dictionary<string, JsonPatchDocument> twinDataMany)
@@ -426,7 +454,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"UpdateTwinDataManyAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -446,7 +476,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"DeleteAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> DeleteTreeAsync(string id)
@@ -466,7 +498,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"DeleteTreeAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -500,7 +534,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -536,7 +572,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDecendants Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<DigitalTwin>> GetDescendantsBySubTypeAsync(string twinRefId, string twinSubTypeId)
@@ -567,7 +605,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDecendants Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<DigitalTwin>> GetDescendantsByCategoryAsync(string twinRefId, uint categoryId)
@@ -595,7 +635,9 @@ namespace ONE.Enterprise.Twin
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "DigitalTwinAPI", Message = $"GetDecendantsByCategory Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 

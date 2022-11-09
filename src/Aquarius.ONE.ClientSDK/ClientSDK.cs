@@ -91,52 +91,52 @@ namespace ONE
         private void InstantiateAPIs()
         {
 
-            Authentication = new AuthenticationApi(_environment, ContinueOnCapturedContext);
+            Authentication = new AuthenticationApi(_environment, ContinueOnCapturedContext, ThrowAPIErrors);
             Authentication.Event += Logger.Logger_Event;
 
             _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls, ThrowAPIErrors);
             _restHelper.Event += Logger.Logger_Event;
 
-            Core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Core.Event += Logger.Logger_Event;
 
             UserHelper = new UserHelper(Authentication, Core);
             CacheHelper = new CacheHelper(this);
 
-            Configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Configuration.Event += Logger.Logger_Event;
 
-            // This is a wrapper around the ConfigurationApi no events are logged directly
-            Logbook = new LogbookApi(Environment, ContinueOnCapturedContext, _restHelper);
+            // This is a wrapper around the ConfigurationApi no events are logged directly and no other properties are required
+            Logbook = new LogbookApi(Configuration);
 
-            Library = new LibraryApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Library = new LibraryApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Library.Event += Logger.Logger_Event;
 
-            Schedule = new ScheduleApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Schedule = new ScheduleApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Schedule.Event += Logger.Logger_Event;
 
-            Activity = new ActivityApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Activity = new ActivityApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Activity.Event += Logger.Logger_Event;
 
-            DigitalTwin = new DigitalTwinApi(Environment, ContinueOnCapturedContext, _restHelper);
+            DigitalTwin = new DigitalTwinApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             DigitalTwin.Event += Logger.Logger_Event;
 
-            Notification = new NotificationApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Notification = new NotificationApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Notification.Event += Logger.Logger_Event;
 
-            Report = new ReportApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Report = new ReportApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Report.Event += Logger.Logger_Event;
 
-            Spreadsheet = new SpreadsheetApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Spreadsheet = new SpreadsheetApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Spreadsheet.Event += Logger.Logger_Event;
 
-            Data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper);
+            Data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowAPIErrors);
             Data.Event += Logger.Logger_Event;
 
-            Sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, this);
+            Sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, Activity, ThrowAPIErrors);
             Data.Event += Logger.Logger_Event;
             
-            PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext);
+            PoEditorApi poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext, ThrowAPIErrors);
             poEditor.Event += Logger.Logger_Event;
 
         }

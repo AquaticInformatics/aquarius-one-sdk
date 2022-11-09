@@ -12,15 +12,17 @@ namespace ONE.Common.Notification
     public class NotificationApi
     {
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        public NotificationApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public NotificationApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private RestHelper _restHelper;
+        private readonly bool _throwAPIErrors;
 
 
         /********************* Notification Topics *********************/
@@ -48,7 +50,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<NotificationTopic>> GetNotificationTopicsAsync(EnumNotificationCategory enumNotificationCategoy = EnumNotificationCategory.NotificationCategoryUnknown)
@@ -75,7 +79,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"GetNotificationTopicsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<NotificationTopic> CreateNotificationTopicAsync(NotificationTopic notificationTopic)
@@ -109,7 +115,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"CreateNotificationTopicAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<NotificationTopic> UpdateNotificationTopicAsync(NotificationTopic notificationTopic)
@@ -143,7 +151,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"UpdateNotificationTopicAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -168,7 +178,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
       
@@ -200,7 +212,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"UpdateUserNotificationPreferencesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -229,7 +243,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"GetNotificationTemplateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<NotificationTemplate>> GetNotificationTemplatesAsync(string topicId = "", string cultureCode = "")
@@ -257,7 +273,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"GetNotificationTemplatesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<NotificationTemplate> CreateNotificationTemplateAsync(NotificationTemplate notificationTemplate)
@@ -291,7 +309,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"CreateNotificationTemplateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<NotificationTemplate> UpdateNotificationTemplateAsync(NotificationTemplate notificationTemplate)
@@ -325,7 +345,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"UpdateNotificationTemplateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -357,7 +379,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"CreateNotificationAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> CreateUserNotificationAsync(string userId, NotificationEvent notificationEvent)
@@ -387,7 +411,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"CreateNotificationAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
         /********************* In App Notifications *********************/
@@ -423,7 +449,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"GetInAppNotificationsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
        
@@ -458,7 +486,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"UpdateInAppNotificationAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<InAppNotificationMessage>> UpdateInAppNotificationsAsync(InAppNotificationMessages inAppNotificationMessages)
@@ -495,7 +525,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"UpdateInAppNotificationsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> InAppNotificationsMarkAllReadAsync()
@@ -522,7 +554,9 @@ namespace ONE.Common.Notification
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "NotificationApi", Message = $"InAppNotificationsMarkAllReadAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
     }

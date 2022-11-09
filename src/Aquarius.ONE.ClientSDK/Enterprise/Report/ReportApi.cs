@@ -14,13 +14,15 @@ namespace ONE.Enterprise.Report
     {
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        private readonly bool _throwAPIErrors;
         private RestHelper _restHelper;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        public ReportApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public ReportApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         public async Task<List<ReportDefinition>> GetDefinitionsAsync(string operationId)
         {
@@ -50,7 +52,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"GetDefinitionsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ReportDefinition> GetDefinitionAsync(string id)
@@ -77,7 +81,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"GetDefinitionsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ReportDefinition> CreateDefinitionAsync(ReportDefinition reportDefinition)
@@ -109,7 +115,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"CreateDefinitionAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteDefinitionAsync(string id)
@@ -129,7 +137,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"DeleteDefinitionAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<ReportDefinition> UpdateDefinitionAsync(ReportDefinition reportDefinition)
@@ -163,7 +173,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"UpdateDefinitionAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ReportDefinition> UploadDefinitionTemplateAsync(string id, string filename)
@@ -194,7 +206,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"UploadDefinitionTemplateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ReportDefinitionRun> RenderReportAsync(string id)
@@ -224,7 +238,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"RenderReportAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DownloadReportAsync(string id, string filename)
@@ -252,7 +268,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"DownloadReportAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -280,7 +298,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"DownloadTemplateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -312,7 +332,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"GetReportTagsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ReportDefinitionTag> GetReportTagAsync(string id)
@@ -339,7 +361,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"GetReportTagAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ReportDefinitionTag> CreateReportTagAsync(string reportDefinitionId, string tag)
@@ -375,7 +399,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"CreateReportTagAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeleteReportTagAsync(string id)
@@ -395,7 +421,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"DeleteReportTagAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<ReportDefinitionTag> UpdateReportDefinitionTagAsync(ReportDefinitionTag reportDefinitionTag)
@@ -429,7 +457,9 @@ namespace ONE.Enterprise.Report
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ReportApi", Message = $"UpdateReportDefinitionTagAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
     }

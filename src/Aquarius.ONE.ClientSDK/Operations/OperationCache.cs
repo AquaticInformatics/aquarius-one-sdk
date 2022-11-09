@@ -316,6 +316,8 @@ namespace ONE.Operations
             }
             catch
             {
+                if (_clientSDK.ThrowAPIErrors)
+                    throw;
                 return false;
             }
             //Merge the Twins
