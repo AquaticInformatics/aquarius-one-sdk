@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using ONE.Utilities;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -12,15 +11,17 @@ namespace ONE.Common.Schedule
 {
     public class ScheduleApi
     {
-        public ScheduleApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public ScheduleApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private RestHelper _restHelper;
+        private readonly bool _throwAPIErrors;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
         public async Task<List<ONE.Models.CSharp.Schedule>> GetSchedulesAsync(string authTwinRefId, bool? includeAuthTwinChildren, string scheduleTypeId)
@@ -72,7 +73,9 @@ namespace ONE.Common.Schedule
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetSchedulesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<ONE.Models.CSharp.Schedule> GetOneScheduleAsync(string scheduleId)
@@ -114,7 +117,9 @@ namespace ONE.Common.Schedule
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetOneScheduleAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> SaveScheduleAsync(ONE.Models.CSharp.Schedule schedule)
@@ -157,7 +162,9 @@ namespace ONE.Common.Schedule
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"SaveScheduleAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -199,7 +206,9 @@ namespace ONE.Common.Schedule
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"UpdateScheduleAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
 
@@ -240,7 +249,9 @@ namespace ONE.Common.Schedule
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"DeleteScheduleAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return false;
             }
         }
         public async Task<List<ScheduleOccurrence>> GetOccurrencesAsync(ScheduleRecurrencePattern pattern, DateTime afterDate, DateTime beforeDate)
@@ -291,7 +302,9 @@ namespace ONE.Common.Schedule
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetOccurrancesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				return null;
             }
         }
     }

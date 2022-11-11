@@ -11,14 +11,16 @@ namespace ONE.Operations.Spreadsheet
     public class SpreadsheetApi
     {
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        public SpreadsheetApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper)
+        public SpreadsheetApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
             _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
+            _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
+        private readonly bool _throwAPIErrors;
         private RestHelper _restHelper;
         public async Task<Cell> CellValidateAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, Cell cell)
         {
@@ -48,7 +50,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"CellValidateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -73,7 +77,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ColumnGetByDayAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<Measurement>> ColumnGetByMonthAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint columnId, DateTime date)
@@ -97,7 +103,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ColumnGetByMonthAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<List<Measurement>> ColumnGetByYearAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint columnId, DateTime date)
@@ -121,7 +129,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ColumnGetByYearAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -153,7 +163,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ComputationCreateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         
@@ -185,7 +197,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ComputationCreateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
      
@@ -211,7 +225,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ComputationGetOneAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
        
@@ -243,7 +259,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"ComputationValidateAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> DeletePlantAsync(string operationTwinReferenceId)
@@ -263,7 +281,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"DeletePlantAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> FlushPlantAsync(string operationTwinReferenceId)
@@ -296,7 +316,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"PlantFlushAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null)
@@ -322,7 +344,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetSpreadsheetRowsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Rows> GetRowsByDayAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, DateTime date, string columnList = null, string viewId = null)
@@ -344,7 +368,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetRowsByDayAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<Rows> GetRowsByMonthAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, DateTime date, string columnList = null, string viewId = null)
@@ -366,7 +392,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetRowsByMonthAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<SpreadsheetDefinition> GetSpreadsheetDefinitionAsync(string operationTwinReferenceId)
@@ -393,7 +421,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetSpreadsheetDefinition Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<WorksheetDefinition> GetWorksheetDefinitionAsync(string operationTwinReferenceId, EnumWorksheet worksheetType)
@@ -417,7 +447,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetWorksheetDefinition Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
 
@@ -472,7 +504,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetRowIndexesAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<bool> SaveRowsAsync(Rows rows, string operationTwinReferenceId, EnumWorksheet worksheetType)
@@ -500,7 +534,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"SaveRowsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<bool> SaveSpreadsheetDefinitionAsync(string operationTwinReferenceId, SpreadsheetDefinition spreadsheetDefinition)
@@ -524,7 +560,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"SaveSpreadsheetDefinition Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
         public async Task<WorksheetDefinition> WorksheetAddColumnAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, WorksheetDefinition worksheetDefinition)
@@ -550,7 +588,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"WorksheetAddColumnAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         public async Task<WorksheetDefinition> WorksheetUpdateColumnAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, WorksheetDefinition worksheetDefinition)
@@ -576,7 +616,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"WorksheetUpdateColumnAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return null;
             }
         }
         
@@ -608,7 +650,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"WorksheetDeleteColumnAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors) 
+					 throw; 
+				 return false;
             }
         }
     }
