@@ -479,7 +479,9 @@ namespace ONE.Operations.Spreadsheet
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetWorksheetDefinitionsAsync Failed - {e.Message}" });
-                throw;
+                if (_throwAPIErrors)
+                    throw;
+                return null;
             }
         }
 
