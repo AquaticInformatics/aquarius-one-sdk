@@ -452,6 +452,39 @@ namespace ONE.Operations.Spreadsheet
 				 return null;
             }
         }
+
+        /// <summary>
+        /// Gets all worksheet definitions for an operation
+        /// </summary>
+        /// <param name="operationTwinReferenceId">The GUID identifier of the operation</param>
+        /// <returns></returns>
+        public async Task<WorksheetDefinitions> GetWorksheetDefinitionsAsync(string operationTwinReferenceId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var url = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheetdefinitions?requestId={requestId}";
+
+            try
+            {
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    var result = respContent.ApiResponse.Content.WorksheetDefinitions;
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetWorksheetDefinitionsAsync Success" });
+                    return result;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"GetWorksheetDefinitionsAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "SpreadsheetApi", Message = $"GetWorksheetDefinitionsAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                    throw;
+                return null;
+            }
+        }
+
         public async Task<RowIndices> GetRowIndexesAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, string relativeTime, DateTime utcTime, bool isInSpeed, bool isRowCooked, bool isColumnsCooked)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
