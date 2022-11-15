@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using ONE.Utilities;
 using System.Threading.Tasks;
 using System.Net;
@@ -15,7 +16,7 @@ namespace ONE.Operations.Sample
         private readonly bool _throwAPIErrors;
 
         private readonly RestHelper _restHelper;
-        private ActivityApi _activityApi;
+        private readonly ActivityApi _activityApi;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
         public SampleApi(PlatformEnvironment environment, bool continueOnCapturedContext,
@@ -28,6 +29,34 @@ namespace ONE.Operations.Sample
             _throwAPIErrors = throwAPIErrors;
         }
 
+        /// <summary>
+        /// Retrieves activities and their children based on criteria.
+        /// </summary>
+        /// <param name="authTwinRefId">
+        /// Optional: Filter results based on activities associated with a specific twin, defaults
+        /// to tenantId in token if not provided.
+        /// </param>
+        /// <param name="activityTypeId">
+        /// Optional: Defaults to all. Filters results to a specific ActivityType.
+        /// </param>
+        /// <param name="statusCode">
+        /// Optional: Defaults to all. Filters results to a specific status code.
+        /// </param>
+        /// <param name="priorityCode">
+        /// Optional: Defaults to all. Filters results to a specific priority code.
+        /// </param>
+        /// <param name="startDate">
+        /// Optional: Defaults to null. Filters results to those that start at or later than the
+        /// specified time. Supplying a StartDate without an EndDate is acceptable.
+        /// </param>
+        /// <param name="endDate">
+        /// Optional: Defaults to null. Filters results to those that end at or before than the
+        /// specified time. Supplying a EndDate without an StartDate is acceptable.
+        /// </param>
+        /// <param name="scheduleId">
+        /// Optional: Defaults to null. Filter results to those that are for this particular schedule.
+        /// </param>
+        /// <returns>One or more Activities that meet the criteria.</returns>
         public async Task<List<Activity>> GetActivitiesAsync(string authTwinRefId,
             string activityTypeId = null, int? statusCode = null, int? priorityCode = null,
             DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null)
@@ -47,6 +76,16 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Retrieves an activity and its children.
+        /// </summary>
+        /// <param name="activityId">
+        /// Identifier of the Activity being returned.
+        /// </param>
+        /// <param name="includeDescendants">
+        /// Optional: Defaults to false. Determines if child activities are returned.
+        /// </param>
+        /// <returns>The specified activity and optionally, its child activities.</returns>
         public async Task<List<Activity>> GetActivityAsync(string activityId, bool includeDescendants = false)
         {
             try
@@ -62,6 +101,13 @@ namespace ONE.Operations.Sample
             }
         }
 
+        /// <summary>
+        /// Updates one or more activities.
+        /// </summary>
+        /// <param name="activities">
+        /// List of activities to update.
+        /// </param>
+        /// <returns>Boolean value indicating whether or not the activities were updated successfully.</returns>
         public async Task<bool> UpdateActivitiesAsync(List<Activity> activities)
         {
             try
@@ -87,8 +133,6 @@ namespace ONE.Operations.Sample
         public async Task<bool> CreateAnalyteAsync(Analyte analyte)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
-
-            var requestId = Guid.NewGuid();
             var endpoint = $"/operations/sample/v1/analyte";
 
             try
@@ -111,7 +155,6 @@ namespace ONE.Operations.Sample
                 return false;
             }
         }
-
 
         /// <summary>
         /// Creates a testGroup
@@ -269,8 +312,7 @@ namespace ONE.Operations.Sample
                 return null;
             }
         }
-
-
+        
         /// <summary>
         /// Retrieves an analyte based on the provided analyte id.
         /// </summary>
@@ -306,8 +348,7 @@ namespace ONE.Operations.Sample
                 return null;
             }
         }
-
-
+        
         /// <summary>
         /// Updates an testGroup
         /// </summary>
@@ -425,8 +466,7 @@ namespace ONE.Operations.Sample
                 return null;
             }
         }
-
-
+        
         /// <summary>
         /// Retrieves a TestGroup based on the provided TestGroup id.
         /// </summary>
@@ -536,6 +576,127 @@ namespace ONE.Operations.Sample
                     throw;
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Creates a new sample schedule. 
+        /// This method will start a background process that will create new Activities associated
+        /// with the schedule. The SampleCache will need to be refreshed to include the new Activities.
+        /// </summary>
+        /// <param name="schedule">The new schedule to be created.</param>
+        /// <returns>The schedule that was created or null if the schedule could not be created.</returns>
+        public async Task<Schedule> CreateSampleScheduleAsync(Schedule schedule)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            const string endpoint = "/operations/sample/v1/schedule";
+
+            try
+            {
+                var respContent = await _restHelper.PostRestProtobufAsync(schedule, endpoint)
+                    .ConfigureAwait(_continueOnCapturedContext);
+
+                Event(null, respContent.ResponseMessage.IsSuccessStatusCode
+                        ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumEventLevel.Warn, "CreateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+
+                var createdSchedule = respContent.ApiResponse.Content?.Schedules?.Items.FirstOrDefault();
+                var success = respContent.ResponseMessage.IsSuccessStatusCode && createdSchedule != null;
+
+                return success ? createdSchedule : ErrorResponse(respContent, (Schedule)null);
+            }
+            catch (Exception e)
+            {
+                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateSampleScheduleAsync Failed - {e.Message}"));
+                if (_throwAPIErrors)
+                    throw;
+
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Updates a sample schedule. 
+        /// This method will start a background process that will update Activities associated
+        /// with the schedule. The SampleCache will need to be refreshed to include the updated Activities.
+        /// </summary>
+        /// <param name="sampleScheduleId">The Id of the schedule to update.</param>
+        /// <param name="schedule">The schedule to update.</param>
+        /// <returns>Boolean value indicating whether or not the schedule was successfully updated.</returns>
+        public async Task<bool> UpdateSampleScheduleAsync(Guid sampleScheduleId, Schedule schedule)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}";
+
+            try
+            {
+                var respContent = await _restHelper.PutRestProtobufAsync(schedule, endpoint)
+                    .ConfigureAwait(_continueOnCapturedContext);
+
+                Event(null,
+                    respContent.ResponseMessage.IsSuccessStatusCode
+                        ? CreateLoggerArgs(EnumEventLevel.Trace, "UpdateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumEventLevel.Warn, "UpdateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                    return ErrorResponse(respContent, false);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateSampleScheduleAsync Failed - {e.Message}"));
+                if (_throwAPIErrors)
+                    throw;
+
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Deletes a sample schedule. 
+        /// This method will start a background process that will delete Activities associated
+        /// with the schedule. The SampleCache will need to be refreshed to remove the deleted Activities.
+        /// </summary>
+        /// <param name="sampleScheduleId">The Id of the schedule to delete.</param>
+        /// <returns>Boolean value indicating whether or not the schedule was successfully deleted.</returns>
+        public async Task<bool> DeleteSampleScheduleAsync(Guid sampleScheduleId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}";
+
+            try
+            {
+                var respContent = await _restHelper.DeleteRestJSONAsync(Guid.NewGuid(), endpoint)
+                    .ConfigureAwait(_continueOnCapturedContext);
+
+                Event(null,
+                    respContent.ResponseMessage.IsSuccessStatusCode
+                        ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                    return ErrorResponse(respContent, false);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteSampleScheduleAsync Failed - {e.Message}"));
+                if (_throwAPIErrors)
+                    throw;
+
+                return false;
+            }
+        }
+
+        private T ErrorResponse<T>(ServiceResponse respContent, T result)
+        {
+            var exceptionMessage = respContent.ApiResponse?.Errors?.FirstOrDefault()?.Detail ?? $"Unknown Error with status code {respContent.ResponseMessage.StatusCode}";
+
+            if (_throwAPIErrors)
+                throw new Exception(exceptionMessage);
+
+            return result;
         }
 
         private ClientApiLoggerEventArgs CreateLoggerArgs(EnumEventLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
