@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.Models.CSharp;
+using ONE.Models.CSharp.Enterprise.Twin;
 using ONE.Shared.Time;
 using System;
 using System.Collections.Generic;
@@ -42,10 +43,10 @@ namespace ONE.Enterprise.Twin
                 OperationDigitalTwinItem = new DigitalTwinItem(operationDigitalTwin);
 
                 //Load Location Structure
-                var locationDigitalTwins = await _digitalTwinApi.GetDescendantsByCategoryAsync(operationDigitalTwin.TwinReferenceId, Constants.SpaceCategory.Id);
+                var locationDigitalTwins = await _digitalTwinApi.GetDescendantsByCategoryAsync(operationDigitalTwin.TwinReferenceId, SpaceCategoryConstants.Id);
 
                 //Load Column Telemetry Twins
-                var columnDigitalTwins = await _digitalTwinApi.GetDescendantsAsync(operationDigitalTwin.TwinReferenceId, Constants.TelemetryCategory.ColumnType.RefId);
+                var columnDigitalTwins = await _digitalTwinApi.GetDescendantsAsync(operationDigitalTwin.TwinReferenceId, TelemetryCategoryConstants.ColumnType.RefId);
 
                 //Merge the Twins
                 var allChildTwins = locationDigitalTwins.Union(columnDigitalTwins).ToList();

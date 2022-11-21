@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using ONE.Enterprise.Twin;
+using ONE.Models.CSharp.Enterprise.Twin;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
@@ -74,7 +75,7 @@ namespace ONE.Operations
                 var result = await _clientSDK.Authentication.GetUserInfoAsync();
                 _clientSDK.Authentication.User = await _clientSDK.UserHelper.GetUserFromUserInfoAsync(result);
             }
-            var operationTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, Constants.SpaceCategory.OperationType.RefId);
+            var operationTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_clientSDK.Authentication.User.TenantId, SpaceCategoryConstants.OperationType.RefId);
 
             foreach (var operationTwin in operationTwins)
             {

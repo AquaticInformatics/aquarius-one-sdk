@@ -4,7 +4,7 @@ using ONE.Utilities;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ONE.Models.CSharp;
-
+using ONE.Models.CSharp.Enums;
 
 namespace ONE.Common.Schedule
 
@@ -50,7 +50,7 @@ namespace ONE.Common.Schedule
 
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumEventLevel.Trace, 
+                        EventLevel = EnumLogLevel.Trace, 
                         HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, 
                         Module = "ScheduleApi", Message = $"GetSchedulesAsync Success"
@@ -61,7 +61,7 @@ namespace ONE.Common.Schedule
 
                 Event(null, new ClientApiLoggerEventArgs
                 { 
-                    EventLevel = EnumEventLevel.Warn,
+                    EventLevel = EnumLogLevel.Warn,
                     HttpStatusCode = respContent.ResponseMessage.StatusCode,
                     ElapsedMs = watch.ElapsedMilliseconds,
                     Module = "ScheduleApi",
@@ -72,7 +72,7 @@ namespace ONE.Common.Schedule
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetSchedulesAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "ScheduleApi", Message = $"GetSchedulesAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -94,7 +94,7 @@ namespace ONE.Common.Schedule
                     {
                         Event(null, new ClientApiLoggerEventArgs
                         {
-                            EventLevel = EnumEventLevel.Trace, 
+                            EventLevel = EnumLogLevel.Trace, 
                             HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                             ElapsedMs = watch.ElapsedMilliseconds, 
                             Module = "ScheduleApi", 
@@ -106,7 +106,7 @@ namespace ONE.Common.Schedule
 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumEventLevel.Warn, 
+                    EventLevel = EnumLogLevel.Warn, 
                     HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, 
                     Module = "ScheduleApi",
@@ -116,7 +116,7 @@ namespace ONE.Common.Schedule
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetOneScheduleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "ScheduleApi", Message = $"GetOneScheduleAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -140,7 +140,7 @@ namespace ONE.Common.Schedule
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumEventLevel.Trace, 
+                        EventLevel = EnumLogLevel.Trace, 
                         HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, 
                         Module = "ScheduleApi", 
@@ -151,7 +151,7 @@ namespace ONE.Common.Schedule
 
                 Event(null, new ClientApiLoggerEventArgs 
                     { 
-                        EventLevel = EnumEventLevel.Warn, 
+                        EventLevel = EnumLogLevel.Warn, 
                         HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, 
                         Module = "ScheduleApi", 
@@ -161,7 +161,7 @@ namespace ONE.Common.Schedule
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"SaveScheduleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "ScheduleApi", Message = $"SaveScheduleAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -184,7 +184,7 @@ namespace ONE.Common.Schedule
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumEventLevel.Trace, 
+                        EventLevel = EnumLogLevel.Trace, 
                         HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, 
                         Module = "ScheduleApi", 
@@ -195,7 +195,7 @@ namespace ONE.Common.Schedule
 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumEventLevel.Warn, 
+                    EventLevel = EnumLogLevel.Warn, 
                     HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, 
                     Module = "ScheduleApi", 
@@ -205,7 +205,7 @@ namespace ONE.Common.Schedule
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"UpdateScheduleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "ScheduleApi", Message = $"UpdateScheduleAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -226,7 +226,7 @@ namespace ONE.Common.Schedule
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumEventLevel.Trace, 
+                        EventLevel = EnumLogLevel.Trace, 
                         HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, 
                         Module = "ScheduleApi", 
@@ -238,7 +238,7 @@ namespace ONE.Common.Schedule
                 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumEventLevel.Warn, 
+                    EventLevel = EnumLogLevel.Warn, 
                     HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, 
                     Module = "ScheduleApi", 
@@ -248,7 +248,7 @@ namespace ONE.Common.Schedule
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"DeleteScheduleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "ScheduleApi", Message = $"DeleteScheduleAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				return false;
@@ -280,7 +280,7 @@ namespace ONE.Common.Schedule
 
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumEventLevel.Trace, 
+                        EventLevel = EnumLogLevel.Trace, 
                         HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, 
                         Module = "ScheduleApi", Message = $"GetOccurrencesAsync Success"
@@ -290,7 +290,7 @@ namespace ONE.Common.Schedule
                 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumEventLevel.Warn, 
+                    EventLevel = EnumLogLevel.Warn, 
                     HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, 
                     Module = "ScheduleApi", 
@@ -301,7 +301,7 @@ namespace ONE.Common.Schedule
 
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "ScheduleApi", Message = $"GetOccurrancesAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "ScheduleApi", Message = $"GetOccurrancesAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				return null;

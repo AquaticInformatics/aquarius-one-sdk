@@ -1,10 +1,9 @@
 ﻿using CommandLine;
 using ONE;
-using ONE.Common.Configuration;
-using ONE.Utilities.UI;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using ONE.Models.CSharp.Common.Configuration;
 
 
 namespace Aquarius.ONE.Test.ConsoleApp.Commands
@@ -18,7 +17,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
             var v1Config = await clientSDK.Configuration.GetConfigurationsAsync(5, TwinRefId);
-            var v2Config = await clientSDK.Configuration.GetConfigurationsAsync(Constants.ConfigurationTypes.Worksheets, TwinRefId);
+            var v2Config = await clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Worksheets.Id, TwinRefId);
 
             if (v1Config.Any() && v2Config.Any())
             {

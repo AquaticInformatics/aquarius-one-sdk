@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using static ONE.Enterprise.Twin.Helper;
+using ONE.Models.CSharp.Enterprise.Twin;
 
 namespace ONE.Operations
 {
@@ -43,12 +44,12 @@ namespace ONE.Operations
 
             if (_columnTwins == null)
             {
-                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, Constants.TelemetryCategory.ColumnType.RefId);
+                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, TelemetryCategoryConstants.ColumnType.RefId);
             }
             _columnMap = await _cloneOperation.GetSourceToDestinationColumnMap(_operationId);
 
             if (_userTwins == null)
-                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, Constants.OrganizationCategory.UserType.RefId);
+                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, OrganizationCategoryConstants.UserType.RefId);
             if (_users == null)
                 _users = await _clientSDK.Core.GetUsersAsync();
             CreateUserMap();
@@ -81,12 +82,12 @@ namespace ONE.Operations
 
             if (_columnTwins == null)
             {
-                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, Constants.TelemetryCategory.ColumnType.RefId);
+                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, TelemetryCategoryConstants.ColumnType.RefId);
             }
             _columnMap = await _cloneOperation.GetSourceToDestinationColumnMap(_operationId);
 
             if (_userTwins == null)
-                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, Constants.OrganizationCategory.UserType.RefId);
+                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, OrganizationCategoryConstants.UserType.RefId);
             if (_users == null)
                 _users = await _clientSDK.Core.GetUsersAsync();
             CreateUserMap();

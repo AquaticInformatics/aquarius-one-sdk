@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Net;
 using ONE.Models.CSharp;
 using ONE.Common.Activity;
+using ONE.Models.CSharp.Enums;
 
 namespace ONE.Operations.Sample
 {
@@ -69,7 +70,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivitiesAsync Failed - {ex.Message}"));
+                Event(ex, CreateLoggerArgs(EnumLogLevel.Error, $"GetActivitiesAsync Failed - {ex.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -94,7 +95,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"GetActivityAsync Failed - {ex.Message}"));
+                Event(ex, CreateLoggerArgs(EnumLogLevel.Error, $"GetActivityAsync Failed - {ex.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -118,7 +119,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception ex)
             {
-                Event(ex, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateActivitiesAsync Failed - {ex.Message}"));
+                Event(ex, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateActivitiesAsync Failed - {ex.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -141,15 +142,15 @@ namespace ONE.Operations.Sample
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "CreateAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "CreateAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "CreateAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateAnalyteAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"CreateAnalyteAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -173,15 +174,15 @@ namespace ONE.Operations.Sample
                 var respContent = await _restHelper.PostRestProtobufAsync(testGroup, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "CreateTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "CreateTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "CreateTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
 
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateTestGroupAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"CreateTestGroupAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -210,13 +211,13 @@ namespace ONE.Operations.Sample
                 var respContent = await _restHelper.PutRestProtobufAsync(analyte, endpoint).ConfigureAwait(_continueOnCapturedContext);
 
                 var message = "UpdateAnalyteAsync Success";
-                var eventLevel = EnumEventLevel.Trace;
+                var eventLevel = EnumLogLevel.Trace;
                 var success = true;
 
                 if (!respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     message = "UpdateAnalyteAsync Failed";
-                    eventLevel = EnumEventLevel.Warn;
+                    eventLevel = EnumLogLevel.Warn;
                     success = false;
                 }
 
@@ -226,7 +227,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateAnalyteAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateAnalyteAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -256,14 +257,14 @@ namespace ONE.Operations.Sample
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "DeleteAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "DeleteAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteAnalyteAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"DeleteAnalyteAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -295,18 +296,18 @@ namespace ONE.Operations.Sample
                 {
                     analytes.AddRange(respContent.ApiResponse.Content.Analytes.Items);
 
-                    Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetAnalytesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                    Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetAnalytesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                     return analytes;
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetAnalytesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetAnalytesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetAnalytesAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetAnalytesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -332,17 +333,17 @@ namespace ONE.Operations.Sample
                 {
                     foreach (var analyte in respContent.ApiResponse.Content.Analytes.Items)
                     {
-                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetOneAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                         return analyte;
                     }
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetOneAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneAnalyteAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetOneAnalyteAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -370,13 +371,13 @@ namespace ONE.Operations.Sample
                 var respContent = await _restHelper.PutRestProtobufAsync(testGroup, endpoint).ConfigureAwait(_continueOnCapturedContext);
 
                 var message = "UpdateTestGroupAsync Success";
-                var eventLevel = EnumEventLevel.Trace;
+                var eventLevel = EnumLogLevel.Trace;
                 var success = true;
 
                 if (!respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     message = "UpdateTestGroupAsync Failed";
-                    eventLevel = EnumEventLevel.Warn;
+                    eventLevel = EnumLogLevel.Warn;
                     success = false;
                 }
 
@@ -386,7 +387,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateTestGroupAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateTestGroupAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return true;
@@ -417,14 +418,14 @@ namespace ONE.Operations.Sample
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "DeleteTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "DeleteTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteTestGroupAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"DeleteTestGroupAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -450,17 +451,17 @@ namespace ONE.Operations.Sample
                 {
                     TestGroups.AddRange(respContent.ApiResponse.Content.TestAnalyteGroups.Items);
 
-                    Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetTestGroupsAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                    Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetTestGroupsAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                     return TestGroups;
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetTestGroupsAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetTestGroupsAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetTestGroupsAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetTestGroupsAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -486,18 +487,18 @@ namespace ONE.Operations.Sample
                 {
                     foreach (var testGroup in respContent.ApiResponse.Content.TestAnalyteGroups.Items)
                     {
-                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetOneTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                         return testGroup;
                     }
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "GetOneTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetOneTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"GetOneTestGroupAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetOneTestGroupAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -521,20 +522,20 @@ namespace ONE.Operations.Sample
                 {
                     foreach (var keyValue in respContent.ApiResponse.Content.KeyValues.Items)
                     {
-                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "IsAnalyteScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "IsAnalyteScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                         if (bool.TryParse(keyValue.Value, out var value))
                             return value;
                         return false;
                     }
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsAnalyteScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumLogLevel.Warn, "IsAnalyteScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsAnalyteScheduledForUseAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"IsAnalyteScheduledForUseAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -558,20 +559,20 @@ namespace ONE.Operations.Sample
                 {
                     foreach (var keyValue in respContent.ApiResponse.Content.KeyValues.Items)
                     {
-                        Event(null, CreateLoggerArgs(EnumEventLevel.Trace, "IsTestGroupScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "IsTestGroupScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                         if (bool.TryParse(keyValue.Value, out var value))
                             return value;
                         return false;
                     }
                 }
 
-                Event(null, CreateLoggerArgs(EnumEventLevel.Warn, "IsTestGroupScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                Event(null, CreateLoggerArgs(EnumLogLevel.Warn, "IsTestGroupScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"IsTestGroupScheduledForUseAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"IsTestGroupScheduledForUseAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -596,8 +597,8 @@ namespace ONE.Operations.Sample
                     .ConfigureAwait(_continueOnCapturedContext);
 
                 Event(null, respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "CreateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "CreateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "CreateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "CreateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 var createdSchedule = respContent.ApiResponse.Content?.Schedules?.Items.FirstOrDefault();
                 var success = respContent.ResponseMessage.IsSuccessStatusCode && createdSchedule != null;
@@ -606,7 +607,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"CreateSampleScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"CreateSampleScheduleAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
 
@@ -634,8 +635,8 @@ namespace ONE.Operations.Sample
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "UpdateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "UpdateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "UpdateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "UpdateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 
                 if (!respContent.ResponseMessage.IsSuccessStatusCode)
                     return ErrorResponse(respContent, false);
@@ -644,7 +645,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"UpdateSampleScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateSampleScheduleAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
 
@@ -671,8 +672,8 @@ namespace ONE.Operations.Sample
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumEventLevel.Trace, "DeleteSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumEventLevel.Warn, "DeleteSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "DeleteSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "DeleteSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 if (!respContent.ResponseMessage.IsSuccessStatusCode)
                     return ErrorResponse(respContent, false);
@@ -681,7 +682,7 @@ namespace ONE.Operations.Sample
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumEventLevel.Error, $"DeleteSampleScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"DeleteSampleScheduleAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
 
@@ -699,7 +700,7 @@ namespace ONE.Operations.Sample
             return result;
         }
 
-        private ClientApiLoggerEventArgs CreateLoggerArgs(EnumEventLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
+        private ClientApiLoggerEventArgs CreateLoggerArgs(EnumLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
         { EventLevel = level, HttpStatusCode = statusCode, ElapsedMs = duration, Module = "SampleApi", Message = message };
     }
 }

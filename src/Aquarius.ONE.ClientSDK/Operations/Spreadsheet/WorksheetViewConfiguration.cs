@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using ONE.Models.CSharp;
+using ONE.Models.CSharp.Enums;
 using System;
 using System.Collections.Generic;
 
@@ -106,12 +107,7 @@ namespace ONE.Operations.Spreadsheet
         {
             public uint columnWidth { get; set; }
         }
-        [Serializable]
-        public enum EnumHeaderType
-        {
-            column = 1,
-            group = 2
-        }
+      
         public class ColumnHeader
         {
             public uint id { get; set; }
