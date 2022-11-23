@@ -1,14 +1,14 @@
 ﻿
-using ONE.Utilities;
 using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Constants.TwinCategory;
+using ONE.Models.CSharp.Enums;
+using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
-using ONE.Models.CSharp.Enterprise.Twin;
 
 namespace ONE.Enterprise.Twin
 {
@@ -275,7 +275,7 @@ namespace ONE.Enterprise.Twin
 
         /********************* DigitalTwins *********************/
 
-        public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = SpaceCategoryConstants.LocationType.RefId, string twinSubTypeId = SpaceCategoryConstants.LocationType.OtherSubType.RefId)
+        public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = SpaceConstants.LocationType.RefId, string twinSubTypeId = SpaceConstants.LocationType.OtherSubType.RefId)
         {
             DigitalTwin digitalTwin = new DigitalTwin();
             digitalTwin.ParentTwinReferenceId = parentId;

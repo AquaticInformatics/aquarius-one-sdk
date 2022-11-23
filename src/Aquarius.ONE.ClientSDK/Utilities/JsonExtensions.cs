@@ -25,5 +25,23 @@ namespace ONE.Utilities
                     settings.ContractResolver = null;
             }
         }
+        public static string ToJsonString<T>(T obj)
+        {
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            return JsonConvert.SerializeObject(obj, jsonSettings);
+        }
+        public string ToPrettyJson<T>(T obj)
+        {
+            JsonSerializerSettings jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore,
+                Formatting = Formatting.Indented
+
+            };
+            return JsonConvert.SerializeObject(obj, jsonSettings);
+        }
     }
 }

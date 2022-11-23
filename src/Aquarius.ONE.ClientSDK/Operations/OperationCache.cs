@@ -1,16 +1,16 @@
-﻿using ONE.Models.CSharp;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.Common.Library;
 using ONE.Enterprise.Twin;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Constants;
+using ONE.Models.CSharp.Constants.TwinCategory;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ONE.Models.CSharp.Enterprise.Twin;
-using ONE.Models.CSharp.Common.Configuration;
 
 namespace ONE.Operations
 {
@@ -268,7 +268,7 @@ namespace ONE.Operations
 
             try
             {
-                var ColumnTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(Id, TelemetryCategoryConstants.ColumnType.RefId);
+                var ColumnTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(Id, TelemetryConstants.ColumnType.RefId);
                 var LocationTwinsTask = _clientSDK.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
                 var SpreadsheetDefinitionTask = _clientSDK.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
                 var FifteenMinuteWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
@@ -276,9 +276,9 @@ namespace ONE.Operations
                 var FourHourWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
                 var DailyWorksheetDefinitionTask = _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
                 var UsersTask = _clientSDK.Core.GetUsersAsync();
-                var SheetsTask = _clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Worksheets.Id, Id);
+                var SheetsTask = _clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.WorksheetView.Id, Id);
                 var GraphsTask = _clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Graphs.Id, Id);
-                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Dashboards.Id, Id, OrganizationCategoryConstants.TenantType.RefId);
+                var DashboardsTask = _clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Dashboards.Id, Id, OrganizationConstants.TenantType.RefId);
 
                 await Task.WhenAll(
                     ColumnTwinsTask,
@@ -588,13 +588,13 @@ namespace ONE.Operations
         {
             switch (digitalTwin.TwinSubTypeId)
             {
-                case TelemetryCategoryConstants.ColumnType.WorksheetFifteenMinute.RefId:
+                case TelemetryConstants.ColumnType.WorksheetFifteenMinute.RefId:
                     return "15 Minutes";
-                case TelemetryCategoryConstants.ColumnType.WorksheetHour.RefId:
+                case TelemetryConstants.ColumnType.WorksheetHour.RefId:
                     return "Hourly";
-                case TelemetryCategoryConstants.ColumnType.WorksheetFourHour.RefId:
+                case TelemetryConstants.ColumnType.WorksheetFourHour.RefId:
                     return "4 Hour";
-                case TelemetryCategoryConstants.ColumnType.WorksheetDaily.RefId:
+                case TelemetryConstants.ColumnType.WorksheetDaily.RefId:
                     return "Daily";
             }
 
@@ -604,13 +604,13 @@ namespace ONE.Operations
         {
             switch (digitalTwin.TwinSubTypeId)
             {
-                case TelemetryCategoryConstants.ColumnType.WorksheetFifteenMinute.RefId:
+                case TelemetryConstants.ColumnType.WorksheetFifteenMinute.RefId:
                     return EnumWorksheet.WorksheetFifteenMinute;
-                case TelemetryCategoryConstants.ColumnType.WorksheetHour.RefId:
+                case TelemetryConstants.ColumnType.WorksheetHour.RefId:
                     return EnumWorksheet.WorksheetHour;
-                case TelemetryCategoryConstants.ColumnType.WorksheetFourHour.RefId:
+                case TelemetryConstants.ColumnType.WorksheetFourHour.RefId:
                     return EnumWorksheet.WorksheetFourHour;
-                case TelemetryCategoryConstants.ColumnType.WorksheetDaily.RefId:
+                case TelemetryConstants.ColumnType.WorksheetDaily.RefId:
                     return EnumWorksheet.WorksheetDaily;
             }
 

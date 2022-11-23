@@ -1,6 +1,10 @@
-﻿using ONE.Models.CSharp;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Constants;
+using ONE.Models.CSharp.Constants.TwinCategory;
+using ONE.Models.CSharp.Enums;
+using ONE.Models.CSharp.Imposed.Enums;
 using ONE.Operations.Spreadsheet;
 using ONE.Utilities;
 using System;
@@ -9,9 +13,6 @@ using System.Linq;
 using System.Threading.Tasks;
 using static ONE.Operations.Spreadsheet.WorksheetViewConfiguration;
 using proto = ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
-using ONE.Models.CSharp.Enterprise.Twin;
-using ONE.Models.CSharp.Common.Configuration;
 
 namespace ONE.Operations
 {
@@ -153,7 +154,7 @@ namespace ONE.Operations
                     destinationWorksheetViewConfiguration.headers.Add(ConvertViewHeader(sourceToDestinationColumnNumberMap, sourceHeader));
                 }
 
-                await _clientSDK.Configuration.CreateConfigurationAsync(destinationOperationId, ConfigurationTypeConstants.Worksheets.Id, destinationWorksheetViewConfiguration.ToString(), true);
+                await _clientSDK.Configuration.CreateConfigurationAsync(destinationOperationId, ConfigurationTypeConstants.WorksheetView.Id, destinationWorksheetViewConfiguration.ToString(), true);
             }
             return true;
         }
@@ -295,7 +296,7 @@ namespace ONE.Operations
             if (_sourceToDestinationColumnMap != null)
                 return _sourceToDestinationColumnMap;
             Dictionary<uint, uint> sourceToDestinationColumnMap = new Dictionary<uint, uint>();
-            var columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(operationId, TelemetryCategoryConstants.ColumnType.RefId);
+            var columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(operationId, TelemetryConstants.ColumnType.RefId);
             foreach (var columnTwin in columnTwins)
             {
                 uint.TryParse(Enterprise.Twin.Helper.GetTwinDataProperty(columnTwin, "", "CloneColumnNumber"), out uint sourceColumnNumber);
