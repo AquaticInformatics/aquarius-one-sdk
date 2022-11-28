@@ -1,12 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using ONE.Enterprise.Authentication;
+using ONE.Enums;
+using ONE.Models.CSharp;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json.Linq;
 using System.Data;
+using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
-using ONE.Models.CSharp;
-using ONE.Enterprise.Authentication;
 
 namespace ONE.Enterprise.Core
 {
@@ -67,7 +68,7 @@ namespace ONE.Enterprise.Core
                 return null;
             }
         }
-        public async Task<User> GetUserFromUserInfoAsync(string userInfoJson, CoreApi.EnumUserExpand enumUserExpand = CoreApi.EnumUserExpand.role_feature)
+        public async Task<User> GetUserFromUserInfoAsync(string userInfoJson, EnumUserExpand enumUserExpand = EnumUserExpand.role_feature)
         {
             JObject userInfo = JObject.Parse(userInfoJson);
             string id = userInfo["sub"].ToString();

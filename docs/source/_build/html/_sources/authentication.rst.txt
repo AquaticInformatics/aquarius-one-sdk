@@ -1,7 +1,0 @@
-Enterprise Authentication
-====
-
-.. autosummary::
-   :toctree: generated
-
-hello  

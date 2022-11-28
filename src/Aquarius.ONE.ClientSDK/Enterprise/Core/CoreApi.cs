@@ -1,12 +1,13 @@
-﻿using ONE.Utilities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ONE.Enums;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Enums;
+using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
 
 namespace ONE.Enterprise.Core
 {
@@ -25,28 +26,8 @@ namespace ONE.Enterprise.Core
         private readonly bool _throwAPIErrors;
         
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        public enum EnumUserExpand
-        {
-            none = 0,
-            role = 1,
-            tenant = 2,
-            feature = 3,
-            userprofile = 4,
-            role_tenant = 5,
-            role_feature = 6,
-            role_userprofile = 7,
-            tenant_feature = 8,
-            tenant_userprofile = 9,
-            tenant_feature_userprofile = 10,
-            role_tenant_feature_userProfile = 11
-        }
-        public enum EnumNavigationProperty
-        {
-            permissions,
-            roles,
-            users,
-            productofferings
-        }
+        
+        
         // **************************** User Methods                *********************************
         public async Task<User> CreateUserAsync(string firstName, string lastName, string email, string tenantId)
         {
@@ -382,13 +363,7 @@ namespace ONE.Enterprise.Core
 				 return false;
             }
         }
-        public enum EnumProductOfferingExpand
-        {
-            None = 0,
-            Feature = 1,
-            Tenant = 2,
-            TenantAndFeature = 3
-        }
+        
         // **************************** Product Offering Methods       *********************************
         public async Task<ProductOffering> CreateProductOfferingAsync(ProductOffering productOffering)
         {

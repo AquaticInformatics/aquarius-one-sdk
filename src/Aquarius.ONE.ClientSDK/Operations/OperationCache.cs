@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.Common.Library;
 using ONE.Enterprise.Twin;
+using ONE.Enums;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants;
 using ONE.Models.CSharp.Constants.TwinCategory;

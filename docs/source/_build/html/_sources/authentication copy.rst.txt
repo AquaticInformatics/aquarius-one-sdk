@@ -1,7 +1,0 @@
-Authentication
-====
-
-.. autosummary::
-   :toctree: generated
-
-hello  

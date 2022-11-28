@@ -1,18 +1,19 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using ONE.Enterprise.Twin;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants;
 using ONE.Models.CSharp.Constants.TwinCategory;
 using ONE.Models.CSharp.Enums;
 using ONE.Models.CSharp.Imposed.Enums;
-using ONE.Operations.Spreadsheet;
+using ONE.Models.CSharp.Imposed.WorksheetView;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using static ONE.Operations.Spreadsheet.WorksheetViewConfiguration;
 using proto = ONE.Models.CSharp;
+using WorksheetView = ONE.Models.CSharp.Imposed.WorksheetView.WorksheetView;
 
 namespace ONE.Operations
 {
@@ -136,9 +137,9 @@ namespace ONE.Operations
 
             foreach (var sourceConfiguration in sourceSheets)
             {
-                WorksheetViewConfiguration destinationWorksheetViewConfiguration = new WorksheetViewConfiguration();
+                WorksheetView destinationWorksheetViewConfiguration = new WorksheetView();
                 var sourceConfigurationData = sourceConfiguration.ConfigurationData;
-                var sourceWorksheetViewConfiguration = new WorksheetViewConfiguration(sourceConfigurationData);
+                var sourceWorksheetViewConfiguration = Spreadsheet.Helper.GetWorksheetView(sourceConfigurationData);
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, Module = "OperationExport", Message = $"Copying {sourceWorksheetViewConfiguration.worksheetType} Sheet: {sourceWorksheetViewConfiguration.name}" });
 
                 destinationWorksheetViewConfiguration.columnNumbers = new List<uint>();

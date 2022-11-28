@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
+using ONE.Enums;
 using ONE.Models.CSharp.Constants.TwinCategory;
-using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

@@ -9,6 +9,7 @@ using ONE.Enterprise.Authentication;
 using ONE.Enterprise.Core;
 using ONE.Enterprise.Report;
 using ONE.Enterprise.Twin;
+using ONE.Enums;
 using ONE.Operations.Sample;
 using ONE.Operations.Spreadsheet;
 using ONE.PoEditor;

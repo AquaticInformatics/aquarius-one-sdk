@@ -1,5 +1,6 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using ONE.Enums;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Enums;
 using ONE.Models.CSharp.Imposed.Internationalization;

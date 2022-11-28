@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf;
 using Newtonsoft.Json.Linq;
 using ONE.Enterprise.Authentication;
+using ONE.Enums;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Enums;
 using System;

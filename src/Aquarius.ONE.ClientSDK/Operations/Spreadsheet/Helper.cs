@@ -1,8 +1,15 @@
-﻿using ONE.Models.CSharp;
+﻿using Newtonsoft.Json;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Imposed.Enums;
+using ONE.Models.CSharp.Imposed.WorksheetView;
 using ONE.Shared.Time;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using System.Xml.Linq;
+using static ONE.Models.CSharp.Constants.ConfigurationTypeConstants;
+using WorksheetView = ONE.Models.CSharp.Imposed.WorksheetView.WorksheetView;
 
 namespace ONE.Operations.Spreadsheet
 {
@@ -80,7 +87,7 @@ namespace ONE.Operations.Spreadsheet
                     return cell.CellDatas[0];
             }
             return null;
-            
+
         }
         public static Cell GetCellWithLatestCellDataAndNotes(Row row, uint columnNumber)
         {
@@ -183,6 +190,104 @@ namespace ONE.Operations.Spreadsheet
                                   date.Month,
                                   DateTime.DaysInMonth(date.Year,
                                                        date.Month));
+        }
+
+        public static List<uint> GetOrderedColumnNumbers(WorksheetView worksheetView)
+        {
+            var orderedColumnNumbers = new List<uint>();
+            if (worksheetView.headers != null)
+            {
+
+                foreach (var header in worksheetView.headers)
+                {
+                    orderedColumnNumbers.AddRange(GetChildOrderedColumns(header));
+                }
+                //Check to see if any columns are missing
+                if (worksheetView.columnNumbers != null && orderedColumnNumbers.Count != worksheetView.columnNumbers.Count)
+                {
+                    foreach (var column in worksheetView.columnNumbers)
+                    {
+                        if (!orderedColumnNumbers.Contains(column))
+                            orderedColumnNumbers.Add(column);
+                    }
+                }
+            }
+            return orderedColumnNumbers;
+        }
+        private static List<uint> GetChildOrderedColumns(dynamic header)
+        {
+            List<uint> columns = new List<uint>();
+            if (header.HeaderType == EnumHeaderType.column) //column
+            {
+                columns.Add(header.id);
+            }
+            else // Group Header
+            {
+                foreach (var item in header.children)
+                {
+                    columns.AddRange(GetChildOrderedColumns(item));
+                }
+            }
+            return columns;
+        }
+        public static WorksheetView GetWorksheetView(string jsonData)
+        {
+            var worksheetView = new WorksheetView();
+            var view = JsonConvert.DeserializeObject<WorksheetView>(jsonData, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            worksheetView.id = view.id;
+            worksheetView.name = view.name;
+            worksheetView.isOwner = view.isOwner;
+            worksheetView.worksheetType = view.worksheetType;
+            worksheetView.columnNumbers = view.columnNumbers;
+            worksheetView.columns = view.columns;
+            worksheetView.createdOn = view.createdOn;
+            worksheetView.canDelete = view.canDelete;
+            worksheetView.canEdit = view.canEdit;
+            worksheetView.headers = new List<dynamic>();
+            if (view.headers != null)
+            {
+                foreach (var header in view.headers)
+                {
+                    var groupHeaderItem = GetGroupHeader(header.ToString());
+                    if (groupHeaderItem.name != null)
+                    {
+                        worksheetView.headers.Add(groupHeaderItem);
+                    }
+                    else
+                    {
+                        var columnHeaderItem = JsonConvert.DeserializeObject<ColumnHeader>(header.ToString(), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                        worksheetView.headers.Add(columnHeaderItem);
+
+                    }
+                    Console.WriteLine(header);
+                }
+            }
+            return worksheetView;
+        }
+        public static GroupHeader GetGroupHeader(string json)
+        {
+            GroupHeader newGroupHeader = new GroupHeader();
+            var groupHeader = JsonConvert.DeserializeObject<GroupHeader>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            newGroupHeader.name = groupHeader.name;
+            newGroupHeader.groupId = groupHeader.groupId;
+            if (groupHeader.children != null)
+            {
+                newGroupHeader.children = new List<dynamic>();
+                foreach (var child in groupHeader.children)
+                {
+                    var groupHeaderItem = GetGroupHeader(child.ToString());
+                    if (groupHeaderItem.name != null)
+                    {
+                        newGroupHeader.children.Add(groupHeaderItem);
+                    }
+                    else
+                    {
+                        var columnHeaderItem = JsonConvert.DeserializeObject<ColumnHeader>(child.ToString(), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                        newGroupHeader.children.Add(columnHeaderItem);
+                    }
+                }
+            }
+            return newGroupHeader;
         }
     }
   
