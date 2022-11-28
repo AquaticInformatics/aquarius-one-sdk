@@ -1,7 +1,7 @@
-﻿using ONE.Models.CSharp;
-using Google.Protobuf.WellKnownTypes;
+﻿using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
-using ONE.Enterprise.Twin;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Constants.TwinCategory;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -43,12 +43,12 @@ namespace ONE.Operations
 
             if (_columnTwins == null)
             {
-                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, Constants.TelemetryCategory.ColumnType.RefId);
+                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, TelemetryConstants.ColumnType.RefId);
             }
             _columnMap = await _cloneOperation.GetSourceToDestinationColumnMap(_operationId);
 
             if (_userTwins == null)
-                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, Constants.OrganizationCategory.UserType.RefId);
+                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, OrganizationConstants.UserType.RefId);
             if (_users == null)
                 _users = await _clientSDK.Core.GetUsersAsync();
             CreateUserMap();
@@ -81,12 +81,12 @@ namespace ONE.Operations
 
             if (_columnTwins == null)
             {
-                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, Constants.TelemetryCategory.ColumnType.RefId);
+                _columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_operationId, TelemetryConstants.ColumnType.RefId);
             }
             _columnMap = await _cloneOperation.GetSourceToDestinationColumnMap(_operationId);
 
             if (_userTwins == null)
-                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, Constants.OrganizationCategory.UserType.RefId);
+                _userTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(_tenantId, OrganizationConstants.UserType.RefId);
             if (_users == null)
                 _users = await _clientSDK.Core.GetUsersAsync();
             CreateUserMap();

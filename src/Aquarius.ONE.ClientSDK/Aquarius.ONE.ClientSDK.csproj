@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
-	  <VersionPrefix>14.2.0</VersionPrefix>
+	  <VersionPrefix>15.0.0</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
-	  <VersionSuffix></VersionSuffix>
+	  <VersionSuffix>alpha5</VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Aquatic Informatics</Authors>
     <Company>Aquatic Informatics</Company>
@@ -23,9 +23,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="4.7.1" />
+    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="4.9.0" />
     <PackageReference Include="Aquarius.ONE.Shared.Time" Version="1.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="6.0.9" />
+    <PackageReference Include="Microsoft.AspNetCore.JsonPatch" Version="7.0.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 

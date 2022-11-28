@@ -1,7 +1,0 @@
-Getting Started
-====
-
-.. autosummary::
-   :toctree: generated
-
-hello  

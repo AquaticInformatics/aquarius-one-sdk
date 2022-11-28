@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ONE.Enterprise.Report
+﻿namespace ONE.Enterprise.Report
 {
     public class ReportColumn
     {

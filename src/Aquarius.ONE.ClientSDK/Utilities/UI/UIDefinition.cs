@@ -1,4 +1,5 @@
 ﻿using Newtonsoft.Json;
+using ONE.Models.CSharp.Imposed.TwinUiDefinition;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -16,11 +17,11 @@ namespace ONE.Utilities.UI
             }
             catch
             {
-                attributes = new List<Attribute>();
+                attributes = new List<UiDefinitionAttribute>();
             }
         }
        
-        public List<Attribute> attributes { get; set; }
+        public List<UiDefinitionAttribute> attributes { get; set; }
         public override string ToString()
         {
             try

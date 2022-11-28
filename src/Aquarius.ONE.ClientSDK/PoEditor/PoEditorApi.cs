@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ONE.Utilities;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ONE.Models.CSharp.Enums;
 
 namespace ONE.PoEditor
 {
@@ -98,16 +99,16 @@ namespace ONE.PoEditor
                     dynamic obj = JObject.Parse(content);
                     var arr = obj.result.projects as JArray;
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetProjectsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetProjectsAsync Success" });
                     return arr?.ToObject<IList<ProjectDto>>();
                 }
 
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetProjectsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetProjectsAsync Failed" });
                 return null;
             }
             catch (Exception ex)
             {
-                Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "PoEditorUtility", Message = $"GetProjectsAsync Failed - {ex.Message}" });
+                Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "PoEditorUtility", Message = $"GetProjectsAsync Failed - {ex.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -148,16 +149,16 @@ namespace ONE.PoEditor
                     var downloadUrl = (string)obj.result.url;
                     var jsonData = await DownloadJsonFileAsync(downloadUrl);
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetTranslationsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetTranslationsAsync Success" });
                     return JsonConvert.DeserializeObject<IList<TranslationDto>>(jsonData);
                 }
 
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetTranslationsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetTranslationsAsync Failed" });
                 return null;
             }
             catch (Exception ex)
             {
-                Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "PoEditorUtility", Message = $"GetTranslationsAsync Failed - {ex.Message}" });
+                Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "PoEditorUtility", Message = $"GetTranslationsAsync Failed - {ex.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -215,16 +216,16 @@ namespace ONE.PoEditor
                     var content = await response.Content.ReadAsStringAsync();
                     dynamic obj = JObject.Parse(content);
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "UpdateLanguageAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "UpdateLanguageAsync Success" });
                     return obj.result.translations["added"] + obj.result.translations["updated"];
                 }
 
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "UpdateLanguageAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "UpdateLanguageAsync Failed" });
                 return 0;
             }
             catch (Exception ex)
             {
-                Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "PoEditorUtility", Message = $"UpdateLanguageAsync Failed - {ex.Message}" });
+                Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "PoEditorUtility", Message = $"UpdateLanguageAsync Failed - {ex.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return 0;

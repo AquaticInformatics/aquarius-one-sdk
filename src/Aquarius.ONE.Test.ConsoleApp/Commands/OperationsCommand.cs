@@ -1,6 +1,6 @@
 ﻿using CommandLine;
 using ONE;
-using ONE.Enterprise.Twin;
+using ONE.Models.CSharp.Constants.TwinCategory;
 using ONE.Operations;
 using System;
 using System.IO;
@@ -49,7 +49,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 try
                 {
                     var tenant = await clientSDK.DigitalTwin.GetAsync(TenantId);
-                    if (tenant == null || tenant.TwinTypeId != Constants.OrganizationCategory.TenantType.RefId)
+                    if (tenant == null || tenant.TwinTypeId != OrganizationConstants.TenantType.RefId)
                     {
                         Console.WriteLine($"Tenant Id not valid");
                         return 0;

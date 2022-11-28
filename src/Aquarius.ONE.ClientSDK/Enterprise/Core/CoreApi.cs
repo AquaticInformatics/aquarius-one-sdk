@@ -1,11 +1,13 @@
-﻿using ONE.Utilities;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ONE.Enums;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Enums;
+using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Linq;
-using ONE.Models.CSharp;
 
 namespace ONE.Enterprise.Core
 {
@@ -24,28 +26,8 @@ namespace ONE.Enterprise.Core
         private readonly bool _throwAPIErrors;
         
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        public enum EnumUserExpand
-        {
-            none = 0,
-            role = 1,
-            tenant = 2,
-            feature = 3,
-            userprofile = 4,
-            role_tenant = 5,
-            role_feature = 6,
-            role_userprofile = 7,
-            tenant_feature = 8,
-            tenant_userprofile = 9,
-            tenant_feature_userprofile = 10,
-            role_tenant_feature_userProfile = 11
-        }
-        public enum EnumNavigationProperty
-        {
-            permissions,
-            roles,
-            users,
-            productofferings
-        }
+        
+        
         // **************************** User Methods                *********************************
         public async Task<User> CreateUserAsync(string firstName, string lastName, string email, string tenantId)
         {
@@ -73,16 +55,16 @@ namespace ONE.Enterprise.Core
                     var results = apiResponse.Content.Users.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateUserAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateUserAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateUserAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateUserAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateUserAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"CreateUserAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -108,15 +90,15 @@ namespace ONE.Enterprise.Core
                     {
                         users.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUsersAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUsersAsync Success" });
                     return users;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUsersAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUsersAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetUsersAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetUsersAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -131,14 +113,14 @@ namespace ONE.Enterprise.Core
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/core/v1/user/{userId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteUserAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteUserAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteUserAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteUserAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteUserAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"DeleteUserAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -165,15 +147,15 @@ namespace ONE.Enterprise.Core
                     {
                         user = result;
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUserAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUserAsync Success" });
                     return user;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUserAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetUserAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetUserAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetUserAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -204,16 +186,16 @@ namespace ONE.Enterprise.Core
                     var results = apiResponse.Content.Tenants.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateTenantAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateTenantAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateTenantAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"CreateTenantAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateTenantAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"CreateTenantAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -231,15 +213,15 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"AddTenantProductOfferingAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"AddTenantProductOfferingAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -257,15 +239,15 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"AddTenantProductOfferingAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"AddTenantProductOfferingAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"AddTenantProductOfferingAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -286,15 +268,15 @@ namespace ONE.Enterprise.Core
                     {
                         tenants.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantsAsync Success" });
                     return tenants;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantsAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetTenantsAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetTenantsAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -312,16 +294,16 @@ namespace ONE.Enterprise.Core
                     var results = respContent.ApiResponse.Content.Tenants.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetTenantAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetTenantAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetTenantAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -344,17 +326,17 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PatchRestJSONAsync(requestId, json, endpoint);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateTenantAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateTenantAsync Success" });
                     return true;
                 }
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateTenantAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateTenantAsync Failed" });
                 return false;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateTenantAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UpdateTenantAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -368,26 +350,20 @@ namespace ONE.Enterprise.Core
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/core/v1/Tenant/{id}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteTenantAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteTenantAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteTenantAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteTenantAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteTenantAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"DeleteTenantAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
             }
         }
-        public enum EnumProductOfferingExpand
-        {
-            None = 0,
-            Feature = 1,
-            Tenant = 2,
-            TenantAndFeature = 3
-        }
+        
         // **************************** Product Offering Methods       *********************************
         public async Task<ProductOffering> CreateProductOfferingAsync(ProductOffering productOffering)
         {
@@ -410,16 +386,16 @@ namespace ONE.Enterprise.Core
                     var results = apiResponse.Content.ProductOfferings.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"CreateProductOfferingAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -453,15 +429,15 @@ namespace ONE.Enterprise.Core
                     {
                         productOffering = result;
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingAsync Success" });
                     return productOffering;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -495,15 +471,15 @@ namespace ONE.Enterprise.Core
                     {
                         productOfferings.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Success" });
                     return productOfferings;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingsAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingsAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -529,15 +505,15 @@ namespace ONE.Enterprise.Core
                     {
                         return result;
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Success" });
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Failed" });
                 return null;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UpdateProductOfferingAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -552,14 +528,14 @@ namespace ONE.Enterprise.Core
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/core/v1/ProductOffering/{id}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"DeleteProductOfferingAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -587,16 +563,16 @@ namespace ONE.Enterprise.Core
                     var results = apiResponse.Content.Features.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateFeatureAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"CreateFeatureAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -614,15 +590,15 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"CreateFeatureReferenceAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -637,14 +613,14 @@ namespace ONE.Enterprise.Core
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/core/v1/feature/deleteref?requestId={requestId}&key={featureId}&navigationProperty={enumNavigationProperty.ToString()}&referenceId={referenceId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"DeleteFeatureReferenceAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -662,16 +638,16 @@ namespace ONE.Enterprise.Core
                     var results = respContent.ApiResponse.Content.Features.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeatureAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeatureAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeatureAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeatureAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetFeatureAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetFeatureAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -692,15 +668,15 @@ namespace ONE.Enterprise.Core
                     {
                         features.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeaturesAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeaturesAsync Success" });
                     return features;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeaturesAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetFeaturesAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetFeaturesAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetFeaturesAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -725,15 +701,15 @@ namespace ONE.Enterprise.Core
                     {
                         return result;
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateFeatureAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateFeatureAsync Success" });
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateFeatureAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"UpdateFeatureAsync Failed" });
                 return null;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateFeatureAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UpdateFeatureAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -748,14 +724,14 @@ namespace ONE.Enterprise.Core
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/core/v1/Feature/{id}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreAPI", Message = $"DeleteFeatureAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteFeatureAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"DeleteFeatureAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -772,15 +748,15 @@ namespace ONE.Enterprise.Core
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var results = respContent.ApiResponse.Content.Features.Items.Select(x => x).ToList();
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Success" });
                     return results;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetProductOfferingsAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingsAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetProductOfferingsAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -807,15 +783,15 @@ namespace ONE.Enterprise.Core
                     {
                         roles.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRolesAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRolesAsync Success" });
                     return roles;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRolesAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRolesAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetRolesAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetRolesAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -837,16 +813,16 @@ namespace ONE.Enterprise.Core
                     var results = respContent.ApiResponse.Content.Roles.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRoleAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRoleAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRoleAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetRoleAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetRoleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetRoleAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -860,14 +836,14 @@ namespace ONE.Enterprise.Core
             {
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/core/v1/role/{roleId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteRolesAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteRolesAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteRolesAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"DeleteRolesAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"DeleteRolesAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"DeleteRolesAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -888,16 +864,16 @@ namespace ONE.Enterprise.Core
                     var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (apiResponse == null)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"SendUserNameToEmailAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"SendUserNameToEmailAsync Success" });
                         return true;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"SendUserNameToEmailAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"SendUserNameToEmailAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"SendUserNameToEmailAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"SendUserNameToEmailAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -913,15 +889,15 @@ namespace ONE.Enterprise.Core
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitationAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitationAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitationAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ResendInvitationAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"ResendInvitationAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"ResendInvitationAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -943,16 +919,16 @@ namespace ONE.Enterprise.Core
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (apiResponse == null)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRequestPasswordResetAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRequestPasswordResetAsync Success" });
                         return true;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRequestPasswordResetAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRequestPasswordResetAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserRequestPasswordResetAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UserRequestPasswordResetAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -975,16 +951,16 @@ namespace ONE.Enterprise.Core
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     if (apiResponse == null)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserPasswordUpdateAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserPasswordUpdateAsync Success" });
                         return true;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserPasswordUpdateAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserPasswordUpdateAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserPasswordUpdateAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UserPasswordUpdateAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -1003,18 +979,18 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UnlockUserAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UnlockUserAsync Success" });
                     return true;
                 }
                 else
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UnlockUserAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UnlockUserAsync Failed" });
                     return false;
                 }
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UnlockUserAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UnlockUserAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -1037,17 +1013,17 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, userJson.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ActivateUserAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ActivateUserAsync Success" });
                     return true;
                 }
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ActivateUserAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"ActivateUserAsync Failed" });
                 return false;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"ActivateUserAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"ActivateUserAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -1064,19 +1040,19 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserCreateRoleRefAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserCreateRoleRefAsync Success" });
                     return true;
                 }
                 else
                 {
 
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserCreateRoleRefAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserCreateRoleRefAsync Failed" });
                     return false;
                 }
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserCreateRoleRefAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UserCreateRoleRefAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -1093,19 +1069,19 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRemoveRoleAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRemoveRoleAsync Success" });
                     return true;
                 }
                 else
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRemoveRoleAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UserRemoveRoleAsync Failed" });
                     return false;
                 }
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UserRemoveRoleAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UserRemoveRoleAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
@@ -1129,15 +1105,15 @@ namespace ONE.Enterprise.Core
                     {
                         users.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetGlobalUsersAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetGlobalUsersAsync Success" });
                     return users;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetGlobalUsersAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"GetGlobalUsersAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"GetGlobalUsersAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"GetGlobalUsersAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return null;
@@ -1160,16 +1136,16 @@ namespace ONE.Enterprise.Core
                 var respContent = await _restHelper.PatchRestJSONAsync(requestId, json, endpoint);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateUserAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateUserAsync Success" });
                     return true;
                 }
 
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateUserAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "CoreApi", Message = $"UpdateUserAsync Failed" });
                 return false;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumEventLevel.Error, Module = "CoreAPI", Message = $"UpdateUserAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "CoreAPI", Message = $"UpdateUserAsync Failed - {e.Message}" });
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
