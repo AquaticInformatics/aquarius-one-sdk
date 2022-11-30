@@ -60,13 +60,13 @@ namespace ONE.Operations.Sample
         /// <returns>One or more Activities that meet the criteria.</returns>
         public async Task<List<Activity>> GetActivitiesAsync(string authTwinRefId,
             string activityTypeId = null, int? statusCode = null, int? priorityCode = null,
-            DateTime? startTime = null, DateTime? endTime = null, string scheduleId = null)
+            DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null)
         {
             try
             {
                 return await _activityApi.GetActivitiesAsync(authTwinRefId,
                     includeActivityDescendants: null, includeAuthTwinDescendants: null,
-                    activityTypeId, statusCode, priorityCode, startTime, endTime, scheduleId);
+                    activityTypeId, statusCode, priorityCode, startDate, endDate, scheduleId);
             }
             catch (Exception ex)
             {
