@@ -30,13 +30,13 @@ namespace ONE.Operations.Sample
         /// The start date of cached data.
         /// </summary>
         [JsonProperty]
-        public DateTime? StartDate { get; private set; }
+        public DateTime? StartTime { get; private set; }
 
         /// <summary>
         /// The end date of cached data.
         /// </summary>
         [JsonProperty]
-        public DateTime? EndDate { get; private set; }
+        public DateTime? EndTime { get; private set; }
 
         public SampleCache(ClientSDK clientSdk, string serializedCache = "")
         {
@@ -56,8 +56,8 @@ namespace ONE.Operations.Sample
                 throw CacheExceptions.NotDeserializedCacheException();
 
             OperationId = cache?.OperationId ?? string.Empty;
-            StartDate = cache?.StartDate;
-            EndDate = cache?.EndDate;
+            StartTime = cache?.StartTime;
+            EndTime = cache?.EndTime;
             Activities = cache?.Activities ?? new Dictionary<string, Activity>();
             Analytes = cache?.Analytes ?? new Dictionary<string, Analyte>();
             TestGroups = cache?.TestGroups ?? new Dictionary<string, TestAnalyteGroup>();
@@ -89,7 +89,7 @@ namespace ONE.Operations.Sample
         /// <param name="startDate">Loads data on or after this date.</param>
         /// <param name="endDate">Loads data before this date.</param>
         /// <param name="operationId">Identifier of the operation for which to load data, uses <see cref="OperationId"/> if not set and will overwrite the existing OperationId if set.</param>
-        public async Task<bool> LoadAsync(DateTime startDate, DateTime endDate, string operationId = "")
+        public async Task<bool> LoadAsync(DateTime startTime, DateTime endTime, string operationId = "")
         {
             if (string.IsNullOrEmpty(operationId) && string.IsNullOrEmpty(OperationId))
                 return ErrorResponse(new ArgumentException("No operationId was provided or previously set"), false);
@@ -97,7 +97,7 @@ namespace ONE.Operations.Sample
             if (!string.IsNullOrEmpty(operationId) && !SetOperationId(operationId))
                 return ErrorResponse(new ArgumentException("Failed to set OperationId, ensure that it is a valid guid"), false);
 
-            if (startDate > endDate)
+            if (startTime > endTime)
                 return ErrorResponse(new ArgumentException("endDate must be greater than startDate"), false);
 
             try
@@ -105,7 +105,7 @@ namespace ONE.Operations.Sample
                 var analytesTask = _clientSdk.Sample.GetAnalytesAsync(OperationId);
                 var testGroupsTask = _clientSdk.Sample.GetTestGroupsAsync(OperationId);
                 var schedulesTask = _clientSdk.Schedule.GetSchedulesAsync(OperationId, null, "");
-                var activitiesTask = _clientSdk.Sample.GetActivitiesAsync(OperationId, startDate: startDate, endDate: endDate);
+                var activitiesTask = _clientSdk.Sample.GetActivitiesAsync(OperationId, startTime: startTime, endTime: endTime);
 
                 var tasks = new Task[]
                 {
@@ -120,8 +120,8 @@ namespace ONE.Operations.Sample
                 Schedules = schedulesTask.Result.ToDictionary(k => k.Id, v => v);
                 Activities = activitiesTask.Result.ToDictionary(k => k.Id, v => v);
 
-                StartDate = startDate;
-                EndDate = endDate;
+                StartTime = startTime;
+                EndTime = endTime;
 
                 return true;
             }
@@ -250,8 +250,8 @@ namespace ONE.Operations.Sample
             TestGroups.Clear();
             Schedules.Clear();
             OperationId = string.Empty;
-            StartDate = null;
-            EndDate = null;
+            StartTime = null;
+            EndTime = null;
         }
 
         /// <summary> 
