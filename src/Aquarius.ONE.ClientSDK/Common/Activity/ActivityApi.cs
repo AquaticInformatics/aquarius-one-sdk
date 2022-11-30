@@ -27,7 +27,7 @@ namespace ONE.Common.Activity
         }
 
         public async Task<List<Proto.Activity>> GetActivitiesAsync(string authTwinRefId = null, bool? includeActivityDescendants = null, bool? includeAuthTwinDescendants = null, string activityTypeId = null,
-            int? statusCode = null, int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null, string context = null)
+            int? statusCode = null, int? priorityCode = null, DateTime? startTime = null, DateTime? endTime = null, string scheduleId = null, string context = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -53,11 +53,11 @@ namespace ONE.Common.Activity
                 if (priorityCode.HasValue)
                     queryParameters.Add(nameof(priorityCode), priorityCode.Value.ToString());
 
-                if (startDate.HasValue)
-                    queryParameters.Add(nameof(startDate), startDate.Value.ToString("O"));
+                if (startTime.HasValue)
+                    queryParameters.Add(nameof(startTime), startTime.Value.ToString("O"));
 
-                if (endDate.HasValue)
-                    queryParameters.Add(nameof(endDate), endDate.Value.ToString("O"));
+                if (endTime.HasValue)
+                    queryParameters.Add(nameof(endTime), endTime.Value.ToString("O"));
 
                 if (!string.IsNullOrEmpty(scheduleId))
                     queryParameters.Add(nameof(scheduleId), scheduleId);
