@@ -54,10 +54,10 @@ namespace ONE.Common.Activity
                     queryParameters.Add(nameof(priorityCode), priorityCode.Value.ToString());
 
                 if (startDate.HasValue)
-                    queryParameters.Add(nameof(startDate), startDate.Value.ToString("O"));
+                    queryParameters.Add("startTime", startDate.Value.ToString("O"));
 
                 if (endDate.HasValue)
-                    queryParameters.Add(nameof(endDate), endDate.Value.ToString("O"));
+                    queryParameters.Add("endTime", endDate.Value.ToString("O"));
 
                 if (!string.IsNullOrEmpty(scheduleId))
                     queryParameters.Add(nameof(scheduleId), scheduleId);
