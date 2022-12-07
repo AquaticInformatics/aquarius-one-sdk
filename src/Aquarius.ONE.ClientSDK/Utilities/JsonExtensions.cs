@@ -33,7 +33,7 @@ namespace ONE.Utilities
             };
             return JsonConvert.SerializeObject(obj, jsonSettings);
         }
-        public string ToPrettyJson<T>(T obj)
+        public static string ToPrettyJson<T>(T obj)
         {
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
