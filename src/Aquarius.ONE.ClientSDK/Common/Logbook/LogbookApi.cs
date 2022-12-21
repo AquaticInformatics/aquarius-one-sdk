@@ -112,12 +112,31 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
         /// <param name="entry">Text of the entry to be created</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
         /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
-        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, params string[] tags)
+        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
-                { ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToOneDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) } };
+            {
+                ConfigurationId = logbookId,
+                Note = entry,
+                NoteTime = entryTime.ToOneDateTime(),
+                Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
+            };
+
+            if (geoPointX != null && geoPointY != null)
+            {
+                logbookEntry.Geography = new GIS
+                {
+                    Point2D = new Point2D
+                    {
+                        X = geoPointX.Value,
+                        Y = geoPointY.Value
+                    }
+                };
+            }
 
             return await _configurationApi.CreateConfigurationNoteAsync(logbookEntry);
         }
@@ -141,14 +160,33 @@ namespace ONE.Common.Logbook
         /// <param name="entryId">Identifier of the entry to be edited</param>
         /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
         /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
-        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, params string[] tags)
+        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
             {
-                Id = entryId, ConfigurationId = logbookId, Note = entry, NoteTime = entryTime.ToOneDateTime(), Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
+                Id = entryId,
+                ConfigurationId = logbookId,
+                Note = entry,
+                NoteTime = entryTime.ToOneDateTime(),
+                Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) },
+
             };
+
+            if (geoPointX != null && geoPointY != null)
+            {
+                logbookEntry.Geography = new GIS
+                {
+                    Point2D = new Point2D
+                    {
+                        X = geoPointX.Value,
+                        Y = geoPointY.Value
+                    }
+                };
+            }
 
             return await _configurationApi.UpdateConfigurationNoteAsync(logbookEntry);
         }
