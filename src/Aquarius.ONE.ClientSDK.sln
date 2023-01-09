@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquarius.ONE.ClientSDK", "A
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Aquarius.ONE.Test.ConsoleApp", "Aquarius.ONE.Test.ConsoleApp\Aquarius.ONE.Test.ConsoleApp.csproj", "{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Aquarius.ONE.ClientSDK.Tests", "Aquarius.ONE.ClientSDK.Tests\Aquarius.ONE.ClientSDK.Tests.csproj", "{10013AE9-D14B-42A0-9E2F-B52FFC7CEA4F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B2139E9F-CA20-4EFC-A20C-2F03EF3AB3CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{10013AE9-D14B-42A0-9E2F-B52FFC7CEA4F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{10013AE9-D14B-42A0-9E2F-B52FFC7CEA4F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{10013AE9-D14B-42A0-9E2F-B52FFC7CEA4F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{10013AE9-D14B-42A0-9E2F-B52FFC7CEA4F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

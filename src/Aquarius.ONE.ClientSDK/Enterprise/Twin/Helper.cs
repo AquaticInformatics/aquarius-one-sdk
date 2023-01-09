@@ -188,35 +188,38 @@ namespace ONE.Enterprise.Twin
             }
             return null;
         }
+        
         public static string GetTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
         {
             if (digitalTwin != null && !string.IsNullOrEmpty(digitalTwin.TwinData))
             {
-                JObject twinData = JObject.Parse(digitalTwin.TwinData);
-                if (twinData == null)
+                var settings = new JsonSerializerSettings { DateParseHandling = DateParseHandling.None };
+                var parentObject = JsonConvert.DeserializeObject<JObject>(digitalTwin.TwinData, settings);
+
+                if (parentObject == null)
                     return null;
+
                 var pathItems = path.Split('\\');
-                JObject parentObject = twinData;
                 foreach (var pathItem in pathItems)
                 {
                     if (!string.IsNullOrEmpty(pathItem))
                     {
                         if (parentObject[pathItem] == null || !parentObject[pathItem].HasValues)
-                        {
                             return "";
-                        }
+
                         parentObject = (JObject)parentObject[pathItem];
                         if (parentObject == null)
                             return "";
                     }
                 }
-                if (parentObject[propertyName] == null)
-                    return "";
-                return parentObject[propertyName].ToString();
 
+                var propertyValue = parentObject[propertyName];
+
+                return propertyValue == null ? "" : propertyValue.ToString();
             }
             return "";
         }
+        
         public static List<string> GetTwinDataPropertyAslist(DigitalTwin digitalTwin, string path, string propertyName)
         {
             if (digitalTwin != null && !string.IsNullOrEmpty(digitalTwin.TwinData))
