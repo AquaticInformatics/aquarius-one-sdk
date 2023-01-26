@@ -6,8 +6,10 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Net;
 using System.Text;
+using Newtonsoft.Json.Serialization;
 using Proto = ONE.Models.CSharp;
 using ONE.Models.CSharp.Enums;
+using ONE.Shared.Helpers.JsonPatch;
 
 namespace ONE.Common.Activity
 {
@@ -87,7 +89,7 @@ namespace ONE.Common.Activity
                 Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetActivitiesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
-				 return null;
+				return null;
             }
         }
 
@@ -112,7 +114,7 @@ namespace ONE.Common.Activity
                 Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetOneActivityAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
-				 return null;
+				return null;
             }
         }
 
@@ -139,7 +141,7 @@ namespace ONE.Common.Activity
                 Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"SaveActivitiesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
-				 return false;
+				return false;
             }
         }
 
@@ -166,7 +168,38 @@ namespace ONE.Common.Activity
                 Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateActivitiesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
-				 return false;
+				return false;
+            }
+        }
+
+        public async Task<bool> UpdateActivityPropertyBagAsync(Guid activityId, OneJsonPatchItems propertyBagUpdates)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            try
+            {
+                var json = JsonConvert.SerializeObject(propertyBagUpdates, 
+                    new JsonSerializerSettings
+                    {
+                        NullValueHandling = NullValueHandling.Ignore,
+                        ContractResolver = new CamelCasePropertyNamesContractResolver()
+                    });
+                var respContent = await _restHelper.PatchRestJSONAsync(Guid.NewGuid(), json,
+                        $"/common/activity/v1/UpdatePropertyBag/{activityId}")
+                    .ConfigureAwait(_continueOnCapturedContext);
+
+                Event(null,
+                    respContent.ResponseMessage.IsSuccessStatusCode
+                        ? CreateLoggerArgs(EnumLogLevel.Trace, "UpdateActivityPropertyBagAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumLogLevel.Warn, "UpdateActivityPropertyBagAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                return respContent.ResponseMessage.IsSuccessStatusCode;
+            }
+            catch (Exception e)
+            {
+                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateActivityPropertyBagAsync Failed - {e.Message}"));
+                if (_throwAPIErrors)
+                    throw;
+                return false;
             }
         }
 
@@ -190,7 +223,7 @@ namespace ONE.Common.Activity
                 Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"DeleteActivityAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
-				 return false;
+				return false;
             }
         }
 
