@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="4.10.0" />
-    <PackageReference Include="Aquarius.ONE.Shared.Helpers" Version="1.0.0" />
+    <PackageReference Include="Aquarius.ONE.Shared.Helpers" Version="1.0.0-km-1" />
     <PackageReference Include="Aquarius.ONE.Shared.Time" Version="1.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.2" />
   </ItemGroup>
