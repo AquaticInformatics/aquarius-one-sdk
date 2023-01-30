@@ -28,6 +28,20 @@ namespace ONE.Common.Activity
             _throwAPIErrors = throwAPIErrors;
         }
 
+        /// <summary>
+        /// Get activities based on criteria provided through optional parameters.
+        /// </summary>
+        /// <param name="authTwinRefId">Required: The Id of the digital twin to authorize against.</param>
+        /// <param name="includeActivityDescendants">Optional: If true, activity descendants will be included.</param>
+        /// <param name="includeAuthTwinDescendants">Optional: If true, activities associated with descendants of the authTwin will be included.</param>
+        /// <param name="activityTypeId">Optional: If provided, only activities of this type will be returned, otherwise activities with any activity type will be returned.</param>
+        /// <param name="statusCode">Optional: If provided, only activities with this statusCode will be return, otherwise activities with any statusCode will be returned.</param>
+        /// <param name="priorityCode">Optional: If provided, only activities with this priorityCode will be return, otherwise activities with any priorityCode will be returned.</param>
+        /// <param name="startDate">Optional: If provided, only activities equal to or after this time will be returned.</param>
+        /// <param name="endDate">Optional: If provided, only activities equal to or before this time will be returned.</param>
+        /// <param name="scheduleId">Optional: If provided, only activities associated with this schedule will be returned, otherwise activities associated with any schedule are returned.</param>
+        /// <param name="context">Optional: If provided, activities returned are based on a context search on the activity propertyBag.</param>
+        /// <returns>Task that returns a list of <see cref="Proto.Activity"/></returns>
         public async Task<List<Proto.Activity>> GetActivitiesAsync(string authTwinRefId = null, bool? includeActivityDescendants = null, bool? includeAuthTwinDescendants = null, string activityTypeId = null,
             int? statusCode = null, int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null, string context = null)
         {
@@ -93,6 +107,12 @@ namespace ONE.Common.Activity
             }
         }
 
+        /// <summary>
+        /// Gets a single activity and optionally, its decendants.
+        /// </summary>
+        /// <param name="activityId">The Id of the activity to retrieve.</param>
+        /// <param name="includeDescendants">Optional: If true, the result will include all activity descendants.</param>
+        /// <returns>Task that returns a list of <see cref="Proto.Activity"/></returns>
         public async Task<List<Proto.Activity>> GetOneActivityAsync(string activityId, bool includeDescendants = false)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -118,6 +138,11 @@ namespace ONE.Common.Activity
             }
         }
 
+        /// <summary>
+        /// Saves activities.
+        /// </summary>
+        /// <param name="activities">Activities to save.</param>
+        /// <returns>Task that returns a bool indicating success/failure.</returns>
         public async Task<bool> SaveActivitiesAsync(Proto.Activities activities)
         {
             if (activities == null || !activities.Items.Any())
@@ -145,6 +170,11 @@ namespace ONE.Common.Activity
             }
         }
 
+        /// <summary>
+        /// Updates activities.
+        /// </summary>
+        /// <param name="activities">Activities to update.</param>
+        /// <returns>Task that returns a bool indicating success/failure.</returns>
         public async Task<bool> UpdateActivitiesAsync(Proto.Activities activities)
         {
             if (activities == null || !activities.Items.Any())
@@ -172,6 +202,12 @@ namespace ONE.Common.Activity
             }
         }
 
+        /// <summary>
+        /// Updates the property bag of an activity.
+        /// </summary>
+        /// <param name="activityId">The Id of the activity.</param>
+        /// <param name="propertyBagUpdates">Defines the updates to be performed. <see cref="OneJsonPatchItems"/></param>
+        /// <returns>Task that returns a bool indicating success/failure.</returns>
         public async Task<bool> UpdateActivityPropertyBagAsync(Guid activityId, OneJsonPatchItems propertyBagUpdates)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -203,6 +239,12 @@ namespace ONE.Common.Activity
             }
         }
 
+        /// <summary>
+        /// Deletes an activity.
+        /// </summary>
+        /// <param name="activityId">Id of the activity.</param>
+        /// <param name="includeDescendants">Optional: Activity descendants will be deleted unless this is false.</param>
+        /// <returns>Task that returns a bool indicating success/failure.</returns>
         public async Task<bool> DeleteActivityAsync(string activityId, bool includeDescendants = true)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
