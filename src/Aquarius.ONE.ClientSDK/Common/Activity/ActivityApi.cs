@@ -19,6 +19,12 @@ namespace ONE.Common.Activity
         private readonly bool _continueOnCapturedContext;
         private readonly RestHelper _restHelper;
         private readonly bool _throwAPIErrors;
+        private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore,
+            ContractResolver = new CamelCasePropertyNamesContractResolver()
+        };
+
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
         public ActivityApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
@@ -108,7 +114,7 @@ namespace ONE.Common.Activity
         }
 
         /// <summary>
-        /// Gets a single activity and optionally, its decendants.
+        /// Gets a single activity and optionally, its descendants.
         /// </summary>
         /// <param name="activityId">The Id of the activity to retrieve.</param>
         /// <param name="includeDescendants">Optional: If true, the result will include all activity descendants.</param>
@@ -119,7 +125,8 @@ namespace ONE.Common.Activity
 
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(Guid.NewGuid(), $"/common/activity/v1/{activityId}?includeDescendants={includeDescendants}")
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(Guid.NewGuid(), 
+                        $"/common/activity/v1/{activityId}?includeDescendants={includeDescendants}")
                     .ConfigureAwait(_continueOnCapturedContext);
 
                 Event(null,
@@ -152,7 +159,7 @@ namespace ONE.Common.Activity
 
             try
             {
-                var json = JsonConvert.SerializeObject(activities, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                var json = JsonConvert.SerializeObject(activities, _serializerSettings);
                 var respContent = await _restHelper.PostRestJSONAsync(Guid.NewGuid(), json, "/common/activity/v1/").ConfigureAwait(_continueOnCapturedContext);
 
                 Event(null,
@@ -184,7 +191,7 @@ namespace ONE.Common.Activity
 
             try
             {
-                var json = JsonConvert.SerializeObject(activities, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                var json = JsonConvert.SerializeObject(activities, _serializerSettings);
                 var respContent = await _restHelper.PutRestJSONAsync(Guid.NewGuid(), json, "/common/activity/v1/").ConfigureAwait(_continueOnCapturedContext);
 
                 Event(null,
@@ -214,12 +221,7 @@ namespace ONE.Common.Activity
 
             try
             {
-                var json = JsonConvert.SerializeObject(propertyBagUpdates, 
-                    new JsonSerializerSettings
-                    {
-                        NullValueHandling = NullValueHandling.Ignore,
-                        ContractResolver = new CamelCasePropertyNamesContractResolver()
-                    });
+                var json = JsonConvert.SerializeObject(propertyBagUpdates, _serializerSettings);
                 var respContent = await _restHelper.PatchRestJSONAsync(Guid.NewGuid(), json,
                         $"/common/activity/v1/UpdatePropertyBag/{activityId}")
                     .ConfigureAwait(_continueOnCapturedContext);
