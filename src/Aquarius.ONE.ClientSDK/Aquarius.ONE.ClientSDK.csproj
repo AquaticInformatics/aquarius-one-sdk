@@ -3,9 +3,9 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
-	  <VersionPrefix>16.3.0</VersionPrefix>
+	  <VersionPrefix>16.3.1</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
-	  <VersionSuffix></VersionSuffix>
+	  <VersionSuffix>AQI-4662-1</VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Aquatic Informatics</Authors>
     <Company>Aquatic Informatics</Company>
