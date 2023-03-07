@@ -181,8 +181,9 @@ namespace ONE.Common.Activity
         /// Updates activities.
         /// </summary>
         /// <param name="activities">Activities to update.</param>
+        /// <param name="updatePropertyBag">If true, the activity propertyBags will be replaced.</param>
         /// <returns>Task that returns a bool indicating success/failure.</returns>
-        public async Task<bool> UpdateActivitiesAsync(Proto.Activities activities)
+        public async Task<bool> UpdateActivitiesAsync(Proto.Activities activities, bool updatePropertyBag = false)
         {
             if (activities == null || !activities.Items.Any())
                 return true;
@@ -191,8 +192,11 @@ namespace ONE.Common.Activity
 
             try
             {
+                var endpoint = "/common/activity/v1";
+                if (updatePropertyBag)
+                    endpoint += "?updatePropertyBag=true";
                 var json = JsonConvert.SerializeObject(activities, _serializerSettings);
-                var respContent = await _restHelper.PutRestJSONAsync(Guid.NewGuid(), json, "/common/activity/v1/").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PutRestJSONAsync(Guid.NewGuid(), json, endpoint).ConfigureAwait(_continueOnCapturedContext);
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode

@@ -105,17 +105,16 @@ namespace ONE.Operations.Sample
         /// <summary>
         /// Updates one or more activities.
         /// </summary>
-        /// <param name="activities">
-        /// List of activities to update.
-        /// </param>
+        /// <param name="activities"> List of activities to update. </param>
+        /// <param name="updatePropertyBag">If true, the activity propertyBags will be replaced.</param>
         /// <returns>Boolean value indicating whether or not the activities were updated successfully.</returns>
-        public async Task<bool> UpdateActivitiesAsync(List<Activity> activities)
+        public async Task<bool> UpdateActivitiesAsync(List<Activity> activities, bool updatePropertyBag = false)
         {
             try
             {
                 var proto = new Activities();
                 proto.Items.AddRange(activities);
-                return await _activityApi.UpdateActivitiesAsync(proto);
+                return await _activityApi.UpdateActivitiesAsync(proto, updatePropertyBag);
             }
             catch (Exception ex)
             {

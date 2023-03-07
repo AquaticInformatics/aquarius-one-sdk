@@ -168,8 +168,9 @@ namespace ONE.Common.Schedule
         /// Updates a schedule.
         /// </summary>
         /// <param name="schedule">The schedule to update.</param>
+        /// <param name="updatePropertyBag">If true, the schedule propertyBag will be replaced.</param>
         /// <returns>Task that returns a bool indicating success/failure.</returns>
-        public async Task<bool> UpdateScheduleAsync(Schedule schedule)
+        public async Task<bool> UpdateScheduleAsync(Schedule schedule, bool updatePropertyBag = false)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             if (schedule == null)
@@ -177,6 +178,8 @@ namespace ONE.Common.Schedule
 
             var requestId = Guid.NewGuid();
             var endpoint = $"/common/schedule/v1/{schedule.Id}";
+            if (updatePropertyBag)
+                endpoint += "?updatePropertyBag=true";
             var json = JsonConvert.SerializeObject(schedule, _serializerSettings);
 
             try
