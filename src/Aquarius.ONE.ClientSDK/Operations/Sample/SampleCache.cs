@@ -113,7 +113,7 @@ namespace ONE.Operations.Sample
                 };
 
 
-                Task.WaitAll(tasks.ToArray());
+                await Task.WhenAll(tasks.ToArray());
 
                 Analytes = analytesTask.Result.ToDictionary(k => k.Id, v => v);
                 TestGroups = testGroupsTask.Result.ToDictionary(k => k.Id, v => v);
