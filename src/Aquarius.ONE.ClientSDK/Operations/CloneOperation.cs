@@ -316,9 +316,16 @@ namespace ONE.Operations
         {
             if (sourceWorksheetDefinition == null)
                 return true;
-            var destinationWorksheetDefinition = await _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet);
-            if (destinationWorksheetDefinition == null)
+            WorksheetDefinition destinationWorksheetDefinition;
+            try
+            {
+                destinationWorksheetDefinition = await _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet);
+            }
+            catch
+            {
                 return false;
+            }
+
             Dictionary<uint, uint> sourceToDestinationColumnNumberMap = await GetSourceToDestinationColumnMap(destinationOperationId);
 
             for (int x = 0; x < sourceWorksheetDefinition.Columns.Count; x++)
