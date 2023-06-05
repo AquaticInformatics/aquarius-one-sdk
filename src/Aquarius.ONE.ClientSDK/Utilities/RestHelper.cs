@@ -110,7 +110,7 @@ namespace ONE.Utilities
                     ? _authentication.GetLocalHttpProtocolBufferClient(endpointUrl)
                     : _authentication.HttpProtocolBufferClient;
 
-                var body = new ByteArrayContent(protobuf.ToByteArray());
+                var body = new ByteArrayContent(protobuf?.ToByteArray() ?? Array.Empty<byte>());
                 body.Headers.ContentType = new MediaTypeHeaderValue("application/protobuf");
                 var response = await client.PostAsync(uri, body).ConfigureAwait(_continueOnCapturedContext);
                 
