@@ -1,6 +1,5 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
-using ONE.Enterprise.Twin;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants;
 using ONE.Models.CSharp.Constants.TwinCategory;
@@ -218,7 +217,7 @@ namespace ONE.Operations
                     sourceColumn.ReportableQualifierDefinitions.Add(sourceReportableQualifierDefinition);
                 }
             }
-            destinationColumn.ValidValues = destinationColumn.ValidValues;
+            destinationColumn.ValidValues = sourceColumn.ValidValues;
             var destinationColumnTwin = Enterprise.Twin.Helper.GetByRef(columnTwins, sourceColumn.ColumnId);
             if (destinationColumnTwin == null)
                 return null;
@@ -332,8 +331,8 @@ namespace ONE.Operations
             {
                 var sourceColumn = sourceWorksheetDefinition.Columns[x];
                 var destinatinationColumn = GetColumnByNumber(destinationWorksheetDefinition, sourceToDestinationColumnNumberMap[sourceColumn.ColumnNumber]);
-
-                if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
+                
+                if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId) && sourceColumn.DataSourceBinding.DataSource == EnumDataSource.DatasourceComputation)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, Module = "OperationExport", Message = $"Copying Formula {sourceWorksheetDefinition.EnumWorksheet} Column: {sourceColumn.Name}" });
 
