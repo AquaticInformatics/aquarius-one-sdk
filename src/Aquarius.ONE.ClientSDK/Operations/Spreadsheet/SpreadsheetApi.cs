@@ -4,8 +4,11 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using ONE.Utilities;
 using System.Collections.Generic;
+using Google.Protobuf;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Enums;
+using System.Net;
+using ONE.Enums;
 
 namespace ONE.Operations.Spreadsheet
 {
@@ -322,6 +325,42 @@ namespace ONE.Operations.Spreadsheet
 				 return false;
             }
         }
+
+        public async Task<IEnumerable<CellValueBackup>> CellMonitorCellValuesAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, uint[] columns = null, string viewId = null)
+        {
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/cellMonitor/cellValues?requestId={Guid.NewGuid()}&startRow={startRow}&endRow={endRow}";
+
+            endpoint += AddColumnAndViewIdQueryString(columns, viewId);
+
+            var response = await ExecuteSpreadSheetRequest("CellMonitorCellValuesAsync", EnumHttpMethod.Get, endpoint);
+
+            return response?.Content?.CellValues.Items;
+        }
+
+        public async Task<IEnumerable<OutputCellBackup>> CellMonitorOutputCellsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, uint[] columns = null, string viewId = null)
+        {
+            var endpoint =
+                $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/cellMonitor/outputCells?requestId={Guid.NewGuid()}&startRow={startRow}&endRow={endRow}";
+
+            endpoint += AddColumnAndViewIdQueryString(columns, viewId);
+
+            var response = await ExecuteSpreadSheetRequest("CellMonitorOutputCellsAsync", EnumHttpMethod.Get, endpoint);
+
+            return response?.Content?.OutputCells.Items;
+        }
+
+        public async Task<bool> CellMonitorSyncAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, uint[] columns = null, string viewId = null)
+        {
+            var endpoint =
+                $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/cellMonitor/sync?requestId={Guid.NewGuid()}&startRow={startRow}&endRow={endRow}";
+
+            endpoint += AddColumnAndViewIdQueryString(columns, viewId);
+
+            var response = await ExecuteSpreadSheetRequest("CellMonitorSyncAsync", EnumHttpMethod.Post, endpoint);
+
+            return response?.StatusCode == 204;
+        }
+
         public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null)
         {
             return await GetSpreadsheetRowsAsync(operationTwinReferenceId, worksheetType, startRow, endRow, columnList, viewId);
@@ -330,7 +369,10 @@ namespace ONE.Operations.Spreadsheet
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows?requestId={requestId}&startRow={startRow}&endRow={endRow}&columns={columnList}&viewid={viewId}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows?requestId={requestId}&startRow={startRow}&endRow={endRow}";
+
+            endpoint += AddColumnAndViewIdQueryString(columnList?.Split(','), viewId);
+
             try
             {
                 var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
@@ -656,6 +698,65 @@ namespace ONE.Operations.Spreadsheet
                 if (_throwAPIErrors) 
 					 throw; 
 				 return false;
+            }
+        }
+
+        private string AddColumnAndViewIdQueryString(IEnumerable<string> columnList = null, string viewId = null)
+        {
+            var i = 0;
+            var queryString = string.Empty;
+
+            if (columnList != null)
+                queryString = columnList.Aggregate(queryString, (current, columnNumber) => current + $"&columns[{i++}]={columnNumber}");
+
+            if (viewId != null)
+                queryString += $"&viewId={viewId}";
+
+            return queryString;
+        }
+
+        private string AddColumnAndViewIdQueryString(IEnumerable<uint> columnList = null, string viewId = null) =>
+            AddColumnAndViewIdQueryString(columnList?.Select(c => c.ToString()), viewId);
+
+        private async Task<ApiResponse> ExecuteSpreadSheetRequest(string callingMethod, EnumHttpMethod httpMethod, string endpoint, IMessage content = null)
+        {
+            try
+            {
+                var respContent = await _restHelper.ExecuteProtobufRequestAsync(httpMethod, endpoint, content).ConfigureAwait(_continueOnCapturedContext);
+
+                var message = " Success";
+                var eventLevel = EnumLogLevel.Trace;
+                
+                if (!respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    message = " Failed";
+                    eventLevel = EnumLogLevel.Warn;
+                }
+
+                Event(null,
+                    new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = eventLevel,
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode,
+                        ElapsedMs = respContent.ElapsedMs,
+                        Module = "SpreadsheetApi",
+                        Message = callingMethod + message
+                    });
+
+                return respContent.ApiResponse;
+            }
+            catch (Exception e)
+            {
+                Event(e,
+                    new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumLogLevel.Error,
+                        Module = "SpreadsheetApi",
+                        Message = $"{callingMethod} Failed - {e.Message}"
+                    });
+                if (_throwAPIErrors)
+                    throw;
+                return null;
             }
         }
     }

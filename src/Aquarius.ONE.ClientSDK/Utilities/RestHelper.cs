@@ -110,7 +110,7 @@ namespace ONE.Utilities
                     ? _authentication.GetLocalHttpProtocolBufferClient(endpointUrl)
                     : _authentication.HttpProtocolBufferClient;
 
-                var body = new ByteArrayContent(protobuf.ToByteArray());
+                var body = new ByteArrayContent(protobuf?.ToByteArray() ?? Array.Empty<byte>());
                 body.Headers.ContentType = new MediaTypeHeaderValue("application/protobuf");
                 var response = await client.PostAsync(uri, body).ConfigureAwait(_continueOnCapturedContext);
                 
@@ -545,6 +545,29 @@ namespace ONE.Utilities
                 throw;
             }
 
+        }
+
+        /// <summary>
+        /// Executes a protobuf request using the provided httpMethod sending the provided content to the provided endpoint
+        /// </summary>
+        /// <param name="httpMethod">httpMethod to use</param>
+        /// <param name="endpointUrl">url for the request to be sent to</param>
+        /// <param name="content">content of the request</param>
+        public async Task<ServiceResponse> ExecuteProtobufRequestAsync(EnumHttpMethod httpMethod, string endpointUrl, IMessage content = null)
+        {
+            switch (httpMethod)
+            {
+                case EnumHttpMethod.Post:
+                    return await PostRestProtobufAsync(content, endpointUrl);
+                case EnumHttpMethod.Get:
+                    return await GetRestProtocolBufferAsync(Guid.NewGuid(), endpointUrl);
+                case EnumHttpMethod.Put:
+                    return await PutRestProtobufAsync(content, endpointUrl);
+                case EnumHttpMethod.Delete:
+                    throw new NotImplementedException("DeleteRestProtobuf does not exist");
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(httpMethod));
+            }
         }
 
         public async Task<ServiceResponse> GetRestProtocolBufferAsync(
