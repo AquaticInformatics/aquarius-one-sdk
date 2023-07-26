@@ -701,6 +701,75 @@ namespace ONE.Operations.Spreadsheet
             }
         }
 
+        /// <summary>
+        /// Exports an operation's structure. (not data)
+        /// </summary>
+        /// <param name="operationTwinReferenceId">The identifier of the operation to export.</param>
+        /// <returns>An <see cref="OperationExport"/> object.</returns>
+        public async Task<OperationExport> ExportOperationAsync(string operationTwinReferenceId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"operation/spreadsheet/v1/{operationTwinReferenceId}/plant/export?requestId={requestId}";
+
+            try
+            {
+                var response = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Success" });
+                    return response.ApiResponse.Content.OperationExports.Items.First();
+                }
+
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Failed" });
+                return null;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                    throw;
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Imports an operation based on an exported operation.
+        /// </summary>
+        /// <param name="operation">The operation to be cloned</param>
+        /// <param name="operationTwinReferenceId">The identifier that the new operation will be assigned to.</param>
+        /// <param name="tenantId">The parent tenant of the new operation.</param>
+        /// <returns>True if successful.</returns>
+        public async Task<bool> ImportOperationAsync(OperationExport operation, string operationTwinReferenceId, string tenantId)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = $"operation/spreadsheet/v1/{operationTwinReferenceId}/plant/import/{tenantId}?requestId={requestId}";
+            var json = JsonConvert.SerializeObject(operation, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+
+            try
+            {
+                var response = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (response.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Success" });
+                    return true;
+                }
+
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Failed" });
+                return false;
+
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                    throw;
+                return false;
+            }
+        }
+
         private string AddColumnAndViewIdQueryString(IEnumerable<string> columnList = null, string viewId = null)
         {
             var i = 0;
