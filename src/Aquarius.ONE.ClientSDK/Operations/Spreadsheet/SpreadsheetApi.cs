@@ -710,7 +710,7 @@ namespace ONE.Operations.Spreadsheet
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operation/spreadsheet/v1/{operationTwinReferenceId}/plant/export?requestId={requestId}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/plant/export?requestId={requestId}";
 
             try
             {
@@ -745,7 +745,7 @@ namespace ONE.Operations.Spreadsheet
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"operation/spreadsheet/v1/{operationTwinReferenceId}/plant/import/{tenantId}?requestId={requestId}";
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/plant/import/{tenantId}?requestId={requestId}";
             var json = JsonConvert.SerializeObject(operation, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
             try
