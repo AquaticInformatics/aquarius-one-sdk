@@ -718,7 +718,8 @@ namespace ONE.Operations.Spreadsheet
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Success" });
-                    return response.ApiResponse.Content.OperationExports.Items.First();
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    return apiResponse.Content.OperationExports.Items.First();
                 }
 
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Failed" });
@@ -741,7 +742,7 @@ namespace ONE.Operations.Spreadsheet
         /// <param name="operationTwinReferenceId">The identifier that the new operation will be assigned to.</param>
         /// <param name="tenantId">The parent tenant of the new operation.</param>
         /// <returns>True if successful.</returns>
-        public async Task<bool> ImportOperationAsync(OperationExport operation, string operationTwinReferenceId, string tenantId)
+        public async Task<KeyValues> ImportOperationAsync(OperationExport operation, string operationTwinReferenceId, string tenantId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
@@ -754,11 +755,12 @@ namespace ONE.Operations.Spreadsheet
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Success" });
-                    return true;
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+                    return apiResponse.Content.KeyValues;
                 }
 
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Failed" });
-                return false;
+                return null;
 
             }
             catch (Exception e)
@@ -766,7 +768,7 @@ namespace ONE.Operations.Spreadsheet
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Failed - {e.Message}" });
                 if (_throwAPIErrors)
                     throw;
-                return false;
+                return null;
             }
         }
 
