@@ -714,12 +714,11 @@ namespace ONE.Operations.Spreadsheet
 
             try
             {
-                var response = await _restHelper.GetRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var response = await _restHelper.GetRestProtocolBufferAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Success" });
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    return apiResponse.Content.OperationExports.Items.First();
+                    return response.ApiResponse.Content.OperationExports.Items.First();
                 }
 
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ExportOperationAsync Failed" });
@@ -747,16 +746,14 @@ namespace ONE.Operations.Spreadsheet
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/plant/import/{tenantId}?requestId={requestId}";
-            var json = JsonConvert.SerializeObject(operation, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
             try
             {
-                var response = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var response = await _restHelper.PostRestProtobufAsync(operation, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (response.ResponseMessage.IsSuccessStatusCode)
                 {
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Success" });
-                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(response.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-                    return apiResponse.Content.KeyValues;
+                    return response.ApiResponse.Content.KeyValues;
                 }
 
                 Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "SpreadsheetApi", Message = $"ImportOperationAsync Failed" });
