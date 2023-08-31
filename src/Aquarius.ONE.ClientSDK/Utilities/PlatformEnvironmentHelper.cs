@@ -74,7 +74,7 @@ namespace ONE.Utilities
                         {
                             Name = "Local",
                             PlatformEnvironmentEnum = EnumPlatformEnvironment.Local,
-                            BaseUri = new Uri("http://localhost:1111"),
+                            BaseUri = new Uri("http://localhost:8262"),
                             AuthenticationUri = new Uri("https://localhost:8262/"),
                             PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
 
