@@ -443,7 +443,7 @@ namespace ONE.Enterprise.Core
 				 return null;
             }
         }
-        public async Task<List<ProductOffering>> GetProductOfferingsAsync(EnumProductOfferingExpand productOfferingExpand = EnumProductOfferingExpand.None)
+        public async Task<List<ProductOffering>> GetProductOfferingsAsync(EnumProductOfferingExpand productOfferingExpand = EnumProductOfferingExpand.None, string tenantId = "")
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
@@ -460,10 +460,15 @@ namespace ONE.Enterprise.Core
                     expand = "?expand=tenant,feature";
                     break;
             }
+
+            var tenantIdQueryParameter = string.IsNullOrEmpty(tenantId)
+                ? ""
+                : $"{(string.IsNullOrEmpty(expand) ? "?" : "&")}tenantId={tenantId}";
+
             List<ProductOffering> productOfferings = new List<ProductOffering>(); ;
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/ProductOffering{expand}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/core/v1/ProductOffering{expand}{tenantIdQueryParameter}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var results = respContent.ApiResponse.Content.ProductOfferings.Items.Select(x => x).ToList();
