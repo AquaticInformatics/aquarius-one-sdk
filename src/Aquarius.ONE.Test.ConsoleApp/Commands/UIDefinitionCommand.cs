@@ -21,7 +21,7 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
                 return 0;
             else
             {
-                string json = File.ReadAllText(Filename);
+                string json = await File.ReadAllTextAsync(Filename);
                 UIDefinition uIDefinition = new UIDefinition(json);
                 Console.WriteLine(uIDefinition.ToString());
                 return 1;

@@ -1,4 +1,4 @@
-﻿using ONE.Models.CSharp.Enums;
+﻿using ONE.Models.CSharp;
 using System.Net;
 
 namespace ONE.Utilities
@@ -7,7 +7,7 @@ namespace ONE.Utilities
     {
         public string Module;
         public string Message;
-        public EnumLogLevel EventLevel;
+        public EnumOneLogLevel EventLevel;
         public long ElapsedMs;
         public HttpStatusCode HttpStatusCode;
         public string File;

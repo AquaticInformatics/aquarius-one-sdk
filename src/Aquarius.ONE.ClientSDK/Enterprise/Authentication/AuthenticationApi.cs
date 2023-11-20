@@ -1,13 +1,12 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ONE.Models.CSharp;
+using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using ONE.Utilities;
-using Newtonsoft.Json;
-using ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
 
 namespace ONE.Enterprise.Authentication
 {
@@ -231,11 +230,11 @@ namespace ONE.Enterprise.Authentication
                         HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
                         UserName = userName;
                         Password = password;
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "AuthenticationApi", Message = $"LoginResourceOwnerAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "AuthenticationApi", Message = $"LoginResourceOwnerAsync Success" });
                     }
                     else
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "AuthenticationApi", Message = $"LoginResourceOwnerAsync Failed" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "AuthenticationApi", Message = $"LoginResourceOwnerAsync Failed" });
                     }
                 }
             }
@@ -272,12 +271,12 @@ namespace ONE.Enterprise.Authentication
                         Token = JsonConvert.DeserializeObject<Token>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
                     var message = "LocalLoginAsync success";
-                    var eventLevel = EnumLogLevel.Trace;
+                    var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
 
                     if (!respContent.IsSuccessStatusCode)
                     {
                         message = "LocalLoginAsync failure";
-                        eventLevel = EnumLogLevel.Warn;
+                        eventLevel = EnumOneLogLevel.OneLogLevelWarn;
                     }
 
                     Event(null,
@@ -304,18 +303,18 @@ namespace ONE.Enterprise.Authentication
                     dynamic error = new JObject();
                     error.Client = (JObject)JToken.FromObject(HttpJsonClient);
                     error.Response = (JObject)JToken.FromObject(response);
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Failed" });
 
                     return null;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Success" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetUserInfoAync Success" });
 
                 return await response.Content.ReadAsStringAsync();
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "AuthenticationAPI" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "AuthenticationAPI" });
                 if (_throwAPIErrors)
                     throw;
                 return null;
@@ -371,11 +370,11 @@ namespace ONE.Enterprise.Authentication
                         var jObj = JObject.Parse(json);
                         if (jObj.ContainsKey(tokenKey))
                         {
-                            Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetTokenAsync Success: {endpointURL}" });
+                            Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetTokenAsync Success: {endpointURL}" });
                             return (string)jObj[tokenKey];
                         }
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetTokenAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "AuthenticationApi", Message = $"GetTokenAsync Failed: {endpointURL}" });
 
                     return string.Empty;
                 }

@@ -1,13 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net;
-using ONE.Utilities;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
-using ONE.Models.CSharp.Enums;
 using ONE.Shared.Helpers.JsonPatch;
+using ONE.Utilities;
+using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Threading.Tasks;
 
 namespace ONE.Common.Schedule
 {
@@ -66,14 +65,14 @@ namespace ONE.Common.Schedule
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "GetSchedulesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "GetSchedulesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetSchedulesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "GetSchedulesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode ? respContent.ApiResponse.Content.Schedules.Items.ToList() : null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetSchedulesAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetSchedulesAsync Failed - {e.Message}"));
 
                 if (_throwAPIErrors) 
 					 throw;
@@ -102,21 +101,21 @@ namespace ONE.Common.Schedule
                 {
                     foreach (var schedule in respContent.ApiResponse.Content.Schedules.Items)
                     {
-                        Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetOneScheduleAsync Success",
+                        Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOneScheduleAsync Success",
                             respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                         return schedule;
                     }
                 }
 
-                Event(null, CreateLoggerArgs(EnumLogLevel.Warn, "GetOneScheduleAsync Failed",
+                Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "GetOneScheduleAsync Failed",
                     respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetOneScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetOneScheduleAsync Failed - {e.Message}"));
 
                 if (_throwAPIErrors) 
 					 throw;
@@ -148,14 +147,14 @@ namespace ONE.Common.Schedule
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "SaveScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "SaveScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "SaveScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "SaveScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"SaveScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"SaveScheduleAsync Failed - {e.Message}"));
 
                 if (_throwAPIErrors) 
 					 throw;
@@ -189,14 +188,14 @@ namespace ONE.Common.Schedule
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "UpdateScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "UpdateScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "UpdateScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "UpdateScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateScheduleAsync Failed - {e.Message}"));
 
                 if (_throwAPIErrors) 
 					 throw;
@@ -223,14 +222,14 @@ namespace ONE.Common.Schedule
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "DeleteScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "DeleteScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "DeleteScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "DeleteScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"DeleteScheduleAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"DeleteScheduleAsync Failed - {e.Message}"));
 
                 if (_throwAPIErrors) 
 					 throw; 
@@ -269,13 +268,13 @@ namespace ONE.Common.Schedule
                         scheduleOccurrences.AddRange(results);
                     }
 
-                    Event(null, CreateLoggerArgs(EnumLogLevel.Trace, "GetOccurrencesAsync Success",
+                    Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOccurrencesAsync Success",
                         respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                     return scheduleOccurrences;
                 }
 
-                Event(null, CreateLoggerArgs(EnumLogLevel.Warn, "GetOccurrencesAsync Failed",
+                Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "GetOccurrencesAsync Failed",
                     respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return null;
@@ -283,7 +282,7 @@ namespace ONE.Common.Schedule
 
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetOccurrencesAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetOccurrencesAsync Failed - {e.Message}"));
                 
                 if (_throwAPIErrors) 
 					 throw;
@@ -312,14 +311,14 @@ namespace ONE.Common.Schedule
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "UpdateSchedulePropertyBagAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "UpdateSchedulePropertyBagAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "UpdateSchedulePropertyBagAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "UpdateSchedulePropertyBagAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateSchedulePropertyBagAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateSchedulePropertyBagAsync Failed - {e.Message}"));
                 
                 if (_throwAPIErrors)
                     throw;
@@ -328,7 +327,7 @@ namespace ONE.Common.Schedule
             }
         }
 
-        private static ClientApiLoggerEventArgs CreateLoggerArgs(EnumLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
+        private static ClientApiLoggerEventArgs CreateLoggerArgs(EnumOneLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
             { EventLevel = level, HttpStatusCode = statusCode, ElapsedMs = duration, Module = "ScheduleApi", Message = message };
     }
 }
