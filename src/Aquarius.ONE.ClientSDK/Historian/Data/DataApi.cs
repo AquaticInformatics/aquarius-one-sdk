@@ -1,11 +1,10 @@
 ﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
 using ONE.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Newtonsoft.Json.Serialization;
 
 namespace ONE.Common.Historian
 {
@@ -52,7 +51,7 @@ namespace ONE.Common.Historian
                     
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetDataAsync Success"
                     });
                     return historianData;
@@ -60,7 +59,7 @@ namespace ONE.Common.Historian
 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetDataAsync Failed"
                 });
                 return null;
@@ -69,7 +68,7 @@ namespace ONE.Common.Historian
             {
                 Event(e, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Error, Module = "DataApi", Message = $"GetDataAsync Failed - {e.Message}"
+                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"GetDataAsync Failed - {e.Message}"
                 });
                 if (_throwApiErrors) 
 					 throw; 
@@ -94,7 +93,7 @@ namespace ONE.Common.Historian
                     {
                         Event(null, new ClientApiLoggerEventArgs
                         {
-                            EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode,
+                            EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode,
                             ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetOneDataAsync Success"
                         });
                         return historianDataItem;
@@ -102,7 +101,7 @@ namespace ONE.Common.Historian
                 }
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetOneDataAsync Failed"
                 });
                 return null;
@@ -111,7 +110,7 @@ namespace ONE.Common.Historian
             {
                 Event(e, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Error, Module = "DataApi", Message = $"GetOneDataAsync Failed - {e.Message}"
+                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"GetOneDataAsync Failed - {e.Message}"
                 });
                 if (_throwApiErrors) 
 					 throw; 
@@ -136,7 +135,7 @@ namespace ONE.Common.Historian
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "SaveDataAsync Success"
                     });
                     return true;
@@ -144,7 +143,7 @@ namespace ONE.Common.Historian
 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "SaveDataAsync Failed"
                 });
                 return false;
@@ -153,7 +152,7 @@ namespace ONE.Common.Historian
             {
                 Event(e, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Error, Module = "DataApi", Message = $"SaveDataAsync Failed - {e.Message}"
+                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"SaveDataAsync Failed - {e.Message}"
                 });
                 if (_throwApiErrors) 
 					 throw; 
@@ -178,7 +177,7 @@ namespace ONE.Common.Historian
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "UpdateDataAsync Success"
                     });
                     return true;
@@ -186,7 +185,7 @@ namespace ONE.Common.Historian
 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "UpdateDataAsync Failed"
                 });
                 return false;
@@ -195,7 +194,7 @@ namespace ONE.Common.Historian
             {
                 Event(e, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Error, Module = "DataApi", Message = $"UpdateDataAsync Failed - {e.Message}"
+                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"UpdateDataAsync Failed - {e.Message}"
                 });
                 if (_throwApiErrors) 
 					 throw; 
@@ -218,7 +217,7 @@ namespace ONE.Common.Historian
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode,
+                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode,
                         ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "DeleteManyAsync Success"
                     });
                 }
@@ -226,7 +225,7 @@ namespace ONE.Common.Historian
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "DeleteManyAsync Failed"
                     });
                 }
@@ -234,7 +233,7 @@ namespace ONE.Common.Historian
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "DataApi", Message = $"DeleteManyAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"DeleteManyAsync Failed - {e.Message}" });
                 if (_throwApiErrors) 
 					 throw; 
                 return false;
@@ -254,7 +253,7 @@ namespace ONE.Common.Historian
                 {
                     Event(null, new ClientApiLoggerEventArgs
                     {
-                        EventLevel = EnumLogLevel.Trace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                         ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "FlushAsync Success"
                     });
                     return true;
@@ -262,7 +261,7 @@ namespace ONE.Common.Historian
 
                 Event(null, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Warn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
+                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
                     ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "FlushAsync Failed"
                 });
                 return false;
@@ -272,7 +271,7 @@ namespace ONE.Common.Historian
             {
                 Event(e, new ClientApiLoggerEventArgs
                 {
-                    EventLevel = EnumLogLevel.Error, Module = "DataApi", Message = $"FlushAsync Failed - {e.Message}"
+                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"FlushAsync Failed - {e.Message}"
                 });
                 if (_throwApiErrors) 
 					 throw; 

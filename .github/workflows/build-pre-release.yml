@@ -1,0 +1,14 @@
+name: Build Pre-Release
+
+on: 
+  push:
+    branches:
+      - pre-release
+
+jobs:
+  call-reusable-build:
+    uses: ./.github/workflows/reusable-build.yml      
+    with:
+      publish: true
+      prerelease: true
+    secrets: inherit

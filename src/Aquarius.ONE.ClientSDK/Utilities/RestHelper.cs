@@ -3,7 +3,6 @@ using Newtonsoft.Json.Linq;
 using ONE.Enterprise.Authentication;
 using ONE.Enums;
 using ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
 using System;
 using System.IO;
 using System.Net.Http;
@@ -68,9 +67,9 @@ namespace ONE.Utilities
 
                 string file = SaveRestCallData("POST", error.ToString(), !response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Success: {endpointURL}" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Failed: {endpointURL}" });
 
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
@@ -88,7 +87,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"PostRestJSONAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"PostRestJSONAsync Failed - {e.Message}" });
                 error.Exception = (JObject)JToken.FromObject(e);
                 SaveRestCallData("POST", error.ToString(), true);
                 throw;
@@ -128,12 +127,12 @@ namespace ONE.Utilities
                 string file = SaveRestCallData("POST", error.ToString(), !response.IsSuccessStatusCode);
 
                 var message = $"PostRestProtobufAsync Success: {uri}";
-                var eventLevel = EnumLogLevel.Trace;
+                var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
 
                 if (!response.IsSuccessStatusCode)
                 {
                     message = $"PostRestProtobufAsync Failed: {uri}";
-                    eventLevel = EnumLogLevel.Warn;
+                    eventLevel = EnumOneLogLevel.OneLogLevelWarn;
                 }
 
                 Event(null,
@@ -147,7 +146,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"PostRestProtobufAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"PostRestProtobufAsync Failed - {e.Message}" });
                 error.Exception = (JObject)JToken.FromObject(e);
                 SaveRestCallData("POST", error.ToString(), true);
                 throw;
@@ -205,9 +204,9 @@ namespace ONE.Utilities
 
                 string file = SaveRestCallData("POST-FILE", error.ToString(), !response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Success: {endpointURL}" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PostRestJSONAsync Failed: {endpointURL}" });
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
                     {
@@ -225,7 +224,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"UploadFileAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"UploadFileAsync Failed - {e.Message}" });
                 error.Exception = (JObject)JToken.FromObject(e);
                 SaveRestCallData("POST", error.ToString(), true);
                 throw;
@@ -268,9 +267,9 @@ namespace ONE.Utilities
 
                 string file = SaveRestCallData("PUT", error.ToString(), !response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PutRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PutRestJSONAsync Success: {endpointURL}" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PutRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PutRestJSONAsync Failed: {endpointURL}" });
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
                     {
@@ -288,7 +287,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"PostRestJSONAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"PostRestJSONAsync Failed - {e.Message}" });
                 error.Exception = (JObject)JToken.FromObject(e);
                 SaveRestCallData("POST", error.ToString(), true);
                 throw;
@@ -328,12 +327,12 @@ namespace ONE.Utilities
                 string file = SaveRestCallData("PUT", error.ToString(), !response.IsSuccessStatusCode);
 
                 var message = $"PutRestProtobufAsync Success: {uri}";
-                var eventLevel = EnumLogLevel.Trace;
+                var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
 
                 if (!response.IsSuccessStatusCode)
                 {
                     message = $"PutRestProtobufAsync Failed: {uri}";
-                    eventLevel = EnumLogLevel.Warn;
+                    eventLevel = EnumOneLogLevel.OneLogLevelWarn;
                 }
 
                 Event(null,
@@ -347,7 +346,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"PutRestProtobufAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"PutRestProtobufAsync Failed - {e.Message}" });
                 error.Exception = (JObject)JToken.FromObject(e);
                 SaveRestCallData("PUT", error.ToString(), true);
                 throw;
@@ -386,9 +385,9 @@ namespace ONE.Utilities
                 error.Content = json; // JObject.Parse(json);
                 string file = SaveRestCallData("PATCH", error.ToString(), !response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PatchRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PatchRestJSONAsync Success: {endpointURL}" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PatchRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"PatchRestJSONAsync Failed: {endpointURL}" });
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
                     {
@@ -435,9 +434,9 @@ namespace ONE.Utilities
                 error.Response = (JObject)JToken.FromObject(response);
                 string file = SaveRestCallData("DELETE", error.ToString(), !response.IsSuccessStatusCode);
                 if (response.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"DeleteRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"DeleteRestJSONAsync Success: {endpointURL}" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"DeleteRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"DeleteRestJSONAsync Failed: {endpointURL}" });
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
                     {
@@ -452,7 +451,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"DeleteRestJSONAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"DeleteRestJSONAsync Failed - {e.Message}" });
                 error.Exception = (JObject)JToken.FromObject(e);
                 SaveRestCallData("DELETE", error.ToString(), true);
                 throw;
@@ -483,7 +482,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"SaveRestCallData Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"SaveRestCallData Failed - {e.Message}" });
 
                 return "";
             }
@@ -517,10 +516,10 @@ namespace ONE.Utilities
                 if (response.IsSuccessStatusCode)
                 {
                     respContent = await response.Content.ReadAsStringAsync();
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Success: {endpointURL}" });
                 }
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Failed: {endpointURL}" });
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
                     {
@@ -537,7 +536,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"GetRestJSONAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"GetRestJSONAsync Failed - {e.Message}" });
 
                 error.Exception = (JObject)JToken.FromObject(e);
 
@@ -601,10 +600,10 @@ namespace ONE.Utilities
                     byte[] respContent = await response.Content.ReadAsByteArrayAsync();
                     apiResponse = ApiResponse.Parser.ParseFrom(respContent);
 
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Trace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Success: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Success: {endpointURL}" });
                 }
                 else
-                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumLogLevel.Warn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Failed: {endpointURL}" });
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"GetRestJSONAsync Failed: {endpointURL}" });
                 if (_throwAPIErrors && !response.IsSuccessStatusCode)
                     throw new RestApiException(new ServiceResponse
                     {
@@ -621,7 +620,7 @@ namespace ONE.Utilities
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumLogLevel.Error, Module = "RestHelper", Message = $"GetRestJSONAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"GetRestJSONAsync Failed - {e.Message}" });
 
                 error.Exception = (JObject)JToken.FromObject(e);
 

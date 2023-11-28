@@ -44,7 +44,7 @@ namespace ONE.Operations
                     operationCache.CacheColumns();
                 }
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 Operations = new List<OperationCache>();
             }

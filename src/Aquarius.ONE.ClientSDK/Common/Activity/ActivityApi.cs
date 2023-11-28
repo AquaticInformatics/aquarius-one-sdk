@@ -1,15 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
+using ONE.Shared.Helpers.JsonPatch;
 using ONE.Utilities;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using Newtonsoft.Json.Serialization;
+using System.Threading.Tasks;
 using Proto = ONE.Models.CSharp;
-using ONE.Models.CSharp.Enums;
-using ONE.Shared.Helpers.JsonPatch;
 
 namespace ONE.Common.Activity
 {
@@ -29,6 +28,7 @@ namespace ONE.Common.Activity
 
         public ActivityApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
         {
+            _environment = environment;
             _continueOnCapturedContext = continueOnCapturedContext;
             _restHelper = restHelper;
             _throwAPIErrors = throwAPIErrors;
@@ -99,14 +99,14 @@ namespace ONE.Common.Activity
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "GetActivitiesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "GetActivitiesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelTrace, "GetActivitiesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelWarn, "GetActivitiesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode ? respContent.ApiResponse.Content.Activities.Items.ToList() : null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetActivitiesAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelError, $"GetActivitiesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
 				return null;
@@ -131,14 +131,14 @@ namespace ONE.Common.Activity
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "GetOneActivityAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "GetOneActivityAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelTrace, "GetOneActivityAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelWarn, "GetOneActivityAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
 
                 return respContent.ResponseMessage.IsSuccessStatusCode ? respContent.ApiResponse.Content.Activities.Items.ToList() : null;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"GetOneActivityAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelError, $"GetOneActivityAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
 				return null;
@@ -164,13 +164,13 @@ namespace ONE.Common.Activity
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "SaveActivitiesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "SaveActivitiesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelTrace, "SaveActivitiesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelWarn, "SaveActivitiesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"SaveActivitiesAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelError, $"SaveActivitiesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
 				return false;
@@ -200,13 +200,13 @@ namespace ONE.Common.Activity
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "UpdateActivitiesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "UpdateActivitiesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelTrace, "UpdateActivitiesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelWarn, "UpdateActivitiesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateActivitiesAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelError, $"UpdateActivitiesAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
 				return false;
@@ -232,13 +232,13 @@ namespace ONE.Common.Activity
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "UpdateActivityPropertyBagAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "UpdateActivityPropertyBagAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelTrace, "UpdateActivityPropertyBagAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelWarn, "UpdateActivityPropertyBagAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"UpdateActivityPropertyBagAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelError, $"UpdateActivityPropertyBagAsync Failed - {e.Message}"));
                 if (_throwAPIErrors)
                     throw;
                 return false;
@@ -262,20 +262,20 @@ namespace ONE.Common.Activity
 
                 Event(null,
                     respContent.ResponseMessage.IsSuccessStatusCode
-                        ? CreateLoggerArgs(EnumLogLevel.Trace, "DeleteActivityAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-                        : CreateLoggerArgs(EnumLogLevel.Warn, "DeleteActivityAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+                        ? CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelTrace, "DeleteActivityAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
+                        : CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelWarn, "DeleteActivityAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, CreateLoggerArgs(EnumLogLevel.Error, $"DeleteActivityAsync Failed - {e.Message}"));
+                Event(e, CreateLoggerArgs(Proto.EnumOneLogLevel.OneLogLevelError, $"DeleteActivityAsync Failed - {e.Message}"));
                 if (_throwAPIErrors) 
 					 throw; 
 				return false;
             }
         }
 
-        private ClientApiLoggerEventArgs CreateLoggerArgs(EnumLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
+        private ClientApiLoggerEventArgs CreateLoggerArgs(Proto.EnumOneLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
             { EventLevel = level, HttpStatusCode = statusCode, ElapsedMs = duration, Module = "ActivityApi", Message = message };
     }
 }
