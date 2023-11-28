@@ -1,0 +1,10 @@
+name: Build pr
+
+on: pull_request
+
+jobs:
+  call-reusable-build:
+    uses: ./.github/workflows/reusable-build.yml
+    with:
+      release: true
+    secrets: inherit

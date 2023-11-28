@@ -1,0 +1,95 @@
+name: Reusable build
+
+on:
+  workflow_call:
+    inputs:
+      configuration:
+        description: build configuration (default Release)
+        default: Release
+        required: false
+        type: string
+      publish:
+        description: publish the artifact to nuget
+        default: false
+        required: false
+        type: boolean
+      prerelease:
+        description: build and publish prerelease version (default false)
+        default: false
+        required: false
+        type: boolean
+      release:
+        description: build and publish release version (default false)
+        default: false
+        required: false
+        type: boolean
+    secrets:
+      RIO_NUGET_API_KEY:
+        required: false
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    env:
+      SolutionFile: Aquarius.ONE.ClientSDK.sln
+      DOTNET_NOLOGO: true
+      DOTNET_CLI_TELEMETRY_OPTOUT: true
+
+    defaults:
+      run:
+        working-directory: src\Aquarius.ONE.ClientSDK
+
+    steps:
+      - name: Validate inputs
+        if: inputs.release == inputs.prerelease
+        uses: actions/github-script@v2.1.0
+        with:
+          script: core.setFailed('Must specify either release or prerelease but not both')
+
+      - name: Checkout repository
+        uses: actions/checkout@v4.1.1
+
+      - name: Setup dotnet sdk
+        uses: actions/setup-dotnet@v3.2.0
+        with:
+          dotnet-version: '6.0.x'
+
+      - name: Restore
+        run: dotnet restore ${{ env.SolutionFile }}
+
+      - name: Build Release
+        if: inputs.release
+        run: dotnet build ${{ env.SolutionFile }} -c ${{ inputs.configuration }}
+
+      - name: Build PreRelease
+        if: inputs.prerelease
+        run: dotnet build ${{ env.SolutionFile }} -c ${{ inputs.configuration }} --version-suffix pre-${{ github.run_number }}
+
+      - name: Test
+        run: dotnet test --no-build --verbosity normal --configuration ${{ inputs.configuration }} ${{ env.SolutionFile }}
+        
+      - name: Publish nuget package
+        if: inputs.publish
+        run: dotnet nuget push ${{ github.workspace }}\**\*.nupkg --api-key ${{ secrets.RIO_NUGET_API_KEY }} --skip-duplicate --source https://api.nuget.org/v3/index.json
+
+      - name: Get Version
+        if: inputs.publish
+        uses: bbonkr/get-version-action@v1.2.1
+        id: get_version
+        with:
+          project: './src/Aquarius.ONE.ClientSDK/Aquarius.ONE.ClientSDK.csproj'
+      
+      - name: Tag repository wih release
+        if: inputs.publish && inputs.release
+        run: |
+          echo "tag repo with v${{ steps.get_version.outputs.version }}"
+          git tag v${{ steps.get_version.outputs.version }}
+          git push origin v${{ steps.get_version.outputs.version }}
+
+      - name: Tag repository with prerelease
+        if: inputs.publish && inputs.prerelease
+        run: |
+          echo "tag repo with v${{ steps.get_version.outputs.version }}-pre-${{ github.run_number }}"
+          git tag v${{ steps.get_version.outputs.version }}-pre-${{ github.run_number }}
+          git push origin v${{ steps.get_version.outputs.version }}-pre-${{ github.run_number }}
