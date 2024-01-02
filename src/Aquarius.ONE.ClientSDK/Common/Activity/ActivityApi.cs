@@ -47,9 +47,14 @@ namespace ONE.Common.Activity
         /// <param name="endDate">Optional: If provided, only activities equal to or before this time will be returned.</param>
         /// <param name="scheduleId">Optional: If provided, only activities associated with this schedule will be returned, otherwise activities associated with any schedule are returned.</param>
         /// <param name="context">Optional: If provided, activities returned are based on a context search on the activity propertyBag.</param>
+        /// <param name="descendantTwinType">Optional: If provided and includeAuthTwinDescendants is true, only activities for authTwin descendants of this twin type will be returned. </param>
+        /// <param name="activeActivitiesOnly">Optional: If provided, only activities with an active statusCode will be returned.</param>
         /// <returns>Task that returns a list of <see cref="Proto.Activity"/></returns>
-        public async Task<List<Proto.Activity>> GetActivitiesAsync(string authTwinRefId = null, bool? includeActivityDescendants = null, bool? includeAuthTwinDescendants = null, string activityTypeId = null,
-            int? statusCode = null, int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null, string context = null)
+        public async Task<List<Proto.Activity>> GetActivitiesAsync(string authTwinRefId = null, 
+            bool? includeActivityDescendants = null, bool? includeAuthTwinDescendants = null, 
+            string activityTypeId = null, int? statusCode = null, int? priorityCode = null, 
+            DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null, 
+            string context = null, Guid? descendantTwinType = null, bool? activeActivitiesOnly = null)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
@@ -86,6 +91,12 @@ namespace ONE.Common.Activity
 
                 if (!string.IsNullOrEmpty(context))
                     queryParameters.Add(nameof(context), context);
+
+                if (descendantTwinType.HasValue)
+                    queryParameters.Add(nameof(descendantTwinType), descendantTwinType.Value.ToString());
+
+                if (activeActivitiesOnly.HasValue)
+                    queryParameters.Add(nameof(activeActivitiesOnly), activeActivitiesOnly.ToString());
 
                 var sb = new StringBuilder("/common/activity/v1");
 
