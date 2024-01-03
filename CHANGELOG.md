@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version 17.1.0 - 2024-01-02
+## Version 17.1.0 - 2024-01-03
 ### Changed
 - Updated ActivityApi.GetActivitiesAsync method to include new optional parameters: descendantTwinType & activeActivitiesOnly.
 
