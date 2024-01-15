@@ -20,9 +20,12 @@ namespace ONE.Enterprise.Twin
             _throwAPIErrors = throwAPIErrors;
         }
         private PlatformEnvironment _environment;
-        private bool _continueOnCapturedContext;
-        private bool _throwAPIErrors;
-        private RestHelper _restHelper;
+        private readonly bool _continueOnCapturedContext;
+        private readonly bool _throwAPIErrors;
+        private readonly RestHelper _restHelper;
+
+        private const string EndpointRoot = "enterprise/twin/v1";
+        private const string ModuleName = nameof(DigitalTwinApi);
 
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
@@ -31,7 +34,7 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwinType";
+            var endpoint = $"{EndpointRoot}/DigitalTwinType";
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -41,33 +44,33 @@ namespace ONE.Enterprise.Twin
 
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     var results = apiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "CreateDigitalTwinTypeAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "CreateDigitalTwinTypeAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinTypeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"CreateDigitalTwinTypeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<DigitalTwinType> UpdateDigitalTwinTypeAsync(DigitalTwinType digitalTwinType)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwinType/{digitalTwinType.Id}";
+            var endpoint = $"{EndpointRoot}/DigitalTwinType/{digitalTwinType.Id}";
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -77,26 +80,26 @@ namespace ONE.Enterprise.Twin
 
             try
             {
-                var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     var results = apiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "UpdateDigitalTwinTypeAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "UpdateDigitalTwinTypeAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinTypeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"UpdateDigitalTwinTypeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<bool> DeleteDigitalTwinTypeAsync(string id)
@@ -106,19 +109,19 @@ namespace ONE.Enterprise.Twin
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinType/{id}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"{EndpointRoot}/DigitalTwinType/{id}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "DeleteDigitalTwinTypeAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "DeleteDigitalTwinTypeAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinTypeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"DeleteDigitalTwinTypeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         public async Task<List<DigitalTwinType>> GetDigitalTwinTypesAsync()
@@ -126,25 +129,25 @@ namespace ONE.Enterprise.Twin
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            List<DigitalTwinType> digitalTwinTypes = new List<DigitalTwinType>();
+
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/twin/v1/DigitalTwinType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"{EndpointRoot}/DigitalTwinType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     var result = respContent.ApiResponse.Content.DigitalTwinTypes.Items.Select(x => x).ToList();
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "GetDigitalTwinTypesAsync Success" });
                     return result;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "GetDigitalTwinTypesAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinTypesAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"GetDigitalTwinTypesAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -153,7 +156,7 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwinSubType";
+            var endpoint = $"{EndpointRoot}/DigitalTwinSubType";
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -163,33 +166,33 @@ namespace ONE.Enterprise.Twin
 
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     var results = apiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "CreateDigitalTwinSubTypeAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "CreateDigitalTwinSubTypeAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"CreateDigitalTwinSubTypeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"CreateDigitalTwinSubTypeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<DigitalTwinSubtype> UpdateDigitalTwinSubTypeAsync(DigitalTwinSubtype digitalTwinSubType)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwinSubType/{digitalTwinSubType.Id}";
+            var endpoint = $"{EndpointRoot}/DigitalTwinSubType/{digitalTwinSubType.Id}";
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -199,26 +202,26 @@ namespace ONE.Enterprise.Twin
 
             try
             {
-                var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     var results = apiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "UpdateDigitalTwinSubTypeAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "UpdateDigitalTwinSubTypeAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"UpdateDigitalTwinSubTypeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"UpdateDigitalTwinSubTypeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<bool> DeleteDigitalTwinSubTypeAsync(string id)
@@ -227,19 +230,19 @@ namespace ONE.Enterprise.Twin
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwinSubType/{id}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"{EndpointRoot}/DigitalTwinSubType/{id}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "DeleteDigitalTwinSubTypeAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "DeleteDigitalTwinSubTypeAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"DeleteDigitalTwinSubTypeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"DeleteDigitalTwinSubTypeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         public async Task<List<DigitalTwinSubtype>> GetDigitalTwinSubTypesAsync()
@@ -247,26 +250,26 @@ namespace ONE.Enterprise.Twin
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            List<DigitalTwinSubtype> digitalTwinSubTypes = new List<DigitalTwinSubtype>();
+
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/twin/v1/DigitalTwinSubType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"{EndpointRoot}/DigitalTwinSubType/?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
                     var result = respContent.ApiResponse.Content.DigitalTwinSubtypes.Items.Select(x => x).ToList();
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "GetDigitalTwinSubTypesAsync Success" });
                     return result;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = ModuleName, Message = "GetDigitalTwinSubTypesAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"GetDigitalTwinSubTypesAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"GetDigitalTwinSubTypesAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -289,7 +292,7 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwin";
+            var endpoint = $"{EndpointRoot}/DigitalTwin";
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -299,26 +302,26 @@ namespace ONE.Enterprise.Twin
 
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
                     ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
                     var results = apiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
                     foreach (var result in results)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"CreateAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "CreateAsync Success" });
                         return result;
                     }
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"CreateAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "CreateAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"CreateAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"CreateAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -326,7 +329,7 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = "enterprise/twin/v1/DigitalTwin/many";
+            var endpoint = $"{EndpointRoot}/DigitalTwin/many";
 
             var twins = new DigitalTwins();
             twins.Items.AddRange(digitalTwins);
@@ -345,14 +348,14 @@ namespace ONE.Enterprise.Twin
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "CreateAsync Success" });
                     return apiResponse.Content.DigitalTwins.Items.ToList();
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"CreateAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "CreateAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"CreateAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"CreateAsync Failed - {e.Message}" });
                 if (_throwAPIErrors)
-					 throw;
+                     throw;
                 return null;
             }
         }
@@ -361,7 +364,7 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwin";
+            var endpoint = $"{EndpointRoot}/DigitalTwin";
 
             JsonSerializerSettings jsonSettings = new JsonSerializerSettings
             {
@@ -371,21 +374,21 @@ namespace ONE.Enterprise.Twin
 
             try
             {
-                var respContent = await _restHelper.PatchRestJSONAsync(requestId, json.ToString(), endpoint);
+                var respContent = await _restHelper.PatchRestJSONAsync(requestId, json, endpoint);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"UpdateAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "UpdateAsync Success" });
                     return digitalTwin;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"UpdateAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "UpdateAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"UpdateAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"UpdateAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -393,57 +396,57 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwin/twinRef/{twinRefId}/parentRef/{parentRefId}";
+            var endpoint = $"{EndpointRoot}/DigitalTwin/twinRef/{twinRefId}/parentRef/{parentRefId}";
 
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"MoveAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "MoveAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"MoveAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "MoveAsync Failed" });
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"MoveAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"MoveAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         public async Task<bool> MoveAsync(long id, long parentId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwin/{id}/parent/{parentId}";
+            var endpoint = $"{EndpointRoot}/DigitalTwin/{id}/parent/{parentId}";
 
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"MoveAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "MoveAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"MoveAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "MoveAsync Failed" });
 
                 return respContent.ResponseMessage.IsSuccessStatusCode;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"MoveAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"MoveAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         public async Task<DigitalTwin> UpdateTwinDataAsync(string twinReferenceId, JsonPatchDocument twinData)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwin/twinRefId/{twinReferenceId}/UpdateTwinData";
+            var endpoint = $"{EndpointRoot}/DigitalTwin/twinRefId/{twinReferenceId}/UpdateTwinData";
 
             try
             {
@@ -451,47 +454,47 @@ namespace ONE.Enterprise.Twin
                 var respContent = await _restHelper.PatchRestJSONAsync(requestId, updatedTwinData, endpoint);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"UpdateTwinDataAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "UpdateTwinDataAsync Success" });
                     return await GetAsync(twinReferenceId);
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"UpdateTwinDataAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "UpdateTwinDataAsync Failed" });
                 return null;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"UpdateTwinDataAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"UpdateTwinDataAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<bool> UpdateTwinDataManyAsync(Dictionary<string, JsonPatchDocument> twinDataMany)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"enterprise/twin/v1/DigitalTwin/UpdateTwinData/many";
-            List<DigitalTwin> digitalTwins = new List<DigitalTwin>();
+            var endpoint = $"{EndpointRoot}/DigitalTwin/UpdateTwinData/many";
+
             try
             {
                 string updatedTwinData = JsonConvert.SerializeObject(twinDataMany);
                 var respContent = await _restHelper.PatchRestJSONAsync(requestId, updatedTwinData, endpoint);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"UpdateTwinDataManyAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "UpdateTwinDataManyAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"UpdateTwinDataManyAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "UpdateTwinDataManyAsync Failed" });
                 return false;
 
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"UpdateTwinDataManyAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"UpdateTwinDataManyAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -501,19 +504,19 @@ namespace ONE.Enterprise.Twin
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwin/{twinId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"{EndpointRoot}/DigitalTwin/{twinId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"DeleteAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "DeleteAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"DeleteAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "DeleteAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"DeleteAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"DeleteAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         public async Task<bool> DeleteTreeAsync(string id)
@@ -523,19 +526,19 @@ namespace ONE.Enterprise.Twin
             var requestId = Guid.NewGuid();
             try
             {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/twin/v1/DigitalTwin/{id}/tree?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"{EndpointRoot}/DigitalTwin/{id}/tree?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"DeleteTreeAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "DeleteTreeAsync Success" });
                 else
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"DeleteTreeAsync Failed" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "DeleteTreeAsync Failed" });
                 return respContent.ResponseMessage.IsSuccessStatusCode;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"DeleteTreeAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"DeleteTreeAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -543,10 +546,10 @@ namespace ONE.Enterprise.Twin
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            List<DigitalTwin> digitalTwins = new List<DigitalTwin>();
+
             try
             {
-                string url = $"enterprise/twin/v1/DigitalTwin/Ref/{twinRefId}";
+                string url = $"{EndpointRoot}/DigitalTwin/Ref/{twinRefId}";
                 var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -554,24 +557,22 @@ namespace ONE.Enterprise.Twin
                     var results = respContent.ApiResponse.Content.DigitalTwins.Items.Select(x => x).ToList();
                     if (results.Count > 0)
                     {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetAsync Success" });
+                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetAsync Success" });
                         return results[0];
                     }
-                    else
-                    {
-                        Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetAsync Returned No Values" });
-                        return null;
-                    }
+
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetAsync Returned No Values" });
+                    return null;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"GetAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"GetAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -586,9 +587,9 @@ namespace ONE.Enterprise.Twin
             List<DigitalTwin> digitalTwins = new List<DigitalTwin>();
             try
             {
-                string url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/Type/{twinTypeId}/Descendants";
+                string url = $"{EndpointRoot}/DigitalTwin/ref/{twinRefId}/Type/{twinTypeId}/Descendants";
                 if (string.IsNullOrEmpty(twinTypeId))
-                    url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/Descendants";
+                    url = $"{EndpointRoot}/DigitalTwin/ref/{twinRefId}/Descendants";
                 var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -598,18 +599,18 @@ namespace ONE.Enterprise.Twin
                     {
                         digitalTwins.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetDecendantsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetDescendantsAsync Success" });
                     return digitalTwins;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetDecendantsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetDescendantsAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"GetDecendants Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"GetDescendants Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<List<DigitalTwin>> GetDescendantsBySubTypeAsync(string twinRefId, string twinSubTypeId)
@@ -619,9 +620,9 @@ namespace ONE.Enterprise.Twin
             List<DigitalTwin> digitalTwins = new List<DigitalTwin>();
             try
             {
-                string url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/SubType/{twinSubTypeId}/Descendants";
+                string url = $"{EndpointRoot}/DigitalTwin/ref/{twinRefId}/SubType/{twinSubTypeId}/Descendants";
                 if (string.IsNullOrEmpty(twinSubTypeId))
-                    url = $"enterprise/twin/v1/DigitalTwin/ref/{twinRefId}/Descendants";
+                    url = $"{EndpointRoot}/DigitalTwin/ref/{twinRefId}/Descendants";
                 var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, url).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
@@ -631,18 +632,18 @@ namespace ONE.Enterprise.Twin
                     {
                         digitalTwins.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetDecendantsAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetDescendantsAsync Success" });
                     return digitalTwins;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetDecendantsAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetDescendantsAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"GetDecendants Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"GetDescendants Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<List<DigitalTwin>> GetDescendantsByCategoryAsync(string twinRefId, uint categoryId)
@@ -652,7 +653,7 @@ namespace ONE.Enterprise.Twin
             List<DigitalTwin> digitalTwins = new List<DigitalTwin>();
             try
             {
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/twin/v1/DigitalTwin/Ref/{twinRefId}/Category/{categoryId}/Descendants").ConfigureAwait(_continueOnCapturedContext);
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"{EndpointRoot}/DigitalTwin/Ref/{twinRefId}/Category/{categoryId}/Descendants").ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
 
@@ -661,18 +662,18 @@ namespace ONE.Enterprise.Twin
                     {
                         digitalTwins.Add(result);
                     }
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetDecendantsByCategoryAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetDescendantsByCategoryAsync Success" });
                     return digitalTwins;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"GetDecendantsByCategoryAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "GetDescendantsByCategoryAsync Failed" });
                 return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"GetDecendantsByCategory Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"GetDescendantsByCategory Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
