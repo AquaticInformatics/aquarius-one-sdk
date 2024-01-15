@@ -322,6 +322,41 @@ namespace ONE.Enterprise.Twin
             }
         }
 
+        public async Task<List<DigitalTwin>> CreateManyAsync(List<DigitalTwin> digitalTwins)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint = "enterprise/twin/v1/DigitalTwin/many";
+
+            var twins = new DigitalTwins();
+            twins.Items.AddRange(digitalTwins);
+            var jsonSettings = new JsonSerializerSettings
+            {
+                NullValueHandling = NullValueHandling.Ignore
+            };
+            var json = JsonConvert.SerializeObject(twins, jsonSettings);
+
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, jsonSettings);
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = "CreateAsync Success" });
+                    return apiResponse.Content.DigitalTwins.Items.ToList();
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "DigitalTwinApi", Message = $"CreateAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DigitalTwinAPI", Message = $"CreateAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+					 throw;
+                return null;
+            }
+        }
+
         public async Task<DigitalTwin> UpdateAsync(DigitalTwin digitalTwin)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();

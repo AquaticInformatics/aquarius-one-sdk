@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.2.0 - 2024-01-15
+### Added
+- Added DigitalTwinApi.CreateManyAsync. This API supports creating multiple digital twins in a single request.
+
 ## Version 17.1.0 - 2024-01-03
 ### Changed
 - Updated ActivityApi.GetActivitiesAsync method to include new optional parameters: descendantTwinType & activeActivitiesOnly.
