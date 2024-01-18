@@ -52,9 +52,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<List<proto.Configuration>> GetConfigurationsAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "")
@@ -87,9 +87,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         public async Task<List<proto.Configuration>> GetConfigurationsAdminAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "", string ownerId = "", bool? isPublic = null)
@@ -124,9 +124,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         [ObsoleteAttribute("This is the V1 Method, Use alternative Method.", false)]
@@ -159,9 +159,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationsAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
         [ObsoleteAttribute("This is the V1 Method, Use alternative Method.", false)]
@@ -198,9 +198,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -215,7 +215,9 @@ namespace ONE.Common.Configuration
             switch (apiVersion)
             {
                 case 1:
+#pragma warning disable CS0618 // Type or member is obsolete
                     return await CreateConfigurationAsync(configuration);
+#pragma warning restore CS0618 // Type or member is obsolete
                 default:
                     return await CreateConfigurationV2Async(configuration);
             }
@@ -248,15 +250,15 @@ namespace ONE.Common.Configuration
                         EventLevel = eventLevel, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi",
                         Message = message
                     });
-                
+
                 return success;
             }
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationV2Async Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -290,9 +292,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         [ObsoleteAttribute("This is the V1 Method, Use alternative Method.", false)]
@@ -329,9 +331,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -346,7 +348,9 @@ namespace ONE.Common.Configuration
             switch (apiVersion)
             {
                 case 1:
+#pragma warning disable CS0618 // Type or member is obsolete
                     return await UpdateConfigurationAsync(configuration);
+#pragma warning restore CS0618 // Type or member is obsolete
                 default:
                     return await UpdateConfigurationV2Async(configuration);
             }
@@ -361,7 +365,7 @@ namespace ONE.Common.Configuration
             try
             {
                 var respContent = await _restHelper.PutRestProtobufAsync(configuration, endpoint).ConfigureAwait(_continueOnCapturedContext);
-                
+
                 var message = "UpdateConfigurationV2Async Success";
                 var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
                 var success = true;
@@ -385,9 +389,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"UpdateConfigurationV2Async Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -422,9 +426,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
         public async Task<bool> DeleteConfigurationAsync(string id)
@@ -443,9 +447,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"DeleteConfigurationAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -462,7 +466,7 @@ namespace ONE.Common.Configuration
 
             if (endDate.Kind == DateTimeKind.Local)
                 endDate = endDate.ToUniversalTime();
-            
+
             string endpointUrl = $"common/configuration/v2/notes/{configurationId}?startDate={startDate:O}&endDate={endDate:O}";
 
             if (!string.IsNullOrWhiteSpace(tagString))
@@ -494,9 +498,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationNotesAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -530,9 +534,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationNotesAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -566,9 +570,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationTagsAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return null;
+                if (_throwAPIErrors)
+                     throw;
+                return null;
             }
         }
 
@@ -596,9 +600,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationNoteAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -626,9 +630,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationNoteAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -656,9 +660,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"UpdateConfigurationNoteAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
@@ -678,9 +682,9 @@ namespace ONE.Common.Configuration
             catch (Exception e)
             {
                 Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"DeleteConfigurationNotesAsync Failed - {e.Message}" });
-                if (_throwAPIErrors) 
-					 throw; 
-				 return false;
+                if (_throwAPIErrors)
+                     throw;
+                return false;
             }
         }
 
