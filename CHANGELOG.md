@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version 17.2.0 - 2024-01-15
+## Version 17.2.0 - 2024-01-18
 ### Added
 - Added DigitalTwinApi.CreateManyAsync. This API supports creating multiple digital twins in a single request.
 
