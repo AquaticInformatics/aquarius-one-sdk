@@ -31,17 +31,14 @@ namespace ONE.Enterprise.Authentication
         private HttpClient _httpProtocolBufferClient;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
         public Token Token { get; set; }
-        public Func<Task<Token>> GetTokenFunc { get; set; }
+        public event EventHandler TokenExpired = delegate { };
         public HttpClient HttpJsonClient
         {
             get
             {
                 if (!IsAuthenticated && AutoRenewToken)
                 {
-                    if (!RefreshTokenAsync().Result)
-                    {
-                        Token = null;
-                    }
+                    TokenExpired(this, null);
                 }
 
                 if (_httpJsonClient == null)
@@ -79,10 +76,7 @@ namespace ONE.Enterprise.Authentication
             {
                 if (!IsAuthenticated && AutoRenewToken)
                 {
-                    if (!RefreshTokenAsync().Result)
-                    {
-                        Token = null;
-                    }
+                    TokenExpired(this, null);
                 }
 
                 if (_httpProtocolBufferClient == null)
@@ -390,22 +384,6 @@ namespace ONE.Enterprise.Authentication
             {
                 return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now.AddMinutes(1);
             }
-        }
-
-        private async Task<bool> RefreshTokenAsync()
-        {
-            if (UsePasswordGrantType)
-            {
-                // login using username and password
-                await LoginResourceOwnerAsync(UserName, Password);
-            }
-            else
-            {
-                // get token from delegate
-                Token = await GetTokenFunc();
-            }
-
-            return IsAuthenticated;
         }
     }
 }
