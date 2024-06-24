@@ -32,6 +32,8 @@ namespace ONE.Enterprise.Authentication
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
         public Token Token { get; set; }
         public event EventHandler TokenExpired = delegate { };
+        public string AuthenticationUrl { get => _environment?.AuthenticationUri?.AbsoluteUri; }
+
         public HttpClient HttpJsonClient
         {
             get
@@ -384,6 +386,19 @@ namespace ONE.Enterprise.Authentication
             {
                 return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now.AddMinutes(1);
             }
+        }
+
+        public void SetToken(string accessToken, DateTimeOffset expires, string refreshToken)
+        {
+            Token = new Token()
+            {
+                access_token = accessToken,
+                expires = expires.LocalDateTime,
+                refresh_token = refreshToken
+            };
+
+            HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
+            HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
         }
     }
 }
