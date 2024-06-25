@@ -18,29 +18,31 @@ namespace ONE.Enterprise.Authentication
             _continueOnCapturedContext = continueOnCapturedContext;
             _throwAPIErrors = throwAPIErrors;
         }
+
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private readonly bool _throwAPIErrors;
         public bool AutoRenewToken { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public bool UsePasswordGrantType { get; set; }
         public User User { get; set; }
         private HttpClient _httpJsonClient;
         private HttpClient _httpProtocolBufferClient;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
         public Token Token { get; set; }
+        public event EventHandler TokenExpired = delegate { };
+        public string AuthenticationUrl { get => _environment?.AuthenticationUri?.AbsoluteUri; }
+
         public HttpClient HttpJsonClient
         {
             get
             {
-                if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                if (!IsAuthenticated && AutoRenewToken)
                 {
-                    if (!LoginResourceOwnerAsync(UserName, Password).Result)
-                    {
-                        Token = null;
-                    }
-                        
+                    TokenExpired(this, null);
                 }
+
                 if (_httpJsonClient == null)
                 {
                     _httpJsonClient = new HttpClient();
@@ -74,14 +76,11 @@ namespace ONE.Enterprise.Authentication
         {
             get
             {
-                if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                if (!IsAuthenticated && AutoRenewToken)
                 {
-                    if (!LoginResourceOwnerAsync(UserName, Password).Result)
-                    {
-                        Token = null;
-                    }
-
+                    TokenExpired(this, null);
                 }
+
                 if (_httpProtocolBufferClient == null)
                 {
                     _httpProtocolBufferClient = new HttpClient();
@@ -387,6 +386,19 @@ namespace ONE.Enterprise.Authentication
             {
                 return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now.AddMinutes(1);
             }
+        }
+
+        public void SetToken(string accessToken, DateTimeOffset expires, string refreshToken)
+        {
+            Token = new Token()
+            {
+                access_token = accessToken,
+                expires = expires.LocalDateTime,
+                refresh_token = refreshToken
+            };
+
+            HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
+            HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
         }
     }
 }

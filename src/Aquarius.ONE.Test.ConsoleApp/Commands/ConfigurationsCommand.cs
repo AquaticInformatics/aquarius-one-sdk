@@ -16,7 +16,9 @@ namespace Aquarius.ONE.Test.ConsoleApp.Commands
 
         async Task<int> ICommand.Execute(ClientSDK clientSDK)
         {
+#pragma warning disable CS0618 // Type or member is obsolete
             var v1Config = await clientSDK.Configuration.GetConfigurationsAsync(5, TwinRefId);
+#pragma warning restore CS0618 // Type or member is obsolete
             var v2Config = await clientSDK.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.WorksheetView.Id, TwinRefId);
 
             if (v1Config.Any() && v2Config.Any())
