@@ -388,12 +388,12 @@ namespace ONE.Enterprise.Authentication
             }
         }
 
-        public void SetToken(string accessToken, DateTimeOffset expires, string refreshToken)
+        public void SetToken(string accessToken, DateTime expires, string refreshToken)
         {
             Token = new Token()
             {
                 access_token = accessToken,
-                expires = expires.LocalDateTime,
+                expires = expires,
                 refresh_token = refreshToken
             };
 
