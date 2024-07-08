@@ -27,12 +27,31 @@ namespace ONE.Enterprise.Authentication
         public string Password { get; set; }
         public bool UsePasswordGrantType { get; set; }
         public User User { get; set; }
+        private HttpClient _httpAuthClient;
         private HttpClient _httpJsonClient;
         private HttpClient _httpProtocolBufferClient;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
         public Token Token { get; set; }
         public event EventHandler TokenExpired = delegate { };
         public string AuthenticationUrl { get => _environment?.AuthenticationUri?.AbsoluteUri; }
+
+
+        private HttpClient HttpAuthClient
+        {
+            get
+            {
+                if (_httpAuthClient == null)
+                {
+                    _httpAuthClient = new HttpClient();
+                    if (_environment != null)
+                        _httpAuthClient.BaseAddress = _environment.BaseUri;
+                    _httpAuthClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpAuthClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                }
+
+                return _httpAuthClient;
+            }
+        }
 
         public HttpClient HttpJsonClient
         {
@@ -213,7 +232,7 @@ namespace ONE.Enterprise.Authentication
                 request.Content = new FormUrlEncodedContent(body);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using (var respContent = await HttpJsonClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                using (var respContent = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                 {
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
@@ -359,7 +378,7 @@ namespace ONE.Enterprise.Authentication
                 request.Content = new FormUrlEncodedContent(body);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using (var response = await HttpJsonClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                using (var response = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                 {
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
