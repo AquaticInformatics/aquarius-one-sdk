@@ -18,29 +18,50 @@ namespace ONE.Enterprise.Authentication
             _continueOnCapturedContext = continueOnCapturedContext;
             _throwAPIErrors = throwAPIErrors;
         }
+
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private readonly bool _throwAPIErrors;
         public bool AutoRenewToken { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public bool UsePasswordGrantType { get; set; }
         public User User { get; set; }
+        private HttpClient _httpAuthClient;
         private HttpClient _httpJsonClient;
         private HttpClient _httpProtocolBufferClient;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
         public Token Token { get; set; }
+        public event EventHandler TokenExpired = delegate { };
+        public string AuthenticationUrl { get => _environment?.AuthenticationUri?.AbsoluteUri; }
+
+
+        private HttpClient HttpAuthClient
+        {
+            get
+            {
+                if (_httpAuthClient == null)
+                {
+                    _httpAuthClient = new HttpClient();
+                    if (_environment != null)
+                        _httpAuthClient.BaseAddress = _environment.BaseUri;
+                    _httpAuthClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpAuthClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                }
+
+                return _httpAuthClient;
+            }
+        }
+
         public HttpClient HttpJsonClient
         {
             get
             {
-                if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                if (!IsAuthenticated && AutoRenewToken)
                 {
-                    if (!LoginResourceOwnerAsync(UserName, Password).Result)
-                    {
-                        Token = null;
-                    }
-                        
+                    TokenExpired(this, null);
                 }
+
                 if (_httpJsonClient == null)
                 {
                     _httpJsonClient = new HttpClient();
@@ -74,14 +95,11 @@ namespace ONE.Enterprise.Authentication
         {
             get
             {
-                if (AutoRenewToken && Token != null && Token.expires < DateTime.Now && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
+                if (!IsAuthenticated && AutoRenewToken)
                 {
-                    if (!LoginResourceOwnerAsync(UserName, Password).Result)
-                    {
-                        Token = null;
-                    }
-
+                    TokenExpired(this, null);
                 }
+
                 if (_httpProtocolBufferClient == null)
                 {
                     _httpProtocolBufferClient = new HttpClient();
@@ -214,7 +232,7 @@ namespace ONE.Enterprise.Authentication
                 request.Content = new FormUrlEncodedContent(body);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using (var respContent = await HttpJsonClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                using (var respContent = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                 {
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
@@ -360,7 +378,7 @@ namespace ONE.Enterprise.Authentication
                 request.Content = new FormUrlEncodedContent(body);
                 request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-                using (var response = await HttpJsonClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                using (var response = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                 {
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
@@ -387,6 +405,19 @@ namespace ONE.Enterprise.Authentication
             {
                 return Token != null && !string.IsNullOrEmpty(Token.access_token) && Token.expires >= DateTime.Now.AddMinutes(1);
             }
+        }
+
+        public void SetToken(string accessToken, DateTime expires, string refreshToken)
+        {
+            Token = new Token()
+            {
+                access_token = accessToken,
+                expires = expires,
+                refresh_token = refreshToken
+            };
+
+            HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
+            HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
         }
     }
 }
