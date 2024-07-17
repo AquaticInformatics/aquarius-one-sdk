@@ -51,6 +51,7 @@ namespace ONE.Utilities
                     case "EUPRODUCTION":
                     case "EU PRODUCTION":
                     case "EU-PRODUCTION":
+                    case "EU":
                     case "5":
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiEUProduction);
                     default:
