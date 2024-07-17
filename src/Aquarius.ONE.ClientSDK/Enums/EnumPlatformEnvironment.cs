@@ -13,6 +13,7 @@
         AqiIntegration = 7,
         AqiStage = 8,
         AqiUSProduction = 9,
-        Local = 10
+        Local = 10,
+        AqiEUProduction = 11
     }
 }
