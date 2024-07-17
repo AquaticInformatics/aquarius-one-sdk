@@ -10,7 +10,7 @@ namespace ONE.Utilities
         private static List<PlatformEnvironment> _environments;
         public static PlatformEnvironment GetPlatformEnvironment(string name)
         {
-            var matches = Environments.Where(p => string.Equals(p.Name, name, StringComparison.CurrentCulture));
+            var matches = Environments.Where(p => string.Equals(p.Name, name, StringComparison.CurrentCultureIgnoreCase));
             if (matches.Count() > 0)
             {
                 return matches.First();
