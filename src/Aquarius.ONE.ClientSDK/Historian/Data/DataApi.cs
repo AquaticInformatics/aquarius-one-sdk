@@ -118,14 +118,16 @@ namespace ONE.Common.Historian
             }
         }
 
-        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
+        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas, bool useBulkIngest = false)
         {
             if (historianDatas?.Items == null || historianDatas.Items.Count == 0)
                 return true;
-
+                                                      
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var requestId = Guid.NewGuid();
-            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
+            var endpoint = (historianDatas.Items?.Count > 5000 || useBulkIngest) ?
+                $"/historian/data/v1/{telemetryTwinRefId}" : $"/historian/data/v1/{telemetryTwinRefId}/bulkingest";
+
             var json = JsonConvert.SerializeObject(historianDatas, _serializerSettings);
             
             try
@@ -158,7 +160,7 @@ namespace ONE.Common.Historian
 					 throw; 
                 return false;
             }
-        }
+        }           
 
         public async Task<bool> UpdateDataAsync(string telemetryTwinRefId, HistorianData historianData)
         {
