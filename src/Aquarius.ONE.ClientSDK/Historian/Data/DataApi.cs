@@ -118,16 +118,14 @@ namespace ONE.Common.Historian
             }
         }
 
-        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas, bool useBulkIngest = false)
+        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
         {
             if (historianDatas?.Items == null || historianDatas.Items.Count == 0)
                 return true;
                                                       
             var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var endpoint = (historianDatas.Items?.Count > 5000 || useBulkIngest) ?
-                $"/historian/data/v1/{telemetryTwinRefId}" : $"/historian/data/v1/{telemetryTwinRefId}/bulkingest";
-
+            var requestId = Guid.NewGuid();          
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
             var json = JsonConvert.SerializeObject(historianDatas, _serializerSettings);
             
             try
@@ -160,7 +158,57 @@ namespace ONE.Common.Historian
 					 throw; 
                 return false;
             }
-        }           
+        }
+        public async Task<bool> SaveBulkDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
+        {
+            if (historianDatas?.Items == null || historianDatas.Items.Count == 0)
+                return true;
+
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            var requestId = Guid.NewGuid();
+            var endpoint =$"/historian/data/v1/{telemetryTwinRefId}/bulkingest";
+
+            var json = JsonConvert.SerializeObject(historianDatas, _serializerSettings);
+
+            try
+            {
+                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    Event(null, new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumOneLogLevel.OneLogLevelTrace,
+                        HttpStatusCode = respContent.ResponseMessage.StatusCode,
+                        ElapsedMs = watch.ElapsedMilliseconds,
+                        Module = "DataApi",
+                        Message = "SaveBulkDataAsync Success"
+                    });
+                    return true;
+                }
+
+                Event(null, new ClientApiLoggerEventArgs
+                {
+                    EventLevel = EnumOneLogLevel.OneLogLevelWarn,
+                    HttpStatusCode = respContent.ResponseMessage.StatusCode,
+                    ElapsedMs = watch.ElapsedMilliseconds,
+                    Module = "DataApi",
+                    Message = "SaveBulkDataAsync Failed"
+                });
+                return false;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs
+                {
+                    EventLevel = EnumOneLogLevel.OneLogLevelError,
+                    Module = "DataApi",
+                    Message = $"SaveBulkDataAsync Failed - {e.Message}"
+                });
+                if (_throwApiErrors)
+                    throw;
+                return false;
+            }
+        }
 
         public async Task<bool> UpdateDataAsync(string telemetryTwinRefId, HistorianData historianData)
         {
