@@ -10,7 +10,7 @@ namespace ONE.Utilities
         private static List<PlatformEnvironment> _environments;
         public static PlatformEnvironment GetPlatformEnvironment(string name)
         {
-            var matches = Environments.Where(p => string.Equals(p.Name, name, StringComparison.CurrentCulture));
+            var matches = Environments.Where(p => string.Equals(p.Name, name, StringComparison.CurrentCultureIgnoreCase));
             if (matches.Count() > 0)
             {
                 return matches.First();
@@ -44,6 +44,16 @@ namespace ONE.Utilities
                     case "PRODUCTION":
                     case "4":
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiUSProduction);
+                    case "AQIEUPRODUCTION":
+                    case "AQI EU PRODUCTION":
+                    case "ONE EU PRODUCTION":
+                    case "ONEEUPRODUCTION":
+                    case "EUPRODUCTION":
+                    case "EU PRODUCTION":
+                    case "EU-PRODUCTION":
+                    case "EU":
+                    case "5":
+                        return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiEUProduction);
                     default:
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature);
                 }
@@ -114,7 +124,17 @@ namespace ONE.Utilities
                             AuthenticationUri = new Uri("https://api-us.aquaticinformatics.net/"),
                             PoEditorProjectName = "FOUNDATION_LIBRARY"
 
+                        },
+                           new PlatformEnvironment
+                        {
+                            Name = "ONE EU Production",
+                            PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiEUProduction,
+                            BaseUri = new Uri("https://api-eu.aquaticinformatics.net/"),
+                            AuthenticationUri = new Uri("https://api-eu.aquaticinformatics.net/"),
+                            PoEditorProjectName = "FOUNDATION_LIBRARY"
+
                         }
+
                     };
                 }
                 return _environments;
