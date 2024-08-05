@@ -3,7 +3,7 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
-	  <VersionPrefix>17.4.1</VersionPrefix>
+	  <VersionPrefix>17.5.0</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
 	  <VersionSuffix>AQI-7684</VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
