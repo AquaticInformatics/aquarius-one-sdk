@@ -239,6 +239,10 @@ namespace ONE.Operations.Sample
         /// </summary>
         public List<TestAnalyteGroup> GetTestGroups() => TestGroups.Values.ToList();
 
+        /// <summary>
+        /// Gets all Schedules in the cache
+        /// </summary>
+        public List<Schedule> GetAllSchedules() => Schedules.Values.ToList();
 
         /// <summary> 
         /// Clear the cache. 
