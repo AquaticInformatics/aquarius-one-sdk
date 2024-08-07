@@ -331,26 +331,29 @@ namespace ONE.Operations
             CacheColumns();
             return true;
         }
+
         private async Task<bool> LoadComputations(WorksheetDefinition sourceWorksheetDefinition)
         {
-            if (sourceWorksheetDefinition != null)
-            {
-                for (int x = 0; x < sourceWorksheetDefinition.Columns.Count; x++)
-                {
-                    var sourceColumn = sourceWorksheetDefinition.Columns[x];
+            if (sourceWorksheetDefinition == null) 
+                return true;
 
-                    if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
-                    {
-                        SpreadsheetComputation sourceSpreadsheetComputation = await _clientSDK.Spreadsheet.ComputationGetOneAsync(DigitalTwin.TwinReferenceId, sourceWorksheetDefinition.EnumWorksheet, sourceColumn.DataSourceBinding.BindingId);
-                        if (sourceSpreadsheetComputation != null && !SpreadsheetComputations.ContainsKey(sourceColumn.DataSourceBinding.BindingId))
-                        {
-                            SpreadsheetComputations.Add(sourceColumn.DataSourceBinding.BindingId, sourceSpreadsheetComputation);
-                        }
-                    }
+            foreach (var sourceColumn in sourceWorksheetDefinition.Columns)
+            {
+                if (sourceColumn.DataSourceBinding?.DataSource != EnumDataSource.DatasourceComputation ||
+                    string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId)) 
+                    continue;
+
+                var sourceSpreadsheetComputation = await _clientSDK.Spreadsheet.ComputationGetOneAsync(DigitalTwin.TwinReferenceId, sourceWorksheetDefinition.EnumWorksheet, sourceColumn.DataSourceBinding.BindingId);
+
+                if (sourceSpreadsheetComputation != null && !SpreadsheetComputations.ContainsKey(sourceColumn.DataSourceBinding.BindingId))
+                {
+                    SpreadsheetComputations.Add(sourceColumn.DataSourceBinding.BindingId, sourceSpreadsheetComputation);
                 }
             }
+
             return true;
         }
+
         public void CacheColumns()
         {
             if (!IsCached)
