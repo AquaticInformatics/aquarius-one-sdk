@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.6.0 - 2024-08-12
+### Added
+- Added Update the SDK add support for Import Notes API and to use latest protobuf package AQI-7772
+
+
 ## Version 17.2.0 - 2024-01-18
 ### Added
 - Added DigitalTwinApi.CreateManyAsync. This API supports creating multiple digital twins in a single request.
