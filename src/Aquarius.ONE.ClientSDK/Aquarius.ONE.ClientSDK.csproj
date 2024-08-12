@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="6.11.0" />
+    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="6.13.0-AQI-7691" />
     <PackageReference Include="Aquarius.ONE.Shared.Helpers" Version="2.1.1" />
     <PackageReference Include="Aquarius.ONE.Shared.Time" Version="1.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
