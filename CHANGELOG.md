@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 ## Version 17.6.0 - 2024-08-12
 ### Added
-- Update Aquarius.ONE.ClientSDK to support Import Notes API and use latest protobuf package
+- Added LogbookApi.ImportLogbookEntryAsync. This API supports importing multiple configuration notes
 
 
 ## Version 17.2.0 - 2024-01-18
