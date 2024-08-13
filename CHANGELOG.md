@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.6.0 - 2024-08-12
+### Added
+- Added LogbookApi.ImportLogbookEntryAsync. This API supports importing multiple configuration notes
+
+
 ## Version 17.2.0 - 2024-01-18
 ### Added
 - Added DigitalTwinApi.CreateManyAsync. This API supports creating multiple digital twins in a single request.

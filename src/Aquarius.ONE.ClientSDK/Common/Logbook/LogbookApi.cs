@@ -199,5 +199,17 @@ namespace ONE.Common.Logbook
         /// <param name="entryId">Identifier of the entry to be deleted or 'all' to delete all entries in a logbook</param>
         /// <returns>Boolean value indicating whether or not the entry or entries were successfully deleted</returns>
         public async Task<bool> DeleteLogbookEntryAsync(string logbookId, string entryId) => await _configurationApi.DeleteConfigurationNotesAsync(logbookId, entryId);
+
+
+        /// <summary>
+        /// Import multiple notes
+        /// <see>
+        ///     <cref>ImportConfigurationNotesAsync</cref>
+        /// </see>
+        /// which add import notes.
+        /// </summary>
+        /// <param name="configurationNotes">configurationNotes is the notes that is to be imported into the import notes api</param>
+        /// <returns>Boolean value indicating whether or not the entry or entries were successfully imported</returns>
+        public async Task<bool> ImportLogbookEntryAsync(ConfigurationNotes configurationNotes) => await _configurationApi.ImportConfigurationNotesAsync(configurationNotes);
     }
 }
