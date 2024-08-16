@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Azure.Storage.Blobs.Models;
 using Proto = ONE.Models.CSharp;
 
 namespace ONE.Common.Logbook
@@ -166,6 +167,24 @@ namespace ONE.Common.Logbook
         /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
         public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
+            return await UpdateLogbookEntryAsync(logbookId, entryId, entry, externalSourceId: null, entryTime, geoPointX, geoPointY, tags);
+        }
+
+        /// <summary>
+        /// Edit an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to update the entry</param>
+        /// <param name="entryId">Identifier of the entry to be edited</param>
+        /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
+        /// /// <param name="externalSourceId">Optional - value used to associate the note with external data</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
+        /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
+        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, string externalSourceId, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
+        {
             var logbookEntry = new ConfigurationNote
             {
                 Id = entryId,
@@ -173,7 +192,7 @@ namespace ONE.Common.Logbook
                 Note = entry,
                 NoteTime = entryTime.ToOneDateTime(),
                 Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) },
-
+                ExternalSourceId = externalSourceId
             };
 
             if (geoPointX != null && geoPointY != null)
