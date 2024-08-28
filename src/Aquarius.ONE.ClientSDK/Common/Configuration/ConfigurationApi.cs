@@ -581,7 +581,7 @@ namespace ONE.Common.Configuration
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            var endpoint = $"common/configuration/v2/notes";
+            var endpoint = "common/configuration/v2/notes";
 
             var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 

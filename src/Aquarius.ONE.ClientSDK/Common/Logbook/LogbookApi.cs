@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Azure.Storage.Blobs.Models;
 using Proto = ONE.Models.CSharp;
 
 namespace ONE.Common.Logbook
@@ -119,11 +118,28 @@ namespace ONE.Common.Logbook
         /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
         public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
+            return await CreateLogbookEntryAsync(logbookId, entry, entryTime, geoPointX, geoPointY, externalSourceId: null, tags);
+        }
+
+        /// <summary>
+        /// Create an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
+        /// <param name="entry">Text of the entry to be created</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+        /// <param name="externalSourceId">Optional - the externalSourceId</param>
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
+        /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
+        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, string externalSourceId = null, params string[] tags)
+        {
             var logbookEntry = new ConfigurationNote
             {
                 ConfigurationId = logbookId,
                 Note = entry,
                 NoteTime = entryTime.ToOneDateTime(),
+                ExternalSourceId = externalSourceId,
                 Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
             };
 
