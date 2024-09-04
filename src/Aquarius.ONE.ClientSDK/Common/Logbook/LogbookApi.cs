@@ -118,11 +118,28 @@ namespace ONE.Common.Logbook
         /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
         public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
+            return await CreateLogbookEntryAsync(logbookId, entry, entryTime, externalSourceId: null, geoPointX, geoPointY, tags);
+        }
+
+        /// <summary>
+        /// Create an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
+        /// <param name="entry">Text of the entry to be created</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="externalSourceId">Optional - the externalSourceId</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
+        /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
+        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, string externalSourceId, float? geoPointX = null, float? geoPointY = null, params string[] tags)
+        {
             var logbookEntry = new ConfigurationNote
             {
                 ConfigurationId = logbookId,
                 Note = entry,
                 NoteTime = entryTime.ToOneDateTime(),
+                ExternalSourceId = externalSourceId,
                 Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
             };
 
@@ -166,6 +183,24 @@ namespace ONE.Common.Logbook
         /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
         public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
+            return await UpdateLogbookEntryAsync(logbookId, entryId, entry, externalSourceId: null, entryTime, geoPointX, geoPointY, tags);
+        }
+
+        /// <summary>
+        /// Edit an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to update the entry</param>
+        /// <param name="entryId">Identifier of the entry to be edited</param>
+        /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
+        /// /// <param name="externalSourceId">Optional - value used to associate the note with external data</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
+        /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
+        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, string externalSourceId, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
+        {
             var logbookEntry = new ConfigurationNote
             {
                 Id = entryId,
@@ -173,7 +208,7 @@ namespace ONE.Common.Logbook
                 Note = entry,
                 NoteTime = entryTime.ToOneDateTime(),
                 Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) },
-
+                ExternalSourceId = externalSourceId
             };
 
             if (geoPointX != null && geoPointY != null)
