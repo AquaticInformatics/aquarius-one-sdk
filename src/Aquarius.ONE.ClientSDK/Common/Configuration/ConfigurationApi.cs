@@ -709,7 +709,7 @@ namespace ONE.Common.Configuration
 			}
 			catch (Exception e)
 			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationNotesAsync Failed - {e.Message}" });
+				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetSingleConfigurationNoteAsync Failed - {e.Message}" });
 				if (_throwAPIErrors)
 					throw;
 				return null;
