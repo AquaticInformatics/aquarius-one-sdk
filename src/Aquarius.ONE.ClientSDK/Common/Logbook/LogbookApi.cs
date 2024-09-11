@@ -246,5 +246,20 @@ namespace ONE.Common.Logbook
         /// <param name="configurationNotes">configurationNotes is the notes that is to be imported into the import notes api</param>
         /// <returns>Boolean value indicating whether or not the entry or entries were successfully imported</returns>
         public async Task<bool> ImportLogbookEntryAsync(ConfigurationNotes configurationNotes) => await _configurationApi.ImportConfigurationNotesAsync(configurationNotes);
-    }
+
+
+
+
+		/// <summary>
+		/// get single note
+		/// <see>
+		///     <cref>GetSingleConfigurationNoteAsync</cref>
+		/// </see>
+		/// which get single note using configurationid and noteid.
+		/// </summary>
+		/// <param name="configurationId">Identifies the configuration to be fetched</param>
+		/// <param name="noteId">Identifies the note that should be fetched</param>
+		/// <returns>ConfigurationNote</returns>
+		public async Task<ConfigurationNote> GetSingleConfigurationNoteAsync(string configurationId, string noteId) => await _configurationApi.GetSingleConfigurationNoteAsync(configurationId, noteId);
+	}
 }

@@ -1,6 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+
+## Version 17.7.2 - 2024-09-09
+### Changed
+- Updated SDK to support GetSingleNoteAsync to get single note by configurationid and noteid
+
 ## Version 17.6.2 - 2024-08-29
 ### Changed
 - Updated LogbookApi.CreateLogbookEntryAsync to support the ExternalSourceId property.
