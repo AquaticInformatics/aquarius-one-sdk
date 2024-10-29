@@ -14,6 +14,7 @@
         AqiStage = 8,
         AqiUSProduction = 9,
         Local = 10,
-        AqiEUProduction = 11
+        AqiEUProduction = 11,
+        AqiAUProduction = 12
     }
 }

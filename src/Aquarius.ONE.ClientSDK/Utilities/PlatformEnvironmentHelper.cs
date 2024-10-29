@@ -54,6 +54,16 @@ namespace ONE.Utilities
                     case "EU":
                     case "5":
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiEUProduction);
+                    case "AQIAUPRODUCTION":
+                    case "AQI AU PRODUCTION":
+                    case "ONE AU PRODUCTION":
+                    case "ONEAUPRODUCTION":
+                    case "AUPRODUCTION":
+                    case "AU PRODUCTION":
+                    case "AU-PRODUCTION":
+                    case "AU":
+                    case "6":
+                        return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiAUProduction);
                     default:
                         return PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature);
                 }
@@ -87,7 +97,6 @@ namespace ONE.Utilities
                             BaseUri = new Uri("http://localhost:8262"),
                             AuthenticationUri = new Uri("https://localhost:8262/"),
                             PoEditorProjectName = "SPRINT_FOUNDATION_LIBRARY"
-
                         },
                         new PlatformEnvironment
                         {
@@ -96,7 +105,6 @@ namespace ONE.Utilities
                             BaseUri = new Uri("https://api-feature-us.aquaticinformatics.net/"),
                             AuthenticationUri = new Uri("https://api-feature-us.aquaticinformatics.net/"),
                             PoEditorProjectName = "FOUNDATION_LIBRARY"
-
                         },
                         new PlatformEnvironment
                         {
@@ -105,7 +113,6 @@ namespace ONE.Utilities
                             BaseUri = new Uri("https://api-integration-us.aquaticinformatics.net/"),
                             AuthenticationUri = new Uri("https://api-integration-us.aquaticinformatics.net/"),
                             PoEditorProjectName = "FOUNDATION_LIBRARY"
-
                         },
                         new PlatformEnvironment
                         {
@@ -114,7 +121,6 @@ namespace ONE.Utilities
                             BaseUri = new Uri("https://api-stage-us.aquaticinformatics.net/"),
                             AuthenticationUri = new Uri("https://api-stage-us.aquaticinformatics.net/"),
                             PoEditorProjectName = "FOUNDATION_LIBRARY"
-
                         },
                         new PlatformEnvironment
                         {
@@ -123,18 +129,23 @@ namespace ONE.Utilities
                             BaseUri = new Uri("https://api-us.aquaticinformatics.net/"),
                             AuthenticationUri = new Uri("https://api-us.aquaticinformatics.net/"),
                             PoEditorProjectName = "FOUNDATION_LIBRARY"
-
                         },
-                           new PlatformEnvironment
+                        new PlatformEnvironment
                         {
                             Name = "ONE EU Production",
                             PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiEUProduction,
                             BaseUri = new Uri("https://api-eu.aquaticinformatics.net/"),
                             AuthenticationUri = new Uri("https://api-eu.aquaticinformatics.net/"),
                             PoEditorProjectName = "FOUNDATION_LIBRARY"
-
+                        },
+                        new PlatformEnvironment
+                        {
+                            Name = "ONE AU Production",
+                            PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiAUProduction,
+                            BaseUri = new Uri("https://api-au.aquaticinformatics.net/"),
+                            AuthenticationUri = new Uri("https://api-au.aquaticinformatics.net/"),
+                            PoEditorProjectName = "FOUNDATION_LIBRARY"
                         }
-
                     };
                 }
                 return _environments;
