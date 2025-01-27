@@ -687,5 +687,34 @@ namespace ONE.Common.Configuration
             }
         }
 
-    }
+
+		public async Task<ConfigurationNote> GetSingleConfigurationNoteAsync(string configurationId, string noteId)
+		{
+			var watch = System.Diagnostics.Stopwatch.StartNew();
+
+			var requestId = Guid.NewGuid();
+
+			string endpointUrl = $"common/configuration/v2/notes/{configurationId}/{noteId}";
+			try
+			{
+				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpointUrl).ConfigureAwait(_continueOnCapturedContext);
+				if (respContent.ResponseMessage.IsSuccessStatusCode)
+				{
+					var results = respContent.ApiResponse.Content.ConfigurationNotes.Items.First();
+					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetSingleConfigurationNoteAsync Success" });
+					return results;
+				}
+				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"GetSingleConfigurationNoteAsync Failed" });
+				return null;
+			}
+			catch (Exception e)
+			{
+				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetSingleConfigurationNoteAsync Failed - {e.Message}" });
+				if (_throwAPIErrors)
+					throw;
+				return null;
+			}
+		}
+
+	}
 }
