@@ -43,7 +43,7 @@ jobs:
     steps:
       - name: Validate inputs
         if: inputs.release == inputs.prerelease
-        uses: actions/github-script@v7
+        uses: actions/github-script@v2.1.0
         with:
           script: core.setFailed('Must specify either release or prerelease but not both')
 
