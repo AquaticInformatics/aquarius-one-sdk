@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.10.0 - 2025-01-28
+### Added
+- Added ConfigurationApi.GetConfigurationNotesModifiedSinceUtcAsync to get configuration notes modified since a specified date and time.
+- Updated ConfigurationApi.CreateConfigurationNoteAsync to support specifying audit information to save with a configuration note.
+- Updated ConfigurationApi.UpdateConfigurationNoteAsync to support specifying audit information to save with a configuration note.
+- Added LogbookApi.GetModifiedSinceUtcAsync to get entries modified since a specified date and time.
+- Updated LogbookApi.CreateLogbookEntryAsync to support specifying audit information to save with a logbook entry.
+- Updated LogbookApi.UpdateLogbookEntryAsync to support specifying audit information to save with a logbook entry.
 
 ## Version 17.7.2 - 2024-09-09
 ### Changed

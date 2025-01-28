@@ -540,6 +540,45 @@ namespace ONE.Common.Configuration
             }
         }
 
+        public async Task<List<proto.ConfigurationNote>> GetConfigurationNotesModifiedSinceUtcAsync(
+            string configurationId, DateTime modifiedSinceUtc)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            var requestId = Guid.NewGuid();
+
+            var configurationNotes = new List<proto.ConfigurationNote>();
+            if (modifiedSinceUtc.Kind == DateTimeKind.Local)
+                modifiedSinceUtc = modifiedSinceUtc.ToUniversalTime();
+
+            var endpointUrl = $"common/configuration/v2/notes/{configurationId}/modifiedSinceUtc?modifiedSinceUtc={modifiedSinceUtc:O}";
+
+            try
+            {
+                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endpointUrl).ConfigureAwait(_continueOnCapturedContext);
+                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                {
+                    var results = respContent.ApiResponse.Content.ConfigurationNotes.Items.Distinct().ToList();
+                    foreach (var result in results)
+                    {
+                        var configurationNote = new proto.ConfigurationNote(result);
+                        configurationNotes.Add(configurationNote);
+                    }
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "GetConfigurationNotesModifiedSinceUtcAsync Success" });
+                    return configurationNotes;
+                }
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "GetConfigurationNotesModifiedSinceUtcAsync Failed" });
+                return null;
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"GetConfigurationNotesModifiedSinceUtcAsync Failed - {e.Message}" });
+                if (_throwAPIErrors)
+                    throw;
+                return null;
+            }
+        }
+
         public async Task<List<proto.ConfigurationTag>> GetConfigurationTagsAsync(string configurationId)
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
@@ -580,8 +619,9 @@ namespace ONE.Common.Configuration
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            var usePayloadAudit = configurationNote.RecordAuditInfo != null;
             var requestId = Guid.NewGuid();
-            var endpoint = "common/configuration/v2/notes";
+            var endpoint = $"common/configuration/v2/notes?usePayloadAudit={usePayloadAudit}";
 
             var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
@@ -593,7 +633,7 @@ namespace ONE.Common.Configuration
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "CreateConfigurationAsync Failed" });
                 return false;
 
             }
@@ -640,8 +680,9 @@ namespace ONE.Common.Configuration
         {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
+            var usePayloadAudit = configurationNote.RecordAuditInfo != null;
             var requestId = Guid.NewGuid();
-            var endpoint = "common/configuration/v2/notes";
+            var endpoint = $"common/configuration/v2/notes?usePayloadAudit={usePayloadAudit}";
 
             var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
@@ -653,7 +694,7 @@ namespace ONE.Common.Configuration
                     Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "UpdateConfigurationAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"UpdateConfigurationAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "UpdateConfigurationAsync Failed" });
                 return false;
             }
             catch (Exception e)
