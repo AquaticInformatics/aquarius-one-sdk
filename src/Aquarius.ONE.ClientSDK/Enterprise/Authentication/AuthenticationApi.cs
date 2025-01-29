@@ -34,6 +34,7 @@ namespace ONE.Enterprise.Authentication
         public Token Token { get; set; }
         public event EventHandler TokenExpired = delegate { };
         public string AuthenticationUrl { get => _environment?.AuthenticationUri?.AbsoluteUri; }
+        public TimeSpan HttpClientTimeout = TimeSpan.FromMinutes(10);
 
 
         private HttpClient HttpAuthClient
@@ -45,7 +46,7 @@ namespace ONE.Enterprise.Authentication
                     _httpAuthClient = new HttpClient();
                     if (_environment != null)
                         _httpAuthClient.BaseAddress = _environment.BaseUri;
-                    _httpAuthClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpAuthClient.Timeout = HttpClientTimeout;
                     _httpAuthClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
                 }
 
@@ -67,7 +68,7 @@ namespace ONE.Enterprise.Authentication
                     _httpJsonClient = new HttpClient();
                     if (_environment != null)
                         _httpJsonClient.BaseAddress = _environment.BaseUri;
-                    _httpJsonClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpJsonClient.Timeout = HttpClientTimeout;
                     _httpJsonClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
                 }
@@ -80,7 +81,7 @@ namespace ONE.Enterprise.Authentication
             var httpClient = new HttpClient();
             if (_environment != null)
                 httpClient.BaseAddress = new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
-            httpClient.Timeout = TimeSpan.FromMinutes(10);
+            httpClient.Timeout = HttpClientTimeout;
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
             if ((Token == null || Token.expires < DateTime.UtcNow) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
@@ -105,7 +106,7 @@ namespace ONE.Enterprise.Authentication
                     _httpProtocolBufferClient = new HttpClient();
                     if (_environment != null)
                         _httpProtocolBufferClient.BaseAddress = _environment.BaseUri;
-                    _httpProtocolBufferClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpProtocolBufferClient.Timeout = HttpClientTimeout;
                     _httpProtocolBufferClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
 
                 }
@@ -118,7 +119,7 @@ namespace ONE.Enterprise.Authentication
             
             if (_environment != null)
                 httpClient.BaseAddress = new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
-            httpClient.Timeout = TimeSpan.FromMinutes(10);
+            httpClient.Timeout = HttpClientTimeout;
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
 
             if ((Token == null || Token.expires < DateTime.UtcNow) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
@@ -418,6 +419,14 @@ namespace ONE.Enterprise.Authentication
 
             HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
             HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue($"Bearer", Token.access_token);
+        }
+
+        public void SetHttpClientTimeout(TimeSpan timeout)
+        {
+            HttpClientTimeout = timeout;
+            HttpAuthClient.Timeout = HttpClientTimeout;
+            HttpJsonClient.Timeout = HttpClientTimeout;
+            HttpProtocolBufferClient.Timeout = HttpClientTimeout;
         }
     }
 }
