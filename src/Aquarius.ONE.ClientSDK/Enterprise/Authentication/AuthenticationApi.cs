@@ -119,7 +119,7 @@ namespace ONE.Enterprise.Authentication
             
             if (_environment != null)
                 httpClient.BaseAddress = new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
-            httpClient.Timeout = TimeSpan.FromMinutes(10);
+            httpClient.Timeout = HttpClientTimeout;
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
 
             if ((Token == null || Token.expires < DateTime.UtcNow) && !string.IsNullOrEmpty(UserName) && !string.IsNullOrEmpty(Password))
