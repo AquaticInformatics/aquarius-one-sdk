@@ -106,7 +106,7 @@ namespace ONE.Enterprise.Authentication
                     _httpProtocolBufferClient = new HttpClient();
                     if (_environment != null)
                         _httpProtocolBufferClient.BaseAddress = _environment.BaseUri;
-                    _httpProtocolBufferClient.Timeout = TimeSpan.FromMinutes(10);
+                    _httpProtocolBufferClient.Timeout = HttpClientTimeout;
                     _httpProtocolBufferClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/protobuf"));
 
                 }
