@@ -3,14 +3,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
-	  <VersionPrefix>17.9.0</VersionPrefix>
+	  <VersionPrefix>17.10.0</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
 	  <VersionSuffix></VersionSuffix>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Aquatic Informatics</Authors>
     <Company>Aquatic Informatics</Company>
     <Description>Aquatic Informatics Aquarius Client SDK for the Standard 2.0 Framework.</Description>
-    <Copyright>Copyright © 2024, Aquatic Informatics</Copyright>
+    <Copyright>Copyright © 2025, Aquatic Informatics</Copyright>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
     <PackageProjectUrl>https://github.com/AquaticInformatics/aquarius-one-sdk</PackageProjectUrl>
@@ -23,8 +23,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="6.13.0" />
-    <PackageReference Include="Aquarius.ONE.Shared.Helpers" Version="2.1.1" />
+    <PackageReference Include="Aquarius.ONE.Models.CSharp" Version="7.2.0" />
+    <PackageReference Include="Aquarius.ONE.Shared.Helpers" Version="2.2.0" />
     <PackageReference Include="Aquarius.ONE.Shared.Time" Version="1.7.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>

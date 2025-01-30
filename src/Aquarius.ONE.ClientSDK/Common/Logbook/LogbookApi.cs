@@ -99,6 +99,14 @@ namespace ONE.Common.Logbook
             new Dictionary<string, ConfigurationNote>();
 
         /// <summary>
+        /// Retrieves the logbook entries that have been modified since the specified UTC time.
+        /// </summary>
+        /// <param name="logbookId">Identifies the logbook</param>
+        /// <param name="modifiedSinceUtc">The UTC time to compare to the modified time of logbook entries</param>
+        /// <returns>A list of logbook entries that have been modified since the provided UTC time</returns>
+        public async Task<List<ConfigurationNote>> GetModifiedSinceUtcAsync(string logbookId, DateTime modifiedSinceUtc) => await _configurationApi.GetConfigurationNotesModifiedSinceUtcAsync(logbookId, modifiedSinceUtc);
+
+        /// <summary>
         /// Retrieves unique tags associated with a specific logbook, if there are no tags on a logbook or there is an error an empty list will be returned.
         /// </summary>
         /// <param name="logbookId">Identifier of the logbook for which to retrieve tags</param>
@@ -115,10 +123,12 @@ namespace ONE.Common.Logbook
         /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
         /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
-        /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
-        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
+        /// <returns>Boolean indicating whether the logbookEntry was successfully created</returns>
+        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime,
+            float? geoPointX = null, float? geoPointY = null, params string[] tags)
         {
-            return await CreateLogbookEntryAsync(logbookId, entry, entryTime, externalSourceId: null, geoPointX, geoPointY, tags);
+            return await CreateLogbookEntryAsync(logbookId, entry, entryTime, externalSourceId: null,
+                externalUsername: null, geoPointX, geoPointY, recordAuditInfo: null, tags);
         }
 
         /// <summary>
@@ -127,12 +137,16 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
         /// <param name="entry">Text of the entry to be created</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
-        /// <param name="externalSourceId">Optional - the externalSourceId</param>
+        /// <param name="externalSourceId">The externalSourceId</param>
+        /// <param name="externalUsername">The externalUsername</param>
         /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
         /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+        /// <param name="recordAuditInfo">Optional (defaults to null) - the audit information to save with the entry</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
-        /// <returns>Boolean indicating whether or not the logbookEntry was successfully created</returns>
-        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime, string externalSourceId, float? geoPointX = null, float? geoPointY = null, params string[] tags)
+        /// <returns>Boolean indicating whether the logbookEntry was successfully created</returns>
+        public async Task<bool> CreateLogbookEntryAsync(string logbookId, string entry, DateTime entryTime,
+            string externalSourceId, string externalUsername, float? geoPointX = null, 
+            float? geoPointY = null, RecordAuditInfo recordAuditInfo = null, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
             {
@@ -140,6 +154,8 @@ namespace ONE.Common.Logbook
                 Note = entry,
                 NoteTime = entryTime.ToOneDateTime(),
                 ExternalSourceId = externalSourceId,
+                ExternalUsername = externalUsername,
+                RecordAuditInfo = recordAuditInfo,
                 Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) }
             };
 
@@ -176,30 +192,17 @@ namespace ONE.Common.Logbook
         /// <param name="logbookId">Identifier of the logbook in which to update the entry</param>
         /// <param name="entryId">Identifier of the entry to be edited</param>
         /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
+        /// /// <param name="externalSourceId">Value used to associate the note with external data</param>
+        /// <param name="externalUsername">Value used to associate the note with an external user</param>
         /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
         /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
         /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+        /// <param name="recordAuditInfo">Audit information to save</param>
         /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
-        /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
-        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
-        {
-            return await UpdateLogbookEntryAsync(logbookId, entryId, entry, externalSourceId: null, entryTime, geoPointX, geoPointY, tags);
-        }
-
-        /// <summary>
-        /// Edit an entry in a logbook
-        /// </summary>
-        /// <param name="logbookId">Identifier of the logbook in which to update the entry</param>
-        /// <param name="entryId">Identifier of the entry to be edited</param>
-        /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
-        /// /// <param name="externalSourceId">Optional - value used to associate the note with external data</param>
-        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
-        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
-        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
-
-        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
-        /// <returns>Boolean value indicating whether or not the logbookEntry was successfully updated</returns>
-        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, string externalSourceId, DateTime entryTime, float? geoPointX = null, float? geoPointY = null, params string[] tags)
+        /// <returns>Boolean value indicating whether the logbookEntry was successfully updated</returns>
+        public async Task<bool> UpdateLogbookEntryAsync(string logbookId, string entryId, string entry, 
+            string externalSourceId, string externalUsername, DateTime entryTime, float? geoPointX = null,
+            float? geoPointY = null, RecordAuditInfo recordAuditInfo = null, params string[] tags)
         {
             var logbookEntry = new ConfigurationNote
             {
@@ -208,7 +211,9 @@ namespace ONE.Common.Logbook
                 Note = entry,
                 NoteTime = entryTime.ToOneDateTime(),
                 Tags = { tags.Select(t => new ConfigurationTag { Tag = t }) },
-                ExternalSourceId = externalSourceId
+                ExternalSourceId = externalSourceId,
+                ExternalUsername = externalUsername,
+                RecordAuditInfo = recordAuditInfo
             };
 
             if (geoPointX != null && geoPointY != null)
@@ -235,7 +240,6 @@ namespace ONE.Common.Logbook
         /// <returns>Boolean value indicating whether or not the entry or entries were successfully deleted</returns>
         public async Task<bool> DeleteLogbookEntryAsync(string logbookId, string entryId) => await _configurationApi.DeleteConfigurationNotesAsync(logbookId, entryId);
 
-
         /// <summary>
         /// Import multiple notes
         /// <see>
@@ -246,9 +250,6 @@ namespace ONE.Common.Logbook
         /// <param name="configurationNotes">configurationNotes is the notes that is to be imported into the import notes api</param>
         /// <returns>Boolean value indicating whether or not the entry or entries were successfully imported</returns>
         public async Task<bool> ImportLogbookEntryAsync(ConfigurationNotes configurationNotes) => await _configurationApi.ImportConfigurationNotesAsync(configurationNotes);
-
-
-
 
 		/// <summary>
 		/// get single note
