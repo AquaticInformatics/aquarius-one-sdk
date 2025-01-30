@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 - Updated LogbookApi.CreateLogbookEntryAsync to support specifying audit information to save with a logbook entry.
 - Updated LogbookApi.UpdateLogbookEntryAsync to support specifying audit information to save with a logbook entry.
 
+## Version 17.9.0 - 2025-01-20
+### Changed
+- Update AuthenticationApi to support a custom HTTP client timeout
+
 ## Version 17.7.2 - 2024-09-09
 ### Changed
 - Updated SDK to support GetSingleNoteAsync to get single note by configurationid and noteid
