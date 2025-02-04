@@ -24,6 +24,7 @@ namespace ONE.Common.Configuration
         private RestHelper _restHelper;
         private readonly bool _throwAPIErrors;
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
+        private static JsonSerializerSettings _defaultJsonSerializerSettings = new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore };
 
         public async Task<proto.Configuration> GetConfigurationAsync(string id, int version = 0)
         {
@@ -617,32 +618,43 @@ namespace ONE.Common.Configuration
 
         public async Task<bool> CreateConfigurationNoteAsync(ConfigurationNote configurationNote)
         {
+            var note = await CreateConfigurationNote2Async(configurationNote);
+            return note != null;
+        }
+
+        public async Task<ConfigurationNote> CreateConfigurationNote2Async(ConfigurationNote configurationNote)
+        {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var usePayloadAudit = configurationNote.RecordAuditInfo != null;
             var requestId = Guid.NewGuid();
             var endpoint = $"common/configuration/v2/notes?usePayloadAudit={usePayloadAudit}";
-
-            var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            
+            var json = JsonConvert.SerializeObject(configurationNote, _defaultJsonSerializerSettings);
 
             try
             {
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Success" });
-                    return true;
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(
+                        respContent.Result, _defaultJsonSerializerSettings);
+                    var result = apiResponse.Content.ConfigurationNotes.Items.FirstOrDefault();
+
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "CreateConfiguration2Async Success" });
+
+                    return result;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "CreateConfigurationAsync Failed" });
-                return false;
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "CreateConfiguratio2nAsync Failed" });
+                return null;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationNoteAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationNote2Async Failed - {e.Message}" });
                 if (_throwAPIErrors)
-                     throw;
-                return false;
+                    throw;
+                return null;
             }
         }
 
@@ -651,7 +663,7 @@ namespace ONE.Common.Configuration
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var requestId = Guid.NewGuid();
-            var endpoint = $"common/configuration/v2/notes/import";
+            var endpoint = "common/configuration/v2/notes/import";
 
             var json = JsonConvert.SerializeObject(configurationNotes, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 
@@ -660,16 +672,16 @@ namespace ONE.Common.Configuration
                 var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Success" });
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "ImportConfigurationNotesAsync Success" });
                     return true;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = $"CreateConfigurationAsync Failed" });
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "ImportConfigurationNotesAsync Failed" });
                 return false;
 
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"CreateConfigurationNoteAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"ImportConfigurationNotesAsync Failed - {e.Message}" });
                 if (_throwAPIErrors)
                      throw;
                 return false;
@@ -678,31 +690,42 @@ namespace ONE.Common.Configuration
 
         public async Task<bool> UpdateConfigurationNoteAsync(ConfigurationNote configurationNote)
         {
+            var note = await UpdateConfigurationNote2Async(configurationNote);
+            return note != null;
+        }
+
+        public async Task<ConfigurationNote> UpdateConfigurationNote2Async(ConfigurationNote configurationNote)
+        {
             var watch = System.Diagnostics.Stopwatch.StartNew();
 
             var usePayloadAudit = configurationNote.RecordAuditInfo != null;
             var requestId = Guid.NewGuid();
             var endpoint = $"common/configuration/v2/notes?usePayloadAudit={usePayloadAudit}";
 
-            var json = JsonConvert.SerializeObject(configurationNote, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            var json = JsonConvert.SerializeObject(configurationNote, _defaultJsonSerializerSettings);
 
             try
             {
                 var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
                 if (respContent.ResponseMessage.IsSuccessStatusCode)
                 {
-                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "UpdateConfigurationAsync Success" });
-                    return true;
+                    var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(
+                        respContent.Result, _defaultJsonSerializerSettings);
+                    var result = apiResponse.Content.ConfigurationNotes.Items.FirstOrDefault();
+
+                    Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "UpdateConfiguration2Async Success" });
+
+                    return result;
                 }
-                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "UpdateConfigurationAsync Failed" });
-                return false;
+                Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ConfigurationApi", Message = "UpdateConfiguration2Async Failed" });
+                return null;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"UpdateConfigurationNoteAsync Failed - {e.Message}" });
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ConfigurationApi", Message = $"UpdateConfigurationNote2Async Failed - {e.Message}" });
                 if (_throwAPIErrors)
-                     throw;
-                return false;
+                    throw;
+                return null;
             }
         }
 
