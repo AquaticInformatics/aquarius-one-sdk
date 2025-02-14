@@ -148,6 +148,29 @@ namespace ONE.Common.Logbook
             string externalSourceId, string externalUsername, float? geoPointX = null, 
             float? geoPointY = null, RecordAuditInfo recordAuditInfo = null, params string[] tags)
         {
+            var result = await CreateLogbookEntry2Async(logbookId, entry, entryTime, externalSourceId,
+                externalUsername, geoPointX, geoPointY, recordAuditInfo, tags);
+
+            return result != null;
+        }
+
+        /// <summary>
+        /// Create an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to create the entry</param>
+        /// <param name="entry">Text of the entry to be created</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="externalSourceId">The externalSourceId</param>
+        /// <param name="externalUsername">The externalUsername</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+        /// <param name="recordAuditInfo">Optional (defaults to null) - the audit information to save with the entry</param>
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed</param>
+        /// <returns>Boolean indicating whether the logbookEntry was successfully created</returns>
+        public async Task<ConfigurationNote> CreateLogbookEntry2Async(string logbookId, string entry, 
+            DateTime entryTime, string externalSourceId, string externalUsername, float? geoPointX = null,
+            float? geoPointY = null, RecordAuditInfo recordAuditInfo = null, params string[] tags)
+        {
             var logbookEntry = new ConfigurationNote
             {
                 ConfigurationId = logbookId,
@@ -171,7 +194,7 @@ namespace ONE.Common.Logbook
                 };
             }
 
-            return await _configurationApi.CreateConfigurationNoteAsync(logbookEntry);
+            return await _configurationApi.CreateConfigurationNote2Async(logbookEntry);
         }
 
         /// <summary>
@@ -204,6 +227,30 @@ namespace ONE.Common.Logbook
             string externalSourceId, string externalUsername, DateTime entryTime, float? geoPointX = null,
             float? geoPointY = null, RecordAuditInfo recordAuditInfo = null, params string[] tags)
         {
+            var result = await UpdateLogbookEntry2Async(logbookId, entryId, entry, externalSourceId,
+                externalUsername, entryTime, geoPointX, geoPointY, recordAuditInfo, tags);
+
+            return result != null;
+        }
+
+        /// <summary>
+        /// Edit an entry in a logbook
+        /// </summary>
+        /// <param name="logbookId">Identifier of the logbook in which to update the entry</param>
+        /// <param name="entryId">Identifier of the entry to be edited</param>
+        /// <param name="entry">Text of the entry to be edited, this text replaces any existing entry text</param>
+        /// /// <param name="externalSourceId">Value used to associate the note with external data</param>
+        /// <param name="externalUsername">Value used to associate the note with an external user</param>
+        /// <param name="entryTime">Timestamp to be associated to the entry, should be in UTC</param>
+        /// <param name="geoPointX">Optional - the WGS84 longitude of the location of this entry</param>
+        /// <param name="geoPointY">Optional - the WGS84 latitude of the location of this entry</param>
+        /// <param name="recordAuditInfo">Audit information to save</param>
+        /// <param name="tags">Any tags that should be associated to the entry, no spaces allowed, this list replaces any existing tags</param>
+        /// <returns>Boolean value indicating whether the logbookEntry was successfully updated</returns>
+        public async Task<ConfigurationNote> UpdateLogbookEntry2Async(string logbookId, string entryId, string entry,
+            string externalSourceId, string externalUsername, DateTime entryTime, float? geoPointX = null,
+            float? geoPointY = null, RecordAuditInfo recordAuditInfo = null, params string[] tags)
+        {
             var logbookEntry = new ConfigurationNote
             {
                 Id = entryId,
@@ -228,7 +275,7 @@ namespace ONE.Common.Logbook
                 };
             }
 
-            return await _configurationApi.UpdateConfigurationNoteAsync(logbookEntry);
+            return await _configurationApi.UpdateConfigurationNote2Async(logbookEntry);
         }
 
         /// <summary>

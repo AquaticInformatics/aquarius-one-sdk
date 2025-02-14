@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.11.0 - 2025-01-28
+### Added
+- Added ConfigurationApi.CreateConfigurationNote2Async to return the created object.
+- Added ConfigurationApi.UpdateConfigurationNote2Async to return the updated object.
+- Added LogbookApi.CreateLogbookEntry2Async to return the created object.
+- Added LogbookApi.UpdateLogbookEntry2Async to return the updated object.
+
 ## Version 17.10.0 - 2025-01-28
 ### Added
 - Added ConfigurationApi.GetConfigurationNotesModifiedSinceUtcAsync to get configuration notes modified since a specified date and time.
