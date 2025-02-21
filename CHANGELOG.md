@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.11.1 - 2025-02-21
+### Updated
+- Updated CSharp dependency
+
 ## Version 17.11.0 - 2025-01-28
 ### Added
 - Added ConfigurationApi.CreateConfigurationNote2Async to return the created object.
