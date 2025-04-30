@@ -1,0 +1,11 @@
+{
+  "profiles": {
+    "Aquarius.ONE.Test.ConsoleApp": {},
+    "Debug": {
+      "commandName": "Executable",
+      "executablePath": "C:\\git\\aquarius-one-sdk\\src\\Aquarius.ONE.Test.ConsoleApp\\bin\\Debug\\net6.0\\Aquarius.ONE.Test.ConsoleApp.exe",
+      "commandLineArgs": "userinfo",
+      "workingDirectory": "C:\\git\\aquarius-one-sdk\\src\\Aquarius.ONE.Test.ConsoleApp\\bin\\Debug\\net6.0\\"
+    }
+  }
+}
