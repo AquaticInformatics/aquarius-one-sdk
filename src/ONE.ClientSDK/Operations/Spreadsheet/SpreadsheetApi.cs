@@ -91,7 +91,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
             return apiResponse?.Content?.SpreadsheetComputations?.Items.FirstOrDefault();
         }
        
-        public async Task<List<ApiError>> ComputationValidateAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, SpreadsheetComputation spreadsheetComputation, CancellationToken cancellation)
+        public async Task<List<ApiError>> ComputationValidateAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, SpreadsheetComputation spreadsheetComputation, CancellationToken cancellation = default)
         {
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/computation/validate?requestId={Guid.NewGuid()}";
 

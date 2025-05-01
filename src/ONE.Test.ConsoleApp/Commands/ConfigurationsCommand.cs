@@ -14,25 +14,10 @@ namespace ONE.Test.ConsoleApp.Commands
 
         async Task<int> ICommand.Execute(ClientSDK.OneApi clientSdk)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-            var v1Config = await clientSdk.Configuration.GetConfigurationsAsync(5, TwinRefId);
-#pragma warning restore CS0618 // Type or member is obsolete
             var v2Config = await clientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.WorksheetView.Id, TwinRefId);
 
-            if (v1Config.Any() && v2Config.Any())
+            if (v2Config.Any())
             {
-                bool match = v1Config[0].Id == v2Config[0].Id;
-
-                Console.WriteLine("V1 Configs...");
-                Console.WriteLine();
-
-                foreach (var config in v1Config)
-                {
-                    string configString = config.ToString();
-                    Console.WriteLine(configString);
-                    Console.WriteLine();
-                }
-
                 Console.WriteLine("V2 Configs...");
                 Console.WriteLine();
 
