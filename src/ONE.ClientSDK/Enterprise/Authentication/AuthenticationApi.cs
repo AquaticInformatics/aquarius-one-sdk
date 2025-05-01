@@ -131,8 +131,13 @@ namespace ONE.ClientSDK.Enterprise.Authentication
             _httpProtoClient = null;
         }
 
-        public async Task<bool> LoginAsync(string userName, string password)
+        public async Task<bool> LoginAsync(string userName = null, string password = null)
         {
+            if (userName == null)
+                userName = UserName;
+            if (password == null)
+                password = Password;
+
             var watch = System.Diagnostics.Stopwatch.StartNew();
             
             var body = new Dictionary<string, string>

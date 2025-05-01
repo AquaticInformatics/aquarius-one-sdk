@@ -1,331 +1,151 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Historian.Data
 {
     public class DataApi
     {
-        private PlatformEnvironment _environment;
+        private readonly IOneApiHelper _apiHelper;
         private readonly bool _continueOnCapturedContext;
         private readonly bool _throwApiErrors;
-        private readonly RestHelper _restHelper;
+        
         public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-        private readonly JsonSerializerSettings _serializerSettings;
-
-        public DataApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwApiErrors = false)
+        
+        public DataApi(IOneApiHelper apiHelper, bool continueOnCapturedContext, bool throwApiErrors)
         {
-            _environment = environment;
+            _apiHelper = apiHelper;
             _continueOnCapturedContext = continueOnCapturedContext;
-            _restHelper = restHelper;
             _throwApiErrors = throwApiErrors;
-            _serializerSettings = new JsonSerializerSettings
-            {
-                ContractResolver = new CamelCasePropertyNamesContractResolver(),
-                NullValueHandling = NullValueHandling.Ignore
-            };
         }
 
-        public async Task<List<HistorianData>> GetDataAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate)
+        public async Task<List<HistorianData>> GetDataAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate, CancellationToken cancellation = default)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var historianData = new List<HistorianData>();
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}?startTime={startDate:O}&endTime={endDate:O}&requestId={Guid.NewGuid()}";
+            
+            var apiResponse = await ExecuteRequest("GetDataAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-            try
-            {
-                var sDate = startDate.ToString("O");
-                var eDate = endDate.ToString("O");
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, 
-                    $"/historian/data/v1/{telemetryTwinRefId}?startTime={sDate}&endTime={eDate}")
-                    .ConfigureAwait(_continueOnCapturedContext);
-
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-                    foreach (var historianDataItem in respContent.ApiResponse.Content.HistorianDatas.Items)
-                        historianData.Add(historianDataItem);
-                    
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                        ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetDataAsync Success"
-                    });
-                    return historianData;
-                }
-
-                Event(null, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                    ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetDataAsync Failed"
-                });
-                return null;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"GetDataAsync Failed - {e.Message}"
-                });
-                if (_throwApiErrors) 
-					 throw; 
-                return null;
-            }
+            return apiResponse?.Content?.HistorianDatas?.Items.ToList();
         }
 
-        public async Task<HistorianData> GetOneDataAsync(string telemetryTwinRefId, DateTime dateTime)
+        public async Task<HistorianData> GetOneDataAsync(string telemetryTwinRefId, DateTime dateTime, CancellationToken cancellation = default)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}/{dateTime:O}?requestId={Guid.NewGuid()}";
 
-            try
-            {
-                var eDateTime = dateTime.ToString("O");
-                var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId,
-                    $"/historian/data/v1/{telemetryTwinRefId}/{eDateTime}").ConfigureAwait(_continueOnCapturedContext);
+            var apiResponse = await ExecuteRequest("GetOneDataAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-                    foreach (var historianDataItem in respContent.ApiResponse.Content.HistorianDatas.Items)
-                    {
-                        Event(null, new ClientApiLoggerEventArgs
-                        {
-                            EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode,
-                            ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetOneDataAsync Success"
-                        });
-                        return historianDataItem;
-                    }
-                }
-                Event(null, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                    ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "GetOneDataAsync Failed"
-                });
-                return null;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"GetOneDataAsync Failed - {e.Message}"
-                });
-                if (_throwApiErrors) 
-					 throw; 
-                return null;
-            }
+            return apiResponse?.Content?.HistorianDatas?.Items.FirstOrDefault();
         }
 
-        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
+        public async Task<bool> SaveDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas, CancellationToken cancellation = default)
         {
             if (historianDatas?.Items == null || historianDatas.Items.Count == 0)
                 return true;
                                                       
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();          
-            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
-            var json = JsonConvert.SerializeObject(historianDatas, _serializerSettings);
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}?requestId={Guid.NewGuid()}";
             
-            try
-            {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                        ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "SaveDataAsync Success"
-                    });
-                    return true;
-                }
-
-                Event(null, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                    ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "SaveDataAsync Failed"
-                });
-                return false;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"SaveDataAsync Failed - {e.Message}"
-                });
-                if (_throwApiErrors) 
-					 throw; 
-                return false;
-            }
+            var apiResponse = await ExecuteRequest("SaveDataAsync", HttpMethod.Post, endpoint, cancellation, historianDatas).ConfigureAwait(_continueOnCapturedContext);
+            
+            return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
         }
-        public async Task<bool> SaveBulkDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas)
+
+        public async Task<bool> SaveBulkDataAsync(string telemetryTwinRefId, HistorianDatas historianDatas, CancellationToken cancellation = default)
         {
             if (historianDatas?.Items == null || historianDatas.Items.Count == 0)
                 return true;
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var endpoint =$"/historian/data/v1/{telemetryTwinRefId}/bulkingest";
+            var endpoint =$"/historian/data/v1/{telemetryTwinRefId}/bulkingest?requestId={Guid.NewGuid()}";
 
-            var json = JsonConvert.SerializeObject(historianDatas, _serializerSettings);
+            var apiResponse = await ExecuteRequest("SaveBulkDataAsync", HttpMethod.Post, endpoint, cancellation, historianDatas).ConfigureAwait(_continueOnCapturedContext);
 
-            try
-            {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelTrace,
-                        HttpStatusCode = respContent.ResponseMessage.StatusCode,
-                        ElapsedMs = watch.ElapsedMilliseconds,
-                        Module = "DataApi",
-                        Message = "SaveBulkDataAsync Success"
-                    });
-                    return true;
-                }
-
-                Event(null, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelWarn,
-                    HttpStatusCode = respContent.ResponseMessage.StatusCode,
-                    ElapsedMs = watch.ElapsedMilliseconds,
-                    Module = "DataApi",
-                    Message = "SaveBulkDataAsync Failed"
-                });
-                return false;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelError,
-                    Module = "DataApi",
-                    Message = $"SaveBulkDataAsync Failed - {e.Message}"
-                });
-                if (_throwApiErrors)
-                    throw;
-                return false;
-            }
+            return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
         }
 
-        public async Task<bool> UpdateDataAsync(string telemetryTwinRefId, HistorianData historianData)
+        public async Task<bool> UpdateDataAsync(string telemetryTwinRefId, HistorianData historianData, CancellationToken cancellation = default)
         {
             if (historianData == null)
                 return true;
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}";
-            var json = JsonConvert.SerializeObject(historianData, _serializerSettings);
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}?requestId={Guid.NewGuid()}";
+            
+            var apiResponse = await ExecuteRequest("UpdateDataAsync", HttpMethod.Put, endpoint, cancellation, historianData).ConfigureAwait(_continueOnCapturedContext);
 
-            try
-            {
-                var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                        ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "UpdateDataAsync Success"
-                    });
-                    return true;
-                }
-
-                Event(null, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                    ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "UpdateDataAsync Failed"
-                });
-                return false;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"UpdateDataAsync Failed - {e.Message}"
-                });
-                if (_throwApiErrors) 
-					 throw; 
-                return false;
-            }
+            return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
         }
 
-        public async Task<bool> DeleteManyAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate)
+        public async Task<bool> DeleteManyAsync(string telemetryTwinRefId, DateTime startDate, DateTime endDate, CancellationToken cancellation = default)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var sDate = startDate.ToString("O");
-            var eDate = endDate.ToString("O");
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}?startTime={startDate:O}&endTime={endDate:O}&requestId={Guid.NewGuid()}";
 
-            try
-            {
-                var respContent = await _restHelper.DeleteRestJSONAsync(requestId, 
-                    $"/historian/data/v1/{telemetryTwinRefId}?startTime={sDate}&endTime={eDate}").ConfigureAwait(_continueOnCapturedContext);
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
-                {
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode,
-                        ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "DeleteManyAsync Success"
-                    });
-                }
-                else
-                {
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                        ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "DeleteManyAsync Failed"
-                    });
-                }
-                return respContent.ResponseMessage.IsSuccessStatusCode;
-            }
-            catch (Exception e)
-            {
-                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"DeleteManyAsync Failed - {e.Message}" });
-                if (_throwApiErrors) 
-					 throw; 
-                return false;
-            }
+            var apiResponse = await ExecuteRequest("DeleteManyAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+            return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
         }
 
-        public async Task<bool> FlushAsync(string telemetryTwinRefId)
+        public async Task<bool> FlushAsync(string telemetryTwinRefId, CancellationToken cancellation = default)
         {
-            var watch = System.Diagnostics.Stopwatch.StartNew();
-            var requestId = Guid.NewGuid();
-            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}/Flush";
+            var endpoint = $"/historian/data/v1/{telemetryTwinRefId}/Flush?requestId={Guid.NewGuid()}";
 
+            var apiResponse = await ExecuteRequest("FlushAsync", HttpMethod.Post, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+            return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+        }
+
+        private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+        {
             try
             {
-                var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
-                if (respContent.ResponseMessage.IsSuccessStatusCode)
+                var watch = Stopwatch.StartNew();
+
+                var apiResponse = await _apiHelper.BuildRequestAndSendAsync<ApiResponse>(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
+
+                watch.Stop();
+
+                var message = " Success";
+                var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+                if (!apiResponse.StatusCode.IsSuccessStatusCode())
                 {
-                    Event(null, new ClientApiLoggerEventArgs
-                    {
-                        EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                        ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "FlushAsync Success"
-                    });
-                    return true;
+                    message = " Failed";
+                    eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+                    if (_throwApiErrors)
+                        throw new RestApiException(new ServiceResponse { ApiResponse = apiResponse, ElapsedMs = watch.ElapsedMilliseconds });
                 }
 
-                Event(null, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, 
-                    ElapsedMs = watch.ElapsedMilliseconds, Module = "DataApi", Message = "FlushAsync Failed"
-                });
-                return false;
+                Event(null,
+                    new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = eventLevel,
+                        HttpStatusCode = (HttpStatusCode)apiResponse.StatusCode,
+                        ElapsedMs = watch.ElapsedMilliseconds,
+                        Module = "DataApi",
+                        Message = callingMethod + message
+                    });
 
+                return apiResponse;
             }
             catch (Exception e)
             {
-                Event(e, new ClientApiLoggerEventArgs
-                {
-                    EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "DataApi", Message = $"FlushAsync Failed - {e.Message}"
-                });
-                if (_throwApiErrors) 
-					 throw; 
-                return false;
+                Event(e,
+                    new ClientApiLoggerEventArgs
+                    {
+                        EventLevel = EnumOneLogLevel.OneLogLevelError,
+                        Module = "DataApi",
+                        Message = $"{callingMethod} Failed - {e.Message}"
+                    });
+                if (_throwApiErrors)
+                    throw;
+                return null;
             }
         }
     }

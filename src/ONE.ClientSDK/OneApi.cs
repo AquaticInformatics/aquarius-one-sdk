@@ -6,6 +6,7 @@ using ONE.ClientSDK.Common.Library;
 using ONE.ClientSDK.Common.Logbook;
 using ONE.ClientSDK.Common.Notifications;
 using ONE.ClientSDK.Common.Schedule;
+using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Enterprise.Authentication;
 using ONE.ClientSDK.Enterprise.Core;
 using ONE.ClientSDK.Enterprise.Report;
@@ -334,6 +335,7 @@ namespace ONE.ClientSDK
         private ReportApi _report;
         private SampleApi _sample;
         private RestHelper _restHelper;
+        private IOneApiHelper _apiHelper;
         private PlatformEnvironment _environment;
         private bool _continueOnCapturedContext;
         private bool _logRestfulCalls;
@@ -346,16 +348,18 @@ namespace ONE.ClientSDK
             _authentication = new AuthenticationApi(Environment, ContinueOnCapturedContext, ThrowApiErrors);
             _authentication.Event += Logger.Logger_Event;
 
+            _apiHelper = new OneApiHelper(Authentication, ContinueOnCapturedContext, UseProtobufModels);
+
             _restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls, ThrowApiErrors);
             _restHelper.Event += Logger.Logger_Event;
 
-            _core = new CoreApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors, UseProtobufModels);
+            _core = new CoreApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
             _core.Event += Logger.Logger_Event;
 
             _userHelper = new UserHelper(Authentication, Core);
             _cacheHelper = new CacheHelper(this);
 
-            _configuration = new ConfigurationApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors, UseProtobufModels);
+            _configuration = new ConfigurationApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
             _configuration.Event += Logger.Logger_Event;
 
             // This is a wrapper around the ConfigurationApi no events are logged directly and no other properties are required
@@ -370,7 +374,7 @@ namespace ONE.ClientSDK
             _activity = new ActivityApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
             _activity.Event += Logger.Logger_Event;
 
-            _digitalTwin = new DigitalTwinApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors, UseProtobufModels);
+            _digitalTwin = new DigitalTwinApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
             _digitalTwin.Event += Logger.Logger_Event;
 
             _notification = new NotificationApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
@@ -379,10 +383,10 @@ namespace ONE.ClientSDK
             _report = new ReportApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
             _report.Event += Logger.Logger_Event;
 
-            _spreadsheet = new SpreadsheetApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors, UseProtobufModels);
+            _spreadsheet = new SpreadsheetApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
             _spreadsheet.Event += Logger.Logger_Event;
 
-            _data = new DataApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors, UseProtobufModels);
+            _data = new DataApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
             _data.Event += Logger.Logger_Event;
 
             _sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, Activity, ThrowApiErrors);

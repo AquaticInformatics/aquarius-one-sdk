@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Linq;
 
 namespace ONE.ClientSDK.Utilities
 {
     [Serializable]
-    public class RestApiException : Exception
+    public sealed class RestApiException : Exception
     {
         private ServiceResponse _serviceResponse = null;
         public RestApiException()
@@ -12,8 +13,17 @@ namespace ONE.ClientSDK.Utilities
         {
            _serviceResponse = serviceResponse;
             Data.Add("ElapsedMs", serviceResponse.ElapsedMs);
-            Data.Add("ReasonPhrase", _serviceResponse.ResponseMessage.ReasonPhrase);
-            Data.Add("StatusCode", _serviceResponse.ResponseMessage.StatusCode);
+
+            if (_serviceResponse.ResponseMessage != null)
+            {
+                Data.Add("ReasonPhrase", _serviceResponse.ResponseMessage.ReasonPhrase);
+                Data.Add("StatusCode", _serviceResponse.ResponseMessage.StatusCode);
+            }
+            else if (_serviceResponse.ApiResponse != null)
+            {
+                Data.Add("Errors", _serviceResponse.ApiResponse.Errors);
+                Data.Add("StatusCode", _serviceResponse.ApiResponse.StatusCode);
+            }
         }
         
         public override string Message
@@ -22,7 +32,13 @@ namespace ONE.ClientSDK.Utilities
             {
                 if (_serviceResponse == null)
                     return "unknown HTTP Error";
-                return ((int)_serviceResponse.ResponseMessage.StatusCode).ToString();
+
+                if (_serviceResponse?.ResponseMessage != null)
+                    return ((int)_serviceResponse.ResponseMessage.StatusCode).ToString();
+                if (_serviceResponse?.ApiResponse?.Errors.FirstOrDefault() != null)
+                    return _serviceResponse.ApiResponse.Errors.FirstOrDefault()?.ToString();
+
+                return "unknown HTTP Error";
             }
         }
     }

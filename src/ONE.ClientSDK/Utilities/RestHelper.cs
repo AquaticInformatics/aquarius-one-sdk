@@ -452,6 +452,53 @@ namespace ONE.ClientSDK.Utilities
                 throw;
             }
         }
+
+        public async Task<ServiceResponse> DeleteRestProtobufAsync(string endpointUrl)
+        {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+            dynamic error = new JObject();
+
+            try
+            {
+
+                HttpResponseMessage response = null;
+                if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)
+                    response = await _authentication.GetLocalHttpProtocolBufferClient(endpointUrl).DeleteAsync(_authentication.GetLocalUri(endpointUrl)).ConfigureAwait(_continueOnCapturedContext);
+                else
+                    response = await _authentication.HttpProtocolBufferClient.DeleteAsync(endpointUrl).ConfigureAwait(_continueOnCapturedContext);
+
+                watch.Stop();
+                var elapsedMs = watch.ElapsedMilliseconds;
+                error.ElapsedMs = elapsedMs;
+
+                error.Client = (JObject)JToken.FromObject(_authentication.HttpProtocolBufferClient);
+                error.Response = (JObject)JToken.FromObject(response);
+                string file = SaveRestCallData("DELETE", error.ToString(), !response.IsSuccessStatusCode);
+                if (response.IsSuccessStatusCode)
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"DeleteRestJSONAsync Success: {endpointUrl}" });
+                else
+                    Event(null, new ClientApiLoggerEventArgs { File = file, EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = response.StatusCode, ElapsedMs = elapsedMs, Module = "RestHelper", Message = $"DeleteRestJSONAsync Failed: {endpointUrl}" });
+                if (_throwApiErrors && !response.IsSuccessStatusCode)
+                    throw new RestApiException(new ServiceResponse
+                    {
+                        ResponseMessage = response,
+                        ElapsedMs = elapsedMs
+                    });
+                return new ServiceResponse
+                {
+                    ResponseMessage = response,
+                    ElapsedMs = elapsedMs
+                };
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "RestHelper", Message = $"DeleteRestJSONAsync Failed - {e.Message}" });
+                error.Exception = (JObject)JToken.FromObject(e);
+                SaveRestCallData("DELETE", error.ToString(), true);
+                throw;
+            }
+        }
+
         public string SaveRestCallData(string prefix, string content, bool error)
         {
             if (!_logRestfulCalls)
@@ -558,7 +605,7 @@ namespace ONE.ClientSDK.Utilities
                 case EnumHttpMethod.Put:
                     return await PutRestProtobufAsync(content, endpointUrl);
                 case EnumHttpMethod.Delete:
-                    throw new NotImplementedException("DeleteRestProtobuf does not exist");
+                    return await DeleteRestProtobufAsync(endpointUrl);
                 default:
                     throw new ArgumentOutOfRangeException(nameof(httpMethod));
             }
