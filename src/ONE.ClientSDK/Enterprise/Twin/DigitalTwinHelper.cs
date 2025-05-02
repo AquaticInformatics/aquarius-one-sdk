@@ -8,6 +8,7 @@ using Newtonsoft.Json.Linq;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants.TwinCategory;
 using ONE.Shared.Time;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Enterprise.Twin
 {
@@ -15,8 +16,8 @@ namespace ONE.ClientSDK.Enterprise.Twin
 	{
 		public DigitalTwinHelper (DigitalTwinApi digitalTwinApi)
 		{
-			ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
-			ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+			ItemDictionaryByGuid = new Dictionary<string, DigitalTwinItem>();
+			ItemDictionaryByLong = new Dictionary<long, DigitalTwinItem>();
 			_digitalTwinApi = digitalTwinApi;
 		}
 
@@ -25,8 +26,9 @@ namespace ONE.ClientSDK.Enterprise.Twin
 		public DigitalTwinItem OperationDigitalTwinItem { get; set; }
 		public string Delimiter { get; set; } = "\\";
 
-		public Dictionary<string, DigitalTwinItem> ItemDictionarybyGuid { get; set; }
-		public Dictionary<long, DigitalTwinItem> ItemDictionarybyLong { get; set; }
+		public Dictionary<string, DigitalTwinItem> ItemDictionaryByGuid { get; set; }
+		public Dictionary<long, DigitalTwinItem> ItemDictionaryByLong { get; set; }
+
 		public async Task<bool> LoadOperationAsync(string operationId)
 		{
 			var operationDigitalTwin = await _digitalTwinApi.GetAsync(operationId);
@@ -47,137 +49,136 @@ namespace ONE.ClientSDK.Enterprise.Twin
 				AddChildren(OperationDigitalTwinItem, allChildTwins);
 				return true;
 			}
-			else
-				return false;
+
+			return false;
 		}
+
 		private void AddChildren(DigitalTwinItem digitalTwinTreeItem, List<DigitalTwin> digitalTwins)
 		{
 			var childDigitalTwins = digitalTwins.Where(p => p.ParentId == digitalTwinTreeItem.DigitalTwin.Id);
-			foreach (DigitalTwin digitalTwin in childDigitalTwins)
+			foreach (var digitalTwin in childDigitalTwins)
 			{
 				var childDigitalTwinItem = new DigitalTwinItem(digitalTwin);
-				if (string.IsNullOrEmpty(digitalTwinTreeItem.Path))
-					childDigitalTwinItem.Path = childDigitalTwinItem.DigitalTwin.Name;
-				else
-					childDigitalTwinItem.Path = $"{digitalTwinTreeItem.Path}{Delimiter}{childDigitalTwinItem.DigitalTwin.Name}";
+				childDigitalTwinItem.Path = string.IsNullOrEmpty(digitalTwinTreeItem.Path)
+					? childDigitalTwinItem.DigitalTwin.Name
+					: $"{digitalTwinTreeItem.Path}{Delimiter}{childDigitalTwinItem.DigitalTwin.Name}";
 				digitalTwinTreeItem.ChildDigitalTwinItems.Add(childDigitalTwinItem);
 				if (!string.IsNullOrEmpty(digitalTwin.TwinReferenceId))
-					ItemDictionarybyGuid.Add(digitalTwin.TwinReferenceId, childDigitalTwinItem);
-				ItemDictionarybyLong.Add(digitalTwin.Id, childDigitalTwinItem);
+					ItemDictionaryByGuid.Add(digitalTwin.TwinReferenceId, childDigitalTwinItem);
+				ItemDictionaryByLong.Add(digitalTwin.Id, childDigitalTwinItem);
 				AddChildren(childDigitalTwinItem, digitalTwins);
 			}
 		}
+
 		public string GetTelemetryPath(string digitalTwinReferenceId, bool includeItem)
 		{
-			if (ItemDictionarybyGuid.ContainsKey(digitalTwinReferenceId))
+			if (ItemDictionaryByGuid.ContainsKey(digitalTwinReferenceId))
 			{
 				if (includeItem)
+					return ItemDictionaryByGuid[digitalTwinReferenceId].Path;
+
+				if (ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId != null &&
+				    ItemDictionaryByGuid.ContainsKey(ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId))
 				{
-					return ItemDictionarybyGuid[digitalTwinReferenceId].Path;
+					return ItemDictionaryByGuid[ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId].Path;
 				}
-				else
+
+				if (ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentId.HasValue &&
+				    ItemDictionaryByLong.ContainsKey((long)ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentId))
 				{
-					if (ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId != null &&
-						ItemDictionarybyGuid.ContainsKey(ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId))
-					{
-						return ItemDictionarybyGuid[ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId].Path;
-					}
-					else if (ItemDictionarybyLong.ContainsKey((long)ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentId))
-					{
-						return ItemDictionarybyLong[(long)ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentId].Path;
-					}
+					return ItemDictionaryByLong[(long)ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentId].Path;
 				}
 			}
+
 			return "";
 		}
+
 		public static DigitalTwin GetByRef(List<DigitalTwin> digitalTwins, string twinRefId)
 		{
 			if (digitalTwins == null || string.IsNullOrEmpty(twinRefId))
 				return null;
-			var matches = digitalTwins.Where(p => p.TwinReferenceId != null && String.Equals(p.TwinReferenceId.ToUpper(), twinRefId.ToUpper(), StringComparison.CurrentCulture));
-			if (matches.Count() > 0)
-			{
-				return matches.First();
-			}
-			else
-			{
-				return null;
-			}
+
+			return digitalTwins.FirstOrDefault(p => p.TwinReferenceId != null && string.Equals(p.TwinReferenceId.ToUpper(), twinRefId.ToUpper(), StringComparison.CurrentCulture));
 		}
+
 		public static string AddUpdateRootValue(string key, JObject value, string json)
 		{
-			dynamic jsonObj;
-			if (json == null)
-				jsonObj = new JObject();
-			else
-				jsonObj = JsonConvert.DeserializeObject(json);
+			dynamic jsonObj = json == null ? new JObject() : JsonConvert.DeserializeObject(json) ?? new JObject();
 			jsonObj[key] = value;
-			return JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.None);
+
+			return JsonConvert.SerializeObject(jsonObj, Formatting.None);
 		}
+
 		public static string AddUpdateRootValue(string key, string value, string json)
 		{
-			dynamic jsonObj;
-			if (json == null)
-				jsonObj = new JObject();
-			else
-				jsonObj = JsonConvert.DeserializeObject(json);
+			dynamic jsonObj = json == null ? new JObject() : JsonConvert.DeserializeObject(json) ?? new JObject();
 			jsonObj[key] = value;
-			return JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.None);
+
+			return JsonConvert.SerializeObject(jsonObj, Formatting.None);
 		}
+
 		public static List<DigitalTwin> GetByParentRef(List<DigitalTwin> digitalTwins, string twinRefId)
 		{
 			if (digitalTwins == null || string.IsNullOrEmpty(twinRefId))
 				return new List<DigitalTwin>();
-			var matches = digitalTwins.Where(p => p.ParentTwinReferenceId != null && String.Equals(p.ParentTwinReferenceId.ToUpper(), twinRefId.ToUpper(), StringComparison.CurrentCulture));
-			return matches.ToList();
+
+			return digitalTwins.Where(p => p.ParentTwinReferenceId != null && string.Equals(p.ParentTwinReferenceId.ToUpper(), twinRefId.ToUpper(), StringComparison.CurrentCulture)).ToList();
 		}
+
 		public static long GetLongTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
 		{
-			long.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out long propertyValue);
+			long.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out var propertyValue);
 			return propertyValue;
 		}
+
 		public static bool GetBoolTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
 		{
-			bool.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out bool propertyValue);
+			bool.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out var propertyValue);
 			return propertyValue;
 		}
+
 		public static DateTime GetDateTimeTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
 		{
-			DateTimeHelper.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out DateTime propertyValue);
+			DateTimeHelper.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out var propertyValue);
 			return propertyValue;
 		}
+
 		public static double GetDoubleTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
 		{
-			string value = GetTwinDataProperty(digitalTwin, path, propertyName);
-			double.TryParse(value, out double propertyValue);
+			var value = GetTwinDataProperty(digitalTwin, path, propertyName);
+			double.TryParse(value, out var propertyValue);
 			return propertyValue;
 		}
+
 		public static int GetIntTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
 		{
-			string value = GetTwinDataProperty(digitalTwin, path, propertyName);
-			int.TryParse(value, out int propertyValue);
+			var value = GetTwinDataProperty(digitalTwin, path, propertyName);
+			int.TryParse(value, out var propertyValue);
 			return propertyValue;
 		}
+
 		public static float? GetFloatTwinDataProperty(DigitalTwin digitalTwin, string path, string propertyName)
 		{
 			float? propertyValue = null;
 			if (!string.IsNullOrEmpty(GetTwinDataProperty(digitalTwin, path, propertyName)))
 			{
-				float.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out float value);
+				float.TryParse(GetTwinDataProperty(digitalTwin, path, propertyName), out var value);
 				propertyValue = value;
 			}
 			return propertyValue;
 		}
+
 		public static DigitalTwin GetByDataProperty(List<DigitalTwin> digitalTwins, string path, string propertyName, string value)
 		{
-			foreach (DigitalTwin digitalTwin in digitalTwins)
+			foreach (var digitalTwin in digitalTwins)
 			{
-				string prop = GetTwinDataProperty(digitalTwin, path, propertyName);
-				if (prop != null && prop.ToUpper() == value.ToUpper())
+				var prop = GetTwinDataProperty(digitalTwin, path, propertyName);
+				if (prop != null && string.Equals(prop, value, StringComparison.CurrentCultureIgnoreCase))
 				{
 					return digitalTwin;
 				}
 			}
+
 			return null;
 		}
 		
@@ -209,38 +210,42 @@ namespace ONE.ClientSDK.Enterprise.Twin
 
 				return propertyValue == null ? "" : propertyValue.ToString();
 			}
+
 			return "";
 		}
 		
-		public static List<string> GetTwinDataPropertyAslist(DigitalTwin digitalTwin, string path, string propertyName)
+		public static List<string> GetTwinDataPropertyAsList(DigitalTwin digitalTwin, string path, string propertyName)
 		{
 			if (digitalTwin != null && !string.IsNullOrEmpty(digitalTwin.TwinData))
 			{
-				JObject twinData = JObject.Parse(digitalTwin.TwinData);
+				var twinData = JObject.Parse(digitalTwin.TwinData);
 				if (twinData == null)
 					return null;
+
 				var pathItems = path.Split('\\');
-				JObject parentObject = twinData;
+				var parentObject = twinData;
+
 				foreach (var pathItem in pathItems)
 				{
 					if (!string.IsNullOrEmpty(pathItem))
 					{
 						if (parentObject[pathItem] == null || !parentObject[pathItem].HasValues)
-						{
 							return new List<string>();
-						}
+						
 						parentObject = (JObject)parentObject[pathItem];
+
 						if (parentObject == null)
 							return new List<string>();
 					}
 				}
+
 				if (parentObject[propertyName] == null)
 					return new List<string>();
+
 				if (parentObject[propertyName] is JArray)
-				{
 					return parentObject[propertyName].ToObject<List<string>>();
-				}
 			}
+
 			return new List<string>();
 		}
 
@@ -252,41 +257,43 @@ namespace ONE.ClientSDK.Enterprise.Twin
 			}
 			else if (!string.IsNullOrEmpty(value))
 			{
-				string currentValue = GetTwinDataProperty(digitalTwin, "", key);
+				var currentValue = GetTwinDataProperty(digitalTwin, "", key);
 				if (currentValue != value)
 					jsonPatchDocument.Add($"/{key}", value);
 			}
+
 			return jsonPatchDocument;
 		}
+
 		public static bool DoesTwinArrayPropertyExist(DigitalTwin digitalTwin, string path, string key, string propertyName)
 		{
 			try
 			{
 				if (digitalTwin != null && !string.IsNullOrEmpty(digitalTwin.TwinData))
 				{
-					JObject twinData = JObject.Parse(digitalTwin.TwinData);
+					var twinData = JObject.Parse(digitalTwin.TwinData);
 					if (twinData == null)
 						return false;
+
 					if (!string.IsNullOrEmpty(path))
 					{
-
-						var Array = (JArray)twinData[path];
-						if (Array == null)
+						var array = (JArray)twinData[path];
+						if (array == null)
 							return false;
-						for (int i = 0; i < Array.Count; i++)
+
+						foreach (var t in array)
 						{
-							if (Array[i][key] != null && Array[i][key].ToString().ToUpper() == propertyName.ToUpper())
+							if (t[key] != null && string.Equals(t[key].ToString(), propertyName, StringComparison.CurrentCultureIgnoreCase))
 								return true;
 						}
 					}
-
-
 				}
 			}
 			catch
 			{
 				return false;
 			}
+
 			return false;
 		}
 	}

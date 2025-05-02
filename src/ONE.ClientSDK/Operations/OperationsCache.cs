@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using ONE.ClientSDK.Common.Logbook;
 using ONE.ClientSDK.Enums;
 using ONE.Models.CSharp.Constants.TwinCategory;
 
@@ -24,13 +25,14 @@ namespace ONE.ClientSDK.Operations
 				Operations = operationsCache.Operations;
 				foreach (var operationCache in Operations)
 				{
-					operationCache.SetClientSDK(clientSdk);
+					operationCache.SetClientSdk(clientSdk);
 					var allOperationDescendantTwins = operationCache.LocationTwins.Union(operationCache.ColumnTwins).ToList();
 					operationCache.AddChildren(operationCache.DigitalTwinItem, allOperationDescendantTwins);
 					operationCache.CacheColumns();
 				}
 			}
 		}
+
 		public OperationsCache(string serializedObject)
 		{
 			try
@@ -39,8 +41,8 @@ namespace ONE.ClientSDK.Operations
 				Operations = operationsCache.Operations;
 				foreach (var operationCache in Operations)
 				{
-					var allOperationDecendentTwins = operationCache.LocationTwins.Union(operationCache.ColumnTwins).ToList();
-					operationCache.AddChildren(operationCache.DigitalTwinItem, allOperationDecendentTwins);
+					var allOperationDescendantTwins = operationCache.LocationTwins.Union(operationCache.ColumnTwins).ToList();
+					operationCache.AddChildren(operationCache.DigitalTwinItem, allOperationDescendantTwins);
 					operationCache.CacheColumns();
 				}
 			}
@@ -49,24 +51,17 @@ namespace ONE.ClientSDK.Operations
 				Operations = new List<OperationCache>();
 			}
 		}
+
 		public OperationsCache()
 		{ }
-		private OperationCache _currentOperation;
-		public OperationCache CurrentOperation
-		{
-			get
-			{
-				return _currentOperation;
-			}
-			set
-			{
-				_currentOperation = value;
-			}
-		}
+
+		public OperationCache CurrentOperation { get; set; }
+
 		public void Unload()
 		{
 			Operations = new List<OperationCache>();
 		}
+
 		public async Task<List<OperationCache>> LoadOperationsAsync(bool loadAllOperationCaches = false)
 		{
 			if (_clientSdk.Authentication.User == null)
@@ -74,6 +69,7 @@ namespace ONE.ClientSDK.Operations
 				var result = await _clientSdk.Authentication.GetUserInfoAsync();
 				_clientSdk.Authentication.User = await _clientSdk.UserHelper.GetUserFromUserInfoAsync(result);
 			}
+
 			var operationTwins = await _clientSdk.DigitalTwin.GetDescendantsByTypeAsync(_clientSdk.Authentication.User.TenantId, SpaceConstants.OperationType.RefId);
 
 			foreach (var operationTwin in operationTwins)
@@ -88,33 +84,31 @@ namespace ONE.ClientSDK.Operations
 			Operations = Operations.OrderBy(p => p.Name).ToList();
 			return Operations;
 		}
+
 		public string GuidByIndex(string index)
 		{
-			int.TryParse(index, out int idx);
+			int.TryParse(index, out var idx);
 			if (Operations == null || idx > Operations.Count - 1 || idx < 0 || Operations.Count == 0)
-				return EnumErrors.ERR_INDEX_OUT_OF_RANGE.ToString();
-			else
-				return Operations[idx].Id;
+				return nameof(EnumErrors.ERR_INDEX_OUT_OF_RANGE);
+
+			return Operations[idx].Id;
 		}
+
 		public string Name(string guid)
 		{
 			if (Operations == null || string.IsNullOrEmpty(guid))
-				return EnumErrors.ERR_INVALID_OPERATION_GUID.ToString();
+				return nameof(EnumErrors.ERR_INVALID_OPERATION_GUID);
 			var operation = GetOperationById(guid);
-			if (operation == null)
-				return EnumErrors.ERR_INVALID_OPERATION_GUID.ToString();
-			return operation.Name;
+			return operation == null ? nameof(EnumErrors.ERR_INVALID_OPERATION_GUID) : operation.Name;
 		}
 	   
 		public OperationCache GetOperationById(string guid)
 		{
 			if (string.IsNullOrEmpty(guid) || Operations == null)
 				return null;
-			var matches = Operations.Where(c => c.Id.ToUpper() == guid.ToUpper());
-			if (matches.Count() > 0)
-				return matches.First();
-			return null;
+			return Operations.FirstOrDefault(c => string.Equals(c.Id, guid, StringComparison.CurrentCultureIgnoreCase));
 		}
+
 		public override string ToString()
 		{
 			try
@@ -126,10 +120,20 @@ namespace ONE.ClientSDK.Operations
 				return base.ToString();
 			}
 		}
-		public void Load(string serializedObject)
+
+		public OperationsCache Load(string serializedObject)
 		{
-			
+			try
+			{
+				return JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+			}
+			catch (Exception)
+			{
+				if (_clientSdk.ThrowApiErrors)
+					throw;
+
+				return null;
+			}
 		}
-		
 	}
 }

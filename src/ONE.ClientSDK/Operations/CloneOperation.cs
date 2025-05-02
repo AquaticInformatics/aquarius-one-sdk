@@ -4,47 +4,50 @@ using System.Linq;
 using System.Threading.Tasks;
 using Google.Protobuf.WellKnownTypes;
 using Newtonsoft.Json;
+using ONE.ClientSDK.Enterprise.Twin;
+using ONE.ClientSDK.Operations.Spreadsheet;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants;
 using ONE.Models.CSharp.Constants.TwinCategory;
 using ONE.Models.CSharp.Imposed.Enums;
 using ONE.Models.CSharp.Imposed.WorksheetView;
-using proto = ONE.Models.CSharp;
 using WorksheetView = ONE.Models.CSharp.Imposed.WorksheetView.WorksheetView;
 
 namespace ONE.ClientSDK.Operations
 {
 	public class CloneOperation
 	{
-		private OneApi _clientSDK;
+		private readonly OneApi _clientSdk;
 		private readonly OperationCache _operationCache;
+
 		public CloneOperation(OneApi clientSdk, OperationCache operationCache)
 		{
-			_clientSDK = clientSdk;
+			_clientSdk = clientSdk;
 			_operationCache = operationCache;
 		}
+
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
 		public async Task<bool> CloneAsync(OneApi clientSdk, DigitalTwin destinationTenantTwin)
 		{
-			Dictionary<string, string> sourceToDestinationLocationTwinMapping = new Dictionary<string, string>();
+			var sourceToDestinationLocationTwinMapping = new Dictionary<string, string>();
 			var sourceOperationDigitalTwin = _operationCache.DigitalTwin;
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Creating Operation Twin" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Creating Operation Twin" });
 			var destinationOperationDigitalTwin = await clientSdk.DigitalTwin.CreateSpaceAsync(destinationTenantTwin.TwinReferenceId, $"Copy of: {sourceOperationDigitalTwin.Name}", sourceOperationDigitalTwin.TwinTypeId, sourceOperationDigitalTwin.TwinSubTypeId);
 			if (destinationOperationDigitalTwin == null)
 				return false;
-			string twinData = Enterprise.Twin.DigitalTwinHelper.AddUpdateRootValue("CloneId", sourceOperationDigitalTwin.TwinReferenceId, sourceOperationDigitalTwin.TwinData);
+			var twinData = DigitalTwinHelper.AddUpdateRootValue("CloneId", sourceOperationDigitalTwin.TwinReferenceId, sourceOperationDigitalTwin.TwinData);
 			destinationOperationDigitalTwin.TwinData = twinData;
 			destinationOperationDigitalTwin.UpdateMask = new FieldMask { Paths = { "twinData" } };
 			destinationOperationDigitalTwin = await clientSdk.DigitalTwin.UpdateAsync(destinationOperationDigitalTwin);
 			sourceToDestinationLocationTwinMapping.Add(sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId);
 
 			//pbOperationStatus.Value = 50;
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Creating Spreadsheet" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Creating Spreadsheet" });
 
-			SpreadsheetDefinition sourceSpreadsheetDefinition = _operationCache.SpreadsheetDefinition;
-			SpreadsheetDefinition destinationSpreadsheetDefinition = new SpreadsheetDefinition
+			var sourceSpreadsheetDefinition = _operationCache.SpreadsheetDefinition;
+			var destinationSpreadsheetDefinition = new SpreadsheetDefinition
 			{
 				TimeWindowOffset = sourceSpreadsheetDefinition.TimeWindowOffset,
 				TwinId = destinationOperationDigitalTwin.TwinReferenceId,
@@ -54,62 +57,61 @@ namespace ONE.ClientSDK.Operations
 			//pbOperationStatus.Value = 100;
 
 			// Task 2 Copying Locations
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Loading Source Locations" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Loading Source Locations" });
 			//pbLocationStatus.Maximum = sourceLocationDigitalTwins.Count;
 
 			await CopyLocationsAsync(sourceToDestinationLocationTwinMapping, destinationOperationDigitalTwin.TwinReferenceId, _operationCache.DigitalTwin.TwinReferenceId, _operationCache.LocationTwins);
 
 			// Task 3 Copying Columns
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Loading Column Twins" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Loading Column Twins" });
 			var sourceColumnDigitalTwins = _operationCache.ColumnTwins;
 
 
 			// Task 3.1 Worksheet 15 Min
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying 15 Min Worksheet" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Copying 15 Min Worksheet" });
 			await CopyWorksheetAsync(_operationCache.FifteenMinuteWorksheetDefinition, sourceToDestinationLocationTwinMapping, sourceColumnDigitalTwins, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId, EnumWorksheet.WorksheetFifteenMinute);
 
 			// Task 3.2 Worksheet 1 hour
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying Hourly Worksheet" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Copying Hourly Worksheet" });
 			await CopyWorksheetAsync(_operationCache.HourlyWorksheetDefinition, sourceToDestinationLocationTwinMapping, sourceColumnDigitalTwins, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId, EnumWorksheet.WorksheetHour);
 
 
 			// Task 3.3 Worksheet 4 hour
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying 4 Hour Worksheet" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Copying 4 Hour Worksheet" });
 			await CopyWorksheetAsync(_operationCache.FourHourWorksheetDefinition, sourceToDestinationLocationTwinMapping, sourceColumnDigitalTwins, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId, EnumWorksheet.WorksheetFourHour);
 
 			// Task 3.4 Worksheet daily
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying Daily Worksheet" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Copying Daily Worksheet" });
 
 			await CopyWorksheetAsync(_operationCache.DailyWorksheetDefinition, sourceToDestinationLocationTwinMapping, sourceColumnDigitalTwins, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId, EnumWorksheet.WorksheetDaily);
 
 			// Task 4 Converting Formulas
 			// Task 4.1 Worksheet 15 Min
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Updating 15 Min Worksheet Computations" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Updating 15 Min Worksheet Computations" });
 			await CopyWorksheetComputationsAsync(_operationCache.FifteenMinuteWorksheetDefinition, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId);
 
 			// Task 4.2 Worksheet 1 hour
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Updating Hourly Worksheet Computations" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Updating Hourly Worksheet Computations" });
 			await CopyWorksheetComputationsAsync(_operationCache.HourlyWorksheetDefinition, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId);
 
 
 			// Task 4.3 Worksheet 4 hour
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Updating 4 Hour Worksheet Computations" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Updating 4 Hour Worksheet Computations" });
 			await CopyWorksheetComputationsAsync(_operationCache.FourHourWorksheetDefinition, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId);
 
 			// Task 4.4 Worksheet daily
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Updating Daily Worksheet Computations" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Updating Daily Worksheet Computations" });
 			await CopyWorksheetComputationsAsync(_operationCache.DailyWorksheetDefinition, sourceOperationDigitalTwin.TwinReferenceId, destinationOperationDigitalTwin.TwinReferenceId);
 
 			// Task 5 Copying Sheets (Views)
-			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Worksheet Sheets (Views)" });
+			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Worksheet Sheets (Views)" });
 			await CopySheetsAsync(destinationOperationDigitalTwin.TwinReferenceId);
 
 			return true;
-
 		}
+
 		private dynamic ConvertViewHeader(Dictionary<uint, uint> sourceToDestinationColumnNumberMap, dynamic sourceHeader)
 		{
-
 			dynamic destinationHeader;
 			if (sourceHeader.HeaderType == EnumHeaderType.column) //column
 			{
@@ -127,17 +129,17 @@ namespace ONE.ClientSDK.Operations
 
 			return destinationHeader;
 		}
+
 		private async Task<bool> CopySheetsAsync(string destinationOperationId)
 		{
-
-			List<Configuration> sourceSheets = _operationCache.Sheets;
-			Dictionary<uint, uint> sourceToDestinationColumnNumberMap = await GetSourceToDestinationColumnMap(destinationOperationId);
+			var sourceSheets = _operationCache.Sheets;
+			var sourceToDestinationColumnNumberMap = await GetSourceToDestinationColumnMap(destinationOperationId);
 
 			foreach (var sourceConfiguration in sourceSheets)
 			{
-				WorksheetView destinationWorksheetViewConfiguration = new WorksheetView();
+				var destinationWorksheetViewConfiguration = new WorksheetView();
 				var sourceConfigurationData = sourceConfiguration.ConfigurationData;
-				var sourceWorksheetViewConfiguration = Spreadsheet.SpreadsheetHelper.GetWorksheetView(sourceConfigurationData);
+				var sourceWorksheetViewConfiguration = SpreadsheetHelper.GetWorksheetView(sourceConfigurationData);
 				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying {sourceWorksheetViewConfiguration.worksheetType} Sheet: {sourceWorksheetViewConfiguration.name}" });
 
 				destinationWorksheetViewConfiguration.columnNumbers = new List<uint>();
@@ -153,17 +155,18 @@ namespace ONE.ClientSDK.Operations
 					destinationWorksheetViewConfiguration.headers.Add(ConvertViewHeader(sourceToDestinationColumnNumberMap, sourceHeader));
 				}
 
-				await _clientSDK.Configuration.CreateConfigurationAsync(destinationOperationId, ConfigurationTypeConstants.WorksheetView.Id, destinationWorksheetViewConfiguration.ToString(), true);
+				await _clientSdk.Configuration.CreateConfigurationAsync(destinationOperationId, ConfigurationTypeConstants.WorksheetView.Id, destinationWorksheetViewConfiguration.ToString(), true);
 			}
+
 			return true;
 		}
 
 		private async Task<Dictionary<string, string>> CopyLocationsAsync(Dictionary<string, string> sourceToDestinationTwinMapping, string destinationParentId, string sourceParentId, List<DigitalTwin> sourceDigitalTwins)
 		{
-			foreach (var sourceTwin in Enterprise.Twin.DigitalTwinHelper.GetByParentRef(sourceDigitalTwins, sourceParentId))
+			foreach (var sourceTwin in DigitalTwinHelper.GetByParentRef(sourceDigitalTwins, sourceParentId))
 			{
 				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying Location Twin {sourceTwin.Name}" });
-				DigitalTwin newTwin = new DigitalTwin
+				var newTwin = new DigitalTwin
 				{
 					Name = sourceTwin.Name,
 					ParentTwinReferenceId = destinationParentId,
@@ -172,26 +175,25 @@ namespace ONE.ClientSDK.Operations
 					TwinSubTypeId = sourceTwin.TwinSubTypeId,
 					TwinReferenceId = Guid.NewGuid().ToString()
 				};
-				newTwin = await _clientSDK.DigitalTwin.CreateAsync(newTwin);
-				string twinData = Enterprise.Twin.DigitalTwinHelper.AddUpdateRootValue("CloneId", sourceTwin.TwinReferenceId, sourceTwin.TwinData);
+				newTwin = await _clientSdk.DigitalTwin.CreateAsync(newTwin);
+				var twinData = DigitalTwinHelper.AddUpdateRootValue("CloneId", sourceTwin.TwinReferenceId, sourceTwin.TwinData);
 				newTwin.TwinData = twinData;
 				newTwin.UpdateMask = new FieldMask { Paths = { "twinData" } };
-				newTwin = await _clientSDK.DigitalTwin.UpdateAsync(newTwin);
+				newTwin = await _clientSdk.DigitalTwin.UpdateAsync(newTwin);
 				if (newTwin == null)
 					return sourceToDestinationTwinMapping;
 				sourceToDestinationTwinMapping.Add(sourceTwin.TwinReferenceId, newTwin.TwinReferenceId);
 
-				//sourceDigitalTwinModelItem.AddUpdateChild(newTwin);
-				//var newDigitalTwinModelItem = sourceDigitalTwinModelItem.Get(newTwin.Id);
-				//pbLocationStatus.Value++;
 				sourceToDestinationTwinMapping = await CopyLocationsAsync(sourceToDestinationTwinMapping, newTwin.TwinReferenceId, sourceTwin.TwinReferenceId, sourceDigitalTwins);
 			}
+
 			return sourceToDestinationTwinMapping;
 		}
+
 		private Column CopyColumn(string destinationOperationId, Dictionary<string, string> sourceToDestinationTwinMapping, List<DigitalTwin> columnTwins, Column sourceColumn)
 		{
 			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying {sourceColumn.Name}" });
-			Column destinationColumn = new Column
+			var destinationColumn = new Column
 			{
 				Name = sourceColumn.Name,
 				ColumnNumber = sourceColumn.ColumnNumber,
@@ -200,6 +202,7 @@ namespace ONE.ClientSDK.Operations
 				IsActive = sourceColumn.IsActive,
 				IsNumeric = sourceColumn.IsNumeric
 			};
+
 			if (sourceColumn.Limits != null)
 			{
 				foreach (var sourceLimit in sourceColumn.Limits)
@@ -207,8 +210,10 @@ namespace ONE.ClientSDK.Operations
 					destinationColumn.Limits.Add(sourceLimit);
 				}
 			}
+
 			destinationColumn.ParameterId = sourceColumn.ParameterId;
 			destinationColumn.PlantId = destinationOperationId;
+
 			if (destinationColumn.ReportableQualifierDefinitions != null)
 			{
 				foreach (var sourceReportableQualifierDefinition in destinationColumn.ReportableQualifierDefinitions)
@@ -216,77 +221,81 @@ namespace ONE.ClientSDK.Operations
 					sourceColumn.ReportableQualifierDefinitions.Add(sourceReportableQualifierDefinition);
 				}
 			}
+
 			destinationColumn.ValidValues = destinationColumn.ValidValues;
-			var destinationColumnTwin = Enterprise.Twin.DigitalTwinHelper.GetByRef(columnTwins, sourceColumn.ColumnId);
+			var destinationColumnTwin = DigitalTwinHelper.GetByRef(columnTwins, sourceColumn.ColumnId);
+
 			if (destinationColumnTwin == null)
 				return null;
+
 			destinationColumn.LocationId = sourceToDestinationTwinMapping[destinationColumnTwin.ParentTwinReferenceId];
 			destinationColumn.ColumnId = Guid.NewGuid().ToString();
 
 			return destinationColumn;
 		}
-		private async Task<bool> CopyWorksheetAsync(WorksheetDefinition sourceWorksheetDefinition, Dictionary<string, string> sourceToDestinationLocationTwinMapping, List<DigitalTwin> columnTwins, string sourceOperationId, string destinationOperationId, EnumWorksheet worksheetType)
+
+		private async Task CopyWorksheetAsync(WorksheetDefinition sourceWorksheetDefinition,
+			Dictionary<string, string> sourceToDestinationLocationTwinMapping, List<DigitalTwin> columnTwins,
+			string sourceOperationId, string destinationOperationId, EnumWorksheet worksheetType)
 		{
-			if (sourceWorksheetDefinition == null || sourceWorksheetDefinition.Columns == null || sourceWorksheetDefinition.Columns.Count == 0)
-				return true;
-			WorksheetDefinition destinationWorksheetDefinition = new WorksheetDefinition
+			if (sourceWorksheetDefinition?.Columns == null || sourceWorksheetDefinition.Columns.Count == 0)
+				return;
+
+			var destinationWorksheetDefinition = new WorksheetDefinition
 			{
 				EnumWorksheet = worksheetType,
 				TwinId = destinationOperationId
 			};
-			int x = 1;
+
+			var x = 1;
 
 			foreach (var sourceColumn in sourceWorksheetDefinition.Columns)
 			{
 				var destinationColumn = CopyColumn(destinationOperationId, sourceToDestinationLocationTwinMapping, columnTwins, sourceColumn);
-				if (destinationColumn == null)
-					return false;
+				if (destinationColumn == null) return;
 				destinationWorksheetDefinition.Columns.Add(destinationColumn);
 				if (x % 100 == 0)
 				{
-					var partialWorksheetDefinition = await _clientSDK.Spreadsheet.WorksheetAddColumnAsync(destinationOperationId, worksheetType, destinationWorksheetDefinition);
+					var partialWorksheetDefinition = await _clientSdk.Spreadsheet.WorksheetAddColumnAsync(destinationOperationId, worksheetType, destinationWorksheetDefinition);
 					if (partialWorksheetDefinition == null)
 					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Failed to save worksheet definition" });
-						return false;
+						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Failed to save worksheet definition" });
+						return;
 					}
-					else
+
+					destinationWorksheetDefinition = new WorksheetDefinition
 					{
-						destinationWorksheetDefinition = new WorksheetDefinition
-						{
-							EnumWorksheet = worksheetType,
-							TwinId = destinationOperationId
-						};
-					}
+						EnumWorksheet = worksheetType,
+						TwinId = destinationOperationId
+					};
 				}
+
 				x++;
 			}
-			var updatedWorksheetDefinition = await _clientSDK.Spreadsheet.WorksheetAddColumnAsync(destinationOperationId, worksheetType, destinationWorksheetDefinition);
+
+			var updatedWorksheetDefinition = await _clientSdk.Spreadsheet.WorksheetAddColumnAsync(destinationOperationId, worksheetType, destinationWorksheetDefinition);
+
 			if (updatedWorksheetDefinition == null)
 			{
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Failed to save worksheet definition" });
+				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = "Failed to save worksheet definition" });
 
-				return false;
+				return;
 			}
-			else
+
+			// Load up worksheet definition and update mapping
+			// Note that the source column ID is currently in the note field.
+			// This routine will add the source columnId and columnNumber to the twin property bag of the destination 
+			for (x = 0; x < updatedWorksheetDefinition.Columns.Count; x++)
 			{
-				// Load up worksheet definition and update mapping
-				// Note that the source column Id is currently in the note field.
-				// This routine will add the source columnId and columnNumber to the twin property bag of the destination 
-				for (x = 0; x < updatedWorksheetDefinition.Columns.Count; x++)
+				var destinationColumn = updatedWorksheetDefinition.Columns[x];
+				var sourceColumn = _operationCache.GetColumnByGuid(destinationColumn.Description);
+				if (null != await UpdateColumnTwinDataAsync(sourceColumn, destinationColumn))
 				{
-					var destinatinationColumn = updatedWorksheetDefinition.Columns[x];
-					var sourceColumn = _operationCache.GetColumnByGuid(destinatinationColumn.Description);
-					if (null != await UpdateColumnTwinDataAsync(sourceColumn, destinatinationColumn))
-					{
-						updatedWorksheetDefinition.Columns[x].Description = sourceColumn.Description;
-					}
-
+					updatedWorksheetDefinition.Columns[x].Description = sourceColumn.Description;
 				}
-				var newWorksheetDefinition = await _clientSDK.Spreadsheet.WorksheetUpdateColumnAsync(destinationOperationId, worksheetType, updatedWorksheetDefinition);
-				return newWorksheetDefinition != null;
 
 			}
+			var newWorksheetDefinition = await _clientSdk.Spreadsheet.WorksheetUpdateColumnAsync(destinationOperationId, worksheetType, updatedWorksheetDefinition);
 		}
 
 		private Dictionary<uint, uint> _sourceToDestinationColumnMap;
@@ -294,12 +303,14 @@ namespace ONE.ClientSDK.Operations
 		{
 			if (_sourceToDestinationColumnMap != null)
 				return _sourceToDestinationColumnMap;
-			Dictionary<uint, uint> sourceToDestinationColumnMap = new Dictionary<uint, uint>();
-			var columnTwins = await _clientSDK.DigitalTwin.GetDescendantsByTypeAsync(operationId, TelemetryConstants.ColumnType.RefId);
+
+			var sourceToDestinationColumnMap = new Dictionary<uint, uint>();
+			var columnTwins = await _clientSdk.DigitalTwin.GetDescendantsByTypeAsync(operationId, TelemetryConstants.ColumnType.RefId);
+
 			foreach (var columnTwin in columnTwins)
 			{
-				uint.TryParse(Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(columnTwin, "", "CloneColumnNumber"), out uint sourceColumnNumber);
-				uint.TryParse(Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(columnTwin, "columnDefinition", "columnNumber"), out uint destinationColumnNumber);
+				uint.TryParse(DigitalTwinHelper.GetTwinDataProperty(columnTwin, "", "CloneColumnNumber"), out var sourceColumnNumber);
+				uint.TryParse(DigitalTwinHelper.GetTwinDataProperty(columnTwin, "columnDefinition", "columnNumber"), out var destinationColumnNumber);
 				if (sourceColumnNumber > 0 && destinationColumnNumber > 0)
 				{
 					sourceToDestinationColumnMap.Add(sourceColumnNumber, destinationColumnNumber);
@@ -310,50 +321,44 @@ namespace ONE.ClientSDK.Operations
 			return sourceToDestinationColumnMap;
 		}
 
-		private async Task<bool> CopyWorksheetComputationsAsync(WorksheetDefinition sourceWorksheetDefinition, string sourceOperationId, string destinationOperationId)
+		private async Task CopyWorksheetComputationsAsync(WorksheetDefinition sourceWorksheetDefinition,
+			string sourceOperationId, string destinationOperationId)
 		{
-			if (sourceWorksheetDefinition == null)
-				return true;
-			var destinationWorksheetDefinition = await _clientSDK.Spreadsheet.GetWorksheetDefinitionAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet);
-			if (destinationWorksheetDefinition == null)
-				return false;
-			Dictionary<uint, uint> sourceToDestinationColumnNumberMap = await GetSourceToDestinationColumnMap(destinationOperationId);
+			if (sourceWorksheetDefinition == null) return;
+			var destinationWorksheetDefinition = await _clientSdk.Spreadsheet.GetWorksheetDefinitionAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet);
+			if (destinationWorksheetDefinition == null) return;
+			var sourceToDestinationColumnNumberMap = await GetSourceToDestinationColumnMap(destinationOperationId);
 
-			for (int x = 0; x < sourceWorksheetDefinition.Columns.Count; x++)
+			for (var x = 0; x < sourceWorksheetDefinition.Columns.Count; x++)
 			{
 				var sourceColumn = sourceWorksheetDefinition.Columns[x];
-				var destinatinationColumn = GetColumnByNumber(destinationWorksheetDefinition, sourceToDestinationColumnNumberMap[sourceColumn.ColumnNumber]);
+				var destinationColumn = GetColumnByNumber(destinationWorksheetDefinition, sourceToDestinationColumnNumberMap[sourceColumn.ColumnNumber]);
 
 				if (sourceColumn.DataSourceBinding != null && !string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
 				{
 					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Copying Formula {sourceWorksheetDefinition.EnumWorksheet} Column: {sourceColumn.Name}" });
 
-					DataSourceBinding destinationDataSourceBinding = new DataSourceBinding();
+					var destinationDataSourceBinding = new DataSourceBinding();
 					//Convert Computation
 					var sourceDataSourceBinding = sourceColumn.DataSourceBinding;
 					destinationDataSourceBinding.DataSource = sourceDataSourceBinding.DataSource;
 					destinationDataSourceBinding.EnumSamplingStatistic = sourceDataSourceBinding.EnumSamplingStatistic;
-					SpreadsheetComputation sourceSpreadsheetComputation = _operationCache.SpreadsheetComputations[sourceColumn.DataSourceBinding.BindingId];
-					SpreadsheetComputation destinationSpreadsheetComputation = new SpreadsheetComputation
-					{
-						Computation = new Computation()
-					};
-					foreach (var sourceExpressionline in sourceSpreadsheetComputation.Computation.ExpressionLines)
-					{
-						destinationSpreadsheetComputation.Computation.ExpressionLines.Add(sourceExpressionline);
-					}
+					var sourceSpreadsheetComputation = _operationCache.SpreadsheetComputations[sourceColumn.DataSourceBinding.BindingId];
+					var destinationSpreadsheetComputation = new SpreadsheetComputation { Computation = new Computation() };
+
+					foreach (var sourceExpressionLine in sourceSpreadsheetComputation.Computation.ExpressionLines)
+						destinationSpreadsheetComputation.Computation.ExpressionLines.Add(sourceExpressionLine);
+					
 					destinationSpreadsheetComputation.Computation.IsActive = sourceSpreadsheetComputation.Computation.IsActive;
 					foreach (var sourceOutputVariable in sourceSpreadsheetComputation.Computation.OutputVariables)
-					{
 						destinationSpreadsheetComputation.Computation.OutputVariables.Add(sourceOutputVariable);
-					}
+					
 
 					// Recreate Binding
 					destinationSpreadsheetComputation.Binding = new ComputationBinding();
-					foreach (var inputvariable in sourceSpreadsheetComputation.Computation.InputVariables)
-					{
-						destinationSpreadsheetComputation.Computation.InputVariables.Add(new proto.Variable { Name = inputvariable.Name });
-					}
+					foreach (var inputVariable in sourceSpreadsheetComputation.Computation.InputVariables)
+						destinationSpreadsheetComputation.Computation.InputVariables.Add(new Variable { Name = inputVariable.Name });
+					
 					foreach (var sourceComputationVariableBinding in sourceSpreadsheetComputation.Binding.InputVariableBindings)
 					{
 						destinationSpreadsheetComputation.Binding.InputVariableBindings.Add(new ComputationVariableBinding
@@ -368,66 +373,60 @@ namespace ONE.ClientSDK.Operations
 
 						});
 					}
+
 					destinationSpreadsheetComputation.Binding.RequireAllInputs = sourceSpreadsheetComputation.Binding.RequireAllInputs;
 					destinationSpreadsheetComputation.Binding.OutputColumnNumber = sourceToDestinationColumnNumberMap[sourceSpreadsheetComputation.Binding.OutputColumnNumber];
 					destinationSpreadsheetComputation.Binding.IsValid = sourceSpreadsheetComputation.Binding.IsValid;
-					var errors = await _clientSDK.Spreadsheet.ComputationValidateAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet, destinationSpreadsheetComputation);
+					var errors = await _clientSdk.Spreadsheet.ComputationValidateAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet, destinationSpreadsheetComputation);
+					
 					if (errors != null && errors.Count == 0)
 					{
-						var spreadsheetComputation = await _clientSDK.Spreadsheet.ComputationCreateAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet, destinationSpreadsheetComputation);
+						var spreadsheetComputation = await _clientSdk.Spreadsheet.ComputationCreateAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet, destinationSpreadsheetComputation);
 						if (spreadsheetComputation != null)
 						{
-							destinatinationColumn.DataSourceBinding = new DataSourceBinding
+							destinationColumn.DataSourceBinding = new DataSourceBinding
 							{
 								DataSource = EnumDataSource.DatasourceComputation,
 								EnumSamplingStatistic = EnumSamplingStatistic.SamplingStatisticRaw,
 								BindingId = spreadsheetComputation.Binding.Id
 							};
 						}
-
 					}
 				}
 			}
-			await _clientSDK.Spreadsheet.WorksheetUpdateColumnAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet, destinationWorksheetDefinition);
-			return true;
+
+			await _clientSdk.Spreadsheet.WorksheetUpdateColumnAsync(destinationOperationId, sourceWorksheetDefinition.EnumWorksheet, destinationWorksheetDefinition);
 		}
+
 		private Column GetColumnByNumber(WorksheetDefinition worksheetDefinition, uint columnNumber)
 		{
-			if (worksheetDefinition == null)
-				return null;
 			try
 			{
-				var matches = worksheetDefinition.Columns.Where(p => p.ColumnNumber == columnNumber);
-				if (matches.Count() > 0)
-				{
-					return matches.First();
-				}
-				else
-				{
-					return null;
-				}
+				return worksheetDefinition?.Columns?.FirstOrDefault(p => p.ColumnNumber == columnNumber);
 			}
 			catch
 			{
 				return null;
 			}
 		}
+
 		private async Task<DigitalTwin> UpdateColumnTwinDataAsync(Column sourceColumn, Column destinationColumn)
 		{
 			Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Updating Destination Column Twin {destinationColumn.ColumnId}" });
-			DigitalTwin destinationTwin = await _clientSDK.DigitalTwin.GetAsync(destinationColumn.ColumnId);
-			DigitalTwin sourceTwin = _operationCache.GetColumnTwinByGuid(sourceColumn.ColumnId);
-			string destinationTwinData = destinationTwin.TwinData;
+			var destinationTwin = await _clientSdk.DigitalTwin.GetAsync(destinationColumn.ColumnId);
+			var sourceTwin = _operationCache.GetColumnTwinByGuid(sourceColumn.ColumnId);
+			var destinationTwinData = destinationTwin.TwinData;
 			dynamic sourceTwinDataJsonObj = JsonConvert.DeserializeObject(sourceTwin.TwinData);
+
 			if (sourceTwinDataJsonObj["wims"] != null)
-			{
-				destinationTwinData = Enterprise.Twin.DigitalTwinHelper.AddUpdateRootValue("wims", sourceTwinDataJsonObj["wims"], destinationTwinData);
-			}
-			destinationTwinData = Enterprise.Twin.DigitalTwinHelper.AddUpdateRootValue("CloneId", sourceTwin.TwinReferenceId, destinationTwinData);
-			destinationTwinData = Enterprise.Twin.DigitalTwinHelper.AddUpdateRootValue("CloneColumnNumber", sourceColumn.ColumnNumber.ToString(), destinationTwinData);
+				destinationTwinData = DigitalTwinHelper.AddUpdateRootValue("wims", sourceTwinDataJsonObj["wims"], destinationTwinData);
+			
+
+			destinationTwinData = DigitalTwinHelper.AddUpdateRootValue("CloneId", sourceTwin.TwinReferenceId, destinationTwinData);
+			destinationTwinData = DigitalTwinHelper.AddUpdateRootValue("CloneColumnNumber", sourceColumn.ColumnNumber.ToString(), destinationTwinData);
 			destinationTwin.UpdateMask = new FieldMask { Paths = { "twinData" } };
 			destinationTwin.TwinData = destinationTwinData;
-			return await _clientSDK.DigitalTwin.UpdateAsync(destinationTwin);
+			return await _clientSdk.DigitalTwin.UpdateAsync(destinationTwin);
 		}
 	}
 }

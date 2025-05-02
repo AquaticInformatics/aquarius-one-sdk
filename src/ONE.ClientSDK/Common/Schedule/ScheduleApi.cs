@@ -1,165 +1,88 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Shared.Helpers.JsonPatch;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Common.Schedule
 {
 	public class ScheduleApi
 	{
-		public ScheduleApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwAPIErrors = false)
-		{
-			_environment = environment;
-			_continueOnCapturedContext = continueOnCapturedContext;
-			_restHelper = restHelper;
-			_throwApiErrors = throwAPIErrors;
-		}
-
-		private PlatformEnvironment _environment;
+		private readonly IOneApiHelper _apiHelper;
 		private readonly bool _continueOnCapturedContext;
-		private readonly RestHelper _restHelper;
 		private readonly bool _throwApiErrors;
-		private readonly JsonSerializerSettings _serializerSettings = new JsonSerializerSettings
-		{
-			NullValueHandling = NullValueHandling.Ignore,
-			ContractResolver = new CamelCasePropertyNamesContractResolver()
-		};
 
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
+
+		public ScheduleApi(IOneApiHelper apiHelper, bool continueOnCapturedContext, bool throwApiErrors)
+		{
+			_apiHelper = apiHelper;
+			_continueOnCapturedContext = continueOnCapturedContext;
+			_throwApiErrors = throwApiErrors;
+		}
 
 		/// <summary>
 		/// Gets a list of schedules.
 		/// </summary>
-		/// <param name="authTwinRefId">The Id of the digital twin to authorize against.</param>
+		/// <param name="authTwinRefId">The ID of the digital twin to authorize against.</param>
 		/// <param name="includeAuthTwinChildren">Indicates whether schedules for children of the authTwin will be returned.</param>
-		/// <param name="scheduleTypeId">Id of the schedule type to be returned.</param>
+		/// <param name="scheduleTypeId">ID of the schedule type to be returned.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a list of <see cref="Schedule"/>.</returns>
-		public async Task<List<Models.CSharp.Schedule>> GetSchedulesAsync(string authTwinRefId, 
-			bool? includeAuthTwinChildren, string scheduleTypeId)
+		public async Task<List<Models.CSharp.Schedule>> GetSchedulesAsync(string authTwinRefId, bool? includeAuthTwinChildren, string scheduleTypeId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endPointUrl = $"/common/schedule/v1/schedules/{authTwinRefId}";
+			var endpoint = $"/common/schedule/v1/schedules/{authTwinRefId}?requestId={Guid.NewGuid()}";
 
-			if (includeAuthTwinChildren != null)
-			{
-				endPointUrl += $"?{includeAuthTwinChildren}";
-			}
-
+			if (includeAuthTwinChildren.HasValue)
+				endpoint += $"&includeAuthTwinChildren={includeAuthTwinChildren}";
+			
 			if (!string.IsNullOrWhiteSpace(scheduleTypeId))
-			{
-				endPointUrl += includeAuthTwinChildren == null ? $"?{scheduleTypeId}" : $"&{scheduleTypeId}";
-			}
+				endpoint += $"&scheduleTypeId={scheduleTypeId}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId,endPointUrl)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("GetSchedulesAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetSchedulesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "GetSchedulesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return respContent.ResponseMessage.IsSuccessStatusCode ? respContent.ApiResponse.Content.Schedules.Items.ToList() : null;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetSchedulesAsync Failed - {e.Message}"));
-
-				if (_throwApiErrors) 
-					 throw;
-
-				return null;
-			}
+			return apiResponse?.Content?.Schedules?.Items.ToList();
 		}
 
 		/// <summary>
 		/// Gets a single schedule.
 		/// </summary>
-		/// <param name="scheduleId">Id of the schedule.</param>
+		/// <param name="scheduleId">ID of the schedule.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a <see cref="Schedule"/>.</returns>
-		public async Task<Models.CSharp.Schedule> GetOneScheduleAsync(string scheduleId)
+		public async Task<Models.CSharp.Schedule> GetOneScheduleAsync(string scheduleId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endPointUrl = $"common/schedule/v1/{scheduleId}";
+			var endpoint = $"common/schedule/v1/{scheduleId}?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("GetOneScheduleAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					foreach (var schedule in respContent.ApiResponse.Content.Schedules.Items)
-					{
-						Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOneScheduleAsync Success",
-							respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-						return schedule;
-					}
-				}
-
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "GetOneScheduleAsync Failed",
-					respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetOneScheduleAsync Failed - {e.Message}"));
-
-				if (_throwApiErrors) 
-					 throw;
-
-				return null;
-			}
+			return apiResponse?.Content?.Schedules?.Items.FirstOrDefault();
 		}
 
 		/// <summary>
 		/// Saves a schedule.
 		/// </summary>
 		/// <param name="schedule">Schedule to save.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a bool indicating success/failure.</returns>
-		public async Task<bool> SaveScheduleAsync(Models.CSharp.Schedule schedule)
+		public async Task<bool> SaveScheduleAsync(Models.CSharp.Schedule schedule, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
 			if (schedule == null)
 				return true;
 
-			var requestId = Guid.NewGuid();
-			const string endpoint = "/common/schedule/v1/";
-			var json = JsonConvert.SerializeObject(schedule, _serializerSettings);
-			
-			try
-			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var endpoint = $"/common/schedule/v1?requestId={Guid.NewGuid()}";
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "SaveScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "SaveScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+			var apiResponse = await ExecuteRequest("SaveScheduleAsync", HttpMethod.Post, endpoint, cancellation, schedule).ConfigureAwait(_continueOnCapturedContext);
 
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"SaveScheduleAsync Failed - {e.Message}"));
-
-				if (_throwApiErrors) 
-					 throw;
-
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
@@ -167,73 +90,33 @@ namespace ONE.ClientSDK.Common.Schedule
 		/// </summary>
 		/// <param name="schedule">The schedule to update.</param>
 		/// <param name="updatePropertyBag">If true, the schedule propertyBag will be replaced.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a bool indicating success/failure.</returns>
-		public async Task<bool> UpdateScheduleAsync(Models.CSharp.Schedule schedule, bool updatePropertyBag = false)
+		public async Task<bool> UpdateScheduleAsync(Models.CSharp.Schedule schedule, bool updatePropertyBag = false, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
 			if (schedule == null)
 				return true;
 
-			var requestId = Guid.NewGuid();
-			var endpoint = $"/common/schedule/v1/{schedule.Id}";
-			if (updatePropertyBag)
-				endpoint += "?updatePropertyBag=true";
-			var json = JsonConvert.SerializeObject(schedule, _serializerSettings);
+			var endpoint = $"/common/schedule/v1/{schedule.Id}?requestId={Guid.NewGuid()}&updatePropertyBag={updatePropertyBag}";
 
-			try
-			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, json, endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("UpdateScheduleAsync", HttpMethod.Put, endpoint, cancellation, schedule).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "UpdateScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "UpdateScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateScheduleAsync Failed - {e.Message}"));
-
-				if (_throwApiErrors) 
-					 throw;
-
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
 		/// Deletes a schedule.
 		/// </summary>
 		/// <param name="scheduleId">Id of schedule to delete.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a bool indicating success/failure.</returns>
-		public async Task<bool> DeleteScheduleAsync(string scheduleId)
+		public async Task<bool> DeleteScheduleAsync(string scheduleId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"/common/schedule/v1/{scheduleId}";
+			var endpoint = $"/common/schedule/v1/{scheduleId}?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("DeleteScheduleAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "DeleteScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "DeleteScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-				
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"DeleteScheduleAsync Failed - {e.Message}"));
-
-				if (_throwApiErrors) 
-					 throw; 
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
@@ -242,91 +125,80 @@ namespace ONE.ClientSDK.Common.Schedule
 		/// <param name="pattern">Schedule recurrence pattern. <see cref="ScheduleRecurrencePattern"/>.</param>
 		/// <param name="afterDate">The time after which occurrences will start.</param>
 		/// <param name="beforeDate">The time before which occurrences will end.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a list of <see cref="ScheduleOccurrence"/>.</returns>
-		public async Task<List<ScheduleOccurrence>> GetOccurrencesAsync(ScheduleRecurrencePattern pattern, 
-			DateTime afterDate, DateTime beforeDate)
+		public async Task<List<ScheduleOccurrence>> GetOccurrencesAsync(ScheduleRecurrencePattern pattern, DateTime afterDate, DateTime beforeDate, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var requestId = Guid.NewGuid();
-			var endpoint = $"/common/schedule/v1/occurrences?afterDate={afterDate:O}&beforeDate={beforeDate:O}";
+			var endpoint = $"/common/schedule/v1/occurrences?afterDate={afterDate:O}&beforeDate={beforeDate:O}&requestId={Guid.NewGuid()}";
 			
-			try
-			{
-				var scheduleOccurrences = new List<ScheduleOccurrence>();
-				var json = JsonConvert.SerializeObject(pattern, _serializerSettings);
-				var respContent = await _restHelper.PostRestJSONAsync(requestId,json, endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
-				
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, _serializerSettings);
-					var results = apiResponse?.Content.ScheduleOccurrences.Items;
-					if (results != null)
-					{
-						scheduleOccurrences.AddRange(results);
-					}
+			var apiResponse = await ExecuteRequest("GetOccurrencesAsync", HttpMethod.Post, endpoint, cancellation, pattern).ConfigureAwait(_continueOnCapturedContext);
 
-					Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOccurrencesAsync Success",
-						respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-					return scheduleOccurrences;
-				}
-
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "GetOccurrencesAsync Failed",
-					respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return null;
-			}
-
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetOccurrencesAsync Failed - {e.Message}"));
-				
-				if (_throwApiErrors) 
-					 throw;
-
-				return null;
-			}
+			return apiResponse?.Content?.ScheduleOccurrences?.Items.ToList();
 		}
 
 		/// <summary>
 		/// Updates the property bag of a schedule.
 		/// </summary>
-		/// <param name="scheduleId">The Id of the schedule.</param>
+		/// <param name="scheduleId">The ID of the schedule.</param>
 		/// <param name="propertyBagUpdates">Defines the updates to be performed. <see cref="OneJsonPatchItems"/></param>
+		/// <param name="cancellation"></param>
 		/// <returns>Task that returns a bool indicating success/failure.</returns>
-		public async Task<bool> UpdateSchedulePropertyBagAsync(Guid scheduleId, OneJsonPatchItems propertyBagUpdates)
+		public async Task<bool> UpdateSchedulePropertyBagAsync(Guid scheduleId, OneJsonPatchItems propertyBagUpdates, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"/common/schedule/v1/UpdatePropertyBag/{scheduleId}?requestId={Guid.NewGuid()}";
 
+			var apiResponse = await ExecuteRequest("UpdateSchedulePropertyBagAsync", new HttpMethod("PATCH"), endpoint, cancellation, propertyBagUpdates).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+		}
+
+		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+		{
 			try
 			{
-				var json = JsonConvert.SerializeObject(propertyBagUpdates, _serializerSettings);
+				var watch = Stopwatch.StartNew();
 
-				var respContent = await _restHelper.PatchRestJSONAsync(Guid.NewGuid(), json,
-						$"/common/schedule/v1/UpdatePropertyBag/{scheduleId}")
-					.ConfigureAwait(_continueOnCapturedContext);
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync<ApiResponse>(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "UpdateSchedulePropertyBagAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "UpdateSchedulePropertyBagAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-				
-				return respContent.ResponseMessage.IsSuccessStatusCode;
+				watch.Stop();
+
+				var message = " Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+				if (!apiResponse.StatusCode.IsSuccessStatusCode())
+				{
+					message = " Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ApiResponse = apiResponse, ElapsedMs = watch.ElapsedMilliseconds });
+				}
+
+				Event(this,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = eventLevel,
+						HttpStatusCode = (HttpStatusCode)apiResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "ScheduleApi",
+						Message = callingMethod + message
+					});
+
+				return apiResponse;
 			}
 			catch (Exception e)
 			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateSchedulePropertyBagAsync Failed - {e.Message}"));
-				
+				Event(e,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = EnumOneLogLevel.OneLogLevelError,
+						Module = "ScheduleApi",
+						Message = $"{callingMethod} Failed - {e.Message}"
+					});
 				if (_throwApiErrors)
 					throw;
-
-				return false;
+				return null;
 			}
 		}
-
-		private static ClientApiLoggerEventArgs CreateLoggerArgs(EnumOneLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
-			{ EventLevel = level, HttpStatusCode = statusCode, ElapsedMs = duration, Module = "ScheduleApi", Message = message };
 	}
 }

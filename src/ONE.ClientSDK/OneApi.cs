@@ -334,7 +334,6 @@ namespace ONE.ClientSDK
 		private PoEditorApi _poEditor;
 		private ReportApi _report;
 		private SampleApi _sample;
-		private RestHelper _restHelper;
 		private IOneApiHelper _apiHelper;
 		private PlatformEnvironment _environment;
 		private bool _continueOnCapturedContext;
@@ -351,9 +350,6 @@ namespace ONE.ClientSDK
 			_apiHelper = new OneApiHelper(Authentication, ContinueOnCapturedContext, UseProtobufModels, LogRestfulCalls);
 			_apiHelper.Event += Logger.Logger_Event;
 
-			_restHelper = new RestHelper(Authentication, Environment, ContinueOnCapturedContext, LogRestfulCalls, ThrowApiErrors);
-			_restHelper.Event += Logger.Logger_Event;
-
 			_core = new CoreApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_core.Event += Logger.Logger_Event;
 
@@ -366,10 +362,10 @@ namespace ONE.ClientSDK
 			// This is a wrapper around the ConfigurationApi no events are logged directly and no other properties are required
 			_logbook = new LogbookApi(Configuration);
 
-			_library = new LibraryApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
+			_library = new LibraryApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_library.Event += Logger.Logger_Event;
 
-			_schedule = new ScheduleApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
+			_schedule = new ScheduleApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_schedule.Event += Logger.Logger_Event;
 
 			_activity = new ActivityApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
@@ -378,10 +374,10 @@ namespace ONE.ClientSDK
 			_digitalTwin = new DigitalTwinApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_digitalTwin.Event += Logger.Logger_Event;
 
-			_notification = new NotificationApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
+			_notification = new NotificationApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_notification.Event += Logger.Logger_Event;
 
-			_report = new ReportApi(Environment, ContinueOnCapturedContext, _restHelper, ThrowApiErrors);
+			_report = new ReportApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_report.Event += Logger.Logger_Event;
 
 			_spreadsheet = new SpreadsheetApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
@@ -390,10 +386,10 @@ namespace ONE.ClientSDK
 			_data = new DataApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_data.Event += Logger.Logger_Event;
 
-			_sample = new SampleApi(Environment, ContinueOnCapturedContext, _restHelper, Activity, ThrowApiErrors);
+			_sample = new SampleApi(_apiHelper, Activity, ContinueOnCapturedContext, ThrowApiErrors);
 			_sample.Event += Logger.Logger_Event;
 			
-			_poEditor = new PoEditorApi(Environment, ContinueOnCapturedContext, ThrowApiErrors);
+			_poEditor = new PoEditorApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 			_poEditor.Event += Logger.Logger_Event;
 
 			_initialized = true;

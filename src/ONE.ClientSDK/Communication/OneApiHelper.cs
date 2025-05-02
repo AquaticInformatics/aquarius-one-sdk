@@ -47,13 +47,13 @@ namespace ONE.ClientSDK.Communication
 				authentication.LoginAsync().ConfigureAwait(_continueOnCapturedContext).GetAwaiter().GetResult();
 		}
 
-		public async Task<T> GetAsync<T>(string uri)
+		public async Task<T> GetAsync<T>(string uri, CancellationToken cancellation, bool requireJson = false)
 		{
 			var watch = Stopwatch.StartNew();
 
-			var response = _useProtobufModels
-				? await _authentication.HttpProtocolBufferClient.GetAsync(uri).ConfigureAwait(_continueOnCapturedContext)
-				: await _authentication.HttpJsonClient.GetAsync(uri).ConfigureAwait(_continueOnCapturedContext);
+			var response = _useProtobufModels && !requireJson
+				? await _authentication.HttpProtocolBufferClient.GetAsync(uri, cancellation).ConfigureAwait(_continueOnCapturedContext)
+				: await _authentication.HttpJsonClient.GetAsync(uri, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
 			watch.Stop();
 
@@ -68,11 +68,11 @@ namespace ONE.ClientSDK.Communication
 			return await DeserializeAsync<T>(response.Content).ConfigureAwait(_continueOnCapturedContext);
 		}
 
-		public async Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
+		public async Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, bool requireJson = false)
 		{
 			var watch = Stopwatch.StartNew();
 
-			var response = _useProtobufModels
+			var response = _useProtobufModels && !requireJson
 				? await _authentication.HttpProtocolBufferClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(_continueOnCapturedContext)
 				: await _authentication.HttpJsonClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(_continueOnCapturedContext);
 
@@ -157,10 +157,8 @@ namespace ONE.ClientSDK.Communication
 				var status = response.IsSuccessStatusCode ? "Success" : "Error";
 
 				var filename = $"{response.RequestMessage.Method} {status} - {DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.json";
-				var dir = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location)?.FullName;
-
-				if (dir == null)
-					throw new Exception("Unable to get directory for saving local log files");
+				var dir = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location)?.FullName ??
+				          throw new Exception("Unable to get directory for saving local log files");
 
 				dir = Path.Combine(dir, $"Logs/{DateTime.Now:yyyy-MM-dd}");
 				

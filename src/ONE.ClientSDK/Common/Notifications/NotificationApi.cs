@@ -1,561 +1,231 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
+using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Common.Notifications
 {
 	public class NotificationApi
 	{
-		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-		public NotificationApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwApiErrors = false)
-		{
-			_environment = environment;
-			_continueOnCapturedContext = continueOnCapturedContext;
-			_restHelper = restHelper;
-			_throwApiErrors = throwApiErrors;
-		}
-		private PlatformEnvironment _environment;
+		private readonly IOneApiHelper _apiHelper;
 		private readonly bool _continueOnCapturedContext;
-		private readonly RestHelper _restHelper;
 		private readonly bool _throwApiErrors;
 
+		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
+		public NotificationApi(IOneApiHelper apiHelper, bool continueOnCapturedContext, bool throwApiErrors)
+		{
+			_apiHelper = apiHelper;
+			_continueOnCapturedContext = continueOnCapturedContext;
+			_throwApiErrors = throwApiErrors;
+		}
+		
 		/********************* Notification Topics *********************/
-
-		public async Task<NotificationTopic> GetNotificationTopicAsync(string topicId)
+		public async Task<NotificationTopic> GetNotificationTopicAsync(string topicId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
+			var endpoint = $"common/notification/v1/NotificationTopic/{topicId}?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/NotificationTopic/{topicId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.NotificationTopics.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			var apiResponse = await ExecuteRequest("GetNotificationTopicAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.NotificationTopics?.Items.FirstOrDefault();
 		}
-		public async Task<List<NotificationTopic>> GetNotificationTopicsAsync(EnumNotificationCategory enumNotificationCategoy = EnumNotificationCategory.NotificationCategoryUnknown)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			List<NotificationTopic> notificationTopics = new List<NotificationTopic>(); 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/NotificationTopic?topicType={enumNotificationCategoy}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.NotificationTopics.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						notificationTopics.Add(result);                    }
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTopicsAsync Success" });
-					return notificationTopics;
 
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTopicsAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"GetNotificationTopicsAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+		public async Task<List<NotificationTopic>> GetNotificationTopicsAsync(EnumNotificationCategory enumNotificationCategory = EnumNotificationCategory.NotificationCategoryUnknown, CancellationToken cancellation = default)
+		{
+			var endpoint = $"common/notification/v1/NotificationTopic?topicType={enumNotificationCategory}&requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("GetNotificationTopicsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.NotificationTopics?.Items.ToList();
 		}
-		public async Task<NotificationTopic> CreateNotificationTopicAsync(NotificationTopic notificationTopic)
+
+		public async Task<NotificationTopic> CreateNotificationTopicAsync(NotificationTopic notificationTopic, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/NotificationTopic";
+			var endpoint = $"common/notification/v1/NotificationTopic?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(notificationTopic, jsonSettings);
+			var apiResponse = await ExecuteRequest("CreateNotificationTopicAsync", HttpMethod.Post, endpoint, cancellation, notificationTopic).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.NotificationTopics.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationTopicAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationTopicAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"CreateNotificationTopicAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.NotificationTopics?.Items.FirstOrDefault();
 		}
-		public async Task<NotificationTopic> UpdateNotificationTopicAsync(NotificationTopic notificationTopic)
+
+		public async Task<NotificationTopic> UpdateNotificationTopicAsync(NotificationTopic notificationTopic, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/NotificationTopic";
+			var endpoint = $"common/notification/v1/NotificationTopic?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(notificationTopic, jsonSettings);
+			var apiResponse = await ExecuteRequest("UpdateNotificationTopicAsync", HttpMethod.Put, endpoint, cancellation, notificationTopic).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.NotificationTopics.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateNotificationTopicAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateNotificationTopicAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"UpdateNotificationTopicAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.NotificationTopics?.Items.FirstOrDefault();
 		}
 
 		/********************* User Notification Preferences *********************/
-
-		public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync()
+		public async Task<UserNotificationPreferences> GetUserNotificationPreferencesAsync(CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
+			var endpoint = $"common/notification/v1/UserNotificationPreference?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/UserNotificationPreference").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Success" });
-					return respContent.ApiResponse.Content.UserNotificationPreferences;
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"GetNotificationTopicAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			var apiResponse = await ExecuteRequest("GetUserNotificationPreferencesAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.UserNotificationPreferences;
 		}
-	  
-	  
-		public async Task<UserNotificationPreferences> UpdateUserNotificationPreferencesAsync(UserNotificationPreferences userNotificationPreferences)
+
+		public async Task<UserNotificationPreferences> UpdateUserNotificationPreferencesAsync(UserNotificationPreferences userNotificationPreferences, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/UserNotificationPreference";
+			var endpoint = $"common/notification/v1/UserNotificationPreference?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(userNotificationPreferences, jsonSettings);
+			var apiResponse = await ExecuteRequest("UpdateUserNotificationPreferencesAsync", HttpMethod.Put, endpoint, cancellation, userNotificationPreferences).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateUserNotificationPreferencesAsync Success" });
-					return respContent.ApiResponse.Content.UserNotificationPreferences;
-
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateUserNotificationPreferencesAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"UpdateUserNotificationPreferencesAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.UserNotificationPreferences;
 		}
 
 		/********************* Notification Templates *********************/
-
-		public async Task<NotificationTemplate> GetNotificationTemplateAsync(string templateId)
+		public async Task<NotificationTemplate> GetNotificationTemplateAsync(string templateId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
+			var endpoint = $"common/notification/v1/NotificationTemplate/{templateId}?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/NotificationTemplate/{templateId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.NotificationTemplates.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTemplateAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTemplateAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"GetNotificationTemplateAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			var apiResponse = await ExecuteRequest("GetNotificationTemplateAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.NotificationTemplates?.Items.FirstOrDefault();
 		}
-		public async Task<List<NotificationTemplate>> GetNotificationTemplatesAsync(string topicId = "", string cultureCode = "")
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			List<NotificationTemplate> notificationTemplates = new List<NotificationTemplate>();
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/NotificationTemplate?topicId={topicId}&cultureCode={cultureCode}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.NotificationTemplates.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						notificationTemplates.Add(result);
-					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTemplatesAsync Success" });
-					return notificationTemplates;
 
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetNotificationTemplatesAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"GetNotificationTemplatesAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+		public async Task<List<NotificationTemplate>> GetNotificationTemplatesAsync(string topicId = "", string cultureCode = "", CancellationToken cancellation = default)
+		{
+			var endpoint = $"common/notification/v1/NotificationTemplate?topicId={topicId}&cultureCode={cultureCode}&requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("GetNotificationTemplatesAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.NotificationTemplates?.Items.ToList();
 		}
-		public async Task<NotificationTemplate> CreateNotificationTemplateAsync(NotificationTemplate notificationTemplate)
+
+		public async Task<NotificationTemplate> CreateNotificationTemplateAsync(NotificationTemplate notificationTemplate, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/NotificationTemplate?topicId={notificationTemplate.NotificationTopic.Id}";
+			var endpoint = $"common/notification/v1/NotificationTemplate?topicId={notificationTemplate.NotificationTopic.Id}&requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(notificationTemplate, jsonSettings);
+			var apiResponse = await ExecuteRequest("CreateNotificationTemplateAsync", HttpMethod.Post, endpoint, cancellation, notificationTemplate).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.NotificationTemplates.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationTemplateAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationTemplateAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"CreateNotificationTemplateAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.NotificationTemplates?.Items.FirstOrDefault();
 		}
-		public async Task<NotificationTemplate> UpdateNotificationTemplateAsync(NotificationTemplate notificationTemplate)
+
+		public async Task<NotificationTemplate> UpdateNotificationTemplateAsync(NotificationTemplate notificationTemplate, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/NotificationTemplate?topicId={notificationTemplate.NotificationTopic.Id}";
+			var endpoint = $"common/notification/v1/NotificationTemplate?topicId={notificationTemplate.NotificationTopic.Id}&requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(notificationTemplate, jsonSettings);
+			var apiResponse = await ExecuteRequest("UpdateNotificationTemplateAsync", HttpMethod.Put, endpoint, cancellation, notificationTemplate).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.NotificationTemplates.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateNotificationTemplateAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateNotificationTemplateAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"UpdateNotificationTemplateAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.NotificationTemplates?.Items.FirstOrDefault();
 		}
 
 		/********************* Notifications *********************/
-		public async Task<bool> CreateNotificationAsync(NotificationEvent notificationEvent)
+		public async Task<bool> CreateNotificationAsync(NotificationEvent notificationEvent, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/Notification";
+			var endpoint = $"common/notification/v1/Notification?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(notificationEvent, jsonSettings);
+			var apiResponse = await ExecuteRequest("CreateNotificationAsync", HttpMethod.Post, endpoint, cancellation, notificationEvent).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationAsync Success" });
-					return true;
-				}
-
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationAsync Failed" });
-				return false;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"CreateNotificationAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
-		public async Task<bool> CreateUserNotificationAsync(string userId, NotificationEvent notificationEvent)
+
+		public async Task<bool> CreateUserNotificationAsync(string userId, NotificationEvent notificationEvent, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/Notification/User/{userId}";
+			var endpoint = $"common/notification/v1/Notification/User/{userId}?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(notificationEvent, jsonSettings);
+			var apiResponse = await ExecuteRequest("CreateUserNotificationAsync", HttpMethod.Post, endpoint, cancellation, notificationEvent).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationAsync Success" });
-					return true;
-				}
-
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"CreateNotificationAsync Failed" });
-				return false;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"CreateNotificationAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
+
 		/********************* In App Notifications *********************/
-
-
-		public async Task<List<InAppNotificationMessage>> GetInAppNotificationsAsync(int pageNumber = 0, int pageSize = 0)
+		public async Task<List<InAppNotificationMessage>> GetInAppNotificationsAsync(int pageNumber = 0, int pageSize = 0, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			List<InAppNotificationMessage> inAppNotificationMessages = new List<InAppNotificationMessage>();
-			try
-			{
-				ServiceResponse respContent = null;
-				if (pageNumber > 0)
-					respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/InAppNotification?pageNumber={pageNumber}&pageSize={pageSize}").ConfigureAwait(_continueOnCapturedContext);
-				else
-					respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"common/notification/v1/InAppNotification").ConfigureAwait(_continueOnCapturedContext);
+			var endpoint = $"common/notification/v1/InAppNotification?requestId={Guid.NewGuid()}";
 
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.InAppNotificationMessages.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						inAppNotificationMessages.Add(result);
-					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetInAppNotificationsAsync Success" });
-					return inAppNotificationMessages;
+			if (pageNumber > 0 && pageSize > 0)
+				endpoint += $"&pageNumber={pageNumber}&pageSize={pageSize}";
 
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"GetInAppNotificationsAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"GetInAppNotificationsAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			var apiResponse = await ExecuteRequest("GetInAppNotificationsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.InAppNotificationMessages?.Items.ToList();
 		}
-	   
-		public async Task<InAppNotificationMessage> UpdateInAppNotificationAsync(InAppNotificationMessage inAppNotificationMessage)
+
+		public async Task<InAppNotificationMessage> UpdateInAppNotificationAsync(InAppNotificationMessage inAppNotificationMessage, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/InAppNotification";
+			var endpoint = $"common/notification/v1/InAppNotification?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(inAppNotificationMessage, jsonSettings);
+			var apiResponse = await ExecuteRequest("UpdateInAppNotificationAsync", HttpMethod.Put, endpoint, cancellation, inAppNotificationMessage).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.InAppNotificationMessages.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateInAppNotificationAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateInAppNotificationAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"UpdateInAppNotificationAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.InAppNotificationMessages?.Items.FirstOrDefault();
 		}
-		public async Task<List<InAppNotificationMessage>> UpdateInAppNotificationsAsync(InAppNotificationMessages inAppNotificationMessages)
+
+		public async Task<List<InAppNotificationMessage>> UpdateInAppNotificationsAsync(InAppNotificationMessages inAppNotificationMessages, CancellationToken cancellation = default)
 		{
-			List<InAppNotificationMessage> inAppNotifications = new List<InAppNotificationMessage>();
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/InAppNotification";
+			var endpoint = $"common/notification/v1/InAppNotification?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(inAppNotificationMessages, jsonSettings);
+			var apiResponse = await ExecuteRequest("UpdateInAppNotificationsAsync", HttpMethod.Put, endpoint, cancellation, inAppNotificationMessages).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, json.ToString(), endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					ApiResponse apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.InAppNotificationMessages.Items.Select(x => x).ToList();
-					foreach (var result in results)
-					{
-						inAppNotifications.Add(result);
-
-					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateInAppNotificationsAsync Success" });
-					return inAppNotifications;
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"UpdateInAppNotificationsAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"UpdateInAppNotificationsAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			return apiResponse?.Content?.InAppNotificationMessages?.Items.ToList();
 		}
-		public async Task<bool> InAppNotificationsMarkAllReadAsync()
+
+		public async Task<bool> InAppNotificationsMarkAllReadAsync(CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"common/notification/v1/InAppNotification/MarkAllRead";
+			var endpoint = $"common/notification/v1/InAppNotification/MarkAllRead?requestId={Guid.NewGuid()}";
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
+			var apiResponse = await ExecuteRequest("InAppNotificationsMarkAllReadAsync", HttpMethod.Put, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+		}
+
+		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+		{
 			try
 			{
-				var respContent = await _restHelper.PutRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
+				var watch = Stopwatch.StartNew();
+
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync<ApiResponse>(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
+
+				watch.Stop();
+
+				var message = " Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+				if (!apiResponse.StatusCode.IsSuccessStatusCode())
 				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"InAppNotificationsMarkAllReadAsync Success" });
-					return true;
+					message = " Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ApiResponse = apiResponse, ElapsedMs = watch.ElapsedMilliseconds });
 				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "NotificationApi", Message = $"InAppNotificationsMarkAllReadAsync Failed" });
-				return false; }
+
+				Event(this,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = eventLevel,
+						HttpStatusCode = (HttpStatusCode)apiResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "NotificationApi",
+						Message = callingMethod + message
+					});
+
+				return apiResponse;
+			}
 			catch (Exception e)
 			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "NotificationApi", Message = $"InAppNotificationsMarkAllReadAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return false;
+				Event(e,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = EnumOneLogLevel.OneLogLevelError,
+						Module = "NotificationApi",
+						Message = $"{callingMethod} Failed - {e.Message}"
+					});
+				if (_throwApiErrors)
+					throw;
+				return null;
 			}
 		}
 	}

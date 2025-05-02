@@ -2,30 +2,31 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using ONE.ClientSDK.Common.Activity;
+using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Operations.Sample
 {
 	public class SampleApi
 	{
-		private readonly PlatformEnvironment _environment;
+		private readonly IOneApiHelper _apiHelper;
 		private readonly bool _continueOnCapturedContext;
 		private readonly bool _throwApiErrors;
-
-		private readonly RestHelper _restHelper;
 		private readonly ActivityApi _activityApi;
+
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
-		public SampleApi(PlatformEnvironment environment, bool continueOnCapturedContext,
-			RestHelper restHelper, ActivityApi activityApi, bool throwApiErrors = false)
+		public SampleApi(IOneApiHelper apiHelper, ActivityApi activityApi, bool continueOnCapturedContext, bool throwApiErrors)
 		{
-			_environment = environment;
-			_continueOnCapturedContext = continueOnCapturedContext;
-			_restHelper = restHelper;
+			_apiHelper = apiHelper;
 			_activityApi = activityApi;
+			_continueOnCapturedContext = continueOnCapturedContext;
 			_throwApiErrors = throwApiErrors;
 		}
 
@@ -56,25 +57,14 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// <param name="scheduleId">
 		/// Optional: Defaults to null. Filter results to those that are for this particular schedule.
 		/// </param>
+		/// <param name="cancellation"></param>
 		/// <returns>One or more Activities that meet the criteria.</returns>
-		public async Task<List<Activity>> GetActivitiesAsync(string authTwinRefId,
-			string activityTypeId = null, int? statusCode = null, int? priorityCode = null,
-			DateTime? startDate = null, DateTime? endDate = null, string scheduleId = null)
-		{
-			try
-			{
-				return await _activityApi.GetActivitiesAsync(authTwinRefId,
-					includeActivityDescendants: null, includeAuthTwinDescendants: null,
-					activityTypeId, statusCode, priorityCode, startDate, endDate, scheduleId);
-			}
-			catch (Exception ex)
-			{
-				Event(ex, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetActivitiesAsync Failed - {ex.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
-		}
+		public async Task<List<Activity>> GetActivitiesAsync(string authTwinRefId, string activityTypeId = null,
+			int? statusCode = null, int? priorityCode = null, DateTime? startDate = null, DateTime? endDate = null,
+			string scheduleId = null, CancellationToken cancellation = default) =>
+			await _activityApi.GetActivitiesAsync(authTwinRefId, includeActivityDescendants: null,
+				includeAuthTwinDescendants: null, activityTypeId, statusCode, priorityCode, startDate, endDate,
+				scheduleId, cancellation: cancellation);
 
 		/// <summary>
 		/// Retrieves an activity and its children.
@@ -85,106 +75,54 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// <param name="includeDescendants">
 		/// Optional: Defaults to false. Determines if child activities are returned.
 		/// </param>
+		/// <param name="cancellation"></param>
 		/// <returns>The specified activity and optionally, its child activities.</returns>
-		public async Task<List<Activity>> GetActivityAsync(string activityId, bool includeDescendants = false)
-		{
-			try
-			{
-				return await _activityApi.GetOneActivityAsync(activityId, includeDescendants);
-			}
-			catch (Exception ex)
-			{
-				Event(ex, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetActivityAsync Failed - {ex.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
-		}
+		public async Task<List<Activity>> GetActivityAsync(string activityId, bool includeDescendants = false, CancellationToken cancellation = default) =>
+			await _activityApi.GetOneActivityAsync(activityId, includeDescendants, cancellation);
 
 		/// <summary>
 		/// Updates one or more activities.
 		/// </summary>
 		/// <param name="activities"> List of activities to update. </param>
 		/// <param name="updatePropertyBag">If true, the activity propertyBags will be replaced.</param>
-		/// <returns>Boolean value indicating whether or not the activities were updated successfully.</returns>
-		public async Task<bool> UpdateActivitiesAsync(List<Activity> activities, bool updatePropertyBag = false)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the activities were updated successfully.</returns>
+		public async Task<bool> UpdateActivitiesAsync(List<Activity> activities, bool updatePropertyBag = false, CancellationToken cancellation = default)
 		{
-			try
-			{
-				var proto = new Activities();
-				proto.Items.AddRange(activities);
-				return await _activityApi.UpdateActivitiesAsync(proto, updatePropertyBag);
-			}
-			catch (Exception ex)
-			{
-				Event(ex, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateActivitiesAsync Failed - {ex.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			var proto = new Activities();
+			proto.Items.AddRange(activities);
+
+			return await _activityApi.UpdateActivitiesAsync(proto, updatePropertyBag, cancellation);
 		}
 
 		/// <summary>
 		/// Creates an analyte
 		/// </summary>
 		/// <param name="analyte">Analyte to be created</param>
-		/// <returns>Boolean value indicating whether or not the analyte was successfully created</returns>
-		public async Task<bool> CreateAnalyteAsync(Analyte analyte)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the analyte was successfully created</returns>
+		public async Task<bool> CreateAnalyteAsync(Analyte analyte, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var endpoint = $"/operations/sample/v1/analyte";
+			var endpoint = $"/operations/sample/v1/analyte?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.PostRestProtobufAsync(analyte, endpoint).ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("CreateAnalyteAsync", HttpMethod.Post, endpoint, cancellation, analyte).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "CreateAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "CreateAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"CreateAnalyteAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
 		/// Creates a testGroup
 		/// </summary>
 		/// <param name="testGroup">TestGroup to be created</param>
-		/// <returns>Boolean value indicating whether or not the testgroup was successfully created</returns>
-		public async Task<bool> CreateTestGroupAsync(TestAnalyteGroup testGroup)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the testgroup was successfully created</returns>
+		public async Task<bool> CreateTestGroupAsync(TestAnalyteGroup testGroup, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"/operations/sample/v1/testgroup?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			var endpoint = $"/operations/sample/v1/testgroup";
+			var apiResponse = await ExecuteRequest("CreateTestGroupAsync", HttpMethod.Post, endpoint, cancellation, testGroup).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.PostRestProtobufAsync(testGroup, endpoint).ConfigureAwait(_continueOnCapturedContext);
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "CreateTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "CreateTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"CreateTestGroupAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
@@ -192,81 +130,37 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// </summary>
 		/// <param name="analyte">Analyte to be updated</param>
 		/// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are updated associated with the analyte</param>
-		/// <returns>Boolean value indicating whether or not the analyte was successfully updated</returns>
-		public async Task<bool> UpdateAnalyteAsync(Analyte analyte, DateTime? effectiveDate = null)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the analyte was successfully updated</returns>
+		public async Task<bool> UpdateAnalyteAsync(Analyte analyte, DateTime? effectiveDate = null, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var endpoint = $"/operations/sample/v1/analyte/{analyte.Id}";
+			var endpoint = $"/operations/sample/v1/analyte/{analyte.Id}?requestId={Guid.NewGuid()}";
 
 			if (effectiveDate.HasValue)
-			{
-				endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
-			}
+				endpoint += $"&effectiveDate={effectiveDate.Value:O}";
 
-			try
-			{
-				var respContent = await _restHelper.PutRestProtobufAsync(analyte, endpoint).ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("UpdateAnalyteAsync", HttpMethod.Put, endpoint, cancellation, analyte).ConfigureAwait(_continueOnCapturedContext);
 
-				var message = "UpdateAnalyteAsync Success";
-				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
-				var success = true;
-
-				if (!respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					message = "UpdateAnalyteAsync Failed";
-					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
-					success = false;
-				}
-
-				Event(null, CreateLoggerArgs(eventLevel, message, respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return success;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateAnalyteAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
 		/// Deletes an existing analyte
 		/// </summary>
-		/// <param name="analyteId">Id of the analyte to be deleted</param>
+		/// <param name="analyteId">ID of the analyte to be deleted</param>
 		/// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are deleted associated with the analyte</param>
-		/// <returns>Boolean value indicating whether or not the analyte was successfully deleted</returns>
-		public async Task<bool> DeleteAnalyteAsync(string analyteId, DateTime? effectiveDate = null)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the analyte was successfully deleted</returns>
+		public async Task<bool> DeleteAnalyteAsync(string analyteId, DateTime? effectiveDate = null, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-
-			var endpoint = $"/operations/sample/v1/analyte/{analyteId}";
+			var endpoint = $"/operations/sample/v1/analyte/{analyteId}?requestId={Guid.NewGuid()}";
 
 			if (effectiveDate.HasValue)
-			{
-				endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
-			}
+				endpoint += $"&effectiveDate={effectiveDate.Value:O}";
+			
+			var apiResponse = await ExecuteRequest("DeleteAnalyteAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "DeleteAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "DeleteAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"DeleteAnalyteAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
@@ -274,307 +168,131 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// </summary>
 		/// <param name="authTwinRefId">Reference id of the digital twin </param>
 		/// <param name="includeInactive">Optional boolean value to include inactive analytes</param>
+		/// <param name="cancellation"></param>
 		/// <returns>List of analytes</returns>
-		public async Task<List<Analyte>> GetAnalytesAsync(string authTwinRefId, bool? includeInactive = null)
+		public async Task<List<Analyte>> GetAnalytesAsync(string authTwinRefId, bool? includeInactive = null, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"/operations/sample/v1/analyte/analytes/{authTwinRefId}?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			string endPointUrl = $"/operations/sample/v1/analyte/analytes/{authTwinRefId}";
-			if (includeInactive != null)
-			{
-				endPointUrl += $"?{includeInactive}";
-			}
+			if (includeInactive.HasValue)
+				endpoint += $"&includeInActive={includeInactive}";
 
-			List<Analyte> analytes = new List<Analyte>();
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					analytes.AddRange(respContent.ApiResponse.Content.Analytes.Items);
+			var apiResponse = await ExecuteRequest("GetAnalytesAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-					Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetAnalytesAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-					return analytes;
-				}
-
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetAnalytesAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetAnalytesAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
+			return apiResponse?.Content?.Analytes?.Items.ToList();
 		}
-		
+
 		/// <summary>
 		/// Retrieves an analyte based on the provided analyte id.
 		/// </summary>
-		/// <param name="analyteId">Id of the analyte to retrieve</param>
+		/// <param name="analyteId">ID of the analyte to retrieve</param>
+		/// <param name="cancellation"></param>
 		/// <returns>Analyte object</returns>
-		public async Task<Analyte> GetOneAnalyteAsync(string analyteId)
+		public async Task<Analyte> GetOneAnalyteAsync(string analyteId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"/operations/sample/v1/analyte/{analyteId}?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			var endPointUrl = $"/operations/sample/v1/analyte/{analyteId}";
+			var apiResponse = await ExecuteRequest("GetOneAnalyteAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					foreach (var analyte in respContent.ApiResponse.Content.Analytes.Items)
-					{
-						Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOneAnalyteAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-						return analyte;
-					}
-				}
-
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOneAnalyteAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetOneAnalyteAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
+			return apiResponse?.Content?.Analytes?.Items.FirstOrDefault();
 		}
-		
+
 		/// <summary>
 		/// Updates an testGroup
 		/// </summary>
 		/// <param name="testGroup">TestGroup to be updated</param>
 		/// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are updated associated with the testGroup</param>
-		/// <returns>Boolean value indicating whether or not the testgroup was successfully updated</returns>
-		public async Task<bool> UpdateTestGroupAsync(TestAnalyteGroup testGroup, DateTime? effectiveDate = null)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the testgroup was successfully updated</returns>
+		public async Task<bool> UpdateTestGroupAsync(TestAnalyteGroup testGroup, DateTime? effectiveDate = null, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var endpoint = $"/operations/sample/v1/testgroup/{testGroup.Id}";
+			var endpoint = $"/operations/sample/v1/testgroup/{testGroup.Id}?requestId={Guid.NewGuid()}";
 
 			if (effectiveDate.HasValue)
-			{
-				endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
-			}
+				endpoint += $"&effectiveDate={effectiveDate.Value:O}";
 
-			try
-			{
-				var respContent = await _restHelper.PutRestProtobufAsync(testGroup, endpoint).ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("UpdateTestGroupAsync", HttpMethod.Put, endpoint, cancellation, testGroup).ConfigureAwait(_continueOnCapturedContext);
 
-				var message = "UpdateTestGroupAsync Success";
-				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
-				var success = true;
-
-				if (!respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					message = "UpdateTestGroupAsync Failed";
-					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
-					success = false;
-				}
-
-				Event(null, CreateLoggerArgs(eventLevel, message, respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return success;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateTestGroupAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return true;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
 		/// Deletes an existing testGroup
 		/// </summary>
-		/// <param name="testGroupId">Id of the testGroup to be deleted</param>
+		/// <param name="testGroupId">ID of the testGroup to be deleted</param>
 		/// <param name="effectiveDate">The date from after schedule definitions and existing sample activities are deleted associated with the testGroup</param>
-		/// <returns>Boolean value indicating whether or not the testGroup was successfully deleted</returns>
-		public async Task<bool> DeleteTestGroupAsync(string testGroupId, DateTime? effectiveDate = null)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the testGroup was successfully deleted</returns>
+		public async Task<bool> DeleteTestGroupAsync(string testGroupId, DateTime? effectiveDate = null, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-
-			var endpoint = $"/operations/sample/v1/testgroup/{testGroupId}";
+			var endpoint = $"/operations/sample/v1/testgroup/{testGroupId}?requestId={Guid.NewGuid()}";
 
 			if (effectiveDate.HasValue)
-			{
-				endpoint += $"?effectivedate={effectiveDate.Value.ToString("O")}";
-			}
+				endpoint += $"&effectiveDate={effectiveDate.Value:O}";
 
-			try
-			{
-				var respContent = await _restHelper.DeleteRestJSONAsync(requestId, endpoint).ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("DeleteTestGroupAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "DeleteTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "DeleteTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"DeleteTestGroupAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
-		/// Retrieve all testgroups associated to a specific authTwinRefId
+		/// Retrieve all testGroups associated to a specific authTwinRefId
 		/// </summary>
 		/// <param name="authTwinRefId">Reference id of the digital twin </param>
-		/// <returns>List of testgroups</returns>
-		public async Task<List<TestAnalyteGroup>> GetTestGroupsAsync(string authTwinRefId)
+		/// <param name="cancellation"></param>
+		/// <returns>List of testGroups</returns>
+		public async Task<List<TestAnalyteGroup>> GetTestGroupsAsync(string authTwinRefId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			string endPointUrl = $"/operations/sample/v1/TestGroup/For/{authTwinRefId}";
+			var endpoint = $"/operations/sample/v1/TestGroup/For/{authTwinRefId}?requestId={Guid.NewGuid()}";
 
-			List<TestAnalyteGroup> TestGroups = new List<TestAnalyteGroup>();
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					TestGroups.AddRange(respContent.ApiResponse.Content.TestAnalyteGroups.Items);
+			var apiResponse = await ExecuteRequest("GetTestGroupsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-					Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetTestGroupsAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-					return TestGroups;
-				}
-
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetTestGroupsAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetTestGroupsAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
+			return apiResponse?.Content?.TestAnalyteGroups?.Items.ToList();
 		}
-		
+
 		/// <summary>
 		/// Retrieves a TestGroup based on the provided TestGroup id.
 		/// </summary>
-		/// <param name="testGroupId">Id of the TestGroup to retrieve</param>
+		/// <param name="testGroupId">ID of the TestGroup to retrieve</param>
+		/// <param name="cancellation"></param>
 		/// <returns>TestGroup object</returns>
-		public async Task<TestAnalyteGroup> GetOneTestGroupAsync(string testGroupId)
+		public async Task<TestAnalyteGroup> GetOneTestGroupAsync(string testGroupId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"/operations/sample/v1/TestGroup/{testGroupId}?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			var endPointUrl = $"/operations/sample/v1/TestGroup/{testGroupId}";
+			var apiResponse = await ExecuteRequest("GetOneTestGroupAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					foreach (var testGroup in respContent.ApiResponse.Content.TestAnalyteGroups.Items)
-					{
-						Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOneTestGroupAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-						return testGroup;
-					}
-				}
-
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "GetOneTestGroupAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"GetOneTestGroupAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
+			return apiResponse?.Content?.TestAnalyteGroups?.Items.FirstOrDefault();
 		}
 
 		/// <summary>
 		/// Determine if analyte is scheduled for use
 		/// </summary>
-		/// <param name="analyteId">Id of the analyte to determine</param>
-		public async Task<bool> IsAnalyteScheduledForUseAsync(string authTwinRefId, string analyteId)
+		/// <param name="authTwinRefId"></param>
+		/// <param name="analyteId">ID of the analyte to determine</param>
+		/// <param name="cancellation"></param>
+		public async Task<bool> IsAnalyteScheduledForUseAsync(string authTwinRefId, string analyteId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endPointUrl = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType=Analyte&EntityId={analyteId}";
+			var endpoint = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType=Analyte&EntityId={analyteId}&requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					foreach (var keyValue in respContent.ApiResponse.Content.KeyValues.Items)
-					{
-						Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "IsAnalyteScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-						if (bool.TryParse(keyValue.Value, out var value))
-							return value;
-						return false;
-					}
-				}
+			var apiResponse = await ExecuteRequest("IsAnalyteScheduledForUseAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "IsAnalyteScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return false;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"IsAnalyteScheduledForUseAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return bool.TryParse(apiResponse?.Content?.KeyValues?.Items?.FirstOrDefault()?.Value, out var result) && result;
 		}
 
 		/// <summary>
 		/// Determine if testgroup is scheduled for use
 		/// </summary>
-		/// <param name="testGroupId">Id of the testgroup to determine</param>
-		public async Task<bool> IsTestGroupScheduledForUseAsync(string authTwinRefId, string testGroupId)
+		/// <param name="authTwinRefId"></param>
+		/// <param name="testGroupId">ID of the testgroup to determine</param>
+		/// <param name="cancellation"></param>
+		public async Task<bool> IsTestGroupScheduledForUseAsync(string authTwinRefId, string testGroupId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endPointUrl = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType=TestGroup&EntityId={testGroupId}";
+			var endPointUrl = $"/operations/sample/v1/{authTwinRefId}/IsScheduledForUse?EntityType=TestGroup&EntityId={testGroupId}&requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, endPointUrl).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					foreach (var keyValue in respContent.ApiResponse.Content.KeyValues.Items)
-					{
-						Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "IsTestGroupScheduledForUseAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-						if (bool.TryParse(keyValue.Value, out var value))
-							return value;
-						return false;
-					}
-				}
+			var apiResponse = await ExecuteRequest("IsTestGroupScheduledForUseAsync", HttpMethod.Get, endPointUrl, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "IsTestGroupScheduledForUseAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				return false;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"IsTestGroupScheduledForUseAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-				return false;
-			}
+			return bool.TryParse(apiResponse?.Content?.KeyValues?.Items?.FirstOrDefault()?.Value, out var result) && result;
 		}
 
 		/// <summary>
@@ -583,34 +301,15 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// with the schedule. The SampleCache will need to be refreshed to include the new Activities.
 		/// </summary>
 		/// <param name="schedule">The new schedule to be created.</param>
+		/// <param name="cancellation"></param>
 		/// <returns>The schedule that was created or null if the schedule could not be created.</returns>
-		public async Task<Schedule> CreateSampleScheduleAsync(Schedule schedule)
+		public async Task<Schedule> CreateSampleScheduleAsync(Schedule schedule, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			const string endpoint = "/operations/sample/v1/schedule";
+			var endpoint = $"/operations/sample/v1/schedule?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.PostRestProtobufAsync(schedule, endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("CreateSampleScheduleAsync", HttpMethod.Post, endpoint, cancellation, schedule).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null, respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "CreateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "CreateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-
-				var createdSchedule = respContent.ApiResponse.Content?.Schedules?.Items.FirstOrDefault();
-				var success = respContent.ResponseMessage.IsSuccessStatusCode && createdSchedule != null;
-
-				return success ? createdSchedule : ErrorResponse(respContent, (Schedule)null);
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"CreateSampleScheduleAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-
-				return null;
-			}
+			return apiResponse?.Content?.Schedules?.Items.FirstOrDefault();
 		}
 
 		/// <summary>
@@ -618,37 +317,17 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// This method will start a background process that will update Activities associated
 		/// with the schedule. The SampleCache will need to be refreshed to include the updated Activities.
 		/// </summary>
-		/// <param name="sampleScheduleId">The Id of the schedule to update.</param>
+		/// <param name="sampleScheduleId">The ID of the schedule to update.</param>
 		/// <param name="schedule">The schedule to update.</param>
-		/// <returns>Boolean value indicating whether or not the schedule was successfully updated.</returns>
-		public async Task<bool> UpdateSampleScheduleAsync(Guid sampleScheduleId, Schedule schedule)
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the schedule was successfully updated.</returns>
+		public async Task<bool> UpdateSampleScheduleAsync(Guid sampleScheduleId, Schedule schedule, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}";
+			var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}?requestId={Guid.NewGuid()}";
 
-			try
-			{
-				var respContent = await _restHelper.PutRestProtobufAsync(schedule, endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("UpdateSampleScheduleAsync", HttpMethod.Put, endpoint, cancellation, schedule).ConfigureAwait(_continueOnCapturedContext);
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "UpdateSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "UpdateSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
-				
-				if (!respContent.ResponseMessage.IsSuccessStatusCode)
-					return ErrorResponse(respContent, false);
-
-				return true;
-			}
-			catch (Exception e)
-			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"UpdateSampleScheduleAsync Failed - {e.Message}"));
-				if (_throwApiErrors)
-					throw;
-
-				return false;
-			}
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
 		/// <summary>
@@ -656,49 +335,65 @@ namespace ONE.ClientSDK.Operations.Sample
 		/// This method will start a background process that will delete Activities associated
 		/// with the schedule. The SampleCache will need to be refreshed to remove the deleted Activities.
 		/// </summary>
-		/// <param name="sampleScheduleId">The Id of the schedule to delete.</param>
-		/// <returns>Boolean value indicating whether or not the schedule was successfully deleted.</returns>
-		public async Task<bool> DeleteSampleScheduleAsync(Guid sampleScheduleId)
+		/// <param name="sampleScheduleId">The ID of the schedule to delete.</param>
+		/// <param name="cancellation"></param>
+		/// <returns>Boolean value indicating whether the schedule was successfully deleted.</returns>
+		public async Task<bool> DeleteSampleScheduleAsync(Guid sampleScheduleId, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}";
+			var endpoint = $"/operations/sample/v1/schedule/{sampleScheduleId}?requestId={Guid.NewGuid()}";
 
+			var apiResponse = await ExecuteRequest("DeleteSampleScheduleAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+		}
+
+		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+		{
 			try
 			{
-				var respContent = await _restHelper.DeleteRestJSONAsync(Guid.NewGuid(), endpoint)
-					.ConfigureAwait(_continueOnCapturedContext);
+				var watch = System.Diagnostics.Stopwatch.StartNew();
 
-				Event(null,
-					respContent.ResponseMessage.IsSuccessStatusCode
-						? CreateLoggerArgs(EnumOneLogLevel.OneLogLevelTrace, "DeleteSampleScheduleAsync Success", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds)
-						: CreateLoggerArgs(EnumOneLogLevel.OneLogLevelWarn, "DeleteSampleScheduleAsync Failed", respContent.ResponseMessage.StatusCode, watch.ElapsedMilliseconds));
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync<ApiResponse>(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
 
-				if (!respContent.ResponseMessage.IsSuccessStatusCode)
-					return ErrorResponse(respContent, false);
+				watch.Stop();
 
-				return true;
+				var message = " Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+				if (!apiResponse.StatusCode.IsSuccessStatusCode())
+				{
+					message = " Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ApiResponse = apiResponse, ElapsedMs = watch.ElapsedMilliseconds });
+				}
+
+				Event(this,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = eventLevel,
+						HttpStatusCode = (HttpStatusCode)apiResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "SampleApi",
+						Message = callingMethod + message
+					});
+
+				return apiResponse;
 			}
 			catch (Exception e)
 			{
-				Event(e, CreateLoggerArgs(EnumOneLogLevel.OneLogLevelError, $"DeleteSampleScheduleAsync Failed - {e.Message}"));
+				Event(e,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = EnumOneLogLevel.OneLogLevelError,
+						Module = "SampleApi",
+						Message = $"{callingMethod} Failed - {e.Message}"
+					});
 				if (_throwApiErrors)
 					throw;
-
-				return false;
+				return null;
 			}
 		}
-
-		private T ErrorResponse<T>(ServiceResponse respContent, T result)
-		{
-			var exceptionMessage = respContent.ApiResponse?.Errors?.FirstOrDefault()?.Detail ?? $"Unknown Error with status code {respContent.ResponseMessage.StatusCode}";
-
-			if (_throwApiErrors)
-				throw new Exception(exceptionMessage);
-
-			return result;
-		}
-
-		private ClientApiLoggerEventArgs CreateLoggerArgs(EnumOneLogLevel level, string message, HttpStatusCode statusCode = default, long duration = default) => new ClientApiLoggerEventArgs
-		{ EventLevel = level, HttpStatusCode = statusCode, ElapsedMs = duration, Module = "SampleApi", Message = message };
 	}
 }

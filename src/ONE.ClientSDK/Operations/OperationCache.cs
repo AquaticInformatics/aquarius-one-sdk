@@ -12,6 +12,7 @@ using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants;
 using ONE.Models.CSharp.Constants.TwinCategory;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Operations
 {
@@ -22,8 +23,8 @@ namespace ONE.ClientSDK.Operations
 			ClientSdk = clientSdk;
 			DigitalTwin = digitalTwin;
 			DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
-			ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
-			ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+			ItemDictionaryByGuid = new Dictionary<string, DigitalTwinItem>();
+			ItemDictionaryByLong = new Dictionary<long, DigitalTwinItem>();
 			FifteenMinuteRows = new Dictionary<uint, Row>();
 			HourlyRows = new Dictionary<uint, Row>();
 			FourHourRows = new Dictionary<uint, Row>();
@@ -38,6 +39,7 @@ namespace ONE.ClientSDK.Operations
 			Dashboards = new List<Configuration>();
 			ReportCache = new Enterprise.Report.ReportCache(ClientSdk, DigitalTwin.TwinReferenceId);
 		}
+
 		public OperationCache(string serializedObject)
 		{
 			try
@@ -71,17 +73,19 @@ namespace ONE.ClientSDK.Operations
 				Graphs = operationCache.Graphs;
 				Dashboards = operationCache.Dashboards;
 				ReportCache = operationCache.ReportCache;
-				var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
+				var allOperationDescendantTwins = LocationTwins.Union(ColumnTwins).ToList();
 
-				ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
-				ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
-				AddChildren(DigitalTwinItem, allOperationDecendentTwins);
+				ItemDictionaryByGuid = new Dictionary<string, DigitalTwinItem>();
+				ItemDictionaryByLong = new Dictionary<long, DigitalTwinItem>();
+				AddChildren(DigitalTwinItem, allOperationDescendantTwins);
 				CacheColumns();
 			}
 			catch
 			{
+				// ignored
 			}
 		}
+
 		public OperationCache()
 		{
 			DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
@@ -89,8 +93,8 @@ namespace ONE.ClientSDK.Operations
 			HourlyWorksheetDefinition = new WorksheetDefinition();
 			FourHourWorksheetDefinition = new WorksheetDefinition();
 			DailyWorksheetDefinition = new WorksheetDefinition();
-			ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
-			ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+			ItemDictionaryByGuid = new Dictionary<string, DigitalTwinItem>();
+			ItemDictionaryByLong = new Dictionary<long, DigitalTwinItem>();
 			FifteenMinuteRows = new Dictionary<uint, Row>();
 			HourlyRows = new Dictionary<uint, Row>();
 			FourHourRows = new Dictionary<uint, Row>();
@@ -105,6 +109,7 @@ namespace ONE.ClientSDK.Operations
 			Dashboards = new List<Configuration>();
 			ReportCache = new Enterprise.Report.ReportCache();
 		}
+
 		public void Unload()
 		{
 			DigitalTwinItem = new DigitalTwinItem(DigitalTwin);
@@ -113,8 +118,8 @@ namespace ONE.ClientSDK.Operations
 			HourlyWorksheetDefinition = new WorksheetDefinition();
 			FourHourWorksheetDefinition = new WorksheetDefinition();
 			DailyWorksheetDefinition = new WorksheetDefinition();
-			ItemDictionarybyGuid = new Dictionary<string, DigitalTwinItem>();
-			ItemDictionarybyLong = new Dictionary<long, DigitalTwinItem>();
+			ItemDictionaryByGuid = new Dictionary<string, DigitalTwinItem>();
+			ItemDictionaryByLong = new Dictionary<long, DigitalTwinItem>();
 			FifteenMinuteRows = new Dictionary<uint, Row>();
 			HourlyRows = new Dictionary<uint, Row>();
 			FourHourRows = new Dictionary<uint, Row>();
@@ -135,34 +140,15 @@ namespace ONE.ClientSDK.Operations
 			Dashboards = new List<Configuration>();
 			ReportCache = new Enterprise.Report.ReportCache();
 		}
-		public void SetClientSDK(OneApi clientSDK)
-		{
-			ClientSdk = clientSDK;
-		}
-		public OneApi GetClientSDK()
-		{
-			return ClientSdk;
-		}
+
+		public void SetClientSdk(OneApi clientSdk) => ClientSdk = clientSdk;
+
+		public OneApi GetClientSdk() => ClientSdk;
+
 		public Enterprise.Report.ReportCache ReportCache { get; set; }
 		private OneApi ClientSdk { get; set; }
-		public string Id
-		{
-			get
-			{
-				if (DigitalTwin != null)
-					return DigitalTwin.TwinReferenceId;
-				return null;
-			}
-		}
-		public string Name
-		{
-			get
-			{
-				if (DigitalTwin != null)
-					return DigitalTwin.Name;
-				return null;
-			}
-		}
+		public string Id => DigitalTwin?.TwinReferenceId;
+		public string Name => DigitalTwin?.Name;
 		public DigitalTwin DigitalTwin { get; set; }
 		public DigitalTwinItem DigitalTwinItem { get; set; }
 		public SpreadsheetDefinition SpreadsheetDefinition { get; set; }
@@ -179,8 +165,8 @@ namespace ONE.ClientSDK.Operations
 
 		public List<User> Users { get; set; }
 
-		private Dictionary<string, DigitalTwinItem> ItemDictionarybyGuid { get; set; }
-		private Dictionary<long, DigitalTwinItem> ItemDictionarybyLong { get; set; }
+		private Dictionary<string, DigitalTwinItem> ItemDictionaryByGuid { get; set; }
+		private Dictionary<long, DigitalTwinItem> ItemDictionaryByLong { get; set; }
 
 		private Dictionary<long, Column> ColumnsByVariable { get; set; }
 		private Dictionary<long, Column> ColumnsByVarNum { get; set; }
@@ -195,22 +181,13 @@ namespace ONE.ClientSDK.Operations
 		public List<Configuration> Graphs { get; set; }
 		public List<Configuration> Dashboards { get; set; }
 
-		private string _delimiter = "\\";
-		public string Delimiter
-		{
-			get
-			{
-				return _delimiter;
-			}
-			set
-			{
-				_delimiter = value;
-			}
-		}
+		public string Delimiter { get; set; } = "\\";
+
 		public void AddRow(EnumWorksheet enumWorksheet, Row row)
 		{
 			if (row == null)
 				return;
+
 			switch (enumWorksheet)
 			{
 				case EnumWorksheet.WorksheetFifteenMinute:
@@ -232,34 +209,23 @@ namespace ONE.ClientSDK.Operations
 					break;
 			}
 		}
+
 		public Row GetRow(EnumWorksheet enumWorksheet, uint rowNumber)
 		{
 			switch (enumWorksheet)
 			{
 				case EnumWorksheet.WorksheetFifteenMinute:
-					if (FifteenMinuteRows.ContainsKey(rowNumber))
-						return FifteenMinuteRows[rowNumber];
-					else
-						return null;
+					return FifteenMinuteRows.TryGetValue(rowNumber, out var fifteenMinuteRow) ? fifteenMinuteRow : null;
 				case EnumWorksheet.WorksheetHour:
-					if (HourlyRows.ContainsKey(rowNumber))
-						return HourlyRows[rowNumber];
-					else
-						return null;
+					return HourlyRows.TryGetValue(rowNumber, out var hourlyRow) ? hourlyRow : null;
 				case EnumWorksheet.WorksheetFourHour:
-					if (FourHourRows.ContainsKey(rowNumber))
-						return FourHourRows[rowNumber];
-					else
-						return null;
+					return FourHourRows.TryGetValue(rowNumber, out var fourHourRow) ? fourHourRow : null;
 				case EnumWorksheet.WorksheetDaily:
-					if (DailyRows.ContainsKey(rowNumber))
-						return DailyRows[rowNumber];
-					else
-						return null;
+					return DailyRows.TryGetValue(rowNumber, out var dailyRow) ? dailyRow : null;
 			}
+
 			return null;
 		}
-
 
 		public bool IsCached { get; set; }
 		public async Task<bool> LoadAsync(bool loadChildCaches = false)
@@ -269,43 +235,43 @@ namespace ONE.ClientSDK.Operations
 
 			try
 			{
-				var ColumnTwinsTask = ClientSdk.DigitalTwin.GetDescendantsByTypeAsync(Id, TelemetryConstants.ColumnType.RefId);
-				var LocationTwinsTask = ClientSdk.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
-				var SpreadsheetDefinitionTask = ClientSdk.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
-				var FifteenMinuteWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
-				var HourlyWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetHour);
-				var FourHourWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
-				var DailyWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
-				var UsersTask = ClientSdk.Core.GetUsersAsync();
-				var SheetsTask = ClientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.WorksheetView.Id, Id);
-				var GraphsTask = ClientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Graphs.Id, Id);
-				var DashboardsTask = ClientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Dashboards.Id, Id, OrganizationConstants.TenantType.RefId);
+				var columnTwinsTask = ClientSdk.DigitalTwin.GetDescendantsByTypeAsync(Id, TelemetryConstants.ColumnType.RefId);
+				var locationTwinsTask = ClientSdk.DigitalTwin.GetDescendantsByCategoryAsync(Id, 2);
+				var spreadsheetDefinitionTask = ClientSdk.Spreadsheet.GetSpreadsheetDefinitionAsync(Id);
+				var fifteenMinuteWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFifteenMinute);
+				var hourlyWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetHour);
+				var fourHourWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetFourHour);
+				var dailyWorksheetDefinitionTask = ClientSdk.Spreadsheet.GetWorksheetDefinitionAsync(Id, EnumWorksheet.WorksheetDaily);
+				var usersTask = ClientSdk.Core.GetUsersAsync();
+				var sheetsTask = ClientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.WorksheetView.Id, Id);
+				var graphsTask = ClientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Graphs.Id, Id);
+				var dashboardsTask = ClientSdk.Configuration.GetConfigurationsAsync(ConfigurationTypeConstants.Dashboards.Id, Id, OrganizationConstants.TenantType.RefId);
 
 				await Task.WhenAll(
-					ColumnTwinsTask,
-					LocationTwinsTask,
-					SpreadsheetDefinitionTask,
-					FifteenMinuteWorksheetDefinitionTask,
-					HourlyWorksheetDefinitionTask,
-					FourHourWorksheetDefinitionTask,
-					DailyWorksheetDefinitionTask,
-					UsersTask,
-					SheetsTask,
-					GraphsTask,
-					DashboardsTask
+					columnTwinsTask,
+					locationTwinsTask,
+					spreadsheetDefinitionTask,
+					fifteenMinuteWorksheetDefinitionTask,
+					hourlyWorksheetDefinitionTask,
+					fourHourWorksheetDefinitionTask,
+					dailyWorksheetDefinitionTask,
+					usersTask,
+					sheetsTask,
+					graphsTask,
+					dashboardsTask
 					);
 
-				ColumnTwins = ColumnTwinsTask.Result ?? new List<DigitalTwin>();
-				LocationTwins = LocationTwinsTask.Result ?? new List<DigitalTwin>();
-				SpreadsheetDefinition = SpreadsheetDefinitionTask.Result;
-				FifteenMinuteWorksheetDefinition = FifteenMinuteWorksheetDefinitionTask.Result;
-				HourlyWorksheetDefinition = HourlyWorksheetDefinitionTask.Result;
-				FourHourWorksheetDefinition = FourHourWorksheetDefinitionTask.Result;
-				DailyWorksheetDefinition = DailyWorksheetDefinitionTask.Result;
-				Users = UsersTask.Result;
-				Sheets = SheetsTask.Result;
-				Graphs = GraphsTask.Result;
-				Dashboards = DashboardsTask.Result;
+				ColumnTwins = columnTwinsTask.Result ?? new List<DigitalTwin>();
+				LocationTwins = locationTwinsTask.Result ?? new List<DigitalTwin>();
+				SpreadsheetDefinition = spreadsheetDefinitionTask.Result;
+				FifteenMinuteWorksheetDefinition = fifteenMinuteWorksheetDefinitionTask.Result;
+				HourlyWorksheetDefinition = hourlyWorksheetDefinitionTask.Result;
+				FourHourWorksheetDefinition = fourHourWorksheetDefinitionTask.Result;
+				DailyWorksheetDefinition = dailyWorksheetDefinitionTask.Result;
+				Users = usersTask.Result;
+				Sheets = sheetsTask.Result;
+				Graphs = graphsTask.Result;
+				Dashboards = dashboardsTask.Result;
 
 				SpreadsheetComputations = new Dictionary<string, SpreadsheetComputation>();
 				await LoadComputations(FifteenMinuteWorksheetDefinition);
@@ -315,7 +281,6 @@ namespace ONE.ClientSDK.Operations
 
 				if (loadChildCaches)
 					await ReportCache.LoadAsync();
-
 			}
 			catch
 			{
@@ -323,25 +288,28 @@ namespace ONE.ClientSDK.Operations
 					throw;
 				return false;
 			}
-			//Merge the Twins
-			var allOperationDecendentTwins = LocationTwins.Union(ColumnTwins).ToList();
 
-			AddChildren(DigitalTwinItem, allOperationDecendentTwins);
+			//Merge the Twins
+			var allOperationDescendantTwins = LocationTwins.Union(ColumnTwins).ToList();
+
+			AddChildren(DigitalTwinItem, allOperationDescendantTwins);
 			IsCached = true;
 			CacheColumns();
 			return true;
 		}
 
-		private async Task<bool> LoadComputations(WorksheetDefinition sourceWorksheetDefinition)
+		private async Task LoadComputations(WorksheetDefinition sourceWorksheetDefinition)
 		{
 			if (sourceWorksheetDefinition == null) 
-				return true;
+				return;
 
 			foreach (var sourceColumn in sourceWorksheetDefinition.Columns)
 			{
 				if (sourceColumn.DataSourceBinding?.DataSource != EnumDataSource.DatasourceComputation ||
-					string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId)) 
+					string.IsNullOrEmpty(sourceColumn.DataSourceBinding.BindingId))
+				{
 					continue;
+				}
 
 				var sourceSpreadsheetComputation = await ClientSdk.Spreadsheet.ComputationGetOneAsync(DigitalTwin.TwinReferenceId, sourceWorksheetDefinition.EnumWorksheet, sourceColumn.DataSourceBinding.BindingId);
 
@@ -350,55 +318,49 @@ namespace ONE.ClientSDK.Operations
 					SpreadsheetComputations.Add(sourceColumn.DataSourceBinding.BindingId, sourceSpreadsheetComputation);
 				}
 			}
-
-			return true;
 		}
 
 		public void CacheColumns()
 		{
 			if (!IsCached)
 				return;
+
 			ColumnsByVariable = new Dictionary<long, Column>();
 			ColumnsByVarNum = new Dictionary<long, Column>();
 			ColumnsById = new Dictionary<long, Column>();
 			ColumnsByGuid = new Dictionary<string, Column>();
 			foreach (var columnTwin in ColumnTwins)
 			{
-				Column column = GetColumnByColumnNumber((uint)columnTwin.Id);
+				var column = GetColumnByColumnNumber((uint)columnTwin.Id);
 				ColumnsById.Add(columnTwin.Id, column);
 				ColumnsByGuid.Add(columnTwin.TwinReferenceId, column);
-				string variableId = DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
+				var variableId = DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
 				long.TryParse(variableId, out var value);
 				if (value != 0 && !ColumnsByVariable.ContainsKey(value))
 					ColumnsByVariable.Add(value, column);
 
-				string varNum = DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
+				var varNum = DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
 				long.TryParse(variableId, out var varNumValue);
 				if (varNumValue != 0 && !ColumnsByVarNum.ContainsKey(varNumValue))
 					ColumnsByVarNum.Add(varNumValue, column);
 			}
 		}
+
 		public User GetUser(string userId)
 		{
 			if (Users == null)
 				return null;
+
 			try
 			{
-				var matches = Users.Where(p => String.Equals(p.Id, userId, StringComparison.CurrentCulture));
-				if (matches.Count() > 0)
-				{
-					return matches.First();
-				}
-				else
-				{
-					return null;
-				}
+				return Users.FirstOrDefault(p => string.Equals(p.Id, userId, StringComparison.CurrentCulture));
 			}
 			catch
 			{
 				return null;
 			}
 		}
+
 		public Column GetColumnByIdentifier(string sId)
 		{
 			if (string.IsNullOrEmpty(sId))
@@ -406,110 +368,112 @@ namespace ONE.ClientSDK.Operations
 
 			uint.TryParse(sId, out var uId);
 			if (uId != 0)
-			{
 				return GetColumnByColumnNumber(uId);
-			}
+			
 			if (sId.Length < 15)
 			{
 				uint.TryParse(sId.Substring(1), out var wimsId);
+
 				if (wimsId > 0)
-				{
-					if (sId.ToUpper().StartsWith("V"))
-					{
+					if (sId.ToUpper().StartsWith("V") || sId.ToUpper().StartsWith("I"))
 						return GetColumnByVariableId(wimsId);
-					}
-					else if (sId.ToUpper().StartsWith("I"))
-					{
-						return GetColumnByVariableId(wimsId);
-					}
-				}
 			}
+
 			Guid.TryParse(sId, out var gId);
-			if (gId != Guid.Empty)
-				return GetColumnByGuid(sId);
-			return null;
+			
+			return gId != Guid.Empty ? GetColumnByGuid(sId) : null;
 		}
 		public Column GetColumnByColumnNumber(uint id)
 		{
-			if (id == 0)
+			if (id == 0 || ColumnsById == null)
 				return null;
-			if (ColumnsById == null)
-				return null;
-			if (ColumnsById.ContainsKey(id))
-				return ColumnsById[id];
-			Column column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(FifteenMinuteWorksheetDefinition, id);
-			if (column != null)
+			
+			if (ColumnsById.TryGetValue(id, out var column))
 				return column;
-			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(HourlyWorksheetDefinition, id);
-			if (column != null)
-				return column;
-			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(FourHourWorksheetDefinition, id);
-			if (column != null)
-				return column;
-			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(DailyWorksheetDefinition, id);
-			return column;
 
+			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(FifteenMinuteWorksheetDefinition, id);
+			
+			if (column != null)
+				return column;
+
+			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(HourlyWorksheetDefinition, id);
+			
+			if (column != null)
+				return column;
+
+			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(FourHourWorksheetDefinition, id);
+			
+			if (column != null)
+				return column;
+
+			column = Spreadsheet.SpreadsheetHelper.GetColumnByNumber(DailyWorksheetDefinition, id);
+			
+			return column;
 		}
+
 		public Column GetColumnByGuid(string id)
 		{
 			if (ColumnsByGuid == null || string.IsNullOrEmpty(id))
 				return null;
-			if (ColumnsByGuid.ContainsKey(id))
-				return ColumnsByGuid[id];
-			return null;
+
+			return ColumnsByGuid.TryGetValue(id, out var column) ? column : null;
 		}
+
 		public DigitalTwin GetColumnTwinByGuid(string guid)
 		{
 			if (string.IsNullOrEmpty(guid) || ColumnTwins == null || ColumnTwins.Count == 0)
 				return null;
-			var matches = ColumnTwins.Where(c => c.TwinReferenceId.ToUpper() == guid.ToUpper());
-			if (matches.Count() > 0)
-				return matches.First();
-			return null;
+
+			return ColumnTwins.FirstOrDefault(c => string.Equals(c.TwinReferenceId, guid, StringComparison.CurrentCultureIgnoreCase));
 		}
+
 		public DigitalTwin GetLocationTwinByGuid(string guid)
 		{
 			if (string.IsNullOrEmpty(guid) || LocationTwins == null || LocationTwins.Count == 0)
 				return null;
-			var matches = LocationTwins.Where(c => c.TwinReferenceId.ToUpper() == guid.ToUpper());
-			if (matches.Count() > 0)
-				return matches.First();
-			return null;
+
+			return LocationTwins.FirstOrDefault(c => string.Equals(c.TwinReferenceId, guid, StringComparison.CurrentCultureIgnoreCase));
 		}
+
 		public long GetColumnTwinDataPropertyLong(string guid, string path, string key)
 		{
-			DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
-			if (columnTwin == null)
-				return 0;
-			return Enterprise.Twin.DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, path, key);
+			var columnTwin = GetColumnTwinByGuid(guid);
+
+			return columnTwin == null ? 0 : DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, path, key);
 		}
+
 		public double GetColumnTwinDataPropertyDouble(string guid, string path, string key)
 		{
-			DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
-			if (columnTwin == null)
-				return 0;
-			return Enterprise.Twin.DigitalTwinHelper.GetDoubleTwinDataProperty(columnTwin, path, key);
+			var columnTwin = GetColumnTwinByGuid(guid);
+
+			return columnTwin == null ? 0d : DigitalTwinHelper.GetDoubleTwinDataProperty(columnTwin, path, key);
 		}
+
 		public string GetColumnTwinDataPropertyString(string guid, string path, string key)
 		{
-			DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
-			if (columnTwin == null)
-				return "";
-			return Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(columnTwin, path, key);
+			var columnTwin = GetColumnTwinByGuid(guid);
+
+			return columnTwin == null ? string.Empty : DigitalTwinHelper.GetTwinDataProperty(columnTwin, path, key);
 		}
+
 		public DateTime GetColumnTwinDataPropertyDate(string guid, string path, string key)
 		{
-			DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
+			var columnTwin = GetColumnTwinByGuid(guid);
+
 			return columnTwin == null ? DateTime.MinValue : DigitalTwinHelper.GetDateTimeTwinDataProperty(columnTwin, path, key);
 		}
+
 		public async Task<bool> UpdateTwinDataAsync(string key, string value)
 		{
-			JsonPatchDocument jsonPatchDocument = new JsonPatchDocument();
+			var jsonPatchDocument = new JsonPatchDocument();
 			var existingTwinData = new JObject();
+
 			if (!string.IsNullOrEmpty(DigitalTwin.TwinData))
 				existingTwinData = JObject.Parse(DigitalTwin.TwinData);
+
 			jsonPatchDocument = DigitalTwinHelper.UpdateJsonDataField(DigitalTwin, jsonPatchDocument, existingTwinData, key, value);
 			var digitalTwin = await ClientSdk.DigitalTwin.UpdateTwinDataAsync(DigitalTwin.TwinReferenceId, jsonPatchDocument);
+
 			if (digitalTwin != null)
 			{
 				DigitalTwin = digitalTwin;
@@ -517,77 +481,60 @@ namespace ONE.ClientSDK.Operations
 			}
 			return false;
 		}
-		public long GetTwinDataPropertyLong(string path, string key)
-		{
-			return Enterprise.Twin.DigitalTwinHelper.GetLongTwinDataProperty(DigitalTwin, path, key);
-		}
-		public double GetTwinDataPropertyDouble(string path, string key)
-		{
-			return Enterprise.Twin.DigitalTwinHelper.GetDoubleTwinDataProperty(DigitalTwin, path, key);
-		}
-		public string GetTwinDataPropertyString(string guid, string path, string key)
-		{
-			return Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(DigitalTwin, path, key);
-		}
+
+		public long GetTwinDataPropertyLong(string path, string key) => DigitalTwinHelper.GetLongTwinDataProperty(DigitalTwin, path, key);
+
+		public double GetTwinDataPropertyDouble(string path, string key) => DigitalTwinHelper.GetDoubleTwinDataProperty(DigitalTwin, path, key);
+
+		public string GetTwinDataPropertyString(string guid, string path, string key) => DigitalTwinHelper.GetTwinDataProperty(DigitalTwin, path, key);
+
 		public DateTime GetTwinDataPropertyDate(string path, string key) => DigitalTwinHelper.GetDateTimeTwinDataProperty(DigitalTwin, path, key);
 
 		public long GetVariableId(string guid)
 		{
-			DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
-			if (columnTwin == null)
-				return 0;
-			return Enterprise.Twin.DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
+			var columnTwin = GetColumnTwinByGuid(guid);
+
+			return columnTwin == null ? 0 : DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
 		}
-		public long GetVariableId(DigitalTwin columnTwin)
-		{
-			return Enterprise.Twin.DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
-		}
+
+		public long GetVariableId(DigitalTwin columnTwin) => DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
+
 		public long GetVariableNum(string guid)
 		{
-			DigitalTwin columnTwin = GetColumnTwinByGuid(guid);
-			if (columnTwin == null)
-				return 0;
-			return Enterprise.Twin.DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
+			var columnTwin = GetColumnTwinByGuid(guid);
+
+			return columnTwin == null ? 0 : DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
 		}
-		public long GetVariableNum(DigitalTwin columnTwin)
-		{
-			return Enterprise.Twin.DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
-		}
-		public Column GetColumnByVariableId(long variableId)
-		{
-			if (ColumnsByVariable.ContainsKey(variableId))
-				return ColumnsByVariable[variableId];
-			return null;
-		}
-		public Column GetColumnByVarNum(long varNum)
-		{
-			if (ColumnsByVarNum.ContainsKey(varNum))
-				return ColumnsByVarNum[varNum];
-			return null;
-		}
+
+		public long GetVariableNum(DigitalTwin columnTwin) => DigitalTwinHelper.GetLongTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
+
+		public Column GetColumnByVariableId(long variableId) => ColumnsByVariable.TryGetValue(variableId, out var column) ? column : null;
+
+		public Column GetColumnByVarNum(long varNum) => ColumnsByVarNum.TryGetValue(varNum, out var column) ? column : null;
+
 		public string GetTelemetryPath(string digitalTwinReferenceId, bool includeItem)
 		{
-			if (ItemDictionarybyGuid.ContainsKey(digitalTwinReferenceId))
+			if (ItemDictionaryByGuid.ContainsKey(digitalTwinReferenceId))
 			{
 				if (includeItem)
+					return ItemDictionaryByGuid[digitalTwinReferenceId].Path;
+
+				if (ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId != null &&
+				    ItemDictionaryByGuid.ContainsKey(ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId))
 				{
-					return ItemDictionarybyGuid[digitalTwinReferenceId].Path;
+					return ItemDictionaryByGuid[ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId].Path;
 				}
-				else
+
+				if (ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentId.HasValue &&
+				    ItemDictionaryByLong.ContainsKey((long)ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentId))
 				{
-					if (ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId != null &&
-						ItemDictionarybyGuid.ContainsKey(ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId))
-					{
-						return ItemDictionarybyGuid[ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentTwinReferenceId].Path;
-					}
-					else if (ItemDictionarybyLong.ContainsKey((long)ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentId))
-					{
-						return ItemDictionarybyLong[(long)ItemDictionarybyGuid[digitalTwinReferenceId].DigitalTwin.ParentId].Path;
-					}
+					return ItemDictionaryByLong[(long)ItemDictionaryByGuid[digitalTwinReferenceId].DigitalTwin.ParentId].Path;
 				}
 			}
-			return "";
+
+			return string.Empty;
 		}
+
 		public string GetWorksheetTypeName(DigitalTwin digitalTwin)
 		{
 			switch (digitalTwin.TwinSubTypeId)
@@ -604,6 +551,7 @@ namespace ONE.ClientSDK.Operations
 
 			return "";
 		}
+
 		public EnumWorksheet GetWorksheetType(DigitalTwin digitalTwin)
 		{
 			switch (digitalTwin.TwinSubTypeId)
@@ -620,16 +568,17 @@ namespace ONE.ClientSDK.Operations
 
 			return EnumWorksheet.WorksheetUnknown;
 		}
+
 		public EnumWorksheet GetWorksheetType(Column column)
 		{
-			DigitalTwin digitalTwin = DigitalTwinHelper.GetByRef(ColumnTwins, column.ColumnId);
+			var digitalTwin = DigitalTwinHelper.GetByRef(ColumnTwins, column.ColumnId);
 			return GetWorksheetType(digitalTwin);
 		}
 
 		public void AddChildren(DigitalTwinItem digitalTwinTreeItem, List<DigitalTwin> digitalTwins)
 		{
 			var childDigitalTwins = digitalTwins.Where(p => p.ParentId == digitalTwinTreeItem.DigitalTwin.Id);
-			foreach (DigitalTwin digitalTwin in childDigitalTwins)
+			foreach (var digitalTwin in childDigitalTwins)
 			{
 				var childDigitalTwinItem = new DigitalTwinItem(digitalTwin);
 				if (string.IsNullOrEmpty(digitalTwinTreeItem.Path))
@@ -637,23 +586,24 @@ namespace ONE.ClientSDK.Operations
 				else
 					childDigitalTwinItem.Path = $"{digitalTwinTreeItem.Path}{Delimiter}{childDigitalTwinItem.DigitalTwin.Name}";
 				digitalTwinTreeItem.ChildDigitalTwinItems.Add(childDigitalTwinItem);
-				if (!string.IsNullOrEmpty(digitalTwin.TwinReferenceId) && !ItemDictionarybyGuid.ContainsKey(digitalTwin.TwinReferenceId))
-					ItemDictionarybyGuid.Add(digitalTwin.TwinReferenceId, childDigitalTwinItem);
-				if (!ItemDictionarybyLong.ContainsKey(digitalTwin.Id))
-					ItemDictionarybyLong.Add(digitalTwin.Id, childDigitalTwinItem);
+				if (!string.IsNullOrEmpty(digitalTwin.TwinReferenceId) && !ItemDictionaryByGuid.ContainsKey(digitalTwin.TwinReferenceId))
+					ItemDictionaryByGuid.Add(digitalTwin.TwinReferenceId, childDigitalTwinItem);
+				if (!ItemDictionaryByLong.ContainsKey(digitalTwin.Id))
+					ItemDictionaryByLong.Add(digitalTwin.Id, childDigitalTwinItem);
 				AddChildren(childDigitalTwinItem, digitalTwins);
 			}
 		}
+
 		public string GetColumnGuidByIndex(string index)
 		{
 			if (!IsCached)
-				return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+				return nameof(EnumErrors.ERR_OPERATION_NOT_LOADED);
 
-			int.TryParse(index, out int idx);
+			int.TryParse(index, out var idx);
 			if (ColumnTwins == null || idx > ColumnTwins.Count - 1 || idx < 0 || ColumnTwins.Count == 0)
-				return EnumErrors.ERR_INDEX_OUT_OF_RANGE.ToString();
-			else
-				return ColumnTwins[idx].TwinReferenceId;
+				return nameof(EnumErrors.ERR_INDEX_OUT_OF_RANGE);
+
+			return ColumnTwins[idx].TwinReferenceId;
 		}
 
 		public string GetWimsVarType(Column column)
@@ -694,8 +644,10 @@ namespace ONE.ClientSDK.Operations
 						return "P";
 					}
 			}
+
 			return "";
 		}
+
 		public string GetWimsType(Column column)
 		{
 			var workSheetType = GetWorksheetType(column);
@@ -734,19 +686,21 @@ namespace ONE.ClientSDK.Operations
 						return "Daily variable / parameter";
 					}
 			}
+
 			return "";
 		}
+
 		public string Info(string columnIdentifier, string field, LibraryCache library = null)
 		{
 			if (!IsCached)
-				return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+				return nameof(EnumErrors.ERR_OPERATION_NOT_LOADED);
 			if (library == null && ClientSdk != null && ClientSdk.CacheHelper != null && ClientSdk.CacheHelper.LibraryCache != null)
 				library = ClientSdk.CacheHelper.LibraryCache;
 
 
-			Column column = GetColumnByIdentifier(columnIdentifier);
+			var column = GetColumnByIdentifier(columnIdentifier);
 			if (column == null)
-				return EnumErrors.ERR_INVALID_PARAMETER_GUID.ToString();
+				return nameof(EnumErrors.ERR_INVALID_PARAMETER_GUID);
 			var columnTwin = GetColumnTwinByGuid(column.ColumnId);
 
 			Parameter parameter = null;
@@ -756,11 +710,12 @@ namespace ONE.ClientSDK.Operations
 				parameter = library.GetParameter(column.ParameterId);
 				unit = library.GetUnit((long)column.DisplayUnitId);
 			}
-			string path = GetTelemetryPath(column.ColumnId, false);
-			string[] anscestors = path.Split('\\');
+			var path = GetTelemetryPath(column.ColumnId, false);
+			var ancestors = path.Split('\\');
 
 			if (column == null)
-				return EnumErrors.ERR_INVALID_PARAMETER_IDENTIFIER.ToString();
+				return nameof(EnumErrors.ERR_INVALID_PARAMETER_IDENTIFIER);
+
 			switch (field.ToUpper())
 			{
 				case "OPERATION":
@@ -771,62 +726,45 @@ namespace ONE.ClientSDK.Operations
 				case "LOCATION:VARNAME":
 					return $"{path} {column.Name}";
 				case "LOCATION.VARNAME":
-					if (anscestors.Length > 0)
-						return $"{anscestors[anscestors.Length - 1]}.{column.Name}";
-					return column.Name;
+					return ancestors.Length > 0 ? $"{ancestors[ancestors.Length - 1]}.{column.Name}" : column.Name;
 				case "NAME.UNITS":
-					if (library == null)
-						return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
-					return $"{column.Name}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
+					return library == null ? nameof(EnumErrors.ERR_NOT_AUTHENTICATED) : $"{column.Name}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
 				case "SHORTNAME":
-					if (library == null)
-						return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
-					return I18NKeyHelper.GetValue("SHORT", parameter.I18NKey);
+					return library == null ? nameof(EnumErrors.ERR_NOT_AUTHENTICATED) : I18NKeyHelper.GetValue("SHORT", parameter.I18NKey);
 				case "SHORTNAME.UNITS":
-					if (library == null)
-						return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
-					return $"{I18NKeyHelper.GetValue("SHORT", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
+					return library == null 
+						? nameof(EnumErrors.ERR_NOT_AUTHENTICATED)
+						: $"{I18NKeyHelper.GetValue("SHORT", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
 				case "VARTYPE":
 					return GetWimsVarType(column);
 				case "TYPE":
 					return GetWimsType(column);
 				case "PARAMETERTYPE":
-					if (library == null)
-						return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
-					return I18NKeyHelper.GetValue("LONG", parameter.I18NKey);
+					return library == null ? nameof(EnumErrors.ERR_NOT_AUTHENTICATED) : I18NKeyHelper.GetValue("LONG", parameter.I18NKey);
 				case "PARAMETERTYPE.UNITS":
 					if (library == null)
-						return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
+						return nameof(EnumErrors.ERR_NOT_AUTHENTICATED);
 					return $"{I18NKeyHelper.GetValue("LONG", parameter.I18NKey)}" + " {" + $"{I18NKeyHelper.GetValue("SHORT", unit.I18NKey)}" + "}";
 				case "UNITS":
 					if (library == null)
-						return EnumErrors.ERR_NOT_AUTHENTICATED.ToString();
+						return nameof(EnumErrors.ERR_NOT_AUTHENTICATED);
 					return I18NKeyHelper.GetValue("SHORT", unit.I18NKey);
 				case "XREF":
-					if (column.DataSourceBinding != null)
-						return $"{column.DataSourceBinding.BindingId} ({column.DataSourceBinding.EnumSamplingStatistic})";
-					else
-						return "";
+					return column.DataSourceBinding != null ? $"{column.DataSourceBinding.BindingId} ({column.DataSourceBinding.EnumSamplingStatistic})" : "";
 				case "SCADATAG":
 					if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceImport && !column.DataSourceBinding.BindingId.Contains("@@"))
 						return column.DataSourceBinding.BindingId;
-					else
-						return "";
+					return "";
 				case "LIMS_LOC":
 					if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceImport && column.DataSourceBinding.BindingId.Contains("@@"))
 						return column.DataSourceBinding.BindingId.Substring(0, column.DataSourceBinding.BindingId.IndexOf('@'));
-					else
-						return "";
+					return "";
 				case "LIMS_TEST":
 					if (column.DataSourceBinding != null && column.DataSourceBinding.DataSource == EnumDataSource.DatasourceImport && column.DataSourceBinding.BindingId.Contains("@@"))
 						return column.DataSourceBinding.BindingId.Substring(column.DataSourceBinding.BindingId.IndexOf('@') + 2);
-					else
-						return "";
+					return "";
 				case "STATISTIC":
-					if (column.DataSourceBinding != null)
-						return column.DataSourceBinding.EnumSamplingStatistic.ToString();
-					else
-						return "";
+					return column.DataSourceBinding != null ? column.DataSourceBinding.EnumSamplingStatistic.ToString() : "";
 				case "STORETCODE":
 					if (column.ParameterAgencyCodeIds != null && column.ParameterAgencyCodeIds.Count > 0)
 						foreach (var parameterAgencyCodeId in column.ParameterAgencyCodeIds)
@@ -888,55 +826,44 @@ namespace ONE.ClientSDK.Operations
 				case "PATH":
 					return path;
 				case "LOCATION":
-					if (anscestors.Length > 0)
-						return anscestors[anscestors.Length - 1];
-					return "";
+					return ancestors.Length > 0 ? ancestors[ancestors.Length - 1] : "";
 				case "PARENT":
-					if (anscestors.Length > 1)
-						return anscestors[anscestors.Length - 2];
-					return "";
+					return ancestors.Length > 1 ? ancestors[ancestors.Length - 2] : "";
 				case "GRANDPARENT":
-					if (anscestors.Length > 2)
-						return anscestors[anscestors.Length - 3];
-					return "";
+					return ancestors.Length > 2 ? ancestors[ancestors.Length - 3] : "";
 				case "FREQUENCY":
 					return GetWorksheetTypeName(columnTwin);
 				case "VARIABLEID":
-					return Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
+					return DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VariableId");
 				case "VARNUM":
-					return Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
+					return DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", "VarNum");
 				case "DATATABLE":
 				case "AREA.LOCATION.VARNAME":
-					return EnumErrors.ERR_DEPRECATED.ToString();
+					return nameof(EnumErrors.ERR_DEPRECATED);
 
 			}
 			if (field.ToUpper().StartsWith("LOCATION.LEVEL"))
 			{
-				int.TryParse(field.Substring(14), out int level);
-				if (anscestors.Length >= level)
-				{
-					return anscestors[level - 1];
-				}
-				return "";
+				int.TryParse(field.Substring(14), out var level);
+				return ancestors.Length >= level ? ancestors[level - 1] : "";
 			}
 			if (field.ToUpper().StartsWith("VARIABLE."))
 			{
-				string key = field.Substring(9);
-				return Enterprise.Twin.DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", key);
+				var key = field.Substring(9);
+				return DigitalTwinHelper.GetTwinDataProperty(columnTwin, "wims\\variable", key);
 			}
-			return EnumErrors.ERR_NOT_IMPLEMENTED.ToString();
+			return nameof(EnumErrors.ERR_NOT_IMPLEMENTED);
 		}
 
 		public string GetWorksheetTypeName(string guid)
 		{
 			if (!IsCached)
-				return EnumErrors.ERR_OPERATION_NOT_LOADED.ToString();
+				return nameof(EnumErrors.ERR_OPERATION_NOT_LOADED);
 
 			var column = GetColumnTwinByGuid(guid);
-			if (column == null)
-				return EnumErrors.ERR_INVALID_PARAMETER_GUID.ToString();
-			return GetWorksheetTypeName(column);
+			return column == null ? nameof(EnumErrors.ERR_INVALID_PARAMETER_GUID) : GetWorksheetTypeName(column);
 		}
+
 		public override string ToString()
 		{
 			try
@@ -948,7 +875,5 @@ namespace ONE.ClientSDK.Operations
 				return base.ToString();
 			}
 		}
-
-
 	}
 }

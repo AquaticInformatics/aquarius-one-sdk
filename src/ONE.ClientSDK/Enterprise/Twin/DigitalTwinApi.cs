@@ -83,7 +83,7 @@ namespace ONE.ClientSDK.Enterprise.Twin
 		{
 			var endpoint = $"{EndpointRoot}/DigitalTwinSubType/{digitalTwinSubType.Id}?requestId={Guid.NewGuid()}";
 
-			var apiResponse = await ExecuteRequest("UpdateDigitalTwinSubTypeAsync", HttpMethod.Put, endpoint, CancellationToken.None, digitalTwinSubType).ConfigureAwait(_continueOnCapturedContext);
+			var apiResponse = await ExecuteRequest("UpdateDigitalTwinSubTypeAsync", HttpMethod.Put, endpoint, cancellation, digitalTwinSubType).ConfigureAwait(_continueOnCapturedContext);
 
 			return apiResponse?.Content?.DigitalTwinSubtypes?.Items.FirstOrDefault();
 		}

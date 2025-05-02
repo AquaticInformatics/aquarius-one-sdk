@@ -12,32 +12,12 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 {
 	public static class SpreadsheetHelper
 	{
-		public static Column GetColumnByNumber(WorksheetDefinition worksheetDefinition, uint columnNumber)
-		{
-			if (worksheetDefinition != null && worksheetDefinition.Columns.Count > 0)
-			{
-				var matches = worksheetDefinition.Columns.Where(p => p.ColumnNumber == columnNumber);
-				if (matches.Count() > 0)
-				{
-					return matches.First();
-				}
-			}
-			return null;
-		}
-		public static Column GetColumnByDescription(WorksheetDefinition worksheetDefinition, string description)
-		{
-			if (worksheetDefinition == null || worksheetDefinition.Columns == null)
-				return null;
-			var matches = worksheetDefinition.Columns.Where(p => p.Description == description);
-			if (matches.Count() > 0)
-			{
-				return matches.First();
-			}
-			else
-			{
-				return null;
-			}
-		}
+		public static Column GetColumnByNumber(WorksheetDefinition worksheetDefinition, uint columnNumber) =>
+			worksheetDefinition?.Columns?.FirstOrDefault(p => p.ColumnNumber == columnNumber);
+
+		public static Column GetColumnByDescription(WorksheetDefinition worksheetDefinition, string description) =>
+			worksheetDefinition?.Columns?.FirstOrDefault(p => p.Description == description);
+
 		public static string GetNewColumnName(string name)
 		{
 			//Pattern: Name (01)
@@ -48,24 +28,25 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 
 			if (name.Length > 4 && name.EndsWith(")") && name.Substring(name.Length - 5, 2) == " (")
 			{
-				string copyNumString = name.Substring(name.Length - 3, 2);
-				int.TryParse(copyNumString, out int copyNumInt);
+				var copyNumString = name.Substring(name.Length - 3, 2);
+				int.TryParse(copyNumString, out var copyNumInt);
 				if (copyNumInt > 0)
 				{
 					copyNumInt++;
-					string rootname = name.Substring(0, name.Length - 4);
-					return $"{rootname}({copyNumInt.ToString().PadLeft(2, '0')})";
+					var rootName = name.Substring(0, name.Length - 4);
+					return $"{rootName}({copyNumInt.ToString().PadLeft(2, '0')})";
 				}
 			}
 			return $"{name} (01)";
 		}
+
 		public static WorksheetDefinition EnsureColumnNamesAreUniqueWithinALocation(WorksheetDefinition worksheetDefinition)
 		{
-			HashSet<string> cache = new HashSet<string>();
+			var cache = new HashSet<string>();
 
 			foreach (var column in worksheetDefinition.Columns)
 			{
-				string hash = $"{column.LocationId} - {column.Name}";
+				var hash = $"{column.LocationId} - {column.Name}";
 				while (cache.Contains(hash))
 				{
 					column.Name = GetNewColumnName(column.Name);
@@ -75,21 +56,13 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			}
 			return worksheetDefinition;
 		}
-		public static CellData GetLatestCellData(Row row, uint columnNumber)
-		{
-			var cell = GetCellByColumnByNumber(row, columnNumber);
-			if (cell != null)
-			{
-				if (cell.CellDatas != null && cell.CellDatas.Count > 0)
-					return cell.CellDatas[0];
-			}
-			return null;
 
-		}
+		public static CellData GetLatestCellData(Row row, uint columnNumber) => GetCellByColumnByNumber(row, columnNumber)?.CellDatas?.FirstOrDefault();
+
 		public static Cell GetCellWithLatestCellDataAndNotes(Row row, uint columnNumber)
 		{
 			var cell = GetCellByColumnByNumber(row, columnNumber);
-			Cell newCell = new Cell();
+			var newCell = new Cell();
 			if (cell != null)
 			{
 				if (cell.Notes != null && cell.Notes.Count > 0)
@@ -106,20 +79,12 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 				return newCell;
 			}
 			return null;
+		}
 
-		}
-		public static Cell GetCellByColumnByNumber(Row row, uint columnNumber)
-		{
-			if (row != null && row.Cells.Count > 0)
-			{
-				var matches = row.Cells.Where(p => p.ColumnNumber == columnNumber);
-				if (matches.Count() > 0)
-				{
-					return matches.First();
-				}
-			}
-			return null;
-		}
+		public static Cell GetCellByColumnByNumber(Row row, uint columnNumber) => row?.Cells?.Count > 0
+			? row.Cells.FirstOrDefault(p => p.ColumnNumber == columnNumber)
+			: null;
+
 		public static DateTime GetDate(object dateAsObject)
 		{
 			if (dateAsObject == null)
@@ -128,7 +93,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			if (DateTimeHelper.TryParse(dateAsObject.ToString(), out var date))
 				return date;
 
-			double.TryParse(dateAsObject.ToString(), out double oaDate);
+			double.TryParse(dateAsObject.ToString(), out var oaDate);
 			if (oaDate > 0)
 			{
 				try
@@ -143,51 +108,41 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 
 			return date;
 		}
+
 		public static object GetDoubleValue(string value)
 		{
 			if (value == null)
 				return null;
 			if (value.StartsWith("ERR_"))
 				return value;
-			double.TryParse(value, out double result);
+			double.TryParse(value, out var result);
 			return result;
 		}
-		public static bool IsNumeric(string value)
-		{
-			if (string.IsNullOrEmpty(value))
-				return false;
-			return value.Replace(".", "").Replace("-", "").All(char.IsNumber);
-		}
-		public static Double? TryParseDouble(string value)
+
+		public static bool IsNumeric(string value) => !string.IsNullOrEmpty(value) &&
+		                                              value.Replace(".", "").Replace("-", "").All(char.IsNumber);
+
+		public static double? TryParseDouble(string value)
 		{
 			if (string.IsNullOrEmpty(value) || !IsNumeric(value))
 				return null;
-			double temp;
-			return Double.TryParse(value, out temp) ? temp : (Double?)null;
+			return double.TryParse(value, out var temp) ? temp : (double?)null;
 		}
-		public static Double? TryParseDouble(object value)
-		{
-			if (value != null)
-				return TryParseDouble(value.ToString());
-			return null;
-		}
-		public static Object[,] ConvertToArray(object value)
+
+		public static double? TryParseDouble(object value) => value != null ? TryParseDouble(value.ToString()) : null;
+
+		public static object[,] ConvertToArray(object value)
 		{
 			if (value is string)
 			{
-				object[,] arr = new object[1, 1];
+				var arr = new object[1, 1];
 				arr[0, 0] = value;
 				return arr;
 			}
-			return (Object[,])value;
+			return (object[,])value;
 		}
-		public static DateTime LastDOMValue(DateTime date)
-		{
-			return new DateTime(date.Year,
-								  date.Month,
-								  DateTime.DaysInMonth(date.Year,
-													   date.Month));
-		}
+
+		public static DateTime LastDOMValue(DateTime date) => date.LastDayOfMonth();
 
 		public static List<uint> GetOrderedColumnNumbers(WorksheetView worksheetView)
 		{
@@ -211,9 +166,10 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			}
 			return orderedColumnNumbers;
 		}
+
 		private static List<uint> GetChildOrderedColumns(dynamic header)
 		{
-			List<uint> columns = new List<uint>();
+			var columns = new List<uint>();
 			if (header.HeaderType == EnumHeaderType.column) //column
 			{
 				columns.Add(header.id);
@@ -227,6 +183,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			}
 			return columns;
 		}
+
 		public static WorksheetView GetWorksheetView(string jsonData)
 		{
 			var worksheetView = new WorksheetView();
@@ -261,9 +218,10 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			}
 			return worksheetView;
 		}
+
 		public static GroupHeader GetGroupHeader(string json)
 		{
-			GroupHeader newGroupHeader = new GroupHeader();
+			var newGroupHeader = new GroupHeader();
 			var groupHeader = JsonConvert.DeserializeObject<GroupHeader>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
 			newGroupHeader.name = groupHeader.name;
 			newGroupHeader.groupId = groupHeader.groupId;
@@ -287,5 +245,4 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			return newGroupHeader;
 		}
 	}
-  
 }

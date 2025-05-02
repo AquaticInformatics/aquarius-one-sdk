@@ -1,465 +1,356 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
+// ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Enterprise.Report
 {
 	public class ReportApi
 	{
-		private PlatformEnvironment _environment;
+		private readonly IOneApiHelper _apiHelper;
 		private readonly bool _continueOnCapturedContext;
 		private readonly bool _throwApiErrors;
-		private readonly RestHelper _restHelper;
+
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
-		public ReportApi(PlatformEnvironment environment, bool continueOnCapturedContext, RestHelper restHelper, bool throwApiErrors = false)
+
+		public ReportApi(IOneApiHelper apiHelper, bool continueOnCapturedContext, bool throwApiErrors)
 		{
-			_environment = environment;
+			_apiHelper = apiHelper;
 			_continueOnCapturedContext = continueOnCapturedContext;
-			_restHelper = restHelper;
 			_throwApiErrors = throwApiErrors;
 		}
-		public async Task<List<ReportDefinition>> GetDefinitionsAsync(string operationId)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
 
-			var requestId = Guid.NewGuid();
-			List<ReportDefinition> definitions = new List<ReportDefinition>();
+		public async Task<List<ReportDefinition>> GetDefinitionsAsync(string operationId, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/definitions?plantId={operationId}&requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("GetDefinitionsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitions?.Items.ToList();
+		}
+
+		public async Task<ReportDefinition> GetDefinitionAsync(string id, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/definitions/{id}?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("GetDefinitionAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitions?.Items.FirstOrDefault();
+		}
+
+		public async Task<ReportDefinition> CreateDefinitionAsync(ReportDefinition reportDefinition, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/definitions?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("CreateDefinitionAsync", HttpMethod.Post, endpoint, cancellation, reportDefinition).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitions?.Items.FirstOrDefault();
+		}
+
+		public async Task<bool> DeleteDefinitionAsync(string id, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/definitions/{id}?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("DeleteDefinitionAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+		}
+
+		public async Task<ReportDefinition> UpdateDefinitionAsync(ReportDefinition reportDefinition, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/definitions/{reportDefinition.Id}?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("UpdateDefinitionAsync", new HttpMethod("PATCH"), endpoint, cancellation, reportDefinition).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitions?.Items.FirstOrDefault();
+		}
+
+		public async Task<ReportDefinition> UploadDefinitionTemplateAsync(string id, string filePath, CancellationToken cancellation = default)
+		{
 			try
 			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/definitions?plantId={operationId}&requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
+				var endpoint = $"enterprise/report/v1/definitions/upload/{id}?requestId={Guid.NewGuid()}";
+
+				if (string.IsNullOrWhiteSpace(filePath))
+					throw new ArgumentNullException(nameof(filePath));
+
+				if (!File.Exists(filePath))
+					throw new FileNotFoundException($"File [{filePath}] not found.");
+
+				var fileBytes = File.ReadAllBytes(filePath);
+				var fileContent = new ByteArrayContent(fileBytes);
+				fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
+				var form = new MultipartFormDataContent();
+				form.Add(fileContent, "file", Path.GetFileName(filePath));
+
+				var request = _apiHelper.CreateRequest(HttpMethod.Post, endpoint);
+				request.Content = form;
+
+				var watch = Stopwatch.StartNew();
+
+				var apiResponse = await _apiHelper.SendAsync<ApiResponse>(request, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+				watch.Stop();
+
+				var message = "UploadDefinitionTemplateAsync Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+				if (apiResponse == null || !apiResponse.StatusCode.IsSuccessStatusCode())
 				{
-					var results = respContent.ApiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-					foreach (var result in results)
+					message = "UploadDefinitionTemplateAsync Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ApiResponse = apiResponse, ElapsedMs = watch.ElapsedMilliseconds });
+				}
+
+				Event(this,
+					new ClientApiLoggerEventArgs
 					{
-						definitions.Add(result);
-					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetDefinitionsAsync Success" });
-					return definitions;
-				}
-				else
-				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetDefinitionsAsync Failed" });
-					return null;
-				}
+						EventLevel = eventLevel,
+						HttpStatusCode = apiResponse == null ? HttpStatusCode.InternalServerError : (HttpStatusCode)apiResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "ReportApi",
+						Message = message
+					});
+
+				return apiResponse?.Content?.ReportDefinitions?.Items.FirstOrDefault();
 			}
 			catch (Exception e)
 			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"GetDefinitionsAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
-		}
-		public async Task<ReportDefinition> GetDefinitionAsync(string id)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var requestId = Guid.NewGuid();
-			List<ReportDefinition> definitions = new List<ReportDefinition>();
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/definitions/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-					foreach (var result in results)
+				Event(e,
+					new ClientApiLoggerEventArgs
 					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetDefinitionsAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetDefinitionsAsync Failed" });
+						EventLevel = EnumOneLogLevel.OneLogLevelError,
+						Module = "ReportApi",
+						Message = $"UploadDefinitionTemplateAsync Failed - {e.Message}"
+					});
+				if (_throwApiErrors)
+					throw;
 				return null;
 			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"GetDefinitionsAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
 		}
-		public async Task<ReportDefinition> CreateDefinitionAsync(ReportDefinition reportDefinition)
+
+		public async Task<ReportDefinitionRun> RenderReportAsync(string id, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"enterprise/report/v1/report/render/{id}?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			var endpoint = $"enterprise/report/v1/definitions?requestId={requestId}";
+			var apiResponse = await ExecuteRequest("RenderReportAsync", HttpMethod.Post, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-			var json = JsonConvert.SerializeObject(reportDefinition);
+			return apiResponse?.Content?.ReportDefinitionRuns?.Items.FirstOrDefault();
+		}
 
+		public async Task<bool> DownloadReportAsync(string id, string filename, CancellationToken cancellation = default)
+		{
 			try
 			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"CreateDefinitionAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"CreateDefinitionAsync Failed" });
-				return null;
+				var endpoint = $"enterprise/report/v1/report/output/{id}/report?requestId={Guid.NewGuid()}";
 
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"CreateDefinitionAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
-		}
-		public async Task<bool> DeleteDefinitionAsync(string id)
-		{
+				var watch = Stopwatch.StartNew();
 
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			try
-			{
-				var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/report/v1/definitions/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DeleteDefinitionAsync Success" });
-				else
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DeleteDefinitionAsync Failed" });
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"DeleteDefinitionAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return false;
-			}
-		}
-		public async Task<ReportDefinition> UpdateDefinitionAsync(ReportDefinition reportDefinition)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"enterprise/report/v1/definitions/{reportDefinition.Id}?requestId={requestId}";
+				var httpResponse = await _apiHelper.BuildRequestAndSendAsync<HttpResponseMessage>(HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+				
+				watch.Stop();
 
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			var json = JsonConvert.SerializeObject(reportDefinition, jsonSettings);
+				var message = "DownloadReportAsync Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
 
-			try
-			{
-				var respContent = await _restHelper.PatchRestJSONAsync(requestId, json.ToString(), endpoint);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"UpdateDefinitionAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"UpdateDefinitionAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"UpdateDefinitionAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
-		}
-		public async Task<ReportDefinition> UploadDefinitionTemplateAsync(string id, string filename)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var requestId = Guid.NewGuid();
-			var endpoint = $"enterprise/report/v1/definitions/upload/{id}?requestId={requestId}";
-
-
-			try
-			{
-				var respContent = await _restHelper.UploadFileAsync(requestId, filename, endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.ReportDefinitions.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"UploadDefinitionTemplateAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"UploadDefinitionTemplateAsync Failed" });
-				return null;
-
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"UploadDefinitionTemplateAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
-		}
-		public async Task<ReportDefinitionRun> RenderReportAsync(string id)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var requestId = Guid.NewGuid();
-			var endpoint = $"enterprise/report/v1/report/render/{id}?requestId={requestId}";
-
-			try
-			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, "", endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.ReportDefinitionRuns.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"RenderReportAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"RenderReportAsync Failed" });
-				return null;
-
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"RenderReportAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
-		}
-		public async Task<bool> DownloadReportAsync(string id, string filename)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var requestId = Guid.NewGuid();
-			List<ReportDefinition> definitions = new List<ReportDefinition>();
-			try
-			{
-				var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/report/output/{id}/report?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
+				if (httpResponse.IsSuccessStatusCode)
 				{
 					using (var fs = new FileStream(filename, FileMode.CreateNew))
 					{
-						await respContent.ResponseMessage.Content.CopyToAsync(fs);
+						await httpResponse.Content.CopyToAsync(fs);
 					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Success" });
+				} 
+				else
+				{
+					message = "DownloadReportAsync Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
 
-					return true;
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ResponseMessage = httpResponse, ElapsedMs = watch.ElapsedMilliseconds });
 				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadReportAsync Failed" });
-				return false;
+
+				Event(this,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = eventLevel,
+						HttpStatusCode = httpResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "ReportApi",
+						Message = message
+					});
+
+				return httpResponse.IsSuccessStatusCode;
 			}
 			catch (Exception e)
 			{
 				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"DownloadReportAsync Failed - {e.Message}" });
 				if (_throwApiErrors) 
-					 throw; 
-				 return false;
+					 throw;
+				return false;
 			}
 		}
 
-		public async Task<bool> DownloadTemplateAsync(string id, string filename)
+		public async Task<bool> DownloadTemplateAsync(string id, string filename, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-
-			var requestId = Guid.NewGuid();
-			List<ReportDefinition> definitions = new List<ReportDefinition>();
 			try
 			{
-				var respContent = await _restHelper.GetRestJSONAsync(requestId, $"enterprise/report/v1/report/output/{id}/template?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
+				var endpoint = $"enterprise/report/v1/report/output/{id}/template?requestId={Guid.NewGuid()}";
+
+				var watch = Stopwatch.StartNew();
+
+				var httpResponse = await _apiHelper.BuildRequestAndSendAsync<HttpResponseMessage>(HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+				watch.Stop();
+
+				var message = "DownloadTemplateAsync Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+				if (httpResponse.IsSuccessStatusCode)
 				{
 					using (var fs = new FileStream(filename, FileMode.CreateNew))
 					{
-						await respContent.ResponseMessage.Content.CopyToAsync(fs);
+						await httpResponse.Content.CopyToAsync(fs);
 					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadTemplateAsync Success" });
-					return true;
 				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DownloadTemplateAsync Failed" });
-				return false;
+				else
+				{
+					message = "DownloadTemplateAsync Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ResponseMessage = httpResponse, ElapsedMs = watch.ElapsedMilliseconds });
+				}
+
+				Event(this,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = eventLevel,
+						HttpStatusCode = httpResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "ReportApi",
+						Message = message
+					});
+
+				return httpResponse.IsSuccessStatusCode;
 			}
 			catch (Exception e)
 			{
 				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"DownloadTemplateAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return false;
+				if (_throwApiErrors)
+					throw;
+				return false;
 			}
 		}
 
-		public async Task<List<ReportDefinitionTag>> GetReportTagsAsync()
+		public async Task<List<ReportDefinitionTag>> GetReportTagsAsync(CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"enterprise/report/v1/report/tags?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			List<ReportDefinitionTag> tags = new List<ReportDefinitionTag>();
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/report/tags?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						tags.Add(result);
-					}
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetReportTagsAsync Success" });
-					return tags;
-				}
-				else
-				{
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetReportTagsAsync Failed" });
-					return null;
-				}
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"GetReportTagsAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+			var apiResponse = await ExecuteRequest("GetReportTagsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitionTags?.Items.ToList();
 		}
-		public async Task<ReportDefinitionTag> GetReportTagAsync(string id)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
 
-			var requestId = Guid.NewGuid();
-			List<ReportDefinitionTag> tags = new List<ReportDefinitionTag>();
-			try
-			{
-				var respContent = await _restHelper.GetRestProtocolBufferAsync(requestId, $"enterprise/report/v1/report/tags/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var results = respContent.ApiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetReportTagAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"GetReportTagAsync Failed" });
-				return null;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"GetReportTagAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
+		public async Task<ReportDefinitionTag> GetReportTagAsync(string id, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/report/tags/{id}?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("GetReportTagAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitionTags?.Items.FirstOrDefault();
 		}
-		public async Task<ReportDefinitionTag> CreateReportTagAsync(string reportDefinitionId, string tag)
+
+		public async Task<ReportDefinitionTag> CreateReportTagAsync(string reportDefinitionId, string tag, CancellationToken cancellation = default)
 		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
+			var endpoint = $"enterprise/report/v1/report/tags?requestId={Guid.NewGuid()}";
 
-			var requestId = Guid.NewGuid();
-			var endpoint = $"enterprise/report/v1/report/tags?requestId={requestId}";
-
-			dynamic passwordJson = new JObject();
-			passwordJson.ReportDefinitionId = reportDefinitionId;
-			passwordJson.Tag = tag;
-
-			var json = passwordJson.ToString();
-
-			try
+			var reportDefinitionTag = new ReportDefinitionTag
 			{
-				var respContent = await _restHelper.PostRestJSONAsync(requestId, json, endpoint).ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"CreateReportTagAsync Success" });
-						return result;
-					}
-				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"CreateReportTagAsync Failed" });
-				return null;
-
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"CreateReportTagAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
-			}
-		}
-		public async Task<bool> DeleteReportTagAsync(string id)
-		{
-
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			try
-			{
-				var respContent = await _restHelper.DeleteRestJSONAsync(requestId, $"enterprise/report/v1/report/tags/{id}?requestId={requestId}").ConfigureAwait(_continueOnCapturedContext);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DeleteReportTagAsync Success" });
-				else
-					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"DeleteReportTagAsync Failed" });
-				return respContent.ResponseMessage.IsSuccessStatusCode;
-			}
-			catch (Exception e)
-			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"DeleteReportTagAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return false;
-			}
-		}
-		public async Task<ReportDefinitionTag> UpdateReportDefinitionTagAsync(ReportDefinitionTag reportDefinitionTag)
-		{
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			var requestId = Guid.NewGuid();
-			var endpoint = $"enterprise/report/v1/report/tags/{reportDefinitionTag.Id}?requestId={requestId}";
-
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
+				ReportDefinitionId = reportDefinitionId,
+				Tag = tag
 			};
-			var json = JsonConvert.SerializeObject(reportDefinitionTag, jsonSettings);
 
+			var apiResponse = await ExecuteRequest("CreateReportTagAsync", HttpMethod.Post, endpoint, cancellation, reportDefinitionTag).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitionTags?.Items.FirstOrDefault();
+		}
+
+		public async Task<bool> DeleteReportTagAsync(string id, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/report/tags/{id}?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("DeleteReportTagAsync", HttpMethod.Delete, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+		}
+
+		public async Task<ReportDefinitionTag> UpdateReportDefinitionTagAsync(ReportDefinitionTag reportDefinitionTag, CancellationToken cancellation = default)
+		{
+			var endpoint = $"enterprise/report/v1/report/tags/{reportDefinitionTag.Id}?requestId={Guid.NewGuid()}";
+
+			var apiResponse = await ExecuteRequest("UpdateReportDefinitionTagAsync", new HttpMethod("PATCH"), endpoint, cancellation, reportDefinitionTag).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse?.Content?.ReportDefinitionTags?.Items.FirstOrDefault();
+		}
+
+		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+		{
 			try
 			{
-				var respContent = await _restHelper.PatchRestJSONAsync(requestId, json.ToString(), endpoint);
-				if (respContent.ResponseMessage.IsSuccessStatusCode)
+				var watch = Stopwatch.StartNew();
+
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync<ApiResponse>(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
+
+				watch.Stop();
+
+				var message = " Success";
+				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+
+				if (!apiResponse.StatusCode.IsSuccessStatusCode())
 				{
-					var apiResponse = JsonConvert.DeserializeObject<ApiResponse>(respContent.Result, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
-					var results = apiResponse.Content.ReportDefinitionTags.Items.Distinct().ToList();
-					foreach (var result in results)
-					{
-						Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"UpdateReportDefinitionTagAsync Success" });
-						return result;
-					}
+					message = " Failed";
+					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+					if (_throwApiErrors)
+						throw new RestApiException(new ServiceResponse { ApiResponse = apiResponse, ElapsedMs = watch.ElapsedMilliseconds });
 				}
-				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelWarn, HttpStatusCode = respContent.ResponseMessage.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "ReportApi", Message = $"UpdateReportDefinitionTagAsync Failed" });
-				return null;
+
+				Event(this,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = eventLevel,
+						HttpStatusCode = (HttpStatusCode)apiResponse.StatusCode,
+						ElapsedMs = watch.ElapsedMilliseconds,
+						Module = "ReportApi",
+						Message = callingMethod + message
+					});
+
+				return apiResponse;
 			}
 			catch (Exception e)
 			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "ReportApi", Message = $"UpdateReportDefinitionTagAsync Failed - {e.Message}" });
-				if (_throwApiErrors) 
-					 throw; 
-				 return null;
+				Event(e,
+					new ClientApiLoggerEventArgs
+					{
+						EventLevel = EnumOneLogLevel.OneLogLevelError,
+						Module = "ReportApi",
+						Message = $"{callingMethod} Failed - {e.Message}"
+					});
+				if (_throwApiErrors)
+					throw;
+				return null;
 			}
 		}
 	}
