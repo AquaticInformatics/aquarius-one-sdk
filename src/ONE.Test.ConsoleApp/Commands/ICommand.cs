@@ -2,8 +2,8 @@
 
 namespace ONE.Test.ConsoleApp.Commands
 {
-    public interface ICommand
-    {
-        Task<int> Execute(ClientSDK.OneApi clientSdk);
-    }
+	public interface ICommand
+	{
+		Task<int> Execute(ClientSDK.OneApi clientSdk);
+	}
 }
