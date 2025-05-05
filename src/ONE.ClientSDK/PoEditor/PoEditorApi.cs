@@ -4,11 +4,10 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using ONE.ClientSDK.Communication;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 // ReSharper disable UnusedMember.Global
@@ -21,16 +20,12 @@ namespace ONE.ClientSDK.PoEditor
 	/// </summary>
 	public class PoEditorApi
 	{
-		private readonly IOneApiHelper _apiHelper;
-		private readonly bool _continueOnCapturedContext;
 		private readonly bool _throwApiErrors;
 
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
-		public PoEditorApi(IOneApiHelper apiHelper, bool continueOnCapturedContext, bool throwApiErrors)
+		public PoEditorApi(bool throwApiErrors)
 		{
-			_apiHelper = apiHelper;
-			_continueOnCapturedContext = continueOnCapturedContext;
 			_throwApiErrors = throwApiErrors;
 		}
 
@@ -43,6 +38,22 @@ namespace ONE.ClientSDK.PoEditor
 		
 		private int _projectId = -1;
 
+		private HttpClient _client;
+		private HttpClient Client
+		{
+			get
+			{
+				if (_client == null)
+				{
+					_client = new HttpClient();
+					_client.BaseAddress = new Uri(BaseUrl);
+					_client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+				}
+
+				return _client;
+			}
+		}
+
 		#region Projects endpoint
 
 		/// <summary>
@@ -51,6 +62,8 @@ namespace ONE.ClientSDK.PoEditor
 		/// <returns></returns>
 		private async Task<IList<ProjectDto>> GetProjectsAsync()
 		{
+			var watch = Stopwatch.StartNew();
+
 			try
 			{
 				var url = $"{BaseUrl}/projects/list";
@@ -60,23 +73,25 @@ namespace ONE.ClientSDK.PoEditor
 					{ ApiTokenKey, PoEditorApiKey }
 				};
 
-				var response = await ExecuteRequestAsync("UpdateLanguageAsync", url, formData);
+				var response = await ExecuteRequestAsync(url, formData);
 				if (response.IsSuccessStatusCode)
 				{
 					var content = await response.Content.ReadAsStringAsync();
 					dynamic obj = JObject.Parse(content);
 					var arr = obj.result.projects as JArray;
 
+					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetProjectsAsync Success" });
 					return arr?.ToObject<IList<ProjectDto>>();
 				}
 
+				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetProjectsAsync Failed" });
 				return null;
 			}
 			catch (Exception ex)
 			{
 				Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "PoEditorUtility", Message = $"GetProjectsAsync Failed - {ex.Message}" });
-				if (_throwApiErrors) 
-					 throw;
+				if (_throwApiErrors)
+					throw;
 				return null;
 			}
 		}
@@ -88,6 +103,8 @@ namespace ONE.ClientSDK.PoEditor
 		/// <returns>Task that returns a list of <see cref="TranslationDto"/>.</returns>
 		public async Task<IList<TranslationDto>> GetTranslationsAsync(string languageCode = "en")
 		{
+			var watch = Stopwatch.StartNew();
+
 			try
 			{
 				var projectId = await GetProjectIdAsync();
@@ -105,24 +122,26 @@ namespace ONE.ClientSDK.PoEditor
 					{ "filters", "not_proofread" }
 				};
 
-				var response = await ExecuteRequestAsync("UpdateLanguageAsync", url, formData);
+				var response = await ExecuteRequestAsync(url, formData);
 				if (response.IsSuccessStatusCode)
 				{
 					var content = await response.Content.ReadAsStringAsync();
 					dynamic obj = JObject.Parse(content);
 					var downloadUrl = (string)obj.result.url;
-					var jsonData = await DownloadJsonFileAsync(downloadUrl).ConfigureAwait(_continueOnCapturedContext);
-					
+					var jsonData = await DownloadJsonFileAsync(downloadUrl);
+
+					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetTranslationsAsync Success" });
 					return JsonConvert.DeserializeObject<IList<TranslationDto>>(jsonData);
 				}
 
+				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "GetTranslationsAsync Failed" });
 				return null;
 			}
 			catch (Exception ex)
 			{
 				Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "PoEditorUtility", Message = $"GetTranslationsAsync Failed - {ex.Message}" });
-				if (_throwApiErrors) 
-					 throw;
+				if (_throwApiErrors)
+					throw;
 				return null;
 			}
 		}
@@ -140,6 +159,8 @@ namespace ONE.ClientSDK.PoEditor
 		/// <returns>The number of translations modified (added or updated).</returns>
 		public async Task<int> UpdateLanguageAsync(IList<TranslationDto> translations, string languageCode = "en")
 		{
+			var watch = Stopwatch.StartNew();
+
 			try
 			{
 				var projectId = await GetProjectIdAsync();
@@ -170,22 +191,24 @@ namespace ONE.ClientSDK.PoEditor
 					{ "data", JsonConvert.SerializeObject(data) }
 				};
 
-				var response = await ExecuteRequestAsync("UpdateLanguageAsync", url, formData);
+				var response = await ExecuteRequestAsync(url, formData);
 				if (response.IsSuccessStatusCode)
 				{
 					var content = await response.Content.ReadAsStringAsync();
 					dynamic obj = JObject.Parse(content);
-					
+
+					Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "UpdateLanguageAsync Success" });
 					return obj.result.translations["added"] + obj.result.translations["updated"];
 				}
 
+				Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, HttpStatusCode = response.StatusCode, ElapsedMs = watch.ElapsedMilliseconds, Module = "PoEditorUtility", Message = "UpdateLanguageAsync Failed" });
 				return 0;
 			}
 			catch (Exception ex)
 			{
 				Event(ex, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "PoEditorUtility", Message = $"UpdateLanguageAsync Failed - {ex.Message}" });
-				if (_throwApiErrors) 
-					 throw;
+				if (_throwApiErrors)
+					throw;
 				return 0;
 			}
 		}
@@ -194,62 +217,16 @@ namespace ONE.ClientSDK.PoEditor
 
 		#region Internal Helpers
 
-		private async Task<HttpResponseMessage> ExecuteRequestAsync(string callingMethod, string uri, IDictionary<string, string> formData)
+		private async Task<HttpResponseMessage> ExecuteRequestAsync(string uri, IDictionary<string, string> formData)
 		{
-			try
-			{
-				var watch = Stopwatch.StartNew();
-
-				var content = new FormUrlEncodedContent(formData);
-
-				var request = new HttpRequestMessage(HttpMethod.Post, uri) { Content = content };
-				var response = await _apiHelper.SendAsync<HttpResponseMessage>(request, CancellationToken.None, true).ConfigureAwait(_continueOnCapturedContext);
-
-				watch.Stop();
-
-				var message = " Success";
-				var eventLevel = EnumOneLogLevel.OneLogLevelTrace;
-
-				if (!response.IsSuccessStatusCode)
-				{
-					message = " Failed";
-					eventLevel = EnumOneLogLevel.OneLogLevelWarn;
-
-					if (_throwApiErrors)
-						throw new RestApiException(new ServiceResponse { ResponseMessage = response, ElapsedMs = watch.ElapsedMilliseconds });
-				}
-
-				Event(this,
-					new ClientApiLoggerEventArgs
-					{
-						EventLevel = eventLevel,
-						HttpStatusCode = response.StatusCode,
-						ElapsedMs = watch.ElapsedMilliseconds,
-						Module = "PoEditorUtility",
-						Message = callingMethod + message
-					});
-
-				return response;
-			}
-			catch (Exception ex)
-			{
-				Event(ex,
-					new ClientApiLoggerEventArgs
-					{
-						EventLevel = EnumOneLogLevel.OneLogLevelError,
-						Module = "PoEditorUtility",
-						Message = $"{callingMethod} Failed - {ex.Message}"
-					});
-				if (_throwApiErrors)
-					throw;
-				return null;
-			}
+			var content = new FormUrlEncodedContent(formData);
+			return await Client.PostAsync(uri, content);
 		}
 
 		private async Task<string> DownloadJsonFileAsync(string uri)
 		{
-			var request = await _apiHelper.GetAsync<HttpResponseMessage>(uri, CancellationToken.None).ConfigureAwait(_continueOnCapturedContext);
-			var httpStream = await request.Content.ReadAsStreamAsync();
+			var response = await Client.GetAsync(uri);
+			var httpStream = await response.Content.ReadAsStreamAsync();
 
 			using (var sr = new StreamReader(httpStream))
 			{

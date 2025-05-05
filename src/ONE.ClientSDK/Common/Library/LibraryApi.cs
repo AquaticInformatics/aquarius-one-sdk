@@ -144,7 +144,7 @@ namespace ONE.ClientSDK.Common.Library
 
 				var watch = Stopwatch.StartNew();
 
-				var httpResponse = await _apiHelper.GetAsync<HttpResponseMessage>(endpoint, cancellation, true).ConfigureAwait(_continueOnCapturedContext);
+				var httpResponse = await _apiHelper.GetAsync(endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 				
 				watch.Stop();
 

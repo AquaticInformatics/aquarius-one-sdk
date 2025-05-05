@@ -389,7 +389,7 @@ namespace ONE.ClientSDK
 			_sample = new SampleApi(_apiHelper, Activity, ContinueOnCapturedContext, ThrowApiErrors);
 			_sample.Event += Logger.Logger_Event;
 			
-			_poEditor = new PoEditorApi(_apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
+			_poEditor = new PoEditorApi(ThrowApiErrors);
 			_poEditor.Event += Logger.Logger_Event;
 
 			_initialized = true;

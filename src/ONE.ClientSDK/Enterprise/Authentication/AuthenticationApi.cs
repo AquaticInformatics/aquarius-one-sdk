@@ -5,6 +5,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using ONE.ClientSDK.Enums;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 
@@ -35,9 +36,12 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 		private readonly bool _throwApiErrors;
 		private HttpClient _httpJsonClient;
 		private HttpClient _httpProtoClient;
-		
+		private HttpClient _baseHttpClient;
+
 		private HttpClient HttpAuthClient => _httpJsonClient ?? (_httpJsonClient = GetHttpClient(false));
 
+		// This client has the base address set and the Authorization header if authenticated, the Accept header is also set to accept json
+		// This client does not work with local environments
 		public HttpClient HttpJsonClient
 		{
 			get
@@ -49,8 +53,12 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 			}
 		}
 
+		// Returns a client that has the base address set and the Authorization header if authenticated, the Accept header is also set to accept json
+		// This client only works for local environments
 		public HttpClient GetLocalHttpJsonClient(string endpointUrl) => GetHttpClient(false, endpointUrl);
 
+		// This client has the base address set and the Authorization header if authenticated, the Accept header is also set to accept protobuf
+		// This client does not work with local environments
 		public HttpClient HttpProtocolBufferClient
 		{
 			get
@@ -62,7 +70,21 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 			}
 		}
 
+		// Returns a client that has the base address set and the Authorization header if authenticated, the Accept header is also set to accept protobuf
+		// This client only works for local environments
 		public HttpClient GetLocalHttpProtocolBufferClient(string endpointUrl) => GetHttpClient(true, endpointUrl);
+
+		// Returns a client with the base address set and the Authorization header if authenticated
+		// The base address is set to the environment's base URI or the local URI if the environment is local
+		// This is the preferred method to get a client as it prevents conflicts with the Accept headers and provides a consistent base address for both remote and local environments.
+		// The other clients are left in for backwards compatibility
+		public HttpClient GetBaseClient(string relativeUri)
+		{
+			if (!IsAuthenticated && AutoRenewToken)
+				TokenExpired(this, null);
+
+			return _baseHttpClient ?? (_baseHttpClient = GetHttpClient(null, relativeUri));
+		}
 
 		private const string ActivityPath = "COMMON/ACTIVITY";
 		private const string ComputationPath = "COMMON/COMPUTATION";
@@ -138,6 +160,9 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 			if (password == null)
 				password = Password;
 
+			if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+				return false;
+
 			var watch = System.Diagnostics.Stopwatch.StartNew();
 			
 			var body = new Dictionary<string, string>
@@ -172,6 +197,8 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 						eventLevel = EnumOneLogLevel.OneLogLevelTrace;
 						HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
 						HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
+						if (_baseHttpClient != null)
+							_baseHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
 						UserName = userName;
 						Password = password;
 					}
@@ -242,6 +269,8 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 
 			HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
 			HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
+			if (_baseHttpClient != null)
+				_baseHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
 		}
 
 		public void SetHttpClientTimeout(TimeSpan timeout)
@@ -252,16 +281,25 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 			HttpProtocolBufferClient.Timeout = HttpClientTimeout;
 		}
 
-		private HttpClient GetHttpClient(bool protoClient, string endpointUrl = null)
+		private HttpClient GetHttpClient(bool? acceptProtobuf, string endpointUrl = null)
 		{
-			var client = new HttpClient();
-			if (_environment != null)
-				client.BaseAddress = endpointUrl == null ? _environment.BaseUri : new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
-			client.Timeout = HttpClientTimeout;
+			var client = new HttpClient
+			{
+				Timeout = HttpClientTimeout
+			};
 
-			client.DefaultRequestHeaders.Accept.Add(protoClient
-				? new MediaTypeWithQualityHeaderValue("application/protobuf")
-				: new MediaTypeWithQualityHeaderValue("application/json"));
+			if (_environment != null)
+				client.BaseAddress = _environment.PlatformEnvironmentEnum != EnumPlatformEnvironment.Local
+					? _environment.BaseUri
+					: new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
+
+			if (acceptProtobuf.HasValue)
+				client.DefaultRequestHeaders.Accept.Add(acceptProtobuf.Value
+					? new MediaTypeWithQualityHeaderValue("application/protobuf")
+					: new MediaTypeWithQualityHeaderValue("application/json"));
+
+			if (IsAuthenticated)
+				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
 
 			return client;
 		}

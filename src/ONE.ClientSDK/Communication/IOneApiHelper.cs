@@ -10,9 +10,9 @@ namespace ONE.ClientSDK.Communication
 	{
 		event EventHandler<ClientApiLoggerEventArgs> Event;
 
-		Task<T> GetAsync<T>(string uri, CancellationToken cancellation, bool requireJson = false);
+		Task<HttpResponseMessage> GetAsync(string uri, CancellationToken cancellation);
 
-		Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, bool requireJson = false);
+		Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 
 		Task<T> BuildRequestAndSendAsync<T>(HttpMethod method, string uri, CancellationToken cancellationToken, object content = null);
 

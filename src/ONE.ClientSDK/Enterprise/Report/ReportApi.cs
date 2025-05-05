@@ -158,7 +158,7 @@ namespace ONE.ClientSDK.Enterprise.Report
 
 				var watch = Stopwatch.StartNew();
 
-				var httpResponse = await _apiHelper.BuildRequestAndSendAsync<HttpResponseMessage>(HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+				var httpResponse = await _apiHelper.GetAsync(endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 				
 				watch.Stop();
 
@@ -210,7 +210,7 @@ namespace ONE.ClientSDK.Enterprise.Report
 
 				var watch = Stopwatch.StartNew();
 
-				var httpResponse = await _apiHelper.BuildRequestAndSendAsync<HttpResponseMessage>(HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+				var httpResponse = await _apiHelper.GetAsync(endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
 				watch.Stop();
 

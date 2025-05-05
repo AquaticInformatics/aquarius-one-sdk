@@ -47,34 +47,24 @@ namespace ONE.ClientSDK.Communication
 				authentication.LoginAsync().ConfigureAwait(_continueOnCapturedContext).GetAwaiter().GetResult();
 		}
 
-		public async Task<T> GetAsync<T>(string uri, CancellationToken cancellation, bool requireJson = false)
+		public async Task<HttpResponseMessage> GetAsync(string uri, CancellationToken cancellation)
 		{
 			var watch = Stopwatch.StartNew();
 
-			var response = _useProtobufModels && !requireJson
-				? await _authentication.HttpProtocolBufferClient.GetAsync(uri, cancellation).ConfigureAwait(_continueOnCapturedContext)
-				: await _authentication.HttpJsonClient.GetAsync(uri, cancellation).ConfigureAwait(_continueOnCapturedContext);
+			var response = await _authentication.GetBaseClient(uri).GetAsync(uri, cancellation);
 
 			watch.Stop();
 
 			SaveRestCallData(response, watch.ElapsedMilliseconds);
 
-			if (typeof(T) == typeof(HttpResponseMessage))
-				return (T)(object)response;
-
-			if ((response.Content == null || response.StatusCode == HttpStatusCode.NoContent) && typeof(T) == typeof(ApiResponse))
-				return (T)(object)new ApiResponse { StatusCode = (int)response.StatusCode };
-
-			return await DeserializeAsync<T>(response.Content).ConfigureAwait(_continueOnCapturedContext);
+			return response;
 		}
 
-		public async Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken, bool requireJson = false)
+		public async Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			var watch = Stopwatch.StartNew();
 
-			var response = _useProtobufModels && !requireJson
-				? await _authentication.HttpProtocolBufferClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(_continueOnCapturedContext)
-				: await _authentication.HttpJsonClient.SendAsync(httpRequestMessage, cancellationToken).ConfigureAwait(_continueOnCapturedContext);
+			var response = await _authentication.GetBaseClient(httpRequestMessage.RequestUri.OriginalString).SendAsync(httpRequestMessage, cancellationToken);
 
 			watch.Stop();
 
