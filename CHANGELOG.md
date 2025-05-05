@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 18.0.0 - 2025-05-05
+### Added
+- UseProtobufModels configuration option
+
+### Changed
+- Refactored Api classes to use the new configuration option
+- Renamed ClientSDK class to OneApi
+
 ## Version 17.11.1 - 2025-02-21
 ### Updated
 - Updated CSharp dependency
