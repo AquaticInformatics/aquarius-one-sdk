@@ -35,7 +35,6 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_apiHelper = null;
-				_cacheHelper = null;
 				_userHelper = null;
 
 				return _authentication;
@@ -55,7 +54,6 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_userHelper = null;
-				_cacheHelper = null;
 
 				return _core;
 			}
@@ -74,7 +72,6 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_logbook = null;
-				_cacheHelper = null;
 
 				return _configuration;
 			}
@@ -90,9 +87,6 @@ namespace ONE.ClientSDK
 
 				_logbook = new LogbookApi(Configuration);
 
-				// Clear dependent backing fields
-				_cacheHelper = null;
-
 				return _logbook;
 			}
 		}
@@ -107,9 +101,6 @@ namespace ONE.ClientSDK
 
 				_library = new LibraryApi(ApiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 				_library.Event += Logger.Logger_Event;
-
-				// Clear dependent backing fields
-				_cacheHelper = null;
 
 				return _library;
 			}
@@ -159,9 +150,6 @@ namespace ONE.ClientSDK
 				_digitalTwin = new DigitalTwinApi(ApiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 				_digitalTwin.Event += Logger.Logger_Event;
 
-				// Clear dependent backing fields
-				_cacheHelper = null;
-
 				return _digitalTwin;
 			}
 		}
@@ -192,9 +180,6 @@ namespace ONE.ClientSDK
 				_spreadsheet = new SpreadsheetApi(ApiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 				_spreadsheet.Event += Logger.Logger_Event;
 
-				// Clear dependent backing fields
-				_cacheHelper = null;
-
 				return _spreadsheet;
 			}
 		}
@@ -223,8 +208,6 @@ namespace ONE.ClientSDK
 					return _userHelper;
 
 				_userHelper = new UserHelper(Authentication, Core);
-
-				_cacheHelper = null;
 
 				return _userHelper;
 			}
@@ -270,9 +253,6 @@ namespace ONE.ClientSDK
 				_report = new ReportApi(ApiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 				_report.Event += Logger.Logger_Event;
 
-				// Clear dependent backing fields
-				_cacheHelper = null;
-
 				return _report;
 			}
 		}
@@ -287,9 +267,6 @@ namespace ONE.ClientSDK
 
 				_sample = new SampleApi(ApiHelper, Activity, ContinueOnCapturedContext, ThrowApiErrors);
 				_sample.Event += Logger.Logger_Event;
-
-				// Clear dependent backing fields
-				_cacheHelper = null;
 
 				return _sample;
 			}
@@ -417,7 +394,6 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
-				_cacheHelper = null;
 				_core = null;
 				_configuration = null;
 				_library = null;

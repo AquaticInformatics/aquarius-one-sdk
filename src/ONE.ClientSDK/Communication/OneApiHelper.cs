@@ -60,7 +60,7 @@ namespace ONE.ClientSDK.Communication
 			return response;
 		}
 
-		public async Task<T> SendAsync<T>(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
+		public async Task<ApiResponse> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken)
 		{
 			var watch = Stopwatch.StartNew();
 
@@ -70,20 +70,17 @@ namespace ONE.ClientSDK.Communication
 
 			SaveRestCallData(response, watch.ElapsedMilliseconds);
 
-			if (typeof(T) == typeof(HttpResponseMessage))
-				return (T)(object)response;
+			if ((response.Content == null || response.StatusCode == HttpStatusCode.NoContent))
+				return new ApiResponse { StatusCode = (int)response.StatusCode };
 
-			if ((response.Content == null || response.StatusCode == HttpStatusCode.NoContent) && typeof(T) == typeof(ApiResponse))
-				return (T)(object)new ApiResponse { StatusCode = (int)response.StatusCode };
-
-			return await DeserializeAsync<T>(response.Content).ConfigureAwait(_continueOnCapturedContext);
+			return await DeserializeApiResponseAsync(response.Content).ConfigureAwait(_continueOnCapturedContext);
 		}
 
-		public async Task<T> BuildRequestAndSendAsync<T>(HttpMethod method, string uri, CancellationToken cancellationToken, object content = null)
+		public async Task<ApiResponse> BuildRequestAndSendAsync(HttpMethod method, string uri, CancellationToken cancellationToken, object content = null)
 		{
 			using (var request = CreateRequest(method, uri, content))
 			{
-				return await SendAsync<T>(request, cancellationToken).ConfigureAwait(_continueOnCapturedContext);
+				return await SendAsync(request, cancellationToken).ConfigureAwait(_continueOnCapturedContext);
 			}
 		}
 
@@ -91,21 +88,17 @@ namespace ONE.ClientSDK.Communication
 		{
 			var request = new HttpRequestMessage(method, uri);
 
+			request.Headers.Add("Accept", _useProtobufModels ? "application/x-protobuf" : "application/json");
+
 			switch (content)
 			{
-				case null when _useProtobufModels:
-					request.Headers.Add("Accept", "application/x-protobuf");
-					break;
 				case null:
-					request.Headers.Add("Accept", "application/json");
 					break;
 				case IMessage message when _useProtobufModels:
-					request.Headers.Add("Accept", "application/x-protobuf");
 					request.Content = new ByteArrayContent(message.ToByteArray());
 					request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-protobuf");
 					break;
 				default:
-					request.Headers.Add("Accept", "application/json");
 					var messageString = JsonConvert.SerializeObject(content, _serializerSettings);
 					if (!string.IsNullOrEmpty(messageString))
 					{
@@ -118,23 +111,21 @@ namespace ONE.ClientSDK.Communication
 			return request;
 		}
 
-		private async Task<T> DeserializeAsync<T>(HttpContent content)
+		private async Task<ApiResponse> DeserializeApiResponseAsync(HttpContent content)
 		{
 			if (content == null)
-				return default;
+				return null;
 
 			if (_useProtobufModels)
 			{
-				if (Activator.CreateInstance(typeof(T)) is IMessage result)
-				{
-					result.MergeFrom(await content.ReadAsByteArrayAsync().ConfigureAwait(_continueOnCapturedContext));
+				var result = new ApiResponse();
+				
+				result.MergeFrom(await content.ReadAsByteArrayAsync().ConfigureAwait(_continueOnCapturedContext));
 
-					return (T)result;
-				}
-				return default;
+				return result;
 			}
 
-			return JsonConvert.DeserializeObject<T>(await content.ReadAsStringAsync().ConfigureAwait(_continueOnCapturedContext), _serializerSettings);
+			return JsonConvert.DeserializeObject<ApiResponse>(await content.ReadAsStringAsync().ConfigureAwait(_continueOnCapturedContext), _serializerSettings);
 		}
 
 		private void SaveRestCallData(HttpResponseMessage response, long elapsedMs)
@@ -150,7 +141,7 @@ namespace ONE.ClientSDK.Communication
 				var dir = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location)?.FullName ??
 				          throw new Exception("Unable to get directory for saving local log files");
 
-				dir = Path.Combine(dir, $"Logs/{DateTime.Now:yyyy-MM-dd}");
+				dir = Path.Combine(dir, $"Logs\\{DateTime.Now:yyyy-MM-dd}");
 				
 				if (!Directory.Exists(dir))
 					Directory.CreateDirectory(dir);
@@ -163,7 +154,7 @@ namespace ONE.ClientSDK.Communication
 				content.Client = (JObject)JToken.FromObject(_useProtobufModels ? _authentication.HttpProtocolBufferClient : _authentication.HttpJsonClient);
 				content.Response = (JObject)JToken.FromObject(response);
 
-				File.WriteAllText(logFile, content);
+				File.WriteAllText(logFile, content.ToString());
 
 				Event(this, new ClientApiLoggerEventArgs { File = logFile, EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OneApiHelper", Message = "SaveRestCallData Succeeded" });
 			}

@@ -27,7 +27,7 @@ public class SpreadsheetApiTests
 		};
 
 		Mock.Get(_apiHelper)
-			.Setup(x => x.BuildRequestAndSendAsync<ApiResponse>(
+			.Setup(x => x.BuildRequestAndSendAsync(
 				HttpMethod.Post,
 				It.IsAny<string>(),
 				It.IsAny<CancellationToken>(),
@@ -50,7 +50,7 @@ public class SpreadsheetApiTests
 		var apiResponse = new ApiResponse { StatusCode = 400 };
 
 		Mock.Get(_apiHelper)
-			.Setup(x => x.BuildRequestAndSendAsync<ApiResponse>(
+			.Setup(x => x.BuildRequestAndSendAsync(
 				HttpMethod.Post,
 				It.IsAny<string>(),
 				It.IsAny<CancellationToken>(),
@@ -71,7 +71,7 @@ public class SpreadsheetApiTests
 		var apiResponse = new ApiResponse { StatusCode = 400 };
 
 		Mock.Get(_apiHelper)
-			.Setup(x => x.BuildRequestAndSendAsync<ApiResponse>(
+			.Setup(x => x.BuildRequestAndSendAsync(
 				HttpMethod.Post,
 				It.IsAny<string>(),
 				It.IsAny<CancellationToken>(),

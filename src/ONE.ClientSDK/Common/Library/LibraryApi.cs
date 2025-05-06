@@ -531,7 +531,7 @@ namespace ONE.ClientSDK.Common.Library
 			{
 				var watch = Stopwatch.StartNew();
 
-				var apiResponse = await _apiHelper.BuildRequestAndSendAsync<ApiResponse>(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
 
 				watch.Stop();
 

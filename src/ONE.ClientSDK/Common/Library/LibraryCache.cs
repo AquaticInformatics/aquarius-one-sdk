@@ -51,18 +51,18 @@ namespace ONE.ClientSDK.Common.Library
 				var unitsTask = _oneApi.Library.GetUnitsAsync();
 				var parameterAgencyCodeTypesTask = _oneApi.Library.GetParameterAgencyCodeTypesAsync();
 				var parameterAgencyCodesTask = _oneApi.Library.GetParameterAgencyCodesAsync();
-				var i18NkeysTask = _oneApi.Library.Geti18nKeysAsync(culture, modules);
+				var i18NKeysTask = _oneApi.Library.Geti18nKeysAsync(culture, modules);
 				var digitalTwinTypesTask = _oneApi.DigitalTwin.GetDigitalTwinTypesAsync();
 				var digitalTwinSubtypesTask = _oneApi.DigitalTwin.GetDigitalTwinSubTypesAsync();
 
-				await Task.WhenAll(quantityTypesTask, parametersTask, unitsTask, parameterAgencyCodeTypesTask, parameterAgencyCodesTask, i18NkeysTask, digitalTwinTypesTask, digitalTwinSubtypesTask);
+				await Task.WhenAll(quantityTypesTask, parametersTask, unitsTask, parameterAgencyCodeTypesTask, parameterAgencyCodesTask, i18NKeysTask, digitalTwinTypesTask, digitalTwinSubtypesTask);
 
 				QuantityTypes = quantityTypesTask.Result;
 				Parameters = parametersTask.Result;
 				Units = unitsTask.Result;
 				ParameterAgencyCodeTypes = parameterAgencyCodeTypesTask.Result;
 				ParameterAgencyCodes = parameterAgencyCodesTask.Result;
-				I18NKeys = i18NkeysTask.Result;
+				I18NKeys = i18NKeysTask.Result;
 				DigitalTwinTypes = digitalTwinTypesTask.Result;
 				DigitalTwinSubtypes = digitalTwinSubtypesTask.Result;
 				I18NKeyHelper.I18NKeyList = I18NKeys;
@@ -81,6 +81,9 @@ namespace ONE.ClientSDK.Common.Library
 		{
 			try
 			{
+				if (I18NKeys == null || string.IsNullOrEmpty(key))
+					return defaultValue;
+
 				return I18NKeys.FirstOrDefault(p => string.Equals(p.Key, key, StringComparison.CurrentCulture))?.Value ?? defaultValue;
 			}
 			catch
@@ -169,7 +172,7 @@ namespace ONE.ClientSDK.Common.Library
 
 		public Parameter GetParameterByName(string name)
 		{
-			if (Units == null || string.IsNullOrEmpty(name))
+			if (I18NKeys == null || string.IsNullOrEmpty(name))
 				return null;
 
 			var i18NKey = I18NKeys.FirstOrDefault(p => p.Value != null && p.Module == "Parameter" && p.Key.StartsWith("PARAMETERTYPE") && string.Equals(p.Value.ToUpper(), name.ToUpper(), StringComparison.CurrentCulture));
@@ -210,19 +213,12 @@ namespace ONE.ClientSDK.Common.Library
 
 		public Unit GetUnitByName(string name)
 		{
-			if (Units == null || string.IsNullOrEmpty(name))
+			if (I18NKeys == null || string.IsNullOrEmpty(name))
 				return null;
 
 			var i18NKey = I18NKeys.FirstOrDefault(p => p.Value != null && p.Module == "UnitType" && p.Key.StartsWith("UNIT_TYPE") && string.Equals(p.Value.ToUpper(), name.ToUpper(), StringComparison.CurrentCulture));
 
-			if (i18NKey != null)
-			{
-				var unit = Units.FirstOrDefault(p => p.Id != null && string.Equals(p.I18NKey.ToUpper(), i18NKey.Key.ToUpper(), StringComparison.CurrentCulture));
-				if (unit != null)
-					return unit;
-			}
-
-			return null;
+			return i18NKey != null ? GetUnitByI18NKey(i18NKey.Key) : null;
 		}
 
 		public override string ToString()
