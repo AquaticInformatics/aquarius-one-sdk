@@ -181,9 +181,6 @@ namespace ONE.ClientSDK.Utilities
 				var fileContent = new ByteArrayContent(result);
 				fileContent.Headers.ContentType = MediaTypeHeaderValue.Parse("multipart/form-data");
 				form.Add(fileContent, "file", Path.GetFileName(filePath));
-				//form.Add(new StringContent("789"), "userId");
-				//form.Add(new StringContent("some comments"), "comment");
-				//form.Add(new StringContent("true"), "isPrimary");
 
 				HttpResponseMessage response = null;
 				if (_environment.PlatformEnvironmentEnum == EnumPlatformEnvironment.Local)

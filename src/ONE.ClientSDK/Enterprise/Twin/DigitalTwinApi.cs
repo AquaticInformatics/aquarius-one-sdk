@@ -132,7 +132,7 @@ namespace ONE.ClientSDK.Enterprise.Twin
 			return apiResponse?.Content?.DigitalTwins?.Items.FirstOrDefault();
 		}
 
-		public async Task<List<DigitalTwin>> CreateManyAsync(List<DigitalTwin> digitalTwins, CancellationToken cancellation = default)
+		public async Task<List<DigitalTwin>> CreateManyAsync(IEnumerable<DigitalTwin> digitalTwins, CancellationToken cancellation = default)
 		{
 			var endpoint = $"{EndpointRoot}/DigitalTwin/many?requestId={Guid.NewGuid()}";
 

@@ -278,7 +278,7 @@ namespace ONE.ClientSDK
 		{
 			Logger = new EventLogger();
 			UseProtobufModels = true;
-        }
+		}
 
 		public OneApi(string environment, string token, DateTime? expiration = null, bool throwApiErrors = false, bool useProtobufModels = true)
 		{

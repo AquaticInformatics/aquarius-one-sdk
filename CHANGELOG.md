@@ -10,6 +10,7 @@ All notable changes to this project will be documented in this file.
 - Refactored Api classes to use the new IOneApiHelper interface to allow for unit tests
 - Updated namespaces to match file strucutre
 - Renamed ClientSDK class to OneApi to avoid namespace conflicts
+- Changed DigitalTwinApi.CreateManyAsync to accept an IEnumerable<DigitalTwin> instead of a List
 
 
 ## Version 17.11.1 - 2025-02-21

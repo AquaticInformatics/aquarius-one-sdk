@@ -11,11 +11,7 @@ namespace ONE.Test.ConsoleApp.Commands
 		async Task<int> ICommand.Execute(ClientSDK.OneApi clientSdk)
 		{
 			var results = await clientSdk.Library.Geti18nKeysAsync("en-US", "AQI_FOUNDATION_LIBRARY");
-			//var results = await clientSDK.Library.GetMobilei18nKeysAsync("en-US");
-			//I18NKeyHelper.I18NKeyList = results;
-			//var pat = I18NKeyHelper.GetValue("SHORT", "PARAMETERTYPE.ALUMINUM_DISSOLVED");
-			//Console.WriteLine(pat);
-
+			
 			if (results == null)
 				return 0;
 
