@@ -1,9 +1,9 @@
-﻿using System;
-using System.Net.Http;
-using System.Threading.Tasks;
-using System.Threading;
-using ONE.ClientSDK.Utilities;
+﻿using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
+using System;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ONE.ClientSDK.Communication
 {
@@ -15,8 +15,8 @@ namespace ONE.ClientSDK.Communication
 
 		Task<ApiResponse> SendAsync(HttpRequestMessage httpRequestMessage, CancellationToken cancellationToken);
 
-		Task<ApiResponse> BuildRequestAndSendAsync(HttpMethod method, string uri, CancellationToken cancellationToken, object content = null);
+		Task<ApiResponse> BuildRequestAndSendAsync(HttpMethod method, string uri, CancellationToken cancellationToken, object content = null, bool useCamelCaseSerialization = false);
 
-		HttpRequestMessage CreateRequest(HttpMethod method, string uri, object content = null);
+		HttpRequestMessage CreateRequest(HttpMethod method, string uri, object content = null, bool useCamelCaseSerialization = false);
 	}
 }

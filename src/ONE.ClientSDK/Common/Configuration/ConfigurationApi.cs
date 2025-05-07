@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ONE.ClientSDK.Communication;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,10 +9,7 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using ONE.ClientSDK.Communication;
-using ONE.ClientSDK.Utilities;
-using ONE.Models.CSharp;
-using proto = ONE.Models.CSharp;
+using Proto = ONE.Models.CSharp;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Common.Configuration
@@ -29,7 +29,7 @@ namespace ONE.ClientSDK.Common.Configuration
 			_throwApiErrors = throwApiErrors;
 		}
 		
-		public async Task<proto.Configuration> GetConfigurationAsync(string id, int version = 0, CancellationToken cancellation = default)
+		public async Task<Proto.Configuration> GetConfigurationAsync(string id, int version = 0, CancellationToken cancellation = default)
 		{
 			var endpoint = $"common/configuration/v2/{id}?requestId={Guid.NewGuid()}";
 
@@ -41,7 +41,7 @@ namespace ONE.ClientSDK.Common.Configuration
 			return apiResponse?.Content?.Configurations?.Items.FirstOrDefault();
 		}
 
-		public async Task<List<proto.Configuration>> GetConfigurationsAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "", CancellationToken cancellation = default)
+		public async Task<List<Proto.Configuration>> GetConfigurationsAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "", CancellationToken cancellation = default)
 		{
 			var endpoint = $"common/configuration/v2/?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&requestId={Guid.NewGuid()}";
 
@@ -56,7 +56,7 @@ namespace ONE.ClientSDK.Common.Configuration
 			return apiResponse?.Content?.Configurations?.Items.ToList();
 		}
 
-		public async Task<List<proto.Configuration>> GetConfigurationsAdminAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "", string ownerId = "", bool? isPublic = null, CancellationToken cancellation = default)
+		public async Task<List<Proto.Configuration>> GetConfigurationsAdminAsync(string configurationTypeId, string authTwinRefId, string descendantTwinTypeId = "", string context = "", string ownerId = "", bool? isPublic = null, CancellationToken cancellation = default)
 		{
 			var endpoint = $"common/configuration/v2/admin?configurationTypeId={configurationTypeId}&authTwinRefId={authTwinRefId}&requestId={Guid.NewGuid()}";
 
@@ -77,7 +77,7 @@ namespace ONE.ClientSDK.Common.Configuration
 			return apiResponse?.Content?.Configurations?.Items.ToList();
 		}
 
-		public async Task<bool> CreateConfigurationAsync(proto.Configuration configuration, CancellationToken cancellation = default)
+		public async Task<bool> CreateConfigurationAsync(Proto.Configuration configuration, CancellationToken cancellation = default)
 		{
 			var endpoint = $"common/configuration/v2?requestId={Guid.NewGuid()}";
 
@@ -88,7 +88,7 @@ namespace ONE.ClientSDK.Common.Configuration
 
 		public async Task<bool> CreateConfigurationAsync(string authTwinRefId, string configurationTypeId, string configurationData, bool isPublic, CancellationToken cancellation = default)
 		{
-			var configuration = new proto.Configuration
+			var configuration = new Proto.Configuration
 			{
 				ConfigurationTypeId = configurationTypeId,
 				ConfigurationData = configurationData,
@@ -99,7 +99,7 @@ namespace ONE.ClientSDK.Common.Configuration
 			return await CreateConfigurationAsync(configuration, cancellation);
 		}
 
-		public async Task<bool> UpdateConfigurationAsync(proto.Configuration configuration, CancellationToken cancellation = default)
+		public async Task<bool> UpdateConfigurationAsync(Proto.Configuration configuration, CancellationToken cancellation = default)
 		{
 			var endpoint = $"common/configuration/v2/{configuration.Id}?requestId={Guid.NewGuid()}";
 
@@ -110,7 +110,7 @@ namespace ONE.ClientSDK.Common.Configuration
 
 		public async Task<bool> UpdateConfigurationAsync(string id, string configurationTypeId, string configurationData, bool isPublic, CancellationToken cancellation = default)
 		{
-			var configuration = new proto.Configuration
+			var configuration = new Proto.Configuration
 			{
 				Id = id,
 				ConfigurationTypeId = configurationTypeId,

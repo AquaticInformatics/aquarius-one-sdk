@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.ClientSDK.Common.Library;
@@ -12,6 +8,10 @@ using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants;
 using ONE.Models.CSharp.Constants.TwinCategory;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Operations
@@ -44,7 +44,7 @@ namespace ONE.ClientSDK.Operations
 		{
 			try
 			{
-				var operationCache = JsonConvert.DeserializeObject<OperationCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				var operationCache = JsonConvert.DeserializeObject<OperationCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 				DigitalTwin = operationCache.DigitalTwin;
 				DigitalTwinItem = operationCache.DigitalTwinItem;
 
@@ -868,7 +868,7 @@ namespace ONE.ClientSDK.Operations
 		{
 			try
 			{
-				return JsonExtensions.SerializeObjectNoCache(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonExtensions.SerializeObjectNoCache(this, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch
 			{

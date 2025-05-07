@@ -1,5 +1,5 @@
-using System;
 using ONE.ClientSDK.Enums;
+using System;
 
 namespace ONE.ClientSDK.Utilities
 {

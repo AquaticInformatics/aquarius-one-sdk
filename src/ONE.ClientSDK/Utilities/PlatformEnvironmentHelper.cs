@@ -1,7 +1,7 @@
-﻿using System;
+﻿using ONE.ClientSDK.Enums;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using ONE.ClientSDK.Enums;
 
 namespace ONE.ClientSDK.Utilities
 {

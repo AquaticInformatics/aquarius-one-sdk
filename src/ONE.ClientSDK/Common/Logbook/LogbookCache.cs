@@ -1,11 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Shared.Time;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Proto = ONE.Models.CSharp;
 // ReSharper disable UnusedMember.Global
 
@@ -190,7 +190,7 @@ namespace ONE.ClientSDK.Common.Logbook
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.SerializeObject(this, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch (Exception ex)
 			{
@@ -202,7 +202,7 @@ namespace ONE.ClientSDK.Common.Logbook
 		{
 			try
 			{
-				return JsonConvert.DeserializeObject<LogbookCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.DeserializeObject<LogbookCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch (Exception ex)
 			{

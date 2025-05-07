@@ -1,6 +1,6 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using ONE.Models.CSharp.Imposed.TwinUiDefinition;
+using System.Collections.Generic;
 
 namespace ONE.ClientSDK.Utilities.UI
 {
@@ -10,7 +10,7 @@ namespace ONE.ClientSDK.Utilities.UI
 		{
 			try
 			{
-				var result = JsonConvert.DeserializeObject<UIDefinition>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				var result = JsonConvert.DeserializeObject<UIDefinition>(json, JsonExtensions.IgnoreNullSerializerSettings);
 				Attributes = result.Attributes;
 			}
 			catch
@@ -24,7 +24,7 @@ namespace ONE.ClientSDK.Utilities.UI
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.SerializeObject(this, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch
 			{

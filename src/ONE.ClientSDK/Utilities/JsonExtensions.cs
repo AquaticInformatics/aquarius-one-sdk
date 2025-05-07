@@ -3,9 +3,20 @@ using Newtonsoft.Json.Serialization;
 
 namespace ONE.ClientSDK.Utilities
 {
-	public class JsonExtensions
-	{
-		public static string SerializeObjectNoCache<T>(T obj, JsonSerializerSettings settings = null)
+	public static class JsonExtensions
+    {
+        public static JsonSerializerSettings CamelCaseSerializerSettings => new JsonSerializerSettings
+        {
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
+        public static JsonSerializerSettings IgnoreNullSerializerSettings => new JsonSerializerSettings
+        {
+            NullValueHandling = NullValueHandling.Ignore
+        };
+
+        public static string SerializeObjectNoCache<T>(T obj, JsonSerializerSettings settings = null)
 		{
 			settings = settings ?? new JsonSerializerSettings();
 			bool reset = (settings.ContractResolver == null);
@@ -25,11 +36,7 @@ namespace ONE.ClientSDK.Utilities
 
 		public static string ToJsonString<T>(T obj)
 		{
-			JsonSerializerSettings jsonSettings = new JsonSerializerSettings
-			{
-				NullValueHandling = NullValueHandling.Ignore
-			};
-			return JsonConvert.SerializeObject(obj, jsonSettings);
+			return JsonConvert.SerializeObject(obj, IgnoreNullSerializerSettings);
 		}
 
 		public static string ToPrettyJson<T>(T obj)

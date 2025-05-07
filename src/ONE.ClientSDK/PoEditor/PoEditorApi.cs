@@ -1,4 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -6,10 +10,6 @@ using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using ONE.ClientSDK.Utilities;
-using ONE.Models.CSharp;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.PoEditor

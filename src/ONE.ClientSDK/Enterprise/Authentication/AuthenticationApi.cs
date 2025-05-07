@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Net.Http;
-using System.Net.Http.Headers;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.ClientSDK.Enums;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
+using System;
+using System.Collections.Generic;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading.Tasks;
 
 namespace ONE.ClientSDK.Enterprise.Authentication
 {
@@ -186,7 +186,7 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 					
 					var json = await respContent.Content.ReadAsStringAsync();
 					if (json.Length > 0)
-						Token = JsonConvert.DeserializeObject<Token>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+						Token = JsonConvert.DeserializeObject<Token>(json, JsonExtensions.IgnoreNullSerializerSettings);
 
 					var message = "LoginResourceOwnerAsync failure";
 					var eventLevel = EnumOneLogLevel.OneLogLevelWarn;

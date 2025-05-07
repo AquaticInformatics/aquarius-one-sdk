@@ -1,11 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Imposed.Enums;
 using ONE.Models.CSharp.Imposed.WorksheetView;
 using ONE.Shared.Time;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WorksheetView = ONE.Models.CSharp.Imposed.WorksheetView.WorksheetView;
 
 namespace ONE.ClientSDK.Operations.Spreadsheet
@@ -187,7 +188,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 		public static WorksheetView GetWorksheetView(string jsonData)
 		{
 			var worksheetView = new WorksheetView();
-			var view = JsonConvert.DeserializeObject<WorksheetView>(jsonData, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+			var view = JsonConvert.DeserializeObject<WorksheetView>(jsonData, JsonExtensions.IgnoreNullSerializerSettings);
 			worksheetView.id = view.id;
 			worksheetView.name = view.name;
 			worksheetView.isOwner = view.isOwner;
@@ -209,7 +210,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 					}
 					else
 					{
-						var columnHeaderItem = JsonConvert.DeserializeObject<ColumnHeader>(header.ToString(), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+						var columnHeaderItem = JsonConvert.DeserializeObject<ColumnHeader>(header.ToString(), JsonExtensions.IgnoreNullSerializerSettings);
 						worksheetView.headers.Add(columnHeaderItem);
 
 					}
@@ -222,7 +223,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 		public static GroupHeader GetGroupHeader(string json)
 		{
 			var newGroupHeader = new GroupHeader();
-			var groupHeader = JsonConvert.DeserializeObject<GroupHeader>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+			var groupHeader = JsonConvert.DeserializeObject<GroupHeader>(json, JsonExtensions.IgnoreNullSerializerSettings);
 			newGroupHeader.name = groupHeader.name;
 			newGroupHeader.groupId = groupHeader.groupId;
 			if (groupHeader.children != null)
@@ -237,7 +238,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 					}
 					else
 					{
-						var columnHeaderItem = JsonConvert.DeserializeObject<ColumnHeader>(child.ToString(), new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+						var columnHeaderItem = JsonConvert.DeserializeObject<ColumnHeader>(child.ToString(), JsonExtensions.IgnoreNullSerializerSettings);
 						newGroupHeader.children.Add(columnHeaderItem);
 					}
 				}

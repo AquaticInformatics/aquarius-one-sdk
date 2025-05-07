@@ -1,4 +1,7 @@
-﻿using System;
+﻿using ONE.ClientSDK.Communication;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -8,9 +11,6 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
-using ONE.ClientSDK.Communication;
-using ONE.ClientSDK.Utilities;
-using ONE.Models.CSharp;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Enterprise.Report

@@ -1,8 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp.Imposed.Enums;
 using ONE.Shared.Time;
+using System;
+using System.Collections.Generic;
 
 namespace ONE.ClientSDK.Enterprise.Report
 {
@@ -10,7 +11,7 @@ namespace ONE.ClientSDK.Enterprise.Report
 	{
 		public ReportDataDefinition(string json)
 		{
-			var definition = JsonConvert.DeserializeObject<ReportDefinitionJson>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+			var definition = JsonConvert.DeserializeObject<ReportDefinitionJson>(json, JsonExtensions.IgnoreNullSerializerSettings);
 			Columns = definition.columns;
 			
 			DateTimeHelper.TryParse(definition.endTime, out var eValue);

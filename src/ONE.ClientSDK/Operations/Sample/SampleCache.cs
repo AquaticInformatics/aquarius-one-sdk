@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
+﻿using Newtonsoft.Json;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using ONE.Shared.Time;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Operations.Sample
@@ -14,7 +13,6 @@ namespace ONE.ClientSDK.Operations.Sample
 	public class SampleCache
 	{
 		private readonly OneApi _clientSdk;
-		private readonly JsonSerializerSettings _jsonSettings;
 
 		[JsonProperty] private Dictionary<string, Activity> Activities { get; set; } = new Dictionary<string, Activity>();
 		[JsonProperty] private Dictionary<string, Analyte> Analytes { get; set; } = new Dictionary<string, Analyte>();
@@ -42,11 +40,6 @@ namespace ONE.ClientSDK.Operations.Sample
 		public SampleCache(OneApi clientSdk, string serializedCache = "")
 		{
 			_clientSdk = clientSdk;
-			_jsonSettings = new JsonSerializerSettings
-			{
-				ContractResolver = new CamelCasePropertyNamesContractResolver(),
-				NullValueHandling = NullValueHandling.Ignore
-			};
 
 			if (string.IsNullOrEmpty(serializedCache))
 				return;
@@ -255,7 +248,7 @@ namespace ONE.ClientSDK.Operations.Sample
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(this, _jsonSettings);
+				return JsonConvert.SerializeObject(this, JsonExtensions.CamelCaseSerializerSettings);
 			}
 			catch (Exception ex)
 			{
@@ -270,7 +263,7 @@ namespace ONE.ClientSDK.Operations.Sample
 		{
 			try
 			{
-				return JsonConvert.DeserializeObject<SampleCache>(serializedCache, _jsonSettings);
+				return JsonConvert.DeserializeObject<SampleCache>(serializedCache, JsonExtensions.CamelCaseSerializerSettings);
 			}
 			catch (Exception ex)
 			{

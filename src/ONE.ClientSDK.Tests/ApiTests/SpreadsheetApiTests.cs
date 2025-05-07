@@ -26,13 +26,9 @@ public class SpreadsheetApiTests
 			StatusCode = 200
 		};
 
-		Mock.Get(_apiHelper)
-			.Setup(x => x.BuildRequestAndSendAsync(
-				HttpMethod.Post,
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>(),
-				cell))
-			.ReturnsAsync(apiResponse);
+        Mock.Get(_apiHelper)
+            .Setup(x => x.BuildRequestAndSendAsync(HttpMethod.Post, It.IsAny<string>(), It.IsAny<CancellationToken>(),
+                cell, false)).ReturnsAsync(apiResponse);
 
 		// Act
 		var result = await GetApi(true).CellValidateAsync(Guid.NewGuid().ToString(), EnumWorksheet.WorksheetDaily, cell);
@@ -49,13 +45,9 @@ public class SpreadsheetApiTests
 
 		var apiResponse = new ApiResponse { StatusCode = 400 };
 
-		Mock.Get(_apiHelper)
-			.Setup(x => x.BuildRequestAndSendAsync(
-				HttpMethod.Post,
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>(),
-				cell))
-			.ReturnsAsync(apiResponse);
+        Mock.Get(_apiHelper)
+            .Setup(x => x.BuildRequestAndSendAsync(HttpMethod.Post, It.IsAny<string>(), It.IsAny<CancellationToken>(),
+                cell, false)).ReturnsAsync(apiResponse);
 
 		// Act
 		await Assert.ThrowsAsync<RestApiException>(() =>
@@ -70,13 +62,9 @@ public class SpreadsheetApiTests
 
 		var apiResponse = new ApiResponse { StatusCode = 400 };
 
-		Mock.Get(_apiHelper)
-			.Setup(x => x.BuildRequestAndSendAsync(
-				HttpMethod.Post,
-				It.IsAny<string>(),
-				It.IsAny<CancellationToken>(),
-				cell))
-			.ReturnsAsync(apiResponse);
+        Mock.Get(_apiHelper)
+            .Setup(x => x.BuildRequestAndSendAsync(HttpMethod.Post, It.IsAny<string>(), It.IsAny<CancellationToken>(),
+                cell, false)).ReturnsAsync(apiResponse);
 
 		// Act
 		

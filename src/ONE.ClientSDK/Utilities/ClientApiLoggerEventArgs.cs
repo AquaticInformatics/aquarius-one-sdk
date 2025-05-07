@@ -1,5 +1,5 @@
-﻿using System.Net;
-using ONE.Models.CSharp;
+﻿using ONE.Models.CSharp;
+using System.Net;
 
 namespace ONE.ClientSDK.Utilities
 {

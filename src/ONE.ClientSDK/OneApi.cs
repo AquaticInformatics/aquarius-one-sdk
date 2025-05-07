@@ -1,5 +1,3 @@
-using System;
-using System.Net.Http.Headers;
 using ONE.ClientSDK.Common.Activity;
 using ONE.ClientSDK.Common.Configuration;
 using ONE.ClientSDK.Common.Library;
@@ -17,6 +15,8 @@ using ONE.ClientSDK.Operations.Sample;
 using ONE.ClientSDK.Operations.Spreadsheet;
 using ONE.ClientSDK.PoEditor;
 using ONE.ClientSDK.Utilities;
+using System;
+using System.Net.Http.Headers;
 
 namespace ONE.ClientSDK
 {
@@ -277,7 +277,8 @@ namespace ONE.ClientSDK
 		public OneApi()
 		{
 			Logger = new EventLogger();
-		}
+			UseProtobufModels = true;
+        }
 
 		public OneApi(string environment, string token, DateTime? expiration = null, bool throwApiErrors = false, bool useProtobufModels = true)
 		{

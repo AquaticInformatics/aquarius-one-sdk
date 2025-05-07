@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ONE.ClientSDK.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using ONE.ClientSDK.Utilities;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Common.Logbook
@@ -146,7 +146,7 @@ namespace ONE.ClientSDK.Common.Logbook
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.SerializeObject(this, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch (Exception ex)
 			{
@@ -158,7 +158,7 @@ namespace ONE.ClientSDK.Common.Logbook
 		{
 			try
 			{
-				return JsonConvert.DeserializeObject<LogbooksCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.DeserializeObject<LogbooksCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch (Exception ex)
 			{

@@ -1,4 +1,8 @@
-﻿using System;
+﻿using ONE.ClientSDK.Communication;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp;
+using ONE.Shared.Helpers.JsonPatch;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,12 +11,6 @@ using System.Net.Http;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
-using ONE.ClientSDK.Communication;
-using ONE.ClientSDK.Utilities;
-using ONE.Models.CSharp;
-using ONE.Shared.Helpers.JsonPatch;
 using Proto = ONE.Models.CSharp;
 // ReSharper disable UnusedMember.Global
 
@@ -193,7 +191,7 @@ namespace ONE.ClientSDK.Common.Activity
 			{
 				var watch = Stopwatch.StartNew();
 
-				var apiResponse = await _apiHelper.BuildRequestAndSendAsync(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync(httpMethod, endpoint, cancellation, content, true).ConfigureAwait(_continueOnCapturedContext);
 
 				watch.Stop();
 

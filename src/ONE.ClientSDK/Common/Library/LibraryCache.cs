@@ -1,10 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Imposed.Internationalization;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using ONE.Models.CSharp;
-using ONE.Models.CSharp.Imposed.Internationalization;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Common.Library
@@ -29,8 +30,8 @@ namespace ONE.ClientSDK.Common.Library
 		public List<DigitalTwinSubtype> DigitalTwinSubtypes { get; set; }
 
 		public void LoadFromCache(string serializedObject)
-		{
-			var cache =  JsonConvert.DeserializeObject<LibraryCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+        {
+            var cache = JsonConvert.DeserializeObject<LibraryCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 			QuantityTypes = cache.QuantityTypes;
 			Parameters = cache.Parameters;
 			Units = cache.Units;
@@ -225,7 +226,7 @@ namespace ONE.ClientSDK.Common.Library
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.SerializeObject(this, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch
 			{
@@ -239,7 +240,7 @@ namespace ONE.ClientSDK.Common.Library
 		{
 			try
 			{
-				return JsonConvert.DeserializeObject<LibraryCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.DeserializeObject<LibraryCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch
 			{

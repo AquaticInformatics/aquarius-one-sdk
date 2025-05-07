@@ -1,4 +1,10 @@
-﻿using System;
+﻿using Google.Protobuf.WellKnownTypes;
+using Newtonsoft.Json;
+using ONE.ClientSDK.Communication;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp;
+using ONE.Models.CSharp.Imposed.Internationalization;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -6,12 +12,6 @@ using System.Net;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Google.Protobuf.WellKnownTypes;
-using Newtonsoft.Json;
-using ONE.ClientSDK.Communication;
-using ONE.ClientSDK.Utilities;
-using ONE.Models.CSharp;
-using ONE.Models.CSharp.Imposed.Internationalization;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Common.Library

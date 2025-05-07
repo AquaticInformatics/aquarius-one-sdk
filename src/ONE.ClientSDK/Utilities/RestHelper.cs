@@ -1,14 +1,14 @@
-﻿using System;
+﻿using Google.Protobuf;
+using Newtonsoft.Json.Linq;
+using ONE.ClientSDK.Enterprise.Authentication;
+using ONE.ClientSDK.Enums;
+using ONE.Models.CSharp;
+using System;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
 using System.Threading.Tasks;
-using Google.Protobuf;
-using Newtonsoft.Json.Linq;
-using ONE.ClientSDK.Enterprise.Authentication;
-using ONE.ClientSDK.Enums;
-using ONE.Models.CSharp;
 
 namespace ONE.ClientSDK.Utilities
 {

@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using ONE.ClientSDK.Enums;
+using ONE.ClientSDK.Utilities;
+using ONE.Models.CSharp.Constants.TwinCategory;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
-using ONE.ClientSDK.Common.Logbook;
-using ONE.ClientSDK.Enums;
-using ONE.Models.CSharp.Constants.TwinCategory;
 
 namespace ONE.ClientSDK.Operations
 {
@@ -21,7 +21,7 @@ namespace ONE.ClientSDK.Operations
 			Operations = new List<OperationCache>();
 			if (!string.IsNullOrEmpty(serializedObject))
 			{
-				var operationsCache = JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				var operationsCache = JsonConvert.DeserializeObject<OperationsCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 				Operations = operationsCache.Operations;
 				foreach (var operationCache in Operations)
 				{
@@ -37,7 +37,7 @@ namespace ONE.ClientSDK.Operations
 		{
 			try
 			{
-				var operationsCache = JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				var operationsCache = JsonConvert.DeserializeObject<OperationsCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 				Operations = operationsCache.Operations;
 				foreach (var operationCache in Operations)
 				{
@@ -113,7 +113,7 @@ namespace ONE.ClientSDK.Operations
 		{
 			try
 			{
-				return JsonConvert.SerializeObject(this, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.SerializeObject(this, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch
 			{
@@ -125,7 +125,7 @@ namespace ONE.ClientSDK.Operations
 		{
 			try
 			{
-				return JsonConvert.DeserializeObject<OperationsCache>(serializedObject, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+				return JsonConvert.DeserializeObject<OperationsCache>(serializedObject, JsonExtensions.IgnoreNullSerializerSettings);
 			}
 			catch (Exception)
 			{

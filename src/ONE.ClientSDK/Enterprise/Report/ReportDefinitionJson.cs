@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using ONE.ClientSDK.Utilities;
+using System.Collections.Generic;
+// ReSharper disable InconsistentNaming
 
 namespace ONE.ClientSDK.Enterprise.Report
 {
@@ -7,7 +9,7 @@ namespace ONE.ClientSDK.Enterprise.Report
 	{
 		public ReportDefinitionJson(string json)
 		{
-			var definition = JsonConvert.DeserializeObject<ReportDefinitionJson>(json, new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+			var definition = JsonConvert.DeserializeObject<ReportDefinitionJson>(json, JsonExtensions.IgnoreNullSerializerSettings);
 			columns = definition.columns;
 			endTime = definition.endTime;
 			plantId = definition.plantId;

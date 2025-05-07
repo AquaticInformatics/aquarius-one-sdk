@@ -1,13 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.JsonPatch;
+﻿using Microsoft.AspNetCore.JsonPatch;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.Models.CSharp;
 using ONE.Models.CSharp.Constants.TwinCategory;
 using ONE.Shared.Time;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
 
 namespace ONE.ClientSDK.Enterprise.Twin
