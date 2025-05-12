@@ -273,18 +273,24 @@ namespace ONE.Enterprise.Twin
             }
         }
 
-
         /********************* DigitalTwins *********************/
 
-        public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = SpaceConstants.LocationType.RefId, string twinSubTypeId = SpaceConstants.LocationType.OtherSubType.RefId)
+        public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, 
+            string twinTypeId = SpaceConstants.LocationType.RefId, 
+            string twinSubTypeId = SpaceConstants.LocationType.OtherSubType.RefId,
+            int sortOrder = 0)
         {
-            DigitalTwin digitalTwin = new DigitalTwin();
-            digitalTwin.ParentTwinReferenceId = parentId;
-            digitalTwin.Name = name;
-            digitalTwin.CategoryId = 2;
-            digitalTwin.TwinReferenceId = Guid.NewGuid().ToString();
-            digitalTwin.TwinTypeId = twinTypeId;
-            digitalTwin.TwinSubTypeId = twinSubTypeId;
+            var digitalTwin = new DigitalTwin
+            {
+                ParentTwinReferenceId = parentId,
+                Name = name,
+                CategoryId = 2,
+                TwinReferenceId = Guid.NewGuid().ToString(),
+                TwinTypeId = twinTypeId,
+                TwinSubTypeId = twinSubTypeId,
+                SortOrder = sortOrder
+            };
+
             return await CreateAsync(digitalTwin);
         }
 

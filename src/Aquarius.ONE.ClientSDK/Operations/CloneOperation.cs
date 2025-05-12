@@ -31,7 +31,10 @@ namespace ONE.Operations
             Dictionary<string, string> sourceToDestinationLocationTwinMapping = new Dictionary<string, string>();
             var sourceOperationDigitalTwin = _operationCache.DigitalTwin;
             Event(null, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OperationExport", Message = $"Creating Operation Twin" });
-            var destinationOperationDigitalTwin = await clientSDK.DigitalTwin.CreateSpaceAsync(destinationTenantTwin.TwinReferenceId, $"Copy of: {sourceOperationDigitalTwin.Name}", sourceOperationDigitalTwin.TwinTypeId, sourceOperationDigitalTwin.TwinSubTypeId);
+            var destinationOperationDigitalTwin = await clientSDK.DigitalTwin.CreateSpaceAsync(
+                destinationTenantTwin.TwinReferenceId, $"Copy of: {sourceOperationDigitalTwin.Name}",
+                sourceOperationDigitalTwin.TwinTypeId, sourceOperationDigitalTwin.TwinSubTypeId,
+                sourceOperationDigitalTwin.SortOrder);
             if (destinationOperationDigitalTwin == null)
                 return false;
             string twinData = Enterprise.Twin.Helper.AddUpdateRootValue("CloneId", sourceOperationDigitalTwin.TwinReferenceId, sourceOperationDigitalTwin.TwinData);

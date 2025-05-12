@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 17.12.0 - 2025-05-12
+### Updated
+- Updated DigitalTwinApi.CreateSpaceAsync to support the new optional parameter: "sortOrder".
+
 ## Version 17.11.1 - 2025-02-21
 ### Updated
 - Updated CSharp dependency
