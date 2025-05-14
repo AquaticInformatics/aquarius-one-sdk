@@ -1,6 +1,18 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 18.0.0 - 2025-05-05
+### Added
+- UseProtobufModels configuration option
+- OneApiHelper class to standardize api communication and implement the new configuration option
+
+### Changed
+- Refactored Api classes to use the new IOneApiHelper interface to allow for unit tests
+- Updated namespaces to match file strucutre
+- Renamed ClientSDK class to OneApi to avoid namespace conflicts
+- Changed DigitalTwinApi.CreateManyAsync to accept an IEnumerable<DigitalTwin> instead of a List
+
+
 ## Version 17.11.1 - 2025-02-21
 ### Updated
 - Updated CSharp dependency

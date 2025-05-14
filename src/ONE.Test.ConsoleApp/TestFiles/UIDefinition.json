@@ -1,0 +1,201 @@
+{
+  "attributes": [
+    {
+      "definition": "",
+      "key": "SiteName",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.SITE-NAME" },
+      "uiElement": 1,
+      "validator": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "PrimaryContactName",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.PRIMARY-CONTACT-NAME" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "PrimaryContactRole",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.PRIMARY-CONTACT-ROLE" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "PrimaryContactPhoneNumber",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.PRIMARY-CONTACT-PHONE-NUMBER" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "PrimaryContactEmail",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.PRIMARY-CONTACT-EMAIL" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "SecondaryContactName",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.SECONDARY-CONTACT-NAME" },
+      "uiElement": 1,
+      "validator": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "SecondaryContactRole",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.SECONDARY-CONTACT-ROLE" },
+      "uiElement": 1,
+      "validator": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "SecondaryContactPhoneNumber",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.SECONDARY-CONTACT-PHONE-NUMBER" },
+      "uiElement": 1,
+      "validator": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "SecondaryContactEmail",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.SECONDARY-CONTACT-EMAIL" },
+      "uiElement": 1,
+      "validator": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "AccountNumber",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.ACCOUNT-NUMBER" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "ContractNumber",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.CONTRACT-NUMBER" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "ContractEndDate",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.CONTRACT-END-DATE" },
+      "uiElement": 2,
+      "validator": { "required": true },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "TierLevel",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.TIER-LEVEL" },
+      "uiElement": 5,
+      "validator": { "required": true },
+      "options": [
+        {
+          "key": 1,
+          "value": "1"
+        },
+        {
+          "key": 2,
+          "value": "2"
+        },
+        {
+          "key": 3,
+          "value": "3"
+        },
+        {
+          "key": 4,
+          "value": "4"
+        }
+      ]
+    },
+    {
+      "definition": "",
+      "key": "ProfessionalServiceSubscriptionNumber",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.PROFESSIONAL-SERVICE-SUBSCRIPTION-NUMBER" },
+      "uiElement": 1,
+      "validator": {
+        "required": true,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "SubscriptionEndDate",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.SUBSCRIPTION-END-DATE" },
+      "uiElement": 2,
+      "validator": { "required": true },
+      "options": ""
+    },
+    {
+      "definition": "",
+      "key": "AdditionalInfo",
+      "I18NKeyTextReference": { "i18nKey": "DASHBOARD.DIGITAL-TWIN-WIDGET.ADDITIONAL-INFO" },
+      "uiElement": 1,
+      "validator": {
+        "required": false,
+        "minLength": 2,
+        "maxLength": 100
+      },
+      "options": ""
+    }
+  ]
+}

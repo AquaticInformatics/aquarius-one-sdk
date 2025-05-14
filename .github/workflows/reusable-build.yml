@@ -32,7 +32,7 @@ jobs:
     runs-on: windows-latest
 
     env:
-      SolutionFile: Aquarius.ONE.ClientSDK.sln
+      SolutionFile: ONE.ClientSDK.sln
       DOTNET_NOLOGO: true
       DOTNET_CLI_TELEMETRY_OPTOUT: true
 
@@ -78,7 +78,7 @@ jobs:
         uses: bbonkr/get-version-action@v1.2.1
         id: get_version
         with:
-          project: './src/Aquarius.ONE.ClientSDK/Aquarius.ONE.ClientSDK.csproj'
+          project: './src/ONE.ClientSDK/ONE.ClientSDK.csproj'
       
       - name: Tag repository wih release
         if: inputs.publish && inputs.release
