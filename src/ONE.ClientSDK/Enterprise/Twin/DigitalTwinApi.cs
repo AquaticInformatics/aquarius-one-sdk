@@ -109,7 +109,10 @@ namespace ONE.ClientSDK.Enterprise.Twin
 
 		/********************* DigitalTwins *********************/
 
-		public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, string twinTypeId = SpaceConstants.LocationType.RefId, string twinSubTypeId = SpaceConstants.LocationType.OtherSubType.RefId, CancellationToken cancellation = default)
+		public async Task<DigitalTwin> CreateSpaceAsync(string parentId, string name, 
+            string twinTypeId = SpaceConstants.LocationType.RefId, 
+            string twinSubTypeId = SpaceConstants.LocationType.OtherSubType.RefId, 
+            int sortOrder = 0, CancellationToken cancellation = default)
 		{
 			var digitalTwin = new DigitalTwin
 			{
@@ -118,8 +121,10 @@ namespace ONE.ClientSDK.Enterprise.Twin
 				CategoryId = 2,
 				TwinReferenceId = Guid.NewGuid().ToString(),
 				TwinTypeId = twinTypeId,
-				TwinSubTypeId = twinSubTypeId
+				TwinSubTypeId = twinSubTypeId,
+				SortOrder = sortOrder
 			};
+
 			return await CreateAsync(digitalTwin, cancellation);
 		}
 

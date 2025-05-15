@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 18.0.1 - 2025-05-14
+### Updated
+- Updated DigitalTwinApi.CreateSpaceAsync to support the new optional parameter: "sortOrder"
+
 ## Version 18.0.0 - 2025-05-05
 ### Added
 - UseProtobufModels configuration option
