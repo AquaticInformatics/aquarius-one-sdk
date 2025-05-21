@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 18.1.0 - 2025-05-22
+### Added
+- New SpreadsheetApi.GetRowsAsync overload to support maxCellDataIncldued
+
 ## Version 18.0.1 - 2025-05-14
 ### Updated
 - Updated DigitalTwinApi.CreateSpaceAsync to support the new optional parameter: "sortOrder"
@@ -15,7 +19,6 @@ All notable changes to this project will be documented in this file.
 - Updated namespaces to match file strucutre
 - Renamed ClientSDK class to OneApi to avoid namespace conflicts
 - Changed DigitalTwinApi.CreateManyAsync to accept an IEnumerable<DigitalTwin> instead of a List
-
 
 ## Version 17.11.1 - 2025-02-21
 ### Updated
