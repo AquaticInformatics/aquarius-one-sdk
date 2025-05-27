@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version 18.1.0 - 2025-05-22
+## Version 18.1.0 - 2025-05-27
 ### Added
 - New SpreadsheetApi.GetRowsAsync overload to support maxCellDataIncldued
 
