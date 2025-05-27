@@ -124,7 +124,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 
 			endpoint += AddColumnAndViewIdQueryString(columns, viewId);
 
-			var response = await ExecuteSpreadSheetRequest("CellMonitorCellValuesAsync", HttpMethod.Get, endpoint, cancellation);
+            var response = await ExecuteSpreadSheetRequest("CellMonitorCellValuesAsync", HttpMethod.Get, endpoint, cancellation);
 
 			return response?.Content?.CellValues.Items;
 		}
@@ -148,12 +148,27 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 
 			endpoint += AddColumnAndViewIdQueryString(columns, viewId);
 
-			var response = await ExecuteSpreadSheetRequest("CellMonitorSyncAsync", HttpMethod.Post, endpoint, cancellation);
+            var response = await ExecuteSpreadSheetRequest("CellMonitorSyncAsync", HttpMethod.Post, endpoint, cancellation);
 
 			return response?.StatusCode == 204;
 		}
 
-		public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null, CancellationToken cancellation = default)
+        public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, List<uint> columns, Guid? viewId, int? maxCellDataIncluded, CancellationToken cancellation)
+        {
+            var endpoint =
+                $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows?requestId={Guid.NewGuid()}&startRow={startRow}&endRow={endRow}";
+
+            if (maxCellDataIncluded.HasValue)
+                endpoint += $"&maxCellDataIncluded={maxCellDataIncluded.Value}";
+
+            endpoint += AddColumnAndViewIdQueryString(columns, viewId);
+
+            var apiResponse = await ExecuteSpreadSheetRequest("GetRowsLimitedCellDataAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+            return apiResponse?.Content?.Rows;
+        }
+
+        public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null, CancellationToken cancellation = default)
 			=> await GetSpreadsheetRowsAsync(operationTwinReferenceId, worksheetType, startRow, endRow, columnList, viewId, cancellation);
 
 		public async Task<Rows> GetSpreadsheetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, string columnList = null, string viewId = null, CancellationToken cancellation = default)
@@ -189,7 +204,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			return apiResponse?.Content?.Rows;
 		}
 
-		public async Task<SpreadsheetDefinition> GetSpreadsheetDefinitionAsync(string operationTwinReferenceId, CancellationToken cancellation = default)
+        public async Task<SpreadsheetDefinition> GetSpreadsheetDefinitionAsync(string operationTwinReferenceId, CancellationToken cancellation = default)
 		{
 			var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/definition?requestId={Guid.NewGuid()}";
 
@@ -315,24 +330,27 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			return apiResponse.Content.KeyValues;
 		}
 
-		private string AddColumnAndViewIdQueryString(IEnumerable<string> columnList = null, string viewId = null)
-		{
-			var i = 0;
-			var queryString = string.Empty;
+        private string AddColumnAndViewIdQueryString(IEnumerable<string> columnList, string viewId) =>
+            AddColumnAndViewIdQueryString(columnList?.Select(uint.Parse).ToList() ?? new List<uint>(), Guid.TryParse(viewId, out var viewGuid) ? viewGuid : (Guid?)null);
 
-			if (columnList != null)
-				queryString = columnList.Aggregate(queryString, (current, columnNumber) => current + $"&columns[{i++}]={columnNumber}");
+		private string AddColumnAndViewIdQueryString(IEnumerable<uint> columnList, string viewId) =>
+			AddColumnAndViewIdQueryString(columnList?.ToList() ?? new List<uint>(), Guid.TryParse(viewId, out var viewGuid) ? viewGuid : (Guid?)null);
 
-			if (viewId != null)
-				queryString += $"&viewId={viewId}";
+		private string AddColumnAndViewIdQueryString(List<uint> columns, Guid? viewId)
+        {
+            var i = 0;
+            var queryString = string.Empty;
 
-			return queryString;
-		}
+            if (columns?.Count > 0)
+                queryString = columns.Aggregate(queryString, (current, columnNumber) => current + $"&columns[{i++}]={columnNumber}");
 
-		private string AddColumnAndViewIdQueryString(IEnumerable<uint> columnList = null, string viewId = null) =>
-			AddColumnAndViewIdQueryString(columnList?.Select(c => c.ToString()), viewId);
+            if (viewId.HasValue)
+                queryString += $"&viewId={viewId}";
 
-		private async Task<ApiResponse> ExecuteSpreadSheetRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+            return queryString;
+        }
+
+        private async Task<ApiResponse> ExecuteSpreadSheetRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
 		{
 			try
 			{
