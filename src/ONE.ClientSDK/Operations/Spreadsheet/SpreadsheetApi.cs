@@ -154,6 +154,9 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 		}
 
         public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, List<uint> columns, Guid? viewId, int? maxCellDataIncluded, CancellationToken cancellation)
+            => await GetRowsAsync(operationTwinReferenceId, worksheetType, startRow, endRow, columns, viewId, maxCellDataIncluded, changedSince: null, cancellation);
+
+        public async Task<Rows> GetRowsAsync(string operationTwinReferenceId, EnumWorksheet worksheetType, uint startRow, uint endRow, List<uint> columns, Guid? viewId, int? maxCellDataIncluded, string changedSince, CancellationToken cancellation)
         {
             var endpoint =
                 $"operations/spreadsheet/v1/{operationTwinReferenceId}/worksheet/{(int)worksheetType}/rows?requestId={Guid.NewGuid()}&startRow={startRow}&endRow={endRow}";
@@ -161,9 +164,12 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
             if (maxCellDataIncluded.HasValue)
                 endpoint += $"&maxCellDataIncluded={maxCellDataIncluded.Value}";
 
+            if (!string.IsNullOrEmpty(changedSince))
+                endpoint += $"&changedSince={changedSince}";
+
             endpoint += AddColumnAndViewIdQueryString(columns, viewId);
 
-            var apiResponse = await ExecuteSpreadSheetRequest("GetRowsLimitedCellDataAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+            var apiResponse = await ExecuteSpreadSheetRequest("GetRowsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
             return apiResponse?.Content?.Rows;
         }
