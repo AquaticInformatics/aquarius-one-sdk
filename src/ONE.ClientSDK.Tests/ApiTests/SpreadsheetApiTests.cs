@@ -137,4 +137,34 @@ public class SpreadsheetApiTests
 
         Mock.Get(_apiHelper).Verify(x => x.BuildRequestAndSendAsync(HttpMethod.Get, It.IsAny<string>(), CancellationToken.None, null, false), Times.Once);
     }
+
+    [Fact]
+    public async Task GetRowsAsync_WithChangedSince_ValidateRelativeUri()
+    {
+        var apiResponse = new ApiResponse { Content = new Content { Rows = new Rows() }, StatusCode = 200 };
+
+        var endpointString = string.Empty;
+        Mock.Get(_apiHelper)
+            .Setup(x => x.BuildRequestAndSendAsync(HttpMethod.Get, It.IsAny<string>(), It.IsAny<CancellationToken>(),
+                null, false)).ReturnsAsync(apiResponse)
+            .Callback((HttpMethod _, string uri, CancellationToken _, object _, bool _) => endpointString = uri);
+
+        var now = DateTime.UtcNow.ToString("O");
+        var result = await GetApi(false).GetRowsAsync(Guid.NewGuid().ToString(),
+            EnumWorksheet.WorksheetDaily, 1, 2, [],null, 10, now, CancellationToken.None);
+
+        result.Should().NotBeNull();
+
+        var query = HttpUtility.ParseQueryString(endpointString.Split('?')[1]);
+        query.Count.Should().Be(5);
+        query["requestId"].Should().NotBeNull();
+        query["startRow"].Should().Be("1");
+        query["endRow"].Should().Be("2");
+        query["maxCellDataIncluded"].Should().Be("10");
+        query["viewId"].Should().BeNull();
+        query["columns"].Should().BeNull();
+        query["changedSince"].Should().Be(now);
+
+        Mock.Get(_apiHelper).Verify(x => x.BuildRequestAndSendAsync(HttpMethod.Get, endpointString, CancellationToken.None, null, false), Times.Once);
+    }
 }
