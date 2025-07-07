@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version 18.2.0 - 2025-06-27
+## Version 18.2.0 - 2025-07-07
 ### Added
 - New SpreadsheetApi.GetRowsAsync overload to support changedSince
 
