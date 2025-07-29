@@ -161,7 +161,19 @@ namespace ONE.ClientSDK.Enterprise.Twin
 			return null;
 		}
 
-		public async Task<bool> MoveAsync(string twinRefId, string parentRefId, CancellationToken cancellation = default)
+        public async Task<List<DigitalTwin>> UpdateManyAsync(IEnumerable<DigitalTwin> digitalTwins, CancellationToken cancellation = default)
+        {
+            var endpoint = $"{EndpointRoot}/DigitalTwin/update?requestId={Guid.NewGuid()}";
+
+            var twins = new DigitalTwins();
+            twins.Items.AddRange(digitalTwins);
+
+            var apiResponse = await ExecuteRequest("UpdateManyAsync", new HttpMethod("PATCH"), endpoint, cancellation, twins).ConfigureAwait(_continueOnCapturedContext);
+
+            return apiResponse?.Content?.DigitalTwins?.Items.ToList();
+        }
+
+        public async Task<bool> MoveAsync(string twinRefId, string parentRefId, CancellationToken cancellation = default)
 		{
 			var endpoint = $"{EndpointRoot}/DigitalTwin/twinRef/{twinRefId}/parentRef/{parentRefId}?requestId={Guid.NewGuid()}";
 
