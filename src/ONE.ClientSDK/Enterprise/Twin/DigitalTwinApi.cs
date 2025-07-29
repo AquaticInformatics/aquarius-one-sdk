@@ -165,10 +165,7 @@ namespace ONE.ClientSDK.Enterprise.Twin
         {
             var endpoint = $"{EndpointRoot}/DigitalTwin/update?requestId={Guid.NewGuid()}";
 
-            var twins = new DigitalTwins();
-            twins.Items.AddRange(digitalTwins);
-
-            var apiResponse = await ExecuteRequest("UpdateManyAsync", new HttpMethod("PATCH"), endpoint, cancellation, twins).ConfigureAwait(_continueOnCapturedContext);
+            var apiResponse = await ExecuteRequest("UpdateManyAsync", new HttpMethod("PATCH"), endpoint, cancellation, digitalTwins).ConfigureAwait(_continueOnCapturedContext);
 
             return apiResponse?.Content?.DigitalTwins?.Items.ToList();
         }
