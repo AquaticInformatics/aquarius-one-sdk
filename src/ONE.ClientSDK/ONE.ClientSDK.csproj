@@ -5,7 +5,7 @@
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
 	  <VersionPrefix>18.3.0</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
-	  <VersionSuffix>AQI-9602</VersionSuffix>
+	  <VersionSuffix></VersionSuffix>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<Authors>Aquatic Informatics</Authors>
 	<Company>Aquatic Informatics</Company>
