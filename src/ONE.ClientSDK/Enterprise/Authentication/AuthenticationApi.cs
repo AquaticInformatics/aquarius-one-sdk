@@ -5,6 +5,7 @@ using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
@@ -155,64 +156,85 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 
 		public async Task<bool> LoginAsync(string userName = null, string password = null)
 		{
-			if (userName == null)
-				userName = UserName;
-			if (password == null)
-				password = Password;
+            try
+            {
+                // Temporary start. For troubleshooting login issue. Do not commit to code base.
+                LogRequestData(null, 0, userName, password);
+                // Temporary end
 
-			if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
-				return false;
+                if (userName == null)
+                    userName = UserName;
+                if (password == null)
+                    password = Password;
 
-			var watch = System.Diagnostics.Stopwatch.StartNew();
-			
-			var body = new Dictionary<string, string>
-			{
-				{ "client_id", "VSTestClient" },
-				{ "client_secret", "0CCBB786-9412-4088-BC16-78D3A10158B7" },
-				{ "grant_type", "password" },
-				{ "scope", "FFAccessAPI openid" },
-				{ "username", userName },
-				{ "password", password }
-			};
+                if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
+                    return false;
 
-			using (var request = new HttpRequestMessage(HttpMethod.Post, "/connect/token"))
-			{
-				request.Content = new FormUrlEncodedContent(body);
-				request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
+                var watch = System.Diagnostics.Stopwatch.StartNew();
 
-				using (var respContent = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
-				{
-					watch.Stop();
-					
-					var json = await respContent.Content.ReadAsStringAsync();
-					if (json.Length > 0)
-						Token = JsonConvert.DeserializeObject<Token>(json, JsonExtensions.IgnoreNullSerializerSettings);
+                var body = new Dictionary<string, string>
+            {
+                { "client_id", "VSTestClient" },
+                { "client_secret", "0CCBB786-9412-4088-BC16-78D3A10158B7" },
+                { "grant_type", "password" },
+                { "scope", "FFAccessAPI openid" },
+                { "username", userName },
+                { "password", password }
+            };
 
-					var message = "LoginResourceOwnerAsync failure";
-					var eventLevel = EnumOneLogLevel.OneLogLevelWarn;
-					
-					if (IsAuthenticated)
-					{
-						message = "LoginResourceOwnerAsync success";
-						eventLevel = EnumOneLogLevel.OneLogLevelTrace;
-						HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
-						HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
-						if (_baseHttpClient != null)
-							_baseHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
-						UserName = userName;
-						Password = password;
-					}
+                using (var request = new HttpRequestMessage(HttpMethod.Post, "/connect/token"))
+                {
+                    request.Content = new FormUrlEncodedContent(body);
+                    request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
-					Event(this,
-						new ClientApiLoggerEventArgs
-						{
-							EventLevel = eventLevel, HttpStatusCode = respContent.StatusCode,
-							ElapsedMs = watch.ElapsedMilliseconds, Module = "AuthenticationApi", Message = message
-						});
-				}
-			}
+                    using (var respContent = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
+                    {
+                        watch.Stop();
 
-			return IsAuthenticated;
+                        // Temporary start. For troubleshooting login issue. Do not commit to code base.
+                        LogRequestData(respContent, watch.ElapsedMilliseconds, userName, password);
+                        // Temporary end
+
+                        var json = await respContent.Content.ReadAsStringAsync();
+                        if (json.Length > 0)
+                            Token = JsonConvert.DeserializeObject<Token>(json, JsonExtensions.IgnoreNullSerializerSettings);
+
+                        var message = "LoginResourceOwnerAsync failure";
+                        var eventLevel = EnumOneLogLevel.OneLogLevelWarn;
+
+                        if (IsAuthenticated)
+                        {
+                            message = "LoginResourceOwnerAsync success";
+                            eventLevel = EnumOneLogLevel.OneLogLevelTrace;
+                            HttpJsonClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
+                            HttpProtocolBufferClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
+                            if (_baseHttpClient != null)
+                                _baseHttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
+                            UserName = userName;
+                            Password = password;
+                        }
+
+                        Event(this,
+                            new ClientApiLoggerEventArgs
+                            {
+                                EventLevel = eventLevel,
+                                HttpStatusCode = respContent.StatusCode,
+                                ElapsedMs = watch.ElapsedMilliseconds,
+                                Module = "AuthenticationApi",
+                                Message = message
+                            });
+                    }
+                }
+
+                return IsAuthenticated;
+            }
+            catch (Exception ex)
+            {
+                // Temporary start. For troubleshooting login issue. Do not commit to code base.
+                LogRequestData(null, 0, userName, password, ex);
+                // Temporary end
+                return false;
+            }
 		}
 
 		public async Task<string> GetUserInfoAsync()
@@ -303,5 +325,47 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 
 			return client;
 		}
-	}
+
+        // Temporary method for troubleshooting login issues, should not be committed to code base
+        private void LogRequestData(HttpResponseMessage response, long elapsedMs,
+            string userName, string password, Exception ex = null)
+        {
+            try
+            {
+                var status = response == null 
+                    ? "INFO" 
+                    : response.IsSuccessStatusCode ? "Success" : "Error";
+
+                var filename = $"AUTH {status} - {DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.json";
+                var dir = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location)?.FullName ??
+                          throw new Exception("Unable to get directory for saving local log files");
+
+                dir = Path.Combine(dir, $"Logs\\{DateTime.Now:yyyy-MM-dd}");
+
+                if (!Directory.Exists(dir))
+                    Directory.CreateDirectory(dir);
+
+                var logFile = Path.Combine(dir, filename);
+
+                //serialize
+                dynamic content = new JObject();
+                content.ElapsedMs = elapsedMs;
+				content.UserName = userName;
+				content.Password = password;
+                content.Client = (JObject)JToken.FromObject(HttpAuthClient);
+				if (response != null)
+                    content.Response = (JObject)JToken.FromObject(response);
+				if (ex != null)
+					content.Exception = (JObject)JToken.FromObject(ex);
+
+                File.WriteAllText(logFile, content.ToString());
+
+                Event(this, new ClientApiLoggerEventArgs { File = logFile, EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "AuthenticationApi", Message = "LogRequestData Succeeded" });
+            }
+            catch (Exception e)
+            {
+                Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "AuthenticationApi", Message = $"LogRequestData Failed - {e.Message}" });
+            }
+        }
+    }
 }
