@@ -5,6 +5,7 @@ using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -337,8 +338,9 @@ namespace ONE.ClientSDK.Enterprise.Authentication
                     : response.IsSuccessStatusCode ? "Success" : "Error";
 
                 var filename = $"AUTH {status} - {DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.json";
-                var dir = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location)?.FullName ??
-                          throw new Exception("Unable to get directory for saving local log files");
+                var dir = AppContext.BaseDirectory;
+                if (string.IsNullOrEmpty(dir))
+                    dir = Path.Combine(Path.GetTempPath(), "WIMSSync");
 
                 dir = Path.Combine(dir, $"Logs\\{DateTime.Now:yyyy-MM-dd}");
 
