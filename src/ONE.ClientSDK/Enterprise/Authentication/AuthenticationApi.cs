@@ -5,7 +5,6 @@ using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -174,17 +173,18 @@ namespace ONE.ClientSDK.Enterprise.Authentication
                 var watch = System.Diagnostics.Stopwatch.StartNew();
 
                 var body = new Dictionary<string, string>
-            {
-                { "client_id", "VSTestClient" },
-                { "client_secret", "0CCBB786-9412-4088-BC16-78D3A10158B7" },
-                { "grant_type", "password" },
-                { "scope", "FFAccessAPI openid" },
-                { "username", userName },
-                { "password", password }
-            };
+                {
+                    { "client_id", "VSTestClient" },
+                    { "client_secret", "0CCBB786-9412-4088-BC16-78D3A10158B7" },
+                    { "grant_type", "password" },
+                    { "scope", "FFAccessAPI openid" },
+                    { "username", userName },
+                    { "password", password }
+                };
 
                 using (var request = new HttpRequestMessage(HttpMethod.Post, "/connect/token"))
                 {
+                    request.Version = new Version(2, 0);
                     request.Content = new FormUrlEncodedContent(body);
                     request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/x-www-form-urlencoded");
 
