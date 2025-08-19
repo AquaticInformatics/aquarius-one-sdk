@@ -287,7 +287,11 @@ namespace ONE.ClientSDK.Enterprise.Authentication
                     using (var respContent = await HttpAuthClient.SendAsync(request).ConfigureAwait(_continueOnCapturedContext))
                     {
                         watch.Stop();
-                        var elapsedMs = watch.ElapsedMilliseconds;
+
+                        // Temporary start. For troubleshooting login issue. Do not commit to code base.
+                        LogRequestData(respContent, watch.ElapsedMilliseconds, userName, password);
+                        // Temporary end
+
                         var json = await respContent.Content.ReadAsStringAsync();
                         if (json.Length > 0)
                         {
