@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 18.3.1 - 2025-09-25
+- Added AuthenticationApi.Referrer property
+- Updated AuthenticationApi.GetHttpClient() to set HttpClient referrer header
+
 ## Version 18.3.0 - 2025-07-29
 - Added DigitalTwinApi.UpdateManyAsync() to update many digital twins in a single API call
 

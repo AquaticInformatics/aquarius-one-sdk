@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.ClientSDK.Enums;
 using ONE.ClientSDK.Utilities;
@@ -38,6 +38,7 @@ namespace ONE.ClientSDK.Enterprise.Authentication
         public event EventHandler TokenExpired = delegate { };
         public string AuthenticationUrl { get => _environment?.AuthenticationUri?.AbsoluteUri; }
         public TimeSpan HttpClientTimeout = TimeSpan.FromMinutes(10);
+		public Uri Referrer { get; set; }
 
         private HttpClient HttpAuthClient
         {
@@ -163,6 +164,9 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 
             if (IsAuthenticated)
                 client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
+
+            if (Referrer != null)
+                client.DefaultRequestHeaders.Referrer = Referrer;
 
             return client;
         }
