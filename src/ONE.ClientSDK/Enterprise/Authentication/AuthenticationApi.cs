@@ -28,6 +28,8 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 		public Token Token { get; set; }
 		public event EventHandler TokenExpired = delegate { };
+		public Uri Referrer { get; set; }
+
 		public string AuthenticationUrl => _environment?.AuthenticationUri?.AbsoluteUri;
 		public TimeSpan HttpClientTimeout = TimeSpan.FromMinutes(10);
 
@@ -301,7 +303,10 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 			if (IsAuthenticated)
 				client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", Token.access_token);
 
-			return client;
+			if (Referrer != null)
+				client.DefaultRequestHeaders.Referrer = Referrer;
+
+            return client;
 		}
 	}
 }
