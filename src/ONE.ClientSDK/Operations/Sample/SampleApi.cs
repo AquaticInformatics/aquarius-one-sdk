@@ -95,6 +95,21 @@ namespace ONE.ClientSDK.Operations.Sample
 			return await _activityApi.UpdateActivitiesAsync(proto, updatePropertyBag, cancellation);
 		}
 
+        /// <summary>
+        /// Creates one sample activity.
+        /// </summary>
+        /// <param name="operationId">ID of the operation to create sample activities for.</param>
+        /// <param name="endDate">The last day to create sample activities for.</param>
+        /// <param name="propertyBag">Property bag for a sample activity.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Boolean value indicating whether the sample activity was successfully created.</returns>
+        public async Task<bool> CreateOneActivityAsync(string operationId, string endDate, ActivityCollectionPropertyBag propertyBag, CancellationToken cancellation = default)
+        {
+            var endpoint = $"/operations/sample/v1/{operationId}/{endDate}/activity";
+            var apiResponse = await ExecuteRequest("CreateOneActivityAsync", HttpMethod.Post, endpoint, cancellation, propertyBag).ConfigureAwait(_continueOnCapturedContext);
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+        }
+
 		/// <summary>
 		/// Creates an analyte
 		/// </summary>
