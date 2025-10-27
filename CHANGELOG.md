@@ -1,7 +1,7 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
-## Version 18.3.2 - 2025-10-17
+## Version 18.4.0 - 2025-10-27
 - Added SampleApi.CreateOneActivityAsync to create one-off activities not associated with a schedule
 
 ## Version 18.3.1 - 2025-09-25
