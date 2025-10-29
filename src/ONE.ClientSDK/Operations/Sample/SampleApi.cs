@@ -95,6 +95,21 @@ namespace ONE.ClientSDK.Operations.Sample
 			return await _activityApi.UpdateActivitiesAsync(proto, updatePropertyBag, cancellation);
 		}
 
+        /// <summary>
+        /// Creates one sample activity.
+        /// </summary>
+        /// <param name="operationId">ID of the operation to create sample activities for.</param>
+        /// <param name="endDate">The last day to create sample activities for.</param>
+        /// <param name="propertyBag">Property bag for a sample activity.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Boolean value indicating whether the sample activity was successfully created.</returns>
+        public async Task<bool> CreateOneActivityAsync(string operationId, DateTime endDate, ActivityCollectionPropertyBag propertyBag, CancellationToken cancellation = default)
+        {
+            var endpoint = $"/operations/sample/v1/{operationId}/{endDate:O}/activity";
+            var apiResponse = await ExecuteRequest("CreateOneActivityAsync", HttpMethod.Post, endpoint, cancellation, propertyBag, true).ConfigureAwait(_continueOnCapturedContext);
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+        }
+
 		/// <summary>
 		/// Creates an analyte
 		/// </summary>
@@ -347,13 +362,13 @@ namespace ONE.ClientSDK.Operations.Sample
 			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
-		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
+		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null, bool useCamelCaseSerialization = false)
 		{
 			try
 			{
 				var watch = System.Diagnostics.Stopwatch.StartNew();
 
-				var apiResponse = await _apiHelper.BuildRequestAndSendAsync(httpMethod, endpoint, cancellation, content).ConfigureAwait(_continueOnCapturedContext);
+				var apiResponse = await _apiHelper.BuildRequestAndSendAsync(httpMethod, endpoint, cancellation, content, useCamelCaseSerialization).ConfigureAwait(_continueOnCapturedContext);
 
 				watch.Stop();
 

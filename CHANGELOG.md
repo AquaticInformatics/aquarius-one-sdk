@@ -1,8 +1,11 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 18.4.0 - 2025-10-27
+- Added SampleApi.CreateOneActivityAsync to create one-off activities not associated with a schedule
+
 ## Version 18.3.0 - 2025-07-29
-- Added DigitalTwinApi.UpdateManyAsync() to update many digital twins in a single API call
+- Added DigitalTwinApi.UpdateManyAsync to update many digital twins in a single API call
 
 ## Version 18.2.0 - 2025-07-07
 ### Added
