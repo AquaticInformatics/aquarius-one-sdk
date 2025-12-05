@@ -180,6 +180,16 @@ namespace ONE.ClientSDK.Common.Notifications
 			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
+		public async Task<bool> RegisterUserDeviceAsync(int platform, int deliveryType, int messageType, string deviceToken, int hubId, string installationId, CancellationToken cancellation = default)
+		{
+			var endpoint = $"common/notification/v1/NotificationsDirect/RegisterUserDevice";
+			endpoint += $"?platform={platform}&deliveryType={deliveryType}&messageType={messageType}&deviceToken={deviceToken}&hubId={hubId}&installationId={installationId}";
+
+			var apiResponse = await ExecuteRequest("RegisterUserDeviceAsync", HttpMethod.Post, endpoint, cancellation);
+
+			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+		}
+
 		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
 		{
 			try
