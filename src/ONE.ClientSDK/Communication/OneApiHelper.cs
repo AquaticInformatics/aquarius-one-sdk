@@ -17,10 +17,11 @@ namespace ONE.ClientSDK.Communication
 {
 	public class OneApiHelper : IOneApiHelper
 	{
-		private readonly AuthenticationApi _authentication;
+        private const string ModuleName = "OneApiHelper";
+        private readonly AuthenticationApi _authentication;
 		private readonly bool _continueOnCapturedContext;
 		private readonly bool _useProtobufModels;
-		private readonly bool _logRestfulCalls;
+		private bool _logRestfulCalls;
         
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
@@ -136,13 +137,20 @@ namespace ONE.ClientSDK.Communication
 
 				var filename = $"{response.RequestMessage.Method} {status} - {DateTime.Now:yyyy-MM-dd-HH-mm-ss-fff}.json";
 				var dir = Directory.GetParent(System.Reflection.Assembly.GetExecutingAssembly().Location)?.FullName ??
-				          throw new Exception("Unable to get directory for saving local log files");
+						  throw new Exception("Unable to get directory for saving local log files");
 
 				dir = Path.Combine(dir, $"Logs\\{DateTime.Now:yyyy-MM-dd}");
-				
-				if (!Directory.Exists(dir))
+
+                if (string.IsNullOrEmpty(dir))
+                {
+                    Event(this, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = "Unable to determine directory for local log file - temporarily disabling local file logging" });
+                    _logRestfulCalls = false;
+					return;
+                }
+
+                if (!Directory.Exists(dir))
 					Directory.CreateDirectory(dir);
-				
+
 				var logFile = Path.Combine(dir, filename);
 
 				//serialize
@@ -151,14 +159,22 @@ namespace ONE.ClientSDK.Communication
 				content.Client = (JObject)JToken.FromObject(_useProtobufModels ? _authentication.HttpProtocolBufferClient : _authentication.HttpJsonClient);
 				content.Response = (JObject)JToken.FromObject(response);
 
+				if (string.IsNullOrEmpty(logFile))
+				{
+					Event(this, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = "Unable to determine filename for local log file - temporarily disabling local file logging" });
+					_logRestfulCalls = false;
+					return;
+				}
+
 				File.WriteAllText(logFile, content.ToString());
 
-				Event(this, new ClientApiLoggerEventArgs { File = logFile, EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = "OneApiHelper", Message = "SaveRestCallData Succeeded" });
-			}
+                Event(this, new ClientApiLoggerEventArgs { File = logFile, EventLevel = EnumOneLogLevel.OneLogLevelTrace, Module = ModuleName, Message = "SaveRestCallData Succeeded" });
+            }
 			catch (Exception e)
 			{
-				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = "OneApiHelper", Message = $"SaveRestCallData Failed - {e.Message}" });
-			}
+				Event(e, new ClientApiLoggerEventArgs { EventLevel = EnumOneLogLevel.OneLogLevelError, Module = ModuleName, Message = $"Failed to save local log file - temporarily disabling local file logging - {e.Message}" });
+				_logRestfulCalls = false;
+            }
 		}
-	}
+    }
 }
