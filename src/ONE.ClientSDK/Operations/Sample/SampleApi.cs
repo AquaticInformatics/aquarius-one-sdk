@@ -102,12 +102,12 @@ namespace ONE.ClientSDK.Operations.Sample
         /// <param name="endDate">The last day to create sample activities for.</param>
         /// <param name="propertyBag">Property bag for a sample activity.</param>
         /// <param name="cancellation"></param>
-        /// <returns>KeyValues collection that includes the id of the sample activity that was created.</returns>
+        /// <returns>KeyValues collection that includes details about the created sample activity.</returns>
         public async Task<List<KeyValue>> CreateOneActivityAsync(string operationId, DateTime endDate, ActivityCollectionPropertyBag propertyBag, CancellationToken cancellation = default)
         {
             var endpoint = $"/operations/sample/v1/{operationId}/{endDate:O}/activity";
             var apiResponse = await ExecuteRequest("CreateOneActivityAsync", HttpMethod.Post, endpoint, cancellation, propertyBag, true).ConfigureAwait(_continueOnCapturedContext);
-            return apiResponse?.Content?.KeyValues?.Items.ToList();
+            return apiResponse?.Content?.KeyValues?.Items.ToList() ?? new List<KeyValue>();
         }
 
         /// <summary>
