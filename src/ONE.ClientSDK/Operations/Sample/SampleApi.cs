@@ -96,27 +96,27 @@ namespace ONE.ClientSDK.Operations.Sample
 		}
 
         /// <summary>
-        /// Creates one sample activity.
+        /// Creates one sample activity and returns details about the created activity.
         /// </summary>
         /// <param name="operationId">ID of the operation to create sample activities for.</param>
         /// <param name="endDate">The last day to create sample activities for.</param>
         /// <param name="propertyBag">Property bag for a sample activity.</param>
         /// <param name="cancellation"></param>
-        /// <returns>Boolean value indicating whether the sample activity was successfully created.</returns>
-        public async Task<bool> CreateOneActivityAsync(string operationId, DateTime endDate, ActivityCollectionPropertyBag propertyBag, CancellationToken cancellation = default)
+        /// <returns>KeyValues collection that includes details about the created sample activity.</returns>
+        public async Task<List<KeyValue>> CreateOneActivityAsync(string operationId, DateTime endDate, ActivityCollectionPropertyBag propertyBag, CancellationToken cancellation = default)
         {
             var endpoint = $"/operations/sample/v1/{operationId}/{endDate:O}/activity";
             var apiResponse = await ExecuteRequest("CreateOneActivityAsync", HttpMethod.Post, endpoint, cancellation, propertyBag, true).ConfigureAwait(_continueOnCapturedContext);
-			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
+            return apiResponse?.Content?.KeyValues?.Items.ToList() ?? new List<KeyValue>();
         }
 
-		/// <summary>
-		/// Creates an analyte
-		/// </summary>
-		/// <param name="analyte">Analyte to be created</param>
-		/// <param name="cancellation"></param>
-		/// <returns>Boolean value indicating whether the analyte was successfully created</returns>
-		public async Task<bool> CreateAnalyteAsync(Analyte analyte, CancellationToken cancellation = default)
+        /// <summary>
+        /// Creates an analyte
+        /// </summary>
+        /// <param name="analyte">Analyte to be created</param>
+        /// <param name="cancellation"></param>
+        /// <returns>Boolean value indicating whether the analyte was successfully created</returns>
+        public async Task<bool> CreateAnalyteAsync(Analyte analyte, CancellationToken cancellation = default)
 		{
 			var endpoint = $"/operations/sample/v1/analyte?requestId={Guid.NewGuid()}";
 
