@@ -1,6 +1,9 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 19.0.0 - 2025-01-20
+- Updated SampleApi.CreateOneActivityAsync to return key-value data instead of just a success flag
+
 ## Version 18.4.1 - 2025-12-17
 - Disable local file logging on failure to write log file
 
