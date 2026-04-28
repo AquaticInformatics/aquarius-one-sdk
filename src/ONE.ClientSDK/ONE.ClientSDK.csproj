@@ -3,9 +3,9 @@
   <PropertyGroup>
 	<TargetFramework>netstandard2.0</TargetFramework>
 	  <!--For Release packages update the VersionPrefix and remove any VersionSuffix-->
-	  <VersionPrefix>19.0.0</VersionPrefix>
+	  <VersionPrefix>19.0.1</VersionPrefix>
 	  <!--For Pre-release packages update the VersionSuffix -->
-	  <VersionSuffix></VersionSuffix>
+	  <VersionSuffix>AQI-10782</VersionSuffix>
 	<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	<Authors>Aquatic Informatics</Authors>
 	<Company>Aquatic Informatics</Company>

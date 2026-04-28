@@ -304,13 +304,22 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
-		/// <summary>
-		/// Exports an operation's structure. (not data)
-		/// </summary>
-		/// <param name="operationTwinReferenceId">The identifier of the operation to export.</param>
-		/// <param name="cancellation"></param>
-		/// <returns>An <see cref="OperationExport"/> object.</returns>
-		public async Task<OperationExport> ExportOperationAsync(string operationTwinReferenceId, CancellationToken cancellation = default)
+        public async Task<KeyValues> GetOperationComputationBindingExpressions(string operationTwinReferenceId, CancellationToken cancellation = default)
+        {
+            var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/computation/expressions?requestId={Guid.NewGuid()}";
+
+            var apiResponse = await ExecuteSpreadSheetRequest("GetOperationComputationBindingExpressions", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+
+			return apiResponse.Content.KeyValues;
+        }
+
+        /// <summary>
+        /// Exports an operation's structure. (not data)
+        /// </summary>
+        /// <param name="operationTwinReferenceId">The identifier of the operation to export.</param>
+        /// <param name="cancellation"></param>
+        /// <returns>An <see cref="OperationExport"/> object.</returns>
+        public async Task<OperationExport> ExportOperationAsync(string operationTwinReferenceId, CancellationToken cancellation = default)
 		{
 			var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/plant/export?requestId={Guid.NewGuid()}";
 
