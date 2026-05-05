@@ -310,7 +310,7 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 
             var apiResponse = await ExecuteSpreadSheetRequest("GetOperationComputationBindingExpressions", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-			return apiResponse.Content.KeyValues;
+			return apiResponse?.Content?.KeyValues;
         }
 
         /// <summary>
