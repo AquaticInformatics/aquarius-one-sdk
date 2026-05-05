@@ -304,13 +304,18 @@ namespace ONE.ClientSDK.Operations.Spreadsheet
 			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
 
-        public async Task<KeyValues> GetOperationComputationBindingExpressions(string operationTwinReferenceId, CancellationToken cancellation = default)
+        public Task<KeyValues> GetOperationComputationBindingExpressions(string operationTwinReferenceId, CancellationToken cancellation = default)
+        {
+            return GetOperationComputationBindingExpressionsAsync(operationTwinReferenceId, cancellation);
+        }
+
+        public async Task<KeyValues> GetOperationComputationBindingExpressionsAsync(string operationTwinReferenceId, CancellationToken cancellation = default)
         {
             var endpoint = $"operations/spreadsheet/v1/{operationTwinReferenceId}/computation/expressions?requestId={Guid.NewGuid()}";
 
-            var apiResponse = await ExecuteSpreadSheetRequest("GetOperationComputationBindingExpressions", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
+            var apiResponse = await ExecuteSpreadSheetRequest("GetOperationComputationBindingExpressionsAsync", HttpMethod.Get, endpoint, cancellation).ConfigureAwait(_continueOnCapturedContext);
 
-			return apiResponse.Content.KeyValues;
+			return apiResponse?.Content?.KeyValues;
         }
 
         /// <summary>
