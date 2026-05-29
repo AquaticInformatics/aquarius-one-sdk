@@ -1,6 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 19.1.1 - 2026-05-29
+### Updated
+- Updated CSharp dependency
+
+## Version 19.1.0 - 2026-05-13
+### Added
+- Added computation binding expressions endpoint to spreadsheets api to use in wims sync
+
 ## Version 19.0.0 - 2025-01-20
 - Updated SampleApi.CreateOneActivityAsync to return key-value data instead of just a success flag
 
