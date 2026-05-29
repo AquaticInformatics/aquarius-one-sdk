@@ -45,8 +45,8 @@ namespace ONE.Test.ConsoleApp.Commands
 							DateTimeUTC = DateTime.Now.ToOneDateTime(),
 							PropertyBag = "",
 							Value = 5,
-							StringValue = "<10"
-
+							StringValue = "<10",
+                            DataCategory = EnumHistorianDataCategory.HistorianDataCategoryMeasurementData
 						});
 						var result = await clientSdk.Data.SaveDataAsync(Guid, historianDatas);
 						if (result)
