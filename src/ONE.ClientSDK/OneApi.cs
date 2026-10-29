@@ -49,7 +49,8 @@ namespace ONE.ClientSDK
 				if (_core != null)
 					return _core;
 
-				_core = new CoreApi(ApiHelper, ContinueOnCapturedContext, ThrowApiErrors);
+				// Authentication is the instance ApiHelper wraps, which PostInsightsAsync reads its token from.
+				_core = new CoreApi(ApiHelper, Authentication, ContinueOnCapturedContext, ThrowApiErrors);
 				_core.Event += Logger.Logger_Event;
 
 				// Clear dependent backing fields

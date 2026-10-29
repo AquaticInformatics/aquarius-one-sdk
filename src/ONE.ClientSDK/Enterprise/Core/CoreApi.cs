@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using ONE.ClientSDK.Communication;
+using ONE.ClientSDK.Enterprise.Authentication;
 using ONE.ClientSDK.Enums;
 using ONE.ClientSDK.Utilities;
 using ONE.Models.CSharp;
@@ -9,6 +10,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 // ReSharper disable UnusedMember.Global
@@ -21,6 +23,12 @@ namespace ONE.ClientSDK.Enterprise.Core
 		private readonly bool _continueOnCapturedContext;
 		private readonly bool _throwApiErrors;
 
+		// Only PostInsightsAsync uses these. A CoreApi built with the public constructor has no AuthenticationApi.
+		private readonly AuthenticationApi _authentication;
+		private readonly HttpMessageHandler _insightsHandler;
+		private readonly object _insightsClientLock = new object();
+		private HttpClient _insightsClient;
+
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
 		public CoreApi(IOneApiHelper apiHelper, bool continueOnCapturedContext, bool throwApiErrors)
@@ -29,7 +37,15 @@ namespace ONE.ClientSDK.Enterprise.Core
 			_continueOnCapturedContext = continueOnCapturedContext;
 			_throwApiErrors = throwApiErrors;
 		}
-		
+
+		// OneApi.Core uses this one. Tests pass a handler to record the insights requests.
+		internal CoreApi(IOneApiHelper apiHelper, AuthenticationApi authentication, bool continueOnCapturedContext, bool throwApiErrors,
+			HttpMessageHandler insightsHandler = null) : this(apiHelper, continueOnCapturedContext, throwApiErrors)
+		{
+			_authentication = authentication;
+			_insightsHandler = insightsHandler;
+		}
+
 		// **************************** User Methods                *********************************
 		public async Task<User> CreateUserAsync(string firstName, string lastName, string email, string tenantId, CancellationToken cancellation = default)
 		{
@@ -455,6 +471,126 @@ namespace ONE.ClientSDK.Enterprise.Core
 
 			return apiResponse != null && apiResponse.StatusCode.IsSuccessStatusCode();
 		}
+
+		// **************************** Insights Methods            *********************************
+		private const string InsightsPath = "enterprise/core/v1/Insights";
+
+		// Set by this method, never by the caller, so exactly one Authorization header is sent and the body type is fixed.
+		private static readonly HashSet<string> InsightsReservedHeaders = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+		{
+			"Authorization", "Content-Type", "Content-Length", "Content-Encoding", "Accept", "Host"
+		};
+
+		// Posts one JSON body to enterprise/core/v1/Insights with the current token. The body is opaque to the SDK.
+		// Returns an outcome for every HTTP status. Throws only for transport failures (including a timeout, as TimeoutException),
+		// a cancelled call, a null body, a non-positive timeout, and when the CoreApi was built without an AuthenticationApi.
+		// It reads the token as it is: it never logs in, never raises TokenExpired and never uses the shared base client, so it
+		// sends no request when the token is missing or inside minimumTokenLifetime, and never follows a redirect.
+		// Headers named Authorization, Content-Type, Content-Length, Content-Encoding, Accept or Host are ignored, as are invalid ones.
+		public async Task<InsightsPostResult> PostInsightsAsync(byte[] body, IReadOnlyDictionary<string, string> headers, TimeSpan minimumTokenLifetime,
+			TimeSpan timeout, CancellationToken cancellation = default)
+		{
+			if (_authentication == null)
+				throw new InvalidOperationException("This CoreApi was built without an AuthenticationApi, so it cannot post insights.");
+			if (body == null)
+				throw new ArgumentNullException(nameof(body));
+			if (timeout <= TimeSpan.Zero)
+				throw new ArgumentOutOfRangeException(nameof(timeout), "The timeout must be positive.");
+
+			// Read the token once, so the checks and the header see the same value.
+			var token = _authentication.Token;
+			var accessToken = token?.access_token;
+			if (string.IsNullOrEmpty(accessToken) || token.expires < DateTime.Now + (minimumTokenLifetime > TimeSpan.Zero ? minimumTokenLifetime : TimeSpan.Zero))
+				return new InsightsPostResult(InsightsPostOutcome.NotAuthenticated);
+
+			var baseAddress = _authentication.GetBaseAddress(InsightsPath);
+			if (baseAddress == null)
+				throw new InvalidOperationException("The environment is not set, so there is no host to post insights to.");
+
+			var uri = new Uri(baseAddress, $"{InsightsPath}?requestId={Guid.NewGuid()}");
+			if (uri.Scheme != Uri.UriSchemeHttps && !uri.IsLoopback)
+				throw new InvalidOperationException("Insights are only posted over https, or to a local host.");
+
+			using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
+			{
+				request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
+				AddInsightsHeaders(request, headers);
+				request.Content = new ByteArrayContent(body);
+				request.Content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+				using (var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellation))
+				{
+					timeoutSource.CancelAfter(timeout);
+
+					try
+					{
+						// The body of the response is never read.
+						using (var response = await GetInsightsClient()
+							       .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeoutSource.Token)
+							       .ConfigureAwait(_continueOnCapturedContext))
+							return new InsightsPostResult(GetInsightsOutcome(response.StatusCode), response.StatusCode);
+					}
+					catch (OperationCanceledException) when (!cancellation.IsCancellationRequested)
+					{
+						throw new TimeoutException($"The insights post did not finish within {timeout}.");
+					}
+				}
+			}
+		}
+
+		private static void AddInsightsHeaders(HttpRequestMessage request, IReadOnlyDictionary<string, string> headers)
+		{
+			if (headers == null)
+				return;
+
+			foreach (var header in headers)
+			{
+				if (string.IsNullOrWhiteSpace(header.Key) || InsightsReservedHeaders.Contains(header.Key))
+					continue;
+
+				try
+				{
+					request.Headers.Add(header.Key, header.Value);
+				}
+				catch (Exception e) when (e is FormatException || e is InvalidOperationException)
+				{
+					// Not a valid request header: skip it. The post does not depend on it.
+				}
+			}
+		}
+
+		private static InsightsPostOutcome GetInsightsOutcome(HttpStatusCode statusCode)
+		{
+			var code = (int)statusCode;
+
+			if (code >= 200 && code < 300)
+				return InsightsPostOutcome.Accepted;
+			if (code >= 300 && code < 400)
+				return InsightsPostOutcome.RedirectRefused;
+			if (code == 401)
+				return InsightsPostOutcome.Unauthorized;
+			if (code == 403)
+				return InsightsPostOutcome.Forbidden;
+			if (code == 429)
+				return InsightsPostOutcome.Throttled;
+			if (code >= 500)
+				return InsightsPostOutcome.ServerError;
+
+			return InsightsPostOutcome.Rejected;
+		}
+
+		// Its own client, with no base address and no default headers, so it never carries a token the shared clients hold
+		// (finding F-3: Logout() does not clear the shared base client's header). Its timer is the linked source in PostInsightsAsync.
+		private HttpClient GetInsightsClient()
+		{
+			lock (_insightsClientLock)
+			{
+				return _insightsClient ?? (_insightsClient = new HttpClient(_insightsHandler ?? CreateInsightsHandler()) { Timeout = Timeout.InfiniteTimeSpan });
+			}
+		}
+
+		// A redirect is not followed, because the token must not go to a host the Core API did not name.
+		internal static HttpMessageHandler CreateInsightsHandler() => new HttpClientHandler { AllowAutoRedirect = false, UseCookies = false };
 
 		private async Task<ApiResponse> ExecuteRequest(string callingMethod, HttpMethod httpMethod, string endpoint, CancellationToken cancellation, object content = null)
 		{

@@ -281,6 +281,18 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 			HttpProtocolBufferClient.Timeout = HttpClientTimeout;
 		}
 
+		// The base address GetHttpClient gives its clients: the environment's base URI, or for Local the port mapped from the endpoint path.
+		// Null when there is no environment.
+		internal Uri GetBaseAddress(string endpointUrl = null)
+		{
+			if (_environment == null)
+				return null;
+
+			return _environment.PlatformEnvironmentEnum != EnumPlatformEnvironment.Local
+				? _environment.BaseUri
+				: new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
+		}
+
 		private HttpClient GetHttpClient(bool? acceptProtobuf, string endpointUrl = null)
 		{
 			var client = new HttpClient
@@ -288,10 +300,9 @@ namespace ONE.ClientSDK.Enterprise.Authentication
 				Timeout = HttpClientTimeout
 			};
 
-			if (_environment != null)
-				client.BaseAddress = _environment.PlatformEnvironmentEnum != EnumPlatformEnvironment.Local
-					? _environment.BaseUri
-					: new Uri($"{_environment.BaseUri.OriginalString.Replace(_environment.BaseUri.Port.ToString(), GetLocalHttpPort(endpointUrl).ToString())}");
+			var baseAddress = GetBaseAddress(endpointUrl);
+			if (baseAddress != null)
+				client.BaseAddress = baseAddress;
 
 			if (acceptProtobuf.HasValue)
 				client.DefaultRequestHeaders.Accept.Add(acceptProtobuf.Value

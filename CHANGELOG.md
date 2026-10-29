@@ -1,6 +1,10 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 19.2.0 - 2026-10-28
+### Added
+- Added CoreApi.PostInsightsAsync to post a JSON body to enterprise/core/v1/Insights with the current ONE token
+
 ## Version 19.1.1 - 2026-05-29
 ### Updated
 - Updated CSharp dependency
