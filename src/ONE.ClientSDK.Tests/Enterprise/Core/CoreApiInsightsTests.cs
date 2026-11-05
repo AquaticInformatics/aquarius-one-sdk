@@ -188,18 +188,6 @@ public class CoreApiInsightsTests
 	}
 
 	[Fact]
-	public async Task TheUri_ForLocal_UsesTheCorePort()
-	{
-		var handler = new RecordingHandler();
-		var (core, auth) = Create(handler, EnumPlatformEnvironment.Local);
-		SignIn(auth);
-
-		await core.PostInsightsAsync(Body, null!, Margin, Timeout);
-
-		handler.Requests.Single().Uri.GetLeftPart(UriPartial.Path).Should().Be("http://localhost:9100/enterprise/core/v1/Insights");
-	}
-
-	[Fact]
 	public async Task ACoreApiBuiltWithThePublicConstructor_Throws_AndSendsNothing()
 	{
 		var core = new CoreApi(_helper.Object, false, true);

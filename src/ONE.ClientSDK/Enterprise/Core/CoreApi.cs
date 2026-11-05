@@ -508,8 +508,8 @@ namespace ONE.ClientSDK.Enterprise.Core
 				throw new InvalidOperationException("The environment is not set, so there is no host to post insights to.");
 
 			var uri = new Uri(baseAddress, $"{InsightsPath}?requestId={Guid.NewGuid()}");
-			if (uri.Scheme != Uri.UriSchemeHttps && !uri.IsLoopback)
-				throw new InvalidOperationException("Insights are only posted over https, or to a local host.");
+			if (uri.Scheme != Uri.UriSchemeHttps)
+				throw new InvalidOperationException("Insights are only posted over https.");
 
 			using (var request = new HttpRequestMessage(HttpMethod.Post, uri))
 			{
