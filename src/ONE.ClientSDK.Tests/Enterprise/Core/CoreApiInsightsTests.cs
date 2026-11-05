@@ -396,6 +396,61 @@ public class CoreApiInsightsTests
 		result.Outcome.Should().Be(InsightsPostOutcome.NotAuthenticated);
 	}
 
+	[Fact]
+	public void OneApiCore_IsTheSameInstance_WhileNothingChanges()
+	{
+		var api = new OneApi(EnumPlatformEnvironment.AqiFeature);
+
+		api.Core.Should().BeSameAs(api.Core);
+	}
+
+	[Theory]
+	[InlineData(false)]
+	[InlineData(true)]
+	public void OneApiCore_IsRebuilt_WhenTheEnvironmentChanges(bool readAuthenticationFirst)
+	{
+		var api = new OneApi(EnumPlatformEnvironment.AqiFeature);
+		var before = api.Core;
+		var authenticationBefore = api.Authentication;
+
+		api.Environment = PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiStage);
+		if (readAuthenticationFirst)
+			api.Authentication.Should().NotBeSameAs(authenticationBefore);
+
+		api.Core.Should().NotBeSameAs(before);
+	}
+
+	[Fact]
+	public async Task OneApiCore_AfterAnEnvironmentChange_NeverSendsTheOldLogin()
+	{
+		// The .invalid hosts never resolve, so a request that should not happen fails the test instead of leaving the machine.
+		var api = new OneApi { Environment = new PlatformEnvironment { PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiFeature, BaseUri = new Uri("https://old.invalid/") } };
+		api.Authentication.SetToken("token-old", DateTime.Now.AddHours(1), "refresh");
+		var before = api.Core;
+
+		api.Environment = new PlatformEnvironment { PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiFeature, BaseUri = new Uri("https://new.invalid/") };
+
+		// The new AuthenticationApi holds no login. A Core still on the old one would post token-old to the old host.
+		var result = await api.Core.PostInsightsAsync(Body, null!, Margin, TimeSpan.FromMilliseconds(500));
+
+		result.Outcome.Should().Be(InsightsPostOutcome.NotAuthenticated);
+		api.Core.Should().NotBeSameAs(before);
+	}
+
+	[Fact]
+	public async Task OneApiCore_AfterAnEnvironmentChange_ReadsTheNewLoginAndTheNewHost()
+	{
+		var api = new OneApi { Environment = new PlatformEnvironment { PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiFeature, BaseUri = new Uri("https://old.invalid/") } };
+		_ = api.Core;
+
+		// An insecure host makes the post throw after the token check and before any request, so this needs no network.
+		api.Environment = new PlatformEnvironment { PlatformEnvironmentEnum = EnumPlatformEnvironment.AqiFeature, BaseUri = new Uri("http://new.invalid/") };
+		api.Authentication.SetToken("token-new", DateTime.Now.AddHours(1), "refresh");
+
+		// A Core still on the old AuthenticationApi would answer NotAuthenticated here, because the old one holds no login.
+		await api.Core.Invoking(c => c.PostInsightsAsync(Body, null!, Margin, Timeout)).Should().ThrowAsync<InvalidOperationException>();
+	}
+
 	[Theory]
 	[InlineData(EnumPlatformEnvironment.AqiFeature, "https://api-feature-us.aquaticinformatics.net/")]
 	[InlineData(EnumPlatformEnvironment.Local, "http://localhost:9100/")]
