@@ -386,6 +386,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				ResetApiHelper();
+               ResetDependentApiCaches();
 			}
 		}
 
@@ -431,6 +432,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				ResetApiHelper();
+               ResetDependentApiCaches();
 			}
 		}
 
@@ -441,6 +443,23 @@ namespace ONE.ClientSDK
 				helper.Retire();
 
 			_apiHelper = null;
+		}
+
+		private void ResetDependentApiCaches()
+		{
+			_core = null;
+			_configuration = null;
+			_logbook = null;
+			_library = null;
+			_schedule = null;
+			_activity = null;
+			_digitalTwin = null;
+			_notification = null;
+			_report = null;
+			_spreadsheet = null;
+			_data = null;
+			_sample = null;
+			_userHelper = null;
 		}
 
 		private IOneApiHelper ApiHelper
