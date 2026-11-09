@@ -1,4 +1,4 @@
-using Google.Protobuf;
+﻿using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.ClientSDK.Enterprise.Authentication;
@@ -138,7 +138,8 @@ namespace ONE.ClientSDK.Communication
 
 		// Posts one JSON body to enterprise/core/v1/Insights with the current token. The body is opaque to the SDK.
 		// Returns an outcome for every HTTP status. Throws only for transport failures (including a timeout, as TimeoutException),
-		// a cancelled call, a null body, a non-positive timeout, and when the environment is not set or is not https.
+		// a cancelled call, a null body, a non-positive timeout, when the environment is not set or is not https, and, after the token and
+		// address checks, with ObjectDisposedException once OneApi has replaced this helper (see Retire).
 		// It reads the token as it is: it never logs in, never raises TokenExpired and never uses the shared base client, so it
 		// sends no request when the token is missing or inside minimumTokenLifetime, and never follows a redirect.
 		// Headers named Authorization, Content-Type, Content-Length, Content-Encoding, Accept or Host are ignored, as are invalid ones.

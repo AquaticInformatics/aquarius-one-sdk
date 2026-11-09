@@ -460,7 +460,9 @@ namespace ONE.ClientSDK.Enterprise.Core
 		// Posts one JSON body to enterprise/core/v1/Insights with the current token. The body is opaque to the SDK.
 		// The IOneApiHelper does the work (see OneApiHelper.PostInsightsAsync): it returns an outcome for every HTTP status, never logs in,
 		// never raises TokenExpired, never follows a redirect and raises no Event. It throws only for transport failures (including a
-		// timeout, as TimeoutException), a cancelled call, a null body, a non-positive timeout, or an environment that is not set or not https.
+		// timeout, as TimeoutException), a cancelled call, a null body, a non-positive timeout, an environment that is not set or not https,
+		// or ObjectDisposedException when OneApi has replaced the helper this CoreApi holds (a change to Environment or to another setting
+		// does that). Read OneApi.Core on each use instead of keeping the CoreApi.
 		// The outcome classifies the status. Check InsightsPostResult.StatusCode before dropping a batch.
 		public Task<InsightsPostResult> PostInsightsAsync(byte[] body, IReadOnlyDictionary<string, string> headers, TimeSpan minimumTokenLifetime,
 			TimeSpan timeout, CancellationToken cancellation = default) =>
