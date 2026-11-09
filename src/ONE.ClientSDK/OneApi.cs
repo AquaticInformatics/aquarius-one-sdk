@@ -47,16 +47,15 @@ namespace ONE.ClientSDK
 			get
 			{
 				// Resolve Authentication and then ApiHelper before the cached check. When the environment or another setting changed,
-				// rebuilding them clears _core, so a cached Core never keeps the previous AuthenticationApi, whose token and host
-				// PostInsightsAsync reads.
-				var authentication = Authentication;
+				// rebuilding them clears _core, so a cached Core never keeps an ApiHelper that wraps the previous AuthenticationApi,
+				// whose token and host PostInsightsAsync reads.
+				_ = Authentication;
 				var apiHelper = ApiHelper;
 
 				if (_core != null)
 					return _core;
 
-				// Authentication is the instance ApiHelper wraps.
-				_core = new CoreApi(apiHelper, authentication, ContinueOnCapturedContext, ThrowApiErrors);
+				_core = new CoreApi(apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 				_core.Event += Logger.Logger_Event;
 
 				// Clear dependent backing fields

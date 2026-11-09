@@ -20,7 +20,7 @@
  </PropertyGroup>
 
   <ItemGroup>
-	<!--The tests build CoreApi through its internal constructor-->
+	<!--The tests build OneApiHelper through its internal constructor-->
 	<InternalsVisibleTo Include="ONE.ClientSDK.Tests" />
   </ItemGroup>
 

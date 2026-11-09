@@ -16,13 +16,23 @@ public class CoreApiInsightsTests
 
 	private readonly Mock<IOneApiHelper> _helper = new(MockBehavior.Strict);
 
-	private (CoreApi Core, AuthenticationApi Auth) Create(RecordingHandler handler, EnumPlatformEnvironment environment = EnumPlatformEnvironment.AqiFeature,
+	// PlatformEnvironmentHelper.Environments is a lazy static with no locking, so test classes that start together can each build
+	// their own list, and OneApiTests then compares two equal environments that are different instances. Building the list once at
+	// assembly load, before any test runs, keeps every class on the same instances.
+	[System.Runtime.CompilerServices.ModuleInitializer]
+	internal static void BuildThePlatformEnvironmentsOnce() => _ = PlatformEnvironmentHelper.Environments;
+
+	private static (CoreApi Core, AuthenticationApi Auth) Create(RecordingHandler handler, EnumPlatformEnvironment environment = EnumPlatformEnvironment.AqiFeature,
 		bool throwApiErrors = true)
 	{
 		var auth = new AuthenticationApi(PlatformEnvironmentHelper.GetPlatformEnvironment(environment), false, throwApiErrors);
 
-		return (new CoreApi(_helper.Object, auth, false, throwApiErrors, handler), auth);
+		return (CreateCore(auth, handler, throwApiErrors), auth);
 	}
+
+	// The insights post lives in OneApiHelper, so most tests go from CoreApi through a real helper that records its requests.
+	private static CoreApi CreateCore(AuthenticationApi auth, RecordingHandler handler, bool throwApiErrors = true) =>
+		new(new OneApiHelper(auth, false, true, false, handler), false, throwApiErrors);
 
 	private static void SignIn(AuthenticationApi auth, string accessToken = "token-a", TimeSpan? lifetime = null) =>
 		auth.SetToken(accessToken, DateTime.Now + (lifetime ?? TimeSpan.FromHours(1)), "refresh");
@@ -155,7 +165,7 @@ public class CoreApiInsightsTests
 	[Theory]
 	[InlineData(false)]
 	[InlineData(true)]
-	public async Task TokenExpired_IsNeverRaised_AndTheHelperIsNeverUsed(bool tokenIsValid)
+	public async Task TokenExpired_IsNeverRaised_AndNoLoginIsAttempted(bool tokenIsValid)
 	{
 		var handler = new RecordingHandler();
 		var (core, auth) = Create(handler);
@@ -167,7 +177,7 @@ public class CoreApiInsightsTests
 		await core.PostInsightsAsync(Body, null!, Margin, Timeout);
 
 		tokenExpiredRaised.Should().BeFalse();
-		_helper.VerifyNoOtherCalls();
+		handler.Requests.Should().HaveCount(tokenIsValid ? 1 : 0);
 	}
 
 	[Fact]
@@ -188,15 +198,6 @@ public class CoreApiInsightsTests
 	}
 
 	[Fact]
-	public async Task ACoreApiBuiltWithThePublicConstructor_Throws_AndSendsNothing()
-	{
-		var core = new CoreApi(_helper.Object, false, true);
-
-		await core.Invoking(c => c.PostInsightsAsync(Body, null!, Margin, Timeout)).Should().ThrowAsync<InvalidOperationException>();
-		_helper.VerifyNoOtherCalls();
-	}
-
-	[Fact]
 	public async Task AnInsecureBaseAddress_Throws_AndSendsNothing()
 	{
 		var handler = new RecordingHandler();
@@ -207,7 +208,7 @@ public class CoreApiInsightsTests
 		};
 		var auth = new AuthenticationApi(environment, false, true);
 		SignIn(auth);
-		var core = new CoreApi(_helper.Object, auth, false, true, handler);
+		var core = CreateCore(auth, handler);
 
 		await core.Invoking(c => c.PostInsightsAsync(Body, null!, Margin, Timeout)).Should().ThrowAsync<InvalidOperationException>();
 		handler.Requests.Should().BeEmpty();
@@ -219,7 +220,7 @@ public class CoreApiInsightsTests
 		var handler = new RecordingHandler();
 		var auth = new AuthenticationApi(null!, false, true);
 		SignIn(auth);
-		var core = new CoreApi(_helper.Object, auth, false, true, handler);
+		var core = CreateCore(auth, handler);
 
 		await core.Invoking(c => c.PostInsightsAsync(Body, null!, Margin, Timeout)).Should().ThrowAsync<InvalidOperationException>();
 		handler.Requests.Should().BeEmpty();
@@ -247,7 +248,7 @@ public class CoreApiInsightsTests
 	[Fact]
 	public void TheDefaultHandler_DoesNotFollowRedirects()
 	{
-		var handler = CoreApi.CreateInsightsHandler().Should().BeOfType<HttpClientHandler>().Subject;
+		var handler = OneApiHelper.CreateInsightsHandler().Should().BeOfType<HttpClientHandler>().Subject;
 
 		handler.AllowAutoRedirect.Should().BeFalse();
 		handler.UseCookies.Should().BeFalse();
@@ -346,15 +347,18 @@ public class CoreApiInsightsTests
 	}
 
 	[Fact]
-	public async Task NoCoreApiEvent_IsRaised_OnSuccess_OnAnHttpFailure_OrOnATransportFailure()
+	public async Task NoEvent_IsRaised_OnSuccess_OnAnHttpFailure_OrOnATransportFailure()
 	{
 		var handler = new RecordingHandler(request => request.Headers.Contains("X-Fail")
 			? throw new HttpRequestException("connection refused")
 			: new HttpResponseMessage(request.Headers.Contains("X-Status") ? HttpStatusCode.InternalServerError : HttpStatusCode.OK));
-		var (core, auth) = Create(handler);
+		var auth = new AuthenticationApi(PlatformEnvironmentHelper.GetPlatformEnvironment(EnumPlatformEnvironment.AqiFeature), false, true);
+		var helper = new OneApiHelper(auth, false, true, false, handler);
+		var core = new CoreApi(helper, false, true);
 		SignIn(auth);
 		var events = new List<ClientApiLoggerEventArgs>();
 		core.Event += (_, args) => events.Add(args);
+		helper.Event += (_, args) => events.Add(args);
 
 		await core.PostInsightsAsync(Body, null!, Margin, Timeout);
 		await core.PostInsightsAsync(Body, new Dictionary<string, string> { ["X-Status"] = "1" }, Margin, Timeout);
@@ -386,11 +390,11 @@ public class CoreApiInsightsTests
 	}
 
 	[Fact]
-	public async Task OneApiCore_IsBuiltWithItsAuthentication()
+	public async Task OneApiCore_AnswersNotAuthenticated_WhenNobodyIsSignedIn()
 	{
 		var api = new OneApi(EnumPlatformEnvironment.AqiFeature);
 
-		// No token: the answer comes before any request. A CoreApi built with the public constructor would throw instead.
+		// No token: the answer comes before any request.
 		var result = await api.Core.PostInsightsAsync(Body, null!, Margin, Timeout);
 
 		result.Outcome.Should().Be(InsightsPostOutcome.NotAuthenticated);
@@ -464,16 +468,17 @@ public class CoreApiInsightsTests
 	}
 
 	[Fact]
-	public async Task ExistingMethods_StillSendThroughTheHelper_WithTheirCurrentPaths()
+	public async Task CoreApi_PassesTheCallToTheHelper_AndReturnsItsResult()
 	{
-		_helper.Setup(h => h.BuildRequestAndSendAsync(HttpMethod.Get, It.Is<string>(uri => uri.StartsWith("enterprise/core/v1/User?requestId=")),
-				It.IsAny<CancellationToken>(), null, false))
-			.ReturnsAsync(new ApiResponse { StatusCode = 200, Content = new Content { Users = new Users() } });
-		var (core, _) = Create(new RecordingHandler());
+		var expected = new InsightsPostResult(InsightsPostOutcome.Throttled, (HttpStatusCode)429);
+		var headers = new Dictionary<string, string> { ["X-Test"] = "1" };
+		using var cancellation = new CancellationTokenSource();
+		_helper.Setup(h => h.PostInsightsAsync(Body, headers, Margin, Timeout, cancellation.Token)).ReturnsAsync(expected);
+		var core = new CoreApi(_helper.Object, false, true);
 
-		var users = await core.GetUsersAsync();
+		var result = await core.PostInsightsAsync(Body, headers, Margin, Timeout, cancellation.Token);
 
-		users.Should().BeEmpty();
+		result.Should().BeSameAs(expected);
 		_helper.VerifyAll();
 	}
 
