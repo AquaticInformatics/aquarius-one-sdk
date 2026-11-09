@@ -1,4 +1,4 @@
-﻿using Google.Protobuf;
+using Google.Protobuf;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using ONE.ClientSDK.Enterprise.Authentication;
@@ -29,6 +29,8 @@ namespace ONE.ClientSDK.Communication
 		private readonly HttpMessageHandler _insightsHandler;
 		private readonly object _insightsClientLock = new object();
 		private HttpClient _insightsClient;
+		private int _activeInsightsPosts;
+		private bool _retired;
         
 		public event EventHandler<ClientApiLoggerEventArgs> Event = delegate { };
 
@@ -177,10 +179,18 @@ namespace ONE.ClientSDK.Communication
 					try
 					{
 						// The body of the response is never read.
-						using (var response = await GetInsightsClient()
-							       .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeoutSource.Token)
-							       .ConfigureAwait(_continueOnCapturedContext))
-							return new InsightsPostResult(GetInsightsOutcome(response.StatusCode), response.StatusCode);
+						var client = BeginInsightsPost();
+						try
+						{
+							using (var response = await client
+								       .SendAsync(request, HttpCompletionOption.ResponseHeadersRead, timeoutSource.Token)
+								       .ConfigureAwait(_continueOnCapturedContext))
+								return new InsightsPostResult(GetInsightsOutcome(response.StatusCode), response.StatusCode);
+						}
+						finally
+						{
+							EndInsightsPost();
+						}
 					}
 					catch (OperationCanceledException) when (!cancellation.IsCancellationRequested)
 					{
@@ -231,14 +241,61 @@ namespace ONE.ClientSDK.Communication
 			return InsightsPostOutcome.Rejected;
 		}
 
+		internal void Retire()
+		{
+			_authentication.TokenExpired -= RenewToken;
+
+			HttpClient clientToDispose = null;
+			HttpMessageHandler handlerToDispose = null;
+			lock (_insightsClientLock)
+			{
+				if (_retired)
+					return;
+
+				_retired = true;
+				if (_activeInsightsPosts == 0)
+				{
+					clientToDispose = _insightsClient;
+					_insightsClient = null;
+					if (clientToDispose == null)
+						handlerToDispose = _insightsHandler;
+				}
+			}
+
+			clientToDispose?.Dispose();
+			handlerToDispose?.Dispose();
+		}
+
 		// Its own client, with no base address and no default headers, so it never carries a token the shared clients hold
 		// (finding F-3: Logout() does not clear the shared base client's header). Its timer is the linked source in PostInsightsAsync.
-		private HttpClient GetInsightsClient()
+		private HttpClient BeginInsightsPost()
 		{
 			lock (_insightsClientLock)
 			{
-				return _insightsClient ?? (_insightsClient = new HttpClient(_insightsHandler ?? CreateInsightsHandler()) { Timeout = Timeout.InfiniteTimeSpan });
+				if (_retired)
+					throw new ObjectDisposedException(nameof(OneApiHelper));
+
+				_insightsClient = _insightsClient ??
+					new HttpClient(_insightsHandler ?? CreateInsightsHandler()) { Timeout = Timeout.InfiniteTimeSpan };
+				_activeInsightsPosts++;
+				return _insightsClient;
 			}
+		}
+
+		private void EndInsightsPost()
+		{
+			HttpClient clientToDispose = null;
+			lock (_insightsClientLock)
+			{
+				_activeInsightsPosts--;
+				if (_retired && _activeInsightsPosts == 0)
+				{
+					clientToDispose = _insightsClient;
+					_insightsClient = null;
+				}
+			}
+
+			clientToDispose?.Dispose();
 		}
 
 		// A redirect is not followed, because the token must not go to a host the Core API did not name.

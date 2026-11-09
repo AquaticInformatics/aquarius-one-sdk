@@ -34,7 +34,7 @@ namespace ONE.ClientSDK
 				_authentication.Event += Logger.Logger_Event;
 
 				// Clear dependent backing fields
-				_apiHelper = null;
+				ResetApiHelper();
 				_userHelper = null;
 
 				return _authentication;
@@ -341,6 +341,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
+				ResetApiHelper();
 			}
 		}
 
@@ -357,7 +358,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
-				_apiHelper = null;
+				ResetApiHelper();
 				_core = null;
 				_configuration = null;
 				_library = null;
@@ -384,7 +385,7 @@ namespace ONE.ClientSDK
 				_logRestfulCalls = value;
 
 				// Clear dependent backing fields
-				_apiHelper = null;
+				ResetApiHelper();
 			}
 		}
 
@@ -401,6 +402,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
+				ResetApiHelper();
 				_core = null;
 				_configuration = null;
 				_library = null;
@@ -428,11 +430,19 @@ namespace ONE.ClientSDK
 				_useProtobufModels = value;
 
 				// Clear dependent backing fields
-				_apiHelper = null;
+				ResetApiHelper();
 			}
 		}
 
 		private IOneApiHelper _apiHelper;
+		private void ResetApiHelper()
+		{
+			if (_apiHelper is OneApiHelper helper)
+				helper.Retire();
+
+			_apiHelper = null;
+		}
+
 		private IOneApiHelper ApiHelper
 		{
 			get
