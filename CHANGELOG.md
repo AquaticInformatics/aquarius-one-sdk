@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## Version 19.2.0 - 2026-11-09
+### Added
+- Added CoreApi.PostInsightsAsync to post a JSON body to enterprise/core/v1/Insights with the current ONE token
+- Added IOneApiHelper.PostInsightsAsync. Custom IOneApiHelper implementations must add it
+
+### Updated
+- OneApi now rebuilds every API object it has handed out (Core, Configuration, Logbook, Library, Schedule, Activity, DigitalTwin, Notification, Report, Spreadsheet, Data, Sample and UserHelper) when Environment, ContinueOnCapturedContext, ThrowApiErrors, LogRestfulCalls or UseProtobufModels changes. Before, some kept the previous helper and, after an environment change, the previous environment. Read these properties again after a change instead of keeping an earlier object
+- When OneApi replaces its helper, the old helper stops listening for the token to expire and releases its insights HttpClient once no insights post is using it. CoreApi.PostInsightsAsync on a CoreApi kept from before the change throws ObjectDisposedException
+
 ## Version 19.1.1 - 2026-05-29
 ### Updated
 - Updated CSharp dependency

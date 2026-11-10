@@ -34,7 +34,7 @@ namespace ONE.ClientSDK
 				_authentication.Event += Logger.Logger_Event;
 
 				// Clear dependent backing fields
-				_apiHelper = null;
+				ResetApiHelper();
 				_userHelper = null;
 
 				return _authentication;
@@ -46,10 +46,16 @@ namespace ONE.ClientSDK
 		{
 			get
 			{
+				// Resolve Authentication and then ApiHelper before the cached check. When the environment or another setting changed,
+				// rebuilding them clears _core, so a cached Core never keeps an ApiHelper that wraps the previous AuthenticationApi,
+				// whose token and host PostInsightsAsync reads.
+				_ = Authentication;
+				var apiHelper = ApiHelper;
+
 				if (_core != null)
 					return _core;
 
-				_core = new CoreApi(ApiHelper, ContinueOnCapturedContext, ThrowApiErrors);
+				_core = new CoreApi(apiHelper, ContinueOnCapturedContext, ThrowApiErrors);
 				_core.Event += Logger.Logger_Event;
 
 				// Clear dependent backing fields
@@ -335,6 +341,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
+				ResetApiHelperAndDependents();
 			}
 		}
 
@@ -351,18 +358,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
-				_apiHelper = null;
-				_core = null;
-				_configuration = null;
-				_library = null;
-				_schedule = null;
-				_activity = null;
-				_digitalTwin = null;
-				_notification = null;
-				_report = null;
-				_spreadsheet = null;
-				_data = null;
-				_sample = null;
+				ResetApiHelperAndDependents();
 			}
 		}
 
@@ -378,7 +374,7 @@ namespace ONE.ClientSDK
 				_logRestfulCalls = value;
 
 				// Clear dependent backing fields
-				_apiHelper = null;
+				ResetApiHelperAndDependents();
 			}
 		}
 
@@ -395,17 +391,7 @@ namespace ONE.ClientSDK
 
 				// Clear dependent backing fields
 				_authentication = null;
-				_core = null;
-				_configuration = null;
-				_library = null;
-				_schedule = null;
-				_activity = null;
-				_digitalTwin = null;
-				_notification = null;
-				_report = null;
-				_spreadsheet = null;
-				_data = null;
-				_sample = null;
+				ResetApiHelperAndDependents();
 				_poEditor = null;
 			}
 		}
@@ -422,11 +408,46 @@ namespace ONE.ClientSDK
 				_useProtobufModels = value;
 
 				// Clear dependent backing fields
-				_apiHelper = null;
+				ResetApiHelperAndDependents();
 			}
 		}
 
 		private IOneApiHelper _apiHelper;
+
+		// Drops the helper, which stops it listening for the token to expire and releases its insights client, and every API object built
+		// on it, so the next read builds them from the current settings. A setting that the helper was built with calls this.
+		private void ResetApiHelperAndDependents()
+		{
+			ResetApiHelper();
+			ResetDependentApiCaches();
+		}
+
+		private void ResetApiHelper()
+		{
+			if (_apiHelper is OneApiHelper helper)
+				helper.Retire();
+
+			_apiHelper = null;
+		}
+
+		// The API objects that hold the helper, plus Logbook and UserHelper, which wrap those.
+		private void ResetDependentApiCaches()
+		{
+			_core = null;
+			_configuration = null;
+			_logbook = null;
+			_library = null;
+			_schedule = null;
+			_activity = null;
+			_digitalTwin = null;
+			_notification = null;
+			_report = null;
+			_spreadsheet = null;
+			_data = null;
+			_sample = null;
+			_userHelper = null;
+		}
+
 		private IOneApiHelper ApiHelper
 		{
 			get
@@ -438,17 +459,7 @@ namespace ONE.ClientSDK
 				_apiHelper.Event += Logger.Logger_Event;
 
 				// Clear dependent backing fields
-				_core = null;
-				_configuration = null;
-				_library = null;
-				_schedule = null;
-				_activity = null;
-				_digitalTwin = null;
-				_notification = null;
-				_report = null;
-				_spreadsheet = null;
-				_data = null;
-				_sample = null;
+				ResetDependentApiCaches();
 
 				return _apiHelper;
 			}
